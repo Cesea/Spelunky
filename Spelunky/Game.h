@@ -11,7 +11,7 @@ public:
 	virtual HRESULT Init(void);
 	virtual void Release(void);
 	virtual void Update(void);
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget);
+	virtual void Render(void);
 
 	Game();
 	virtual ~Game();

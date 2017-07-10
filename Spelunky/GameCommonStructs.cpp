@@ -71,3 +71,45 @@ bool TilePosition::ReTilelizeY()
 	}
 	return result;
 }
+
+TileSet::TileSet(uint32 countX, uint32 countY, int32 clearValue)
+{
+	this->countX = countX;
+	this->countY = countY;
+	tiles = new uint32[countX * countY];
+}
+
+TileSet::~TileSet()
+{
+	delete[] tiles;
+}
+
+void TileSet::Clear(int32 value)
+{
+	for (int i = 0; i < countX * countY; ++i)
+	{
+		tiles[i] = value;
+	}
+}
+
+int32 TileSet::GetValue(uint32 x, uint32 y)
+{
+	int32 result{};
+	result = tiles[y * countX + x];
+	return result;
+}
+
+void TileSet::SetValue(uint32 x, uint32 y, int32 value)
+{
+	tiles[y * countX + x] = value;
+}
+
+uint32 & TileSet::At(uint32 x, uint32 y)
+{
+	return tiles[y * countX + x];
+}
+
+uint32 & TileSet::At(uint32 i)
+{
+	return tiles[i];
+}

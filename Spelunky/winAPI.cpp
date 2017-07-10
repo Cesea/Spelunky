@@ -12,6 +12,8 @@ D2D				_d2d;
 DWrite			_dWrite;
 Console			_console;
 
+ID2D1HwndRenderTarget *	gRenderTarget;
+
 bool _running = false;
 
 //=================================================
@@ -64,7 +66,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	_d2d.CreateRenderTarget(_hWnd);
 
 	_dWrite.Init();
-	_dWrite.SetFont(L"resources/fonts/DK Appelstroop.otf", 16);
+	_dWrite.SetFont(L"Terminal", 20);
 	
 	//화면에 윈도우 보여준다
 	ShowWindow(_hWnd, cmdShow);
@@ -83,10 +85,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	_console.Init();
 	
 	Console::Log("Hello\n");
-
 	BringWindowToTop(_hWnd);
 
-	while (true) //게임용
+	gRenderTarget = _d2d.GetRenderTarget();
+
+	while (_running) //게임용
 	{
 		BOOL result = PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE);
 		if (result > 0)
@@ -101,7 +104,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		else
 		{
 			_game.Update();
-			_game.Render(_d2d.GetRenderTarget());
+			_game.Render();
 			EVENTMANAGER->Update(TIMEMANAGER->GetElapsedTime());
 		}
 	}

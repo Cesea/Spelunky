@@ -53,6 +53,26 @@ public:
 	Vector2 tileRel;
 };
 
+struct TileSet
+{
+	TileSet() {}
+	TileSet(uint32 countX , uint32 countY , int32 clearValue);
+	~TileSet();
+
+	void Clear(int32 value);
+
+	int32 GetValue(uint32 x, uint32 y);
+	void SetValue(uint32 x, uint32 y, int32 value);
+
+	uint32 &At(uint32 x, uint32 y);
+	uint32 &At(uint32 i);
+
+	uint32 countX{};
+	uint32 countY{};
+	uint32 *tiles{};
+	//uint32 tiles[TILECOUNTY][TILECOUNTX] = {};
+};
+
 typedef uint32 ObjectId;
 
 enum class ArcheType

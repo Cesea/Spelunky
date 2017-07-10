@@ -46,12 +46,12 @@ void GamePlayScene::Update(void)
 
 }
 
-void GamePlayScene::Render(ID2D1HwndRenderTarget * renderTarget)
+void GamePlayScene::Render(void)
 {
 	//그리기 전에는 항상 BeginDraw()
-	renderTarget->BeginDraw();
-	renderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
+	gRenderTarget->BeginDraw();
+	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
 	//그린 후에는 항상 EndDraw()
-	renderTarget->EndDraw();
+	gRenderTarget->EndDraw();
 }

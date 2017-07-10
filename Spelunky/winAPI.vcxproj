@@ -107,6 +107,7 @@
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="GamePlayScene.h" />
     <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="ImGUI.h" />
     <ClInclude Include="IntVector2.h" />
     <ClInclude Include="KeyAnimationManager.h" />
     <ClInclude Include="keyManager.h" />
@@ -154,6 +155,7 @@
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="GamePlayScene.cpp" />
     <ClCompile Include="ImageManager.cpp" />
+    <ClCompile Include="ImGUI.cpp" />
     <ClCompile Include="IntVector2.cpp" />
     <ClCompile Include="KeyAnimationManager.cpp" />
     <ClCompile Include="keyManager.cpp" />

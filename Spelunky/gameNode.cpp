@@ -32,7 +32,7 @@ void gameNode::Update()
 {
 }
 
-void gameNode::Render(ID2D1HwndRenderTarget *renderTarget)
+void gameNode::Render()
 {
 }
 
@@ -56,6 +56,8 @@ LRESULT gameNode::MainProc(HWND hWnd, UINT iMessage,
 		} break;
 		case WM_KEYDOWN:
 		{
+			IM::uistate.keyEntered = wParam;
+
 			switch (wParam)
 			{
 			case VK_ESCAPE:
@@ -63,6 +65,11 @@ LRESULT gameNode::MainProc(HWND hWnd, UINT iMessage,
 				break;
 			}
 		} break;
+
+		case WM_CHAR :
+		{
+			IM::uistate.keyChar = wParam;
+		}break;
 		case WM_DESTROY:
 		{
 			PostQuitMessage(0);

@@ -17,7 +17,7 @@ public:
 	virtual HRESULT Init(void) = 0;
 	virtual void Release(void) = 0;
 	virtual void Update(void) = 0;
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget) = 0;
+	virtual void Render() = 0;
 
 	virtual HRESULT LoadContent() = 0;
 

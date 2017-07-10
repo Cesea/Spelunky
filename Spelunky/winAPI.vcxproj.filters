@@ -88,6 +88,9 @@
     <Filter Include="Game\Scene\LoadingScene\Objects">
       <UniqueIdentifier>{7abfb9e5-2a63-4435-8db6-f2bd1b62d91c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\MapToolScene\IMGUI">
+      <UniqueIdentifier>{dcc19d64-10c0-4255-8003-647776438f96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -237,6 +240,9 @@
     <ClInclude Include="Player.h">
       <Filter>Game\Scene\GamePlayScene\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="ImGUI.h">
+      <Filter>Game\Scene\MapToolScene\IMGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -352,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGUI.cpp">
+      <Filter>Game\Scene\MapToolScene\IMGUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

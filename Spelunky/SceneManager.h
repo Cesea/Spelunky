@@ -32,7 +32,7 @@ public:
 	HRESULT Init(void);
 	void Release(void);
 	void Update(void);
-	void Render(ID2D1HwndRenderTarget *renderTarget);
+	void Render(void);
 
 	//æ¿√ﬂ∞°
 	IScene* AddScene(std::wstring sceneName, IScene* scene);

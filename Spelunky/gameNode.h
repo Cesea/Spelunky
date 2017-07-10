@@ -2,15 +2,15 @@
 
 #include "D2D.h"
 
-//#include "InputRelated.h"
+#include "ImGUI.h"
 
 class gameNode
 {
 public:
 	virtual HRESULT Init(void);
 	virtual void Release(void);
-	virtual void Update();
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget);
+	virtual void Update(void);
+	virtual void Render(void);
 
 	//메시지 프로시져
 	virtual LRESULT MainProc(HWND hWnd, UINT iMessage,

@@ -45,9 +45,9 @@ void SceneManager::Update(void)
 	if (_currentScene) _currentScene->Update();
 }
 
-void SceneManager::Render(ID2D1HwndRenderTarget *renderTarget)
+void SceneManager::Render()
 {
-	if (_currentScene) _currentScene->Render(renderTarget);
+	if (_currentScene) _currentScene->Render();
 }
 
 IScene * SceneManager::AddScene(std::wstring sceneName, IScene * scene)

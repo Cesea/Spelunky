@@ -13,7 +13,7 @@ public:
 	HRESULT Init(void) override;
 	void Release(void) override;
 	void Update(void) override;
-	void Render(ID2D1HwndRenderTarget *renderTarget) override;
+	void Render(void) override;
 
 	HRESULT LoadContent() override;
 

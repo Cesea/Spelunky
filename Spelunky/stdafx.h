@@ -66,8 +66,8 @@
 //=================================================
 
 #define WINNAME (LPTSTR)(TEXT("APIWindow"))
-#define WINSTARTX 100
-#define WINSTARTY 10
+#define WINSTARTX 200
+#define WINSTARTY 100
 
 #define WINSIZEX 1280
 #define WINSIZEY 720
@@ -164,6 +164,8 @@ extern HWND _hWnd; //윈도우핸들
 extern ScreenVector2 currentMouse; //마우스~~
 extern D2D _d2d;
 extern DWrite _dWrite;
+
+extern ID2D1HwndRenderTarget *gRenderTarget;
 
 extern bool _running;
 
