@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spelunky", "Spelunky\winAPI.vcxproj", "{F2AA696D-4AC7-457C-BFD8-1EFA1CE7CB90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2AA696D-4AC7-457C-BFD8-1EFA1CE7CB90}.Debug|x86.ActiveCfg = Debug|Win32
+		{F2AA696D-4AC7-457C-BFD8-1EFA1CE7CB90}.Debug|x86.Build.0 = Debug|Win32
+		{F2AA696D-4AC7-457C-BFD8-1EFA1CE7CB90}.Release|x86.ActiveCfg = Release|Win32
+		{F2AA696D-4AC7-457C-BFD8-1EFA1CE7CB90}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

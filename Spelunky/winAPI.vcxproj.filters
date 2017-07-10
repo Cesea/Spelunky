@@ -1,0 +1,357 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GameFramework2D">
+      <UniqueIdentifier>{48c5b97f-9ef3-412a-a9eb-3ed8f81d4f30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\manager">
+      <UniqueIdentifier>{e1ac1446-e60c-4210-b0c0-3177c6a37c33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{749c4c70-07bd-4dcd-8c83-a55c02e90799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\D2D">
+      <UniqueIdentifier>{f01c3075-bcc9-42cc-9d13-966d6475153a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\D2D\Images">
+      <UniqueIdentifier>{698bd28d-d344-482f-bb0e-5e742f0e50ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Camera">
+      <UniqueIdentifier>{3afe2919-4865-4d27-bc6c-d02ddee05abd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene">
+      <UniqueIdentifier>{ef4042fb-5e6d-4821-a485-d1432b3096b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Command">
+      <UniqueIdentifier>{35e0b62e-f7d0-4aba-90c2-80bda71fea97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\D2D\DWrite">
+      <UniqueIdentifier>{7c2ab2ad-b461-4388-847f-587fd390ca0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\manager\Timer">
+      <UniqueIdentifier>{9f10dd24-16cc-4331-90f0-b7d05a13aaf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Types">
+      <UniqueIdentifier>{7f896410-2aeb-4c7e-847c-003adb52b3a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Utils">
+      <UniqueIdentifier>{870d976a-1069-473b-bf20-a643d5c424ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Utils\Maths">
+      <UniqueIdentifier>{cccb46a2-26bf-4c1c-a9ef-4ccd388b7e2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Utils\Layers">
+      <UniqueIdentifier>{7d8a8846-467c-4162-a730-807f31cded31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Utils\Delegate">
+      <UniqueIdentifier>{fc3c62aa-68e4-4eb0-a376-e2ac10888185}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Utils\DataSet">
+      <UniqueIdentifier>{b8383de2-37fb-4f82-8090-da38c0f61cc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene">
+      <UniqueIdentifier>{84e56a0f-2f67-455c-ae32-1ada3ae392c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Utils\State">
+      <UniqueIdentifier>{5a5fefbc-8bc3-431b-ab9a-1f45d559dac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Utils\Trigger">
+      <UniqueIdentifier>{d788b27d-3902-49d7-bc74-806fc497b521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Animation">
+      <UniqueIdentifier>{5303dd97-a5fe-4ff2-864e-d6d99da9233c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\WinAPI">
+      <UniqueIdentifier>{ff0b3706-6f65-4d78-a598-fa5895a3ce28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\MapToolScene">
+      <UniqueIdentifier>{1ba5d7eb-e69b-4974-b533-e7571beb08ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Event">
+      <UniqueIdentifier>{7b1a84c0-e880-4a76-862f-7b25c07f68bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common">
+      <UniqueIdentifier>{a8f00f3e-7016-4a99-b278-3c8ef6382d8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\LoadingScene">
+      <UniqueIdentifier>{cb9fe9d3-1db8-4856-bad9-d4ebaeadbb5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\ObjectFactory">
+      <UniqueIdentifier>{db3b7176-6126-475a-9f72-bfa84e8eb9ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\MapToolScene\Objects">
+      <UniqueIdentifier>{d2d699d2-8ef8-44d4-bf88-48746a2ec4b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects">
+      <UniqueIdentifier>{96b62ef8-ce30-4dd7-9e7e-0953b2f02731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\LoadingScene\Objects">
+      <UniqueIdentifier>{7abfb9e5-2a63-4435-8db6-f2bd1b62d91c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="singletonBase.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="gameNode.h">
+      <Filter>GameFramework2D</Filter>
+    </ClInclude>
+    <ClInclude Include="keyManager.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="randomFunction.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>GameFramework2D\manager\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="commonMacroFunction.h">
+      <Filter>GameFramework2D</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageManager.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>GameFramework2D\Utils\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>GameFramework2D\Utils\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="D2D.h">
+      <Filter>GameFramework2D\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DImage.h">
+      <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="IntVector2.h">
+      <Filter>GameFramework2D\Utils\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer.h">
+      <Filter>GameFramework2D\Utils\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DSprite.h">
+      <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DAnimationSprite.h">
+      <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Game\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommonMacroFunctions.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="TextDataManager.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommonStructs.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Game\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="DWrite.h">
+      <Filter>GameFramework2D\D2D\DWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcheType.h">
+      <Filter>GameFramework2D\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Utillities.h">
+      <Filter>GameFramework2D\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate.h">
+      <Filter>GameFramework2D\Utils\Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="DataSet.h">
+      <Filter>GameFramework2D\Utils\DataSet</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayScene.h">
+      <Filter>Game\Scene\GamePlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>GameFramework2D\Utils\State</Filter>
+    </ClInclude>
+    <ClInclude Include="StateManager.h">
+      <Filter>GameFramework2D\Utils\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger.h">
+      <Filter>GameFramework2D\Utils\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>GameFramework2D\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyAnimationManager.h">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Game\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="MapToolScene.h">
+      <Filter>Game\Scene\MapToolScene</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>Game\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>Game\Scene\LoadingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32Input.h">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>Game\Common\ObjectFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="ColiidingObject.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingObject.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="IScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="gameNode.cpp">
+      <Filter>GameFramework2D</Filter>
+    </ClCompile>
+    <ClCompile Include="keyManager.cpp">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>GameFramework2D\manager\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="winAPI.cpp">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>GameFramework2D\Utils\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>GameFramework2D\Utils\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="D2D.cpp">
+      <Filter>GameFramework2D\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DImage.cpp">
+      <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="IntVector2.cpp">
+      <Filter>GameFramework2D\Utils\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DSprite.cpp">
+      <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DAnimationSprite.cpp">
+      <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Game\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="TextDataManager.cpp">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommonMacroFunctions.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommonStructs.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Game\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="DWrite.cpp">
+      <Filter>GameFramework2D\D2D\DWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayScene.cpp">
+      <Filter>Game\Scene\GamePlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger.cpp">
+      <Filter>GameFramework2D\Utils\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>GameFramework2D\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyAnimationManager.cpp">
+      <Filter>GameFramework2D\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Game\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="MapToolScene.cpp">
+      <Filter>Game\Scene\MapToolScene</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>Game\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>Game\Scene\LoadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Input.cpp">
+      <Filter>GameFramework2D\WinAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>Game\Common\ObjectFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="ColiidingObject.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="MovingObject.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

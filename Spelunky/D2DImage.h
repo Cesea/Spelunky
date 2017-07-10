@@ -1,0 +1,57 @@
+#ifndef D2D_BITMAP_H
+#define D2D_BITMAP_H
+
+#include "stdafx.h"
+
+class D2DImage
+{
+public:
+	D2DImage();
+	~D2DImage();
+
+	HRESULT Init();
+
+	void Render(ID2D1HwndRenderTarget *renderTarget, float alpha = 1.0f);
+	void Render(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float alpha = 1.0f);
+	void Render(ID2D1HwndRenderTarget *renderTarget, float sourX, float sourY, float sourWidth, float sourHeight, float alpha = 1.0f);
+	void Render(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float sourX, float sourY, float sourWidth, float sourHeight, float alpha = 1.0f);
+
+	//for squashed render
+	void Render(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float destWidth, float destHeight,
+					float sourX, float sourY, float sourWidth, float sourHeight, float alpha = 1.0f);
+
+	void RenderFlipX(ID2D1HwndRenderTarget *renderTarget, float alpha = 1.0f);
+	void RenderFlipX(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float alpha = 1.0f);
+	void RenderFlipX(ID2D1HwndRenderTarget *renderTarget, float sourX, float sourY, float sourWidth, float sourHeight, float alpha = 1.0f);
+	void RenderFlipX(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float sourX, float sourY, float sourWidth, float sourHeight, float alpha = 1.0f);
+
+	void Release();
+
+	inline ID2D1Bitmap **GetBitmap() { return &_bitmap; }
+
+	//ÁÂÇ¥ x
+	inline void SetX(float x) { _x = x; }
+	inline float GetX(void) { return _x; }
+
+	//ÁÂÇ¥ y
+	inline void SetY(float y) { _y = y; }
+	inline float GetY(void) { return _y; }
+
+	inline void SetWidth(float w) { _width = w; }
+	inline void SetHeight(float h) { _height = h; }
+
+	inline float GetWidth() { return _width; }
+	inline float GetHeight() { return _height; }
+
+
+private:
+	ID2D1Bitmap *_bitmap{ nullptr };
+	float _x{ 0 };
+	float _y{ 0 };
+	float _width{ 0 };
+	float _height{ 0 };
+
+};
+
+
+#endif
