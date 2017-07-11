@@ -59,3 +59,17 @@ void DWrite::PrintText(ID2D1HwndRenderTarget *renderTarget, float x, float y,flo
 	brush->Release();
 	brush = nullptr;
 }
+
+void DWrite::AlignFont(Alignment alignment)
+{
+	if (alignment == ALIGN_CENTER)
+	{
+		_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	}
+	else if(alignment == ALIGN_LEFT)
+	{
+		_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+		_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+	}
+}

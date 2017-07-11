@@ -69,8 +69,15 @@ void MapToolScene::Render()
 
 	IM::BeginWindow(50, 50, 570, 630, L"Window");
 
-	IM::Button(GEN_ID, 120, 120, L"Save");
-	IM::Button(GEN_ID, 120, 220, L"Load");
+	IM::Button(GEN_ID, 100, 570, L"Save");
+	IM::Button(GEN_ID, 200, 570, L"Load");
+
+	IM::VertIntSlider(GEN_ID, 400, 50, 200, 5, _slider1Value);
+	IM::HoriFloatSlider(GEN_ID, 50, 50, 200, 5.0f, _slider2Value);
+
+	IM::TextBox(GEN_ID, 100, 300, _buffer);
+
+
 	IM::EndWindow();
 
 	IM::IMGUIFinish();

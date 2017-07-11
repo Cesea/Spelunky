@@ -26,6 +26,9 @@ private:
 	TileSet *_editingTileSet{};
 
 	int _slider1Value{};
+	float _slider2Value{};
+	
+	WCHAR _buffer[40]{};
 
 };
 

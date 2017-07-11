@@ -5,6 +5,11 @@
 
 //NOTE : DWrite 사용방법 
 
+enum Alignment
+{
+	ALIGN_CENTER,
+	ALIGN_LEFT
+};
 
 class DWrite
 {
@@ -17,6 +22,8 @@ public:
 
 	void PrintText(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height,
 		const WCHAR *str, const D2D1_COLOR_F &brushColor);
+
+	void AlignFont(Alignment alignment);
 
 private:
 	IDWriteFactory *_dWriteFactory{};
