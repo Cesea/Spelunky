@@ -67,6 +67,7 @@ void ImageManager::LoadImageFromFile(const std::wstring &filePath, LPCTSTR keyNa
 		D2DImage *insertImage = new D2DImage;
 
 		_d2d.LoadBitmapFromFile(filePath.c_str(), insertImage);
+		insertImage->SetName(keyName);
 
 		int numKeyName = _tcslen(keyName);
 		TCHAR *key = (TCHAR *)calloc(numKeyName, sizeof(TCHAR));

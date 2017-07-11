@@ -683,8 +683,8 @@ UIState uistate;
 		}
 		if (uistate.kbdItem == id)
 		{
-			//DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, 
-			//	totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, HOT_COLOR, 2.0f);
+			DrawBox(gRenderTarget, currentX - OFFSET * 2, currentY - OFFSET * 2, 
+				totalWidth + OFFSET * 4, totalHeight + OFFSET * 4, HOT_COLOR, 6.0f);
 		}
 		if (RegionHit(currentX, currentY, totalWidth, totalHeight))
 		{
@@ -696,32 +696,33 @@ UIState uistate;
 				uistate.kbdItem = id;
 			}
 		}
-	
+
 		if (sprite->GetSourceImage() == nullptr)
 		{
-			FillBox(gRenderTarget, currentX, currentY, totalWidth, totalHeight, BUTTON_HOT_COLOR);
+			FillBox(gRenderTarget, currentX, currentY, totalWidth, totalHeight, GRID_EMPTY_COLOR);
+			DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
+				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
 		}
 		else
 		{
 			sprite->Render(gRenderTarget, currentX, currentY);
-			DrawBox(gRenderTarget, currentX + xIndex * frameWidth, currentY + yIndex * frameHeight, 
-					frameWidth, frameHeight, HOT_COLOR, 2.0f);
-		}
-		//Draw Grids
-		for (int y = 1; y < totalXIndex; ++y)
-		{
-			DrawLine(gRenderTarget, currentX, currentY + y * frameHeight, 
-				currentX + totalWidth, currentY + y * frameHeight, BLACK, 1.5f);
-		}
-		for (int x = 1; x < totalXIndex; ++x)
-		{
-			DrawLine(gRenderTarget, currentX + x * frameWidth, currentY, 
-				currentX + x * frameWidth, currentY + totalHeight, BLACK, 1.5f);
-		}
-		//
+			//Draw Grids
+			for (int y = 1; y < totalXIndex; ++y)
+			{
+				DrawLine(gRenderTarget, currentX, currentY + y * frameHeight,
+					currentX + totalWidth, currentY + y * frameHeight, BLACK, 1.5f);
+			}
+			for (int x = 1; x < totalXIndex; ++x)
+			{
+				DrawLine(gRenderTarget, currentX + x * frameWidth, currentY,
+					currentX + x * frameWidth, currentY + totalHeight, BLACK, 1.5f);
+			}
+			DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
+				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
 
-		DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
-			totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
+			DrawBox(gRenderTarget, currentX + xIndex * frameWidth, currentY + yIndex * frameHeight,
+				frameWidth, frameHeight, HOT_COLOR, 2.0f);
+		}
 
 		if (uistate.kbdItem == id)
 		{
@@ -779,10 +780,104 @@ UIState uistate;
 		return 0;
 	}
 
-	//int GridPainter(int id, int x, int y, int totalWidth, int totalHeight, int frameWidth, int frameHeight, uint32 * canvas)
-	//{
-	//	return 0;
-	//}
+	int GridPainter(int id, int x, int y, int totalWidth, int totalHeight,
+						int frameWidth, int frameHeight, int &xIndex, int &yIndex)
+	{
+		int totalXIndex = totalWidth / frameWidth;
+		int totalYIndex = totalHeight / frameHeight;
+
+		int currentX = uistate.lastWindowPos.back().x + x;
+		int currentY = uistate.lastWindowPos.back().y + y;
+
+		if (uistate.kbdItem == 0)
+		{
+			uistate.kbdItem = id;
+		}
+		if (uistate.kbdItem == id)
+		{
+			DrawBox(gRenderTarget, currentX - OFFSET * 2, currentY - OFFSET * 2, 
+				totalWidth + OFFSET * 4, totalHeight + OFFSET * 4, HOT_COLOR, 6.0f);
+		}
+		if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+		{
+			uistate.hotItem = id;
+			if (uistate.activeItem == 0 &&
+				uistate.mouseDown)
+			{
+				uistate.activeItem = id;
+				uistate.kbdItem = id;
+			}
+		}
+		for (int y = 1; y < totalYIndex; ++y)
+		{
+			DrawLine(gRenderTarget, currentX, currentY + y * frameHeight,
+				currentX + totalWidth, currentY + y * frameHeight, BLACK, 1.5f);
+		}
+		for (int x = 1; x < totalXIndex; ++x)
+		{
+			DrawLine(gRenderTarget, currentX + x * frameWidth, currentY,
+				currentX + x * frameWidth, currentY + totalHeight, BLACK, 1.5f);
+		}
+		DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
+			totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
+
+		DrawBox(gRenderTarget, currentX + xIndex * frameWidth, currentY + yIndex * frameHeight,
+			frameWidth, frameHeight, HOT_COLOR, 2.0f);
+
+		if (uistate.kbdItem == id)
+		{
+			switch (uistate.keyEntered)
+			{
+			case VK_TAB:
+			{
+				uistate.kbdItem = 0;
+				if (KEYMANAGER->IsStayKeyDown(VK_SHIFT))
+				{
+					uistate.kbdItem = uistate.lastWidget;
+				}
+				uistate.keyEntered = 0;
+			}break;
+			case VK_UP:
+			{
+				ClampInt(&--yIndex, 0, totalYIndex - 1);
+			}break;
+			case VK_DOWN:
+			{
+				ClampInt(&++yIndex, 0, totalYIndex - 1);
+			}break;
+			case VK_LEFT:
+			{
+				ClampInt(&--xIndex, 0, totalXIndex - 1);
+			}break;
+			case VK_RIGHT:
+			{
+				ClampInt(&++xIndex, 0, totalXIndex - 1);
+			}break;
+			case VK_RETURN:
+			{
+				return 1;
+			}break;
+			}
+		}
+		uistate.lastWidget = id;
+
+		if (uistate.activeItem == id)
+		{
+			int mouseRelX = uistate.mouseX - currentX;
+			int mouseRelY = uistate.mouseY - currentY;
+			int mouseXIndex = mouseRelX / frameWidth;
+			int mouseYIndex = mouseRelY / frameHeight;
+
+			ClampInt(&mouseXIndex, 0, totalXIndex - 1);
+			ClampInt(&mouseYIndex, 0, totalYIndex - 1);
+
+			xIndex = mouseXIndex;
+			yIndex = mouseYIndex;
+
+			return 1;
+		}
+		return 0;
+	}
 	//int GridPainter(int id, int x, int y, int totalWidth, int totalHeight, int frameWidth, int frameHeight, TileSet<IntVector2>& canvas)
 	//{
 	//	return 0;

@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #include "D2DAnimationSprite.h"
+#include "D2DFrameSprite.h"
 
 #include "Camera.h"
 #include "Command.h"

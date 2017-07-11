@@ -29,15 +29,16 @@ void D2DFrameSprite::Update(float deltaTime)
 {
 }
 
-void D2DFrameSprite::Render(ID2D1HwndRenderTarget * renderTarget, int xIndex, int yIndex, float alpha)
+void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, int xIndex, int yIndex, float alpha)
 {
 	_sourceImage->Render(renderTarget, 0, 0, xIndex * _widthPerFrame, yIndex * _heightPerFrame, alpha);
 }
 
-void D2DFrameSprite::Render(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
+void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
 	int xIndex, int yIndex,  float alpha)
 {
-	_sourceImage->Render(renderTarget, destX, destY, xIndex * _widthPerFrame, yIndex * _heightPerFrame, alpha);
+	_sourceImage->Render(renderTarget, destX, destY, 
+		xIndex * _widthPerFrame, yIndex * _heightPerFrame, _widthPerFrame, _heightPerFrame, alpha);
 }
 
 void D2DFrameSprite::Release()

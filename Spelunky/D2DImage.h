@@ -43,9 +43,13 @@ public:
 	inline float GetWidth() { return _width; }
 	inline float GetHeight() { return _height; }
 
+	const std::wstring &GetName() { return _name; }
+	void SetName(const std::wstring &name) { _name = name; }
 
 private:
 	ID2D1Bitmap *_bitmap{ nullptr };
+
+	std::wstring _name;
 	float _x{ 0 };
 	float _y{ 0 };
 	float _width{ 0 };

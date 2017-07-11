@@ -246,6 +246,9 @@
     <ClInclude Include="D2DFrameSprite.h">
       <Filter>GameFramework2D\D2D\Images</Filter>
     </ClInclude>
+    <ClInclude Include="TileInfo.h">
+      <Filter>Game\Scene\MapToolScene\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">

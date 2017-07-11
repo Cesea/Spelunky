@@ -55,6 +55,8 @@ static D2D1::ColorF TEXTBOX_ACTIVE_COLOR = D2D1::ColorF(0.2f, 0.3f, 0.5f, 1.0f);
 
 static D2D1::ColorF TEXT_COLOR = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);
 
+static D2D1::ColorF GRID_EMPTY_COLOR = D2D1::ColorF(0.2f, 0.3f, 0.5f, 0.4f);
+
 //D2D1::ColorF RED = D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f);
 //D2D1::ColorF RED = D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f);
 //D2D1::ColorF RED = D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f);
@@ -118,7 +120,7 @@ struct UIState
 							int frameWidth, int frameHeight, int &xIndex, int &yIndex, D2DSprite *sprite);
 
 	int GridPainter(int id, int x, int y, int totalWidth, int totalHeight,
-						int frameWidth, int frameHeight, uint32 *canvas);
+						int frameWidth, int frameHeight, int &xIndex, int &yIndex);
 
 	int GridPainter(int id, int x, int y);
 

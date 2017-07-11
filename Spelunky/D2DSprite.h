@@ -21,6 +21,8 @@ public:
 
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, float alpha = 1.0f);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float alpha = 1.0f);
+	virtual void FrameRender(ID2D1HwndRenderTarget *renderTarget, int xIndex, int yIndex, float alpha = 1.0f) {}
+	virtual void FrameRender(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, int xIndex, int yIndex, float alpha = 1.0f) {}
 
 	//virtual void RenderFromCenter(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float alpha = 1.0f);
 	//virtual void RenderFromCenter(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float destWidth, float destHeight, float alpha = 1.0f);

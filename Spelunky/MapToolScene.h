@@ -2,9 +2,9 @@
 #define MAP_TOOL_SCENE_H
 
 #include "IScene.h"
-
-
 #include "ImGUI.h"
+
+#include "TileInfo.h"
 
 class MapToolScene : public IScene
 {
@@ -22,20 +22,30 @@ public:
 	//private functions
 private :
 	void LoadButtonAction();
+	void PainterAction();
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 
-	TileSet<IntVector2> *_editingTileSet{};
+	TileSet<TileInfo> *_editingTileSet{};
 
-	D2DSprite *_labelTestSprite{};
 	D2DSprite *_gridSelectorSprite{};
+
+	//Paint Action에서 추가되는 이미지들의 맵
+	std::map<std::wstring, D2DSprite *>_usingImages;
+	//Paint Action에서 이미지가 추가되면 그에 따라서 이 변수 에도 추가 함.
+	//std::vector<D2DSprite *> _drawingSprites;
+	//D2DSprite
 
 	int _slider1Value{};
 	float _slider2Value{};
-	
 
-	int _xSelecting{};
-	int _ySelecting{};
+	int _xSelector{};
+	int _ySelector{};
+
+	int _xPainter{};
+	int _yPainter{};
+
+	int _paintingValue{};
 
 	WCHAR _loadNameBuffer[40]{};
 

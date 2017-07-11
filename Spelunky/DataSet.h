@@ -11,9 +11,7 @@ class DataSet
 {
 public:
 private:
-
 	std::map<std::wstring, T> _mDataList;
-
 public:
 	HRESULT Init(void);
 
@@ -27,7 +25,6 @@ public:
 
 	BOOL DeleteAll(void);
 
-	BOOL GetFileName(std::wstring& strFile);
 
 	DataSet();
 	virtual ~DataSet();
@@ -110,35 +107,7 @@ inline BOOL DataSet<T>::DeleteAll(void)
 	return true;
 }
 
-template<typename T>
-inline BOOL DataSet<T>::GetFileName(std::wstring & strFile)
-{
-	if (strFile.empty()) return false;
 
-	size_t pos;
-
-	pos = strFile.find_first_of("/");
-
-	if (pos != std::wstring::npos)
-	{
-		strFile = strFile.substr(pos + 1, strFile.length());
-	}
-	else
-	{
-		pos = strFile.find_last_of("\\");
-		if (pos != std::wstring::npos)
-		{
-			strFile = strFile.substr(pos + 1, strFile.length());
-		}
-	}
-
-	pos = strFile.find(".");
-
-	if (pos != std::wstring::npos) strFile = strFile.substr(0, pos);
-	else return FALSE;
-
-	return TRUE;
-}
 
 template<typename T>
 inline DataSet<T>::DataSet()
