@@ -7,7 +7,11 @@
 #define GEN_ID ((__COUNTER__) + 1)
 #endif
 
+#include "stdafx.h"
+
 #define MAX_NUM_WINDOW 10
+
+class D2DSprite;
 
 namespace IM
 {
@@ -20,6 +24,10 @@ constexpr int TEXTBOX_WIDTH = 200;
 constexpr int TEXTBOX_HEIGHT = 30;
 constexpr int TEXTBOX_MAX_CHAR = 30;
 constexpr int OFFSET = 2;
+constexpr int BUTTON_HEIGHT = 30;
+constexpr int BUTTON_MARGIN = 10;
+
+constexpr int TEXT_WIDTH = 11;
 
 static D2D1::ColorF RED = D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f);
 static D2D1::ColorF GREEN = D2D1::ColorF(0.0f, 1.0f, 0.0f, 1.0f);
@@ -31,6 +39,8 @@ static D2D1::ColorF LGRAY = D2D1::ColorF(0.7f, 0.7f, 0.7f, 1.0f);
 static D2D1::ColorF DGRAY = D2D1::ColorF(0.4f, 0.4f, 0.4f, 1.0f);
 
 static D2D1::ColorF HOT_COLOR = D2D1::ColorF(1.0f, 0.0f, 0.0f, 0.5f);
+
+static D2D1::ColorF LABEL_COLOR = D2D1::ColorF(0.1f, 0.2f, 0.3f, 1.0f);
 
 static D2D1::ColorF BUTTON_COLOR = D2D1::ColorF(0.1, 0.2, 0.3, 1.0f);
 static D2D1::ColorF BUTTON_HOT_COLOR = D2D1::ColorF(0.2f, 0.3f, 0.5f, 1.0f);
@@ -78,12 +88,9 @@ struct UIState
 	int lastWidget{};
 
 	int hotItem{};
-	int activeItem;
-
+	int activeItem{};
 
 	std::vector<IntVector2> lastWindowPos;
-	//IM::WindowStruct windows[MAX_NUM_WINDOW];
-	//int freeWindowTracker{};
 };
 
 	void IMGUIPrepare();
@@ -94,16 +101,26 @@ struct UIState
 	void BeginWindow(int x, int y, int w, int h, const std::wstring &name);
 	void EndWindow();
 
+	void ImageLabel(int id, int x, int y, const WCHAR *name, D2DSprite *sprite);
+
 	void Label(int id, int x, int y, const WCHAR *name);
-	int Button(int id, int x, int y, const WCHAR *name);
+	int Button(int id, int x, int y, int w, const WCHAR *name);
 	int VertIntSlider(int id, int x, int y, int h, int max, int &value);
 	int VertFloatSlider(int id, int x, int y, int h, float max, float &value);
 
 	int HoriIntSlider(int id, int x, int y, int w, int max, int &value);
 	int HoriFloatSlider(int id, int x, int y, int w, float max, float &value);
-	int TextBox(int id, int x, int y, WCHAR *buffer);
+	int TextBox(int id, int x, int y, int w, WCHAR *buffer);
 
+	int GridSelector(int id, int x, int y, int totalWidth, int totalHeight,
+						int frameWidth, int frameHeight, int &xIndex, int &yIndex);
+	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight,
+							int frameWidth, int frameHeight, int &xIndex, int &yIndex, D2DSprite *sprite);
 
+	int GridPainter(int id, int x, int y, int totalWidth, int totalHeight,
+						int frameWidth, int frameHeight, uint32 *canvas);
+
+	int GridPainter(int id, int x, int y);
 
 	void DrawGUIS();
 

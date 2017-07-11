@@ -21,10 +21,7 @@ HRESULT D2DSprite::Init(D2DImage *sourceImage, float sourceX, float sourceY, flo
 	return S_OK;
 }
 
-HRESULT D2DSprite::Init(D2DImage * sourceImage, Animation *animation, const IntVector2 &anchor)
-{
-	return S_OK;
-}
+
 
 //HRESULT D2DSprite::InitCopy(D2DSprite * sourceSprite)
 //{

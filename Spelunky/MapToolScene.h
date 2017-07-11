@@ -20,15 +20,32 @@ public:
 	virtual HRESULT LoadContent() override;
 
 	//private functions
+private :
+	void LoadButtonAction();
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 
-	TileSet *_editingTileSet{};
+	TileSet<IntVector2> *_editingTileSet{};
+
+	D2DSprite *_labelTestSprite{};
+	D2DSprite *_gridSelectorSprite{};
 
 	int _slider1Value{};
 	float _slider2Value{};
 	
-	WCHAR _buffer[40]{};
+
+	int _xSelecting{};
+	int _ySelecting{};
+
+	WCHAR _loadNameBuffer[40]{};
+
+//Using Character
+private  :
+	const WCHAR *_load{ L"Load" };
+	float _loadTextWidth{ 0 };
+	const WCHAR *_save{ L"Save" };
+	float _saveTextWidth{ 0 };
+
 
 };
 

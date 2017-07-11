@@ -12,9 +12,8 @@ public:
 	virtual ~D2DSprite();
 
 	virtual HRESULT Init(D2DImage *sourceImage, float sourceX, float sourceY, float widthPerFrame, float heightPerFrame, const IntVector2 &anchor);
-	//virtual HRESULT Init(D2DImage * sourceImage, float time, float sourceX, float sourceY,
-	//	int numFrameX, float widthPerFrame, float heightPerFrame, AnimationType type);
-	virtual HRESULT Init(D2DImage * sourceImage, Animation *animation, const IntVector2 &anchor);
+	virtual HRESULT Init(D2DImage *sourceImage, float widthPerFrame, float heightPerFrame, const IntVector2 &anchor) { return S_OK; }
+	virtual HRESULT Init(D2DImage * sourceImage, Animation *animation, const IntVector2 &anchor) { return S_OK; }
 
 	//virtual HRESULT InitCopy(D2DSprite *sourceSprite);
 

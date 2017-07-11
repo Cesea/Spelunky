@@ -243,6 +243,9 @@
     <ClInclude Include="ImGUI.h">
       <Filter>Game\Scene\MapToolScene\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="D2DFrameSprite.h">
+      <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -361,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="ImGUI.cpp">
       <Filter>Game\Scene\MapToolScene\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DFrameSprite.cpp">
+      <Filter>GameFramework2D\D2D\Images</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

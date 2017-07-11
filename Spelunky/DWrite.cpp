@@ -23,8 +23,11 @@ HRESULT DWrite::SetFont(const WCHAR *fontName, float fontSize)
 
 	result = _dWriteFactory->CreateTextFormat(L"Andy", NULL,
 		DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"en_us", &_textFormat);
+
+
 	_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 	_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
 
 	return result;
 }
@@ -34,17 +37,6 @@ void DWrite::Release()
 	SAFE_RELEASE(_textFormat);
 	SAFE_RELEASE(_dWriteFactory);
 
-	//if (_textFormat)
-	//{
-	//	_textFormat->Release();
-	//	_textFormat = nullptr;
-	//}
-
-	//if (_dWriteFactory)
-	//{
-	//	_dWriteFactory->Release();
-	//	_dWriteFactory = nullptr;
-	//}
 }
 
 void DWrite::PrintText(ID2D1HwndRenderTarget *renderTarget, float x, float y,float width, float height,
@@ -60,6 +52,25 @@ void DWrite::PrintText(ID2D1HwndRenderTarget *renderTarget, float x, float y,flo
 	brush = nullptr;
 }
 
+float DWrite::PrintTextLayout(ID2D1HwndRenderTarget * renderTarget, float x, float y, float width, float height, const WCHAR * str, const D2D1_COLOR_F & brushColor)
+{
+	ID2D1SolidColorBrush *brush = nullptr;
+	renderTarget->CreateSolidColorBrush(brushColor, &brush);
+
+	_dWriteFactory->CreateTextLayout(str, wcslen(str), _textFormat, width, height, &_textLayout);
+
+	D2D1_RECT_F layoutRect = { x, y, x + width, y + height };
+	renderTarget->DrawTextLayout(D2D1::Point2F(x, y), _textLayout, brush);
+
+	DWRITE_TEXT_METRICS metrics;
+	_textLayout->GetMetrics(&metrics);
+
+	brush->Release();
+	brush = nullptr;
+
+	return metrics.width;
+}
+
 void DWrite::AlignFont(Alignment alignment)
 {
 	if (alignment == ALIGN_CENTER)
@@ -72,4 +83,13 @@ void DWrite::AlignFont(Alignment alignment)
 		_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 		_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 	}
+}
+
+float DWrite::CalculateInputTextWidth(const WCHAR * str)
+{
+	_dWriteFactory->CreateTextLayout(str, wcslen(str), _textFormat, WINSIZEX, WINSIZEY, &_textLayout);
+	DWRITE_TEXT_METRICS metrics;
+	_textLayout->GetMetrics(&metrics);
+
+	return metrics.width;
 }

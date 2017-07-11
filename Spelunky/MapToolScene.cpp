@@ -12,8 +12,17 @@ MapToolScene::~MapToolScene()
 HRESULT MapToolScene::LoadContent()
 {
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\alltiles.png", L"alltiles");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\testImage.png", L"testImage");
+
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\minetile.png", L"minetile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\woodtile.png", L"woodtile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\jungletile.png", L"jungletile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
+
 	return S_OK;
 }
+
 
 void MapToolScene::Release(void)
 {
@@ -27,8 +36,13 @@ HRESULT MapToolScene::Init(void)
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
+	_editingTileSet = new TileSet<IntVector2>(ROOM_TILE_COUNTX, ROOM_TILE_COUNTY, IntVector2());
 
-	_editingTileSet = new TileSet(ROOM_TILE_COUNTX, ROOM_TILE_COUNTY, 1);
+	_gridSelectorSprite = new D2DSprite;
+
+
+	_loadTextWidth = _dWrite.CalculateInputTextWidth(_load);
+	_saveTextWidth = _dWrite.CalculateInputTextWidth(_save);
 
 	return S_OK;
 }
@@ -67,56 +81,50 @@ void MapToolScene::Render()
 	gRenderTarget->Clear(_sceneClearColor);
 
 
-	IM::BeginWindow(50, 50, 570, 630, L"Window");
+	IM::BeginWindow(20, 20, 552, WINSIZEY - 40, L"Window");
 
-	IM::Button(GEN_ID, 100, 570, L"Save");
-	IM::Button(GEN_ID, 200, 570, L"Load");
+	//if (IM::GridSelector(GEN_ID, 20, 20, 512, 512, 64, 64, _xSelecting, _ySelecting))
+	//{
+	//	Console::Log("x : %d, y : %d\n", _xSelecting, _ySelecting);
+	//}
+	if (IM::ImageGridSelector(GEN_ID, 20, 20, 512, 512, 64, 64, _xSelecting, _ySelecting, _gridSelectorSprite))
+	{
+		Console::Log("x : %d, y : %d\n", _xSelecting, _ySelecting);
+	}
 
-	IM::VertIntSlider(GEN_ID, 400, 50, 200, 5, _slider1Value);
-	IM::HoriFloatSlider(GEN_ID, 50, 50, 200, 5.0f, _slider2Value);
+	IM::TextBox(GEN_ID, 20, 600, 400, _loadNameBuffer);
+	if (IM::Button(GEN_ID, 440, 600, _loadTextWidth, _load))
+	{
+		LoadButtonAction();
+	}
 
-	IM::TextBox(GEN_ID, 100, 300, _buffer);
+	//IM::TextBox(GEN_ID, 30, 530, _buffer);
+	IM::EndWindow();
 
-
+	IM::BeginWindow(580, 20, 686, WINSIZEY - 40, L"Tile");
 	IM::EndWindow();
 
 	IM::IMGUIFinish();
 
-	//IM::DrawGUIS();
-
-
-	//Slider(GEN_ID, 100, 100, 200, _slider1Value);
-
-	//if (Button(GEN_ID, 200, 50))
-	//{
-	//	_sceneClearColor = D2D1::ColorF(1.0f, 1.0f, 0.0f, 1.0f);
-	//}
-	//if (Button(GEN_ID, 300, 50))
-	//{
-	//	_sceneClearColor = D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f);
-	//}
-
-	//static WCHAR buffer[60]{};
-
-	//TextField(GEN_ID, 500, 100, buffer);
-
-
-	//for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	//{
-	//	for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-	//	{
-	//		if (_editingTileSet->GetValue(x, y) == 0)
-	//		{
-	//			FillBox(gRenderTarget, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f));
-	//		}
-	//		else
-	//		{
-	//			FillBox(gRenderTarget, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, D2D1::ColorF(0.0f, 0.0f, 1.0f, 1.0f));
-	//		}
-	//	}
-	//}
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();
 }
 
+
+void MapToolScene::LoadButtonAction()
+{
+	//SAFE_DELETE(_gridSelectorSprite);
+	std::wstring name = _loadNameBuffer;
+	D2DImage *image = IMAGEMANAGER->GetImage(name);
+	//load success
+	if (image)
+	{
+		_gridSelectorSprite->Init(image, 0, 0, 512, 512, IntVector2());
+	}
+	//load failed
+	else
+	{
+		_stprintf(_loadNameBuffer, L"ERROR!! No Such Sprite");
+	}
+}

@@ -53,23 +53,23 @@ public:
 	Vector2 tileRel;
 };
 
+template<typename T>
 struct TileSet
 {
-	TileSet() {}
-	TileSet(uint32 countX , uint32 countY , int32 clearValue);
+	TileSet(uint32 countX , uint32 countY , const T &clearValue);
 	~TileSet();
 
-	void Clear(int32 value);
+	void Clear(T value);
 
-	int32 GetValue(uint32 x, uint32 y);
-	void SetValue(uint32 x, uint32 y, int32 value);
+	T GetValue(uint32 x, uint32 y);
+	void SetValue(uint32 x, uint32 y, const T &value);
 
-	uint32 &At(uint32 x, uint32 y);
-	uint32 &At(uint32 i);
+	T &At(uint32 x, uint32 y);
+	T &At(uint32 i);
 
 	uint32 countX{};
 	uint32 countY{};
-	uint32 *tiles{};
+	T *tiles{};
 	//uint32 tiles[TILECOUNTY][TILECOUNTX] = {};
 };
 
@@ -150,4 +150,55 @@ enum class EntityState
 };
 
 
+template<typename T>
+inline TileSet<T>::TileSet(uint32 countX, uint32 countY, const T & clearValue)
+{
+	this->countX = countX;
+	this->countY = countY;
+	tiles = new T[countX * countY];
+	Clear(clearValue);
+}
+
+template<typename T>
+inline TileSet<T>::~TileSet()
+{
+	delete[] tiles;
+}
+
+template<typename T>
+inline void TileSet<T>::Clear(T value)
+{
+	for (int i = 0; i < countX * countY; ++i)
+	{
+		tiles[i] = value;
+	}
+}
+
+template<typename T>
+inline T TileSet<T>::GetValue(uint32 x, uint32 y)
+{
+	return tiles[x + countX * y];
+}
+
+template<typename T>
+inline void TileSet<T>::SetValue(uint32 x, uint32 y, const T & value)
+{
+	tiles[x + countX * y] = value;
+}
+
+template<typename T>
+inline T & TileSet<T>::At(uint32 x, uint32 y)
+{
+	return tiles[x + countX	* y];
+}
+
+template<typename T>
+inline T & TileSet<T>::At(uint32 i)
+{
+	Assert(i >= 0 && i < countX* countY);
+	return tiles[i];
+}
+
+
 #endif
+

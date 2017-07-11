@@ -34,10 +34,12 @@ inline Rect operator- (const TilePosition &tilePos, const Rect &rect)
 }
 
 
-
-void DrawBox(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height, const D2D1_COLOR_F &color);
+void DrawBox(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height, const D2D1_COLOR_F &color, float strokeWidth = 1.0f);
 void FillBox(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height, const D2D1_COLOR_F &color);
 void DrawBoxFromCenter(ID2D1HwndRenderTarget *renderTarget, const Rect &rect, const D2D1_COLOR_F & color);
+
+void DrawLine(ID2D1HwndRenderTarget *renderTarget, float startX, float startY, float endX, float endY, 
+						const D2D1_COLOR_F &color, float strokeWidth = 1.0f);
 
 
 void DrawCircleInterpolated(ID2D1HwndRenderTarget * renderTarget, 

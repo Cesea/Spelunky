@@ -150,11 +150,12 @@ typedef Vector3 MeterVector3;
 #define EVENTMANAGER EventManager::getSingleton()
 #define OBJECTMANAGER GameObjectManager::getSingleton()
 
-
 #include "Win32Input.h"
 #include "Utillities.h"
 
 #include "Console.h"
+
+#include "D2DSprite.h"
 
 //=================================================
 //======== 20170309 #전역변수# ========

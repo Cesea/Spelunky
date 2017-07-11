@@ -46,43 +46,43 @@ UIState uistate;
 
 	void BeginWindow(int x, int y, int w, int h, const std::wstring &name)
 	{
-		uistate.lastWindowPos.emplace_back(IntVector2(x, y));
+		uistate.lastWindowPos.emplace_back(IntVector2(x, y + 30));
 		FillBox(gRenderTarget, x, y, w, 30, D2D1::ColorF(0.2, 0.3, 0.5, 0.8));
 		_dWrite.PrintText(gRenderTarget, x, y, w, 30, name.c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
 		FillBox(gRenderTarget, x, y, w, h, D2D1::ColorF(0.5, 0.5, 0.7, 0.3));
-		//uistate.windows[uistate.freeWindowTracker].x = x;
-		//uistate.windows[uistate.freeWindowTracker].y = y;
-		//uistate.windows[uistate.freeWindowTracker].width = w;
-		//uistate.windows[uistate.freeWindowTracker].height = h;
-		//uistate.windows[uistate.freeWindowTracker].name = name;
-		//uistate.windows[uistate.freeWindowTracker].hasTab = false;
-		//uistate.windows[uistate.freeWindowTracker].tabCount = 0;
-		//uistate.windows[uistate.freeWindowTracker].tabNames = {};
-
-		//uistate.freeWindowTracker++;
-
 	}
-
 
 	void EndWindow()
 	{
 		uistate.lastWindowPos.pop_back();
 	}
 
+	void ImageLabel(int id, int x, int y, const WCHAR * name, D2DSprite * sprite)
+	{
+		int currentX = uistate.lastWindowPos.back().x + x;
+		int currentY = uistate.lastWindowPos.back().y + y;
+
+		sprite->Render(gRenderTarget, currentX, currentY);
+		_dWrite.PrintText(gRenderTarget, currentX, currentY, sprite->GetWidthPerFrame(), sprite->GetHeightPerFrame(),
+			name, TEXT_COLOR);
+	}
+
 	void Label(int id, int x, int y, const WCHAR *name)
 	{
-		int lastX = uistate.lastWindowPos.back().x;
-		int lastY = uistate.lastWindowPos.back().y;
+		int currentX = uistate.lastWindowPos.back().x + x;
+		int currentY = uistate.lastWindowPos.back().y + y;
 
-		FillBox(gRenderTarget, lastX + x, lastY + y, 70, 30, BUTTON_COLOR);
-		_dWrite.PrintText(gRenderTarget, lastX + x, lastY + y, 70, 30, name, TEXT_COLOR);
+		FillBox(gRenderTarget, currentX, currentY, 70, 30, LABEL_COLOR);
+		_dWrite.PrintText(gRenderTarget, currentX, currentY, 70, 30, name, LABEL_COLOR);
 	}
 
 	//Button imgui widget
-	int Button(int id, int x, int y, const WCHAR *name)
+	int Button(int id, int x, int y, int w, const WCHAR *name)
 	{
-		int lastX = uistate.lastWindowPos.back().x;
-		int lastY = uistate.lastWindowPos.back().y;
+		int currentX = uistate.lastWindowPos.back().x + x;
+		int currentY = uistate.lastWindowPos.back().y + y;
+		 
+		w += 40;
 
 		if (uistate.kbdItem == 0)
 		{
@@ -90,9 +90,9 @@ UIState uistate;
 		}
 		if (uistate.kbdItem == id)
 		{
-			FillBox(gRenderTarget, lastX + x - OFFSET, lastY + y - OFFSET, 70 + OFFSET * 2, 30 + OFFSET * 2, HOT_COLOR);
+			FillBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, w + OFFSET * 2, BUTTON_HEIGHT + OFFSET * 2, HOT_COLOR);
 		}
-		if (RegionHit(lastX + x, lastY + y, 70, 30))
+		if (RegionHit(currentX, currentY, w, BUTTON_HEIGHT))
 		{
 			uistate.hotItem = id;
 			if (uistate.activeItem == 0 &&
@@ -106,20 +106,20 @@ UIState uistate;
 			if (uistate.activeItem == id)
 			{
 				// Button is both 'hot' and 'active'
-				FillBox(gRenderTarget, lastX + x, lastY + y, 70, 30, BUTTON_ACTIVE_COLOR);
+				FillBox(gRenderTarget, currentX, currentY, w, BUTTON_HEIGHT, BUTTON_ACTIVE_COLOR);
 			}
 			else
 			{
 				// button is not hot, but it may be active    
-				FillBox(gRenderTarget, lastX + x, lastY + y, 70, 30, BUTTON_HOT_COLOR);
+				FillBox(gRenderTarget, currentX, currentY, w, BUTTON_HEIGHT, BUTTON_HOT_COLOR);
 			}
 		}
 		else
 		{
-			FillBox(gRenderTarget, lastX + x, lastY + y, 70, 30, BUTTON_COLOR);
+			FillBox(gRenderTarget, currentX, currentY, w, BUTTON_HEIGHT, BUTTON_COLOR);
 		}
 
-		_dWrite.PrintText(gRenderTarget, lastX + x, lastY + y, 70, 30, name, TEXT_COLOR);
+		_dWrite.PrintText(gRenderTarget, currentX, currentY, w, BUTTON_HEIGHT, name, TEXT_COLOR);
 
 		if (uistate.kbdItem == id)
 		{
@@ -141,7 +141,6 @@ UIState uistate;
 			}
 		}
 		uistate.lastWidget = id;
-
 
 		if (uistate.mouseDown == 0 &&
 			uistate.activeItem == id &&
@@ -475,21 +474,24 @@ UIState uistate;
 	}
 #pragma endregion
 
-
-
-	int TextBox(int id, int x, int y, WCHAR *buffer)
+#pragma region TEXTBOX
+	int TextBox(int id, int x, int y, int w, WCHAR *buffer)
 	{
 		int currentX = uistate.lastWindowPos.back().x + x;
 		int currentY = uistate.lastWindowPos.back().y + y;
 
 		int length = wcslen(buffer);
+		//uistate.textTrack = length;
 		int changed = 0;
 
-		if (RegionHit(currentX, currentY, TEXTBOX_WIDTH, TEXTBOX_HEIGHT))
+		if (RegionHit(currentX, currentY, w, TEXTBOX_HEIGHT))
 		{
 			uistate.hotItem = id;
 			if (uistate.activeItem == 0 && uistate.mouseDown)
+			{
 				uistate.activeItem = id;
+				uistate.kbdItem = id;
+			}
 		}
 		if (uistate.kbdItem == 0)
 		{
@@ -497,21 +499,27 @@ UIState uistate;
 		}
 		if (uistate.kbdItem == id)
 		{
-			FillBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, TEXTBOX_WIDTH + OFFSET * 2, TEXTBOX_HEIGHT + OFFSET * 2, HOT_COLOR);
+			FillBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, w + OFFSET * 2, TEXTBOX_HEIGHT + OFFSET * 2, HOT_COLOR);
 		}
 
 		if (uistate.activeItem == id || uistate.hotItem == id)
 		{
-			FillBox(gRenderTarget, currentX, currentY, TEXTBOX_WIDTH, TEXTBOX_HEIGHT, D2D1::ColorF(0.7, 0.7, 0.7, 1.0f));
+			FillBox(gRenderTarget, currentX, currentY, w, TEXTBOX_HEIGHT, D2D1::ColorF(0.7, 0.7, 0.7, 1.0f));
 		}
 		else
 		{
-			FillBox(gRenderTarget, currentX, currentY, TEXTBOX_WIDTH, TEXTBOX_HEIGHT, TEXTBOX_COLOR);
+			FillBox(gRenderTarget, currentX, currentY, w, TEXTBOX_HEIGHT, TEXTBOX_COLOR);
 		}
 
 		_dWrite.AlignFont(ALIGN_LEFT);
-		_dWrite.PrintText(gRenderTarget, currentX + OFFSET, currentY + OFFSET, TEXTBOX_WIDTH, TEXTBOX_HEIGHT, buffer, D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
+		float rightMargin = _dWrite.PrintTextLayout(gRenderTarget, currentX + OFFSET, currentY + OFFSET, w, TEXTBOX_HEIGHT, buffer, D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
 		_dWrite.AlignFont(ALIGN_CENTER);
+
+		//±ôºýÀÌ ±×¸®±â
+		if (uistate.kbdItem == id)
+		{
+			FillBox(gRenderTarget, currentX + rightMargin + 3, currentY + TEXTBOX_HEIGHT - 7, 10, 5, WHITE);
+		}
 		if (uistate.kbdItem == id)
 		{
 			switch (uistate.keyEntered)
@@ -553,6 +561,238 @@ UIState uistate;
 		uistate.lastWidget = id;
 		return changed;
 	}
+#pragma endregion
+
+#pragma region GRIDS
+	int GridSelector(int id, int x, int y, int totalWidth, int totalHeight,
+						int frameWidth, int frameHeight, int &xIndex, int &yIndex)
+	{
+		int totalXIndex = totalWidth / frameWidth;
+		int totalYIndex = totalHeight / frameHeight;
+
+		int currentX = uistate.lastWindowPos.back().x + x;
+		int currentY = uistate.lastWindowPos.back().y + y;
+
+		if (uistate.kbdItem == 0)
+		{
+			uistate.kbdItem = id;
+		}
+		if (uistate.kbdItem == id)
+		{
+			FillBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, 
+				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, HOT_COLOR);
+		}
+		if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+		{
+			uistate.hotItem = id;
+			if (uistate.activeItem == 0 &&
+				uistate.mouseDown)
+			{
+				uistate.activeItem = id;
+				uistate.kbdItem = id;
+			}
+		}
+		if (uistate.hotItem == id)
+		{
+			if (uistate.activeItem == id)
+			{
+				// both 'hot' and 'active'
+				FillBox(gRenderTarget, currentX, currentY, totalWidth, totalHeight, BUTTON_ACTIVE_COLOR);
+			}
+			else
+			{
+				// not hot, but it may be active    
+				FillBox(gRenderTarget, currentX, currentY, totalWidth, totalHeight, BUTTON_HOT_COLOR);
+			}
+		}
+		else
+		{
+			FillBox(gRenderTarget, currentX,  currentY, totalWidth, totalHeight, BUTTON_COLOR);
+		}
+
+		DrawBox(gRenderTarget, currentX + xIndex * frameWidth, currentY + yIndex * frameHeight, frameWidth, frameHeight, HOT_COLOR, 2.0f);
+
+		if (uistate.kbdItem == id)
+		{
+			switch (uistate.keyEntered)
+			{
+			case VK_TAB:
+			{
+				uistate.kbdItem = 0;
+				if (KEYMANAGER->IsStayKeyDown(VK_SHIFT))
+				{
+					uistate.kbdItem = uistate.lastWidget;
+				}
+				uistate.keyEntered = 0;
+			}break;
+			case VK_UP :
+			{
+				ClampInt(&--yIndex, 0, totalYIndex - 1);
+				return 1;
+			}break;
+			case VK_DOWN :
+			{
+				ClampInt(&++yIndex, 0, totalYIndex - 1);
+				return 1;
+			}break;
+			case VK_LEFT :
+			{
+				ClampInt(&--xIndex, 0, totalXIndex - 1);
+				return 1;
+			}break;
+			case VK_RIGHT :
+			{
+				ClampInt(&++xIndex, 0, totalXIndex - 1);
+				return 1;
+			}break;
+			case VK_RETURN:
+			{
+				return 1;
+			}break;
+			}
+		}
+		uistate.lastWidget = id;
+
+		if (uistate.activeItem == id)
+		{
+			int mouseRelX = uistate.mouseX - currentX;
+			int mouseRelY = uistate.mouseY - currentY;
+			int mouseXIndex = mouseRelX / frameWidth;
+			int mouseYIndex = mouseRelY / frameHeight;
+
+			xIndex = mouseXIndex;
+			yIndex = mouseYIndex;
+
+			return 1;
+		}
+		return 0;
+	}
+
+	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight, 
+							int frameWidth, int frameHeight, int & xIndex, int & yIndex, D2DSprite * sprite)
+	{
+		int totalXIndex = totalWidth / frameWidth;
+		int totalYIndex = totalHeight / frameHeight;
+
+		int currentX = uistate.lastWindowPos.back().x + x;
+		int currentY = uistate.lastWindowPos.back().y + y;
+
+		if (uistate.kbdItem == 0)
+		{
+			uistate.kbdItem = id;
+		}
+		if (uistate.kbdItem == id)
+		{
+			//DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, 
+			//	totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, HOT_COLOR, 2.0f);
+		}
+		if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+		{
+			uistate.hotItem = id;
+			if (uistate.activeItem == 0 &&
+				uistate.mouseDown)
+			{
+				uistate.activeItem = id;
+				uistate.kbdItem = id;
+			}
+		}
+	
+		if (sprite->GetSourceImage() == nullptr)
+		{
+			FillBox(gRenderTarget, currentX, currentY, totalWidth, totalHeight, BUTTON_HOT_COLOR);
+		}
+		else
+		{
+			sprite->Render(gRenderTarget, currentX, currentY);
+			DrawBox(gRenderTarget, currentX + xIndex * frameWidth, currentY + yIndex * frameHeight, 
+					frameWidth, frameHeight, HOT_COLOR, 2.0f);
+		}
+		//Draw Grids
+		for (int y = 1; y < totalXIndex; ++y)
+		{
+			DrawLine(gRenderTarget, currentX, currentY + y * frameHeight, 
+				currentX + totalWidth, currentY + y * frameHeight, BLACK, 1.5f);
+		}
+		for (int x = 1; x < totalXIndex; ++x)
+		{
+			DrawLine(gRenderTarget, currentX + x * frameWidth, currentY, 
+				currentX + x * frameWidth, currentY + totalHeight, BLACK, 1.5f);
+		}
+		//
+
+		DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
+			totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
+
+		if (uistate.kbdItem == id)
+		{
+			switch (uistate.keyEntered)
+			{
+			case VK_TAB:
+			{
+				uistate.kbdItem = 0;
+				if (KEYMANAGER->IsStayKeyDown(VK_SHIFT))
+				{
+					uistate.kbdItem = uistate.lastWidget;
+				}
+				uistate.keyEntered = 0;
+			}break;
+			case VK_UP :
+			{
+				ClampInt(&--yIndex, 0, totalYIndex - 1);
+				return 1;
+			}break;
+			case VK_DOWN :
+			{
+				ClampInt(&++yIndex, 0, totalYIndex - 1);
+				return 1;
+			}break;
+			case VK_LEFT :
+			{
+				ClampInt(&--xIndex, 0, totalXIndex - 1);
+				return 1;
+			}break;
+			case VK_RIGHT :
+			{
+				ClampInt(&++xIndex, 0, totalXIndex - 1);
+				return 1;
+			}break;
+			case VK_RETURN:
+			{
+				return 1;
+			}break;
+			}
+		}
+		uistate.lastWidget = id;
+
+		if (uistate.activeItem == id)
+		{
+			int mouseRelX = uistate.mouseX - currentX;
+			int mouseRelY = uistate.mouseY - currentY;
+			int mouseXIndex = mouseRelX / frameWidth;
+			int mouseYIndex = mouseRelY / frameHeight;
+
+			xIndex = mouseXIndex;
+			yIndex = mouseYIndex;
+
+			return 1;
+		}
+		return 0;
+	}
+
+	//int GridPainter(int id, int x, int y, int totalWidth, int totalHeight, int frameWidth, int frameHeight, uint32 * canvas)
+	//{
+	//	return 0;
+	//}
+	//int GridPainter(int id, int x, int y, int totalWidth, int totalHeight, int frameWidth, int frameHeight, TileSet<IntVector2>& canvas)
+	//{
+	//	return 0;
+	//}
+	//int GridPainter(int id, int x, int y)
+	//{
+	//	return 0;
+	//}
+
+#pragma endregion
 
 	void DrawGUIS()
 	{

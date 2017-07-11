@@ -14,7 +14,7 @@
 //#include "D2DAnimateSprite.h"
 //#include "D2DStillSprite.h"
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 class ImageManager : public singletonBase<ImageManager>
@@ -43,11 +43,11 @@ public :
 
 private :
 
-	typedef std::map<std::wstring, D2DImage *>::iterator IMAGE_ITER;
+	typedef std::unordered_map<std::wstring, D2DImage *>::iterator IMAGE_ITER;
 	//typedef std::map<LPCTSTR, D2DStillSprite *>::iterator STILL_SPRITE_ITER;
 	//typedef std::map<LPCTSTR, D2DAnimateSprite *>::iterator ANIMATE_SPRITEITER;
 
-	std::map<std::wstring, D2DImage *> _images;
+	std::unordered_map<std::wstring, D2DImage *> _images;
 	//std::map<LPCTSTR, D2DStillSprite *> _stillSprites;
 	//std::map<LPCTSTR, D2DAnimateSprite *> _animateSprites;
 

@@ -91,6 +91,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="D2D.h" />
     <ClInclude Include="D2DAnimationSprite.h" />
+    <ClInclude Include="D2DFrameSprite.h" />
     <ClInclude Include="D2DImage.h" />
     <ClInclude Include="D2DSprite.h" />
     <ClInclude Include="DataSet.h" />
@@ -141,6 +142,7 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="D2D.cpp" />
     <ClCompile Include="D2DAnimationSprite.cpp" />
+    <ClCompile Include="D2DFrameSprite.cpp" />
     <ClCompile Include="D2DImage.cpp" />
     <ClCompile Include="D2DSprite.cpp" />
     <ClCompile Include="DWrite.cpp" />

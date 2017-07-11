@@ -101,11 +101,11 @@ const char * ConvertArchTypeEnumToString(ArcheType type)
 
 
 
-void DrawBox(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height, const D2D1_COLOR_F &color)
+void DrawBox(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height, const D2D1_COLOR_F &color, float strokeWidth)
 {
 	ID2D1SolidColorBrush *brush = nullptr;
 	renderTarget->CreateSolidColorBrush(color, &brush);
-	renderTarget->DrawRectangle(D2D1::RectF(x, y, x + width, y + height), brush);
+	renderTarget->DrawRectangle(D2D1::RectF(x, y, x + width, y + height), brush, strokeWidth);
 	brush->Release();
 }
 
@@ -123,6 +123,15 @@ void DrawBoxFromCenter(ID2D1HwndRenderTarget *renderTarget, const Rect &rect, co
 	renderTarget->CreateSolidColorBrush(color, &brush);
 	renderTarget->DrawRectangle(D2D1::RectF(rect.x - (rect.width / 2.0f), rect.y - (rect.height / 2),
 		rect.x + (rect.width / 2.0f), rect.y + (rect.height / 2.0f)), brush);
+	brush->Release();
+}
+
+void DrawLine(ID2D1HwndRenderTarget * renderTarget, float startX, float startY, float endX, float endY, 
+	const D2D1_COLOR_F & color, float strokeWidth)
+{
+	ID2D1SolidColorBrush *brush = nullptr;
+	renderTarget->CreateSolidColorBrush(color, &brush);
+	renderTarget->DrawLine(D2D1::Point2F(startX, startY), D2D1::Point2F(endX, endY), brush, strokeWidth);
 	brush->Release();
 }
 
