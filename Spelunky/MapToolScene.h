@@ -23,6 +23,10 @@ public:
 private :
 	void LoadButtonAction();
 	void PainterAction();
+	void SaveMapButtonAction();
+	void LoadMapButtonAction();
+
+	void CheckUsingImageExistence(const std::wstring &key);
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 
@@ -32,9 +36,6 @@ private:
 
 	//Paint Action에서 추가되는 이미지들의 맵
 	std::map<std::wstring, D2DSprite *>_usingImages;
-	//Paint Action에서 이미지가 추가되면 그에 따라서 이 변수 에도 추가 함.
-	//std::vector<D2DSprite *> _drawingSprites;
-	//D2DSprite
 
 	int _slider1Value{};
 	float _slider2Value{};
@@ -47,14 +48,20 @@ private:
 
 	int _paintingValue{};
 
-	WCHAR _loadNameBuffer[40]{};
+	WCHAR _loadImageNameBuffer[40]{};
+	WCHAR _mapLoadSaveNameBuffer[40]{};
 
 //Using Character
 private  :
-	const WCHAR *_load{ L"Load" };
-	float _loadTextWidth{ 0 };
+	const WCHAR *_loadImageText{ L"LoadIM" };
+	float _loadImageTextWidth{ 0 };
 	const WCHAR *_save{ L"Save" };
 	float _saveTextWidth{ 0 };
+
+	const WCHAR *_saveMapText{ L"SaveMap" };
+	float _saveMapTextWidth{0};
+	const WCHAR *_loadMapText{ L"LoadMap" };
+	float _loadMapTextWidth{0};
 
 
 };

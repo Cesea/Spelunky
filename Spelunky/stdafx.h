@@ -157,6 +157,8 @@ typedef Vector3 MeterVector3;
 
 #include "D2DSprite.h"
 
+#include "File.h"
+
 //=================================================
 //======== 20170309 #전역변수# ========
 //=================================================
@@ -169,8 +171,12 @@ extern DWrite _dWrite;
 extern ID2D1HwndRenderTarget *gRenderTarget;
 
 extern bool _running;
-
 extern Console _console;
+
+
+extern char dataPath[50];
+extern char gfxPath[50];
+extern char sfxPath[50];
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 

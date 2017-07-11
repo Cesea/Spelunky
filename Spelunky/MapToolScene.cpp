@@ -39,10 +39,10 @@ HRESULT MapToolScene::Init(void)
 
 	_gridSelectorSprite = new D2DSprite;
 
-	_loadTextWidth = _dWrite.CalculateInputTextWidth(_load);
+	_loadImageTextWidth = _dWrite.CalculateInputTextWidth(_loadImageText);
 	_saveTextWidth = _dWrite.CalculateInputTextWidth(_save);
-
-	//_drawingSprites.reserve(15);
+	_saveMapTextWidth = _dWrite.CalculateInputTextWidth(_saveMapText);
+	_loadMapTextWidth = _dWrite.CalculateInputTextWidth(_loadMapText);
 
 	return S_OK;
 }
@@ -106,22 +106,35 @@ void MapToolScene::Render()
 		//Console::Log("x : %d, y : %d\n", _xSelector, _ySelector);
 	}
 
-	IM::TextBox(GEN_ID, 20, 600, 400, _loadNameBuffer);
-	if (IM::Button(GEN_ID, 440, 600, _loadTextWidth, _load))
+	IM::TextBox(GEN_ID, 20, 600, 400, _loadImageNameBuffer);
+	if (IM::Button(GEN_ID, 430, 600, _loadImageTextWidth, _loadImageText))
 	{
 		LoadButtonAction();
 	}
 	IM::EndWindow();
 	//End of First Window
+
 	//Begin of Second Window
 	IM::BeginWindow(580, 20, 680, WINSIZEY - 40, L"Tile");
 
 	if (IM::GridPainter(GEN_ID, 20, 20, ROOM_TILE_COUNTX * TILE_SIZE, ROOM_TILE_COUNTY * TILE_SIZE,
 		TILE_SIZE, TILE_SIZE, _xPainter, _yPainter))
 	{
-		//Console::Log("x : %d, y : %d\n", _xPainter, _yPainter);
 		PainterAction();
 	}
+
+	IM::TextBox(GEN_ID, 20, 600, 400, _mapLoadSaveNameBuffer);
+	//Save Map Action
+	if (IM::Button(GEN_ID, 440, 600, _saveMapTextWidth, _saveMapText))
+	{
+		SaveMapButtonAction();
+	}
+	//Load Map Action
+	if (IM::Button(GEN_ID, 560, 600, _loadMapTextWidth, _loadMapText))
+	{
+		LoadMapButtonAction();
+	}
+
 	IM::EndWindow();
 	IM::IMGUIFinish();
 	//End of Second Window
@@ -150,7 +163,7 @@ void MapToolScene::Render()
 void MapToolScene::LoadButtonAction()
 {
 	//SAFE_DELETE(_gridSelectorSprite);
-	std::wstring name = _loadNameBuffer;
+	std::wstring name = _loadImageNameBuffer;
 	D2DImage *image = IMAGEMANAGER->GetImage(name);
 	//load success
 	if (image)
@@ -160,7 +173,7 @@ void MapToolScene::LoadButtonAction()
 	//load failed
 	else
 	{
-		_stprintf(_loadNameBuffer, L"ERROR!! No Such Sprite");
+		_stprintf(_loadImageNameBuffer, L"ERROR!! No Such Sprite");
 	}
 }
 
@@ -178,5 +191,89 @@ void MapToolScene::PainterAction()
 			newSprite->Init(_gridSelectorSprite->GetSourceImage(), 64, 64, IntVector2(0, 0));
 			_usingImages.insert(std::make_pair(imageName, newSprite));
 		}
+	}
+}
+
+void MapToolScene::SaveMapButtonAction()
+{
+	FileUtils::File saveFile;
+
+	char filePath[40];
+	strcpy(filePath, dataPath);
+
+	char tempBuffer[40];
+	wcstombs(tempBuffer, _mapLoadSaveNameBuffer, 29);
+
+	strcat(filePath, tempBuffer);
+	saveFile.Open(filePath, FileUtils::FileAccess::Write);
+
+	WCHAR wBuffer[40];
+	mbstowcs(wBuffer, filePath, 39);
+
+	saveFile.Write(L"--%s--\n\n", wBuffer);
+
+	char textureName[32];
+
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			saveFile.Write(L"texture name : %s\n", _editingTileSet->At(x, y).name.c_str());
+			saveFile.Write(L"%d, %d\n\n", 
+				_editingTileSet->At(x, y).sourceIndex.x, _editingTileSet->At(x, y).sourceIndex.y);
+		}
+	}
+	saveFile.Close();
+}
+
+void MapToolScene::LoadMapButtonAction()
+{
+	FileUtils::File loadFile;
+
+	char filePath[40];
+	strcpy(filePath, dataPath);
+
+	char tempBuffer[40];
+	wcstombs(tempBuffer, _mapLoadSaveNameBuffer, 29);
+
+	strcat(filePath, tempBuffer);
+	loadFile.Open(filePath, FileUtils::FileAccess::Read);
+
+	loadFile.GetLine();
+	loadFile.GetLine();
+
+	WCHAR buffer[32];
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			loadFile.Read(L"texture name : %s\n", buffer);
+			if (buffer[0] == L'-')
+			{
+				loadFile.GetLine();
+				continue;
+			}
+			_editingTileSet->At(x, y).name = buffer;
+			CheckUsingImageExistence(buffer);
+
+			int tempX{};
+			int tempY{};
+			loadFile.Read(L"%d, %d\n", &tempX, &tempY);
+			_editingTileSet->At(x, y).sourceIndex.x = tempX;
+			_editingTileSet->At(x, y).sourceIndex.y = tempY;
+			loadFile.GetLine();
+		}
+	}
+	loadFile.Close();
+}
+
+void MapToolScene::CheckUsingImageExistence(const std::wstring &key)
+{
+	auto &found = _usingImages.find(key);
+	if (found == _usingImages.end())
+	{
+		D2DSprite *insertImage = new D2DFrameSprite;
+		insertImage->Init(IMAGEMANAGER->GetImage(key), 64, 64, IntVector2());
+		_usingImages.insert(std::make_pair(key, insertImage));
 	}
 }

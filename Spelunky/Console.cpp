@@ -48,3 +48,4 @@ void Console::Log(char *str, ...)
 
 	printf(buffer);
 }
+

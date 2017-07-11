@@ -12,6 +12,11 @@ D2D				_d2d;
 DWrite			_dWrite;
 Console			_console;
 
+
+char dataPath[50] = "resources\\data\\";
+char gfxPath[50] = "resources\\gfx";
+char sfxPath[50] = "resources\\sfx";
+
 ID2D1HwndRenderTarget *	gRenderTarget;
 
 bool _running = false;

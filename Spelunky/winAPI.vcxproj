@@ -99,6 +99,7 @@
     <ClInclude Include="DWrite.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameCommonMacroFunctions.h" />
     <ClInclude Include="GameCommonStructs.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="DWrite.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GameCommonMacroFunctions.cpp" />
     <ClCompile Include="GameCommonStructs.cpp" />

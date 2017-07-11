@@ -91,6 +91,9 @@
     <Filter Include="Game\Scene\MapToolScene\IMGUI">
       <UniqueIdentifier>{dcc19d64-10c0-4255-8003-647776438f96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameFramework2D\Utils\File">
+      <UniqueIdentifier>{0f15e64b-de00-41d1-8eb8-163306245d81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -249,6 +252,9 @@
     <ClInclude Include="TileInfo.h">
       <Filter>Game\Scene\MapToolScene\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>GameFramework2D\Utils\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -370,6 +376,9 @@
     </ClCompile>
     <ClCompile Include="D2DFrameSprite.cpp">
       <Filter>GameFramework2D\D2D\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>GameFramework2D\Utils\File</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
