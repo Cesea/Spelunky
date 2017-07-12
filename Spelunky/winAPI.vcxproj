@@ -120,6 +120,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
+    <ClInclude Include="RoomInfo.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="singletonBase.h" />
     <ClInclude Include="State.h" />

@@ -12,7 +12,6 @@ namespace FileUtils
 			Append // Write to end of file
 		};
 	};
-
 	class File
 	{
 	public:

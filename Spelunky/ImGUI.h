@@ -26,6 +26,7 @@ constexpr int TEXTBOX_MAX_CHAR = 30;
 constexpr int OFFSET = 2;
 constexpr int BUTTON_HEIGHT = 30;
 constexpr int BUTTON_MARGIN = 10;
+constexpr int LABEL_HEIGHT = 30;
 
 constexpr int TEXT_WIDTH = 11;
 
@@ -86,6 +87,9 @@ struct UIState
 	int lastRightMouseX{};
 	int lastRightMouseY{};
 
+	int editorWindowX{};
+	int editorWindowY{};
+
 	int hotItem{};
 	int activeItem{};
 
@@ -102,15 +106,20 @@ struct UIState
 	int RegionHit(int x, int y, int w, int h);
 
 	void BeginWindow(int x, int y, int w, int h, const std::wstring &name);
+
 	void BeginPropertyWindow(int x, int y, int w, int h, const std::wstring &name);
 	void EndWindow();
+
+	//int ShowTilePropertyWindow(int x, int y, int w, int h, const std::wstring &name, TileImageInfo *imageInfo);
 
 	int CheckEditorHit(int id, int localX, int localY, int localW, int localH);
 
 
 	void ImageLabel(int id, int x, int y, const WCHAR *name, D2DSprite *sprite);
 
-	void Label(int id, int x, int y, const WCHAR *name);
+	void Label(int id, int x, int y, int w, const WCHAR *name);
+	void BorderLabel(int id, int x, int y, int w, const WCHAR *name);
+
 	int Button(int id, int x, int y, int w, const WCHAR *name);
 	int VertIntSlider(int id, int x, int y, int h, int max, int &value);
 	int VertFloatSlider(int id, int x, int y, int h, float max, float &value);
@@ -121,9 +130,6 @@ struct UIState
 
 	int GridSelector(int id, int x, int y, int totalWidth, int totalHeight,
 						int frameWidth, int frameHeight, int &xIndex, int &yIndex);
-	//버릴 버젼
-	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight,
-							int frameWidth, int frameHeight, int &xIndex, int &yIndex, D2DSprite *sprite);
 	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight,
 							int frameWidth, int frameHeight, IntRect &selectorRect, D2DSprite *sprite);
 

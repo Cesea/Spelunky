@@ -4,22 +4,48 @@
 #include <string>
 #include "IntVector2.h"
 
+enum TileCollisionType
+{
+	TILE_COLLISION_NONE,
+	TILE_COLLISION_BLOCK,
+	TILE_COLLISION_UPPER,
+};
+
+enum ObjectLayer
+{
+	LAYER_TILE,
+	LAYER_OBJECT,
+	LAYER_MASK,
+};
+
+
 struct TileInfo
 {
 	TileInfo()
-		:name(), sourceIndex(), maskInfo()
 	{}
-	TileInfo(const std::wstring &name, const IntVector2 &pos)
-		: name(name), sourceIndex(pos), maskInfo() 
+	TileInfo(const std::wstring &imageKey, const IntVector2 &pos)
+		: imageKey(imageKey), sourceIndex(pos), maskInfo() , nearMaskInfo(), destroyedIndex()
 	{}
-
-
-	std::wstring name;
-	IntVector2 sourceIndex;
+	std::wstring imageKey{};
+	IntVector2 sourceIndex{};
+	IntVector2 destroyedIndex{};
 
 	bool32 canMask{false};
-	uint16 maskInfo;
+	uint32 nearMaskInfo{};
+	TileCollisionType collisionType{};
+	uint32 maskInfo{};
 
+	bool32 canBeDestroyedByBomb{false};
+	int layer{};
+};
+
+struct TileImageInfo
+{
+	TileImageInfo() {}
+	~TileImageInfo() {}
+
+	TileInfo tileInfos[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
+	int applied[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{false,};
 };
 
 #endif

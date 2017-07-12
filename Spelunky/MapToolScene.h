@@ -27,23 +27,29 @@ public:
 
 	//private functions
 private :
-	void DoGUIS();
-
 	void LoadButtonAction();
 	void PainterAction();
 	void SaveMapButtonAction();
 	void LoadMapButtonAction();
 
+	void LoadEditingTileImageInfo();
+
 	void CheckUsingImageExistence(const std::wstring &key);
+
+	void SaveCurrentEditingImageInfoAction();
 
 	void CalculateBitMask(TileSet<TileInfo> &tileSet);
 	void RenderMasks(int drawXIndex, int drawYIndex, const uint16 maskInfo, D2DSprite *image);
+
+	int InSyncImageInfo();
+	int OutSyncImageInfo();
 private:
-
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
-
+	//현재 수정하고 있는 이미지의 정보
+	TileImageInfo _editingTileImageInfo{};
+	//현재 수정하고 있는 방의 정보
 	TileSet<TileInfo> *_editingTileSet{};
-
+	//그리드 셀렉터 이미지
 	D2DSprite *_gridSelectorSprite{};
 
 	//Paint Action에서 추가되는 이미지들의 맵
@@ -51,9 +57,6 @@ private:
 
 	IntRect _selectorRect{};
 	
-	//int _xSelector{};
-	//int _ySelector{};
-
 	int _xPainter{};
 	int _yPainter{};
 
@@ -61,11 +64,24 @@ private:
 	WCHAR _mapLoadSaveNameBuffer[40]{};
 	WCHAR _propertyEditBuffer[40]{};
 
+	WCHAR _boomDestroyBuffer[16]{};
+	WCHAR _destroyedIndexBuffer[16]{};
+	WCHAR _canMaskBuffer[16]{};
+	WCHAR _nearMaskBuffer[16]{};
+	WCHAR _collisionTypeBuffer[16]{};
+	WCHAR _layerBuffer[16]{};
+
+	bool _applyTimerFlag{false};
+	WCHAR _applySuccessBuffer[16]{};
+
 	DrawingMode _drawingMode{};
 
 //Using Character
 private  :
 	const WCHAR *_propertyEditorText{L"Property Editor"};
+
+	const WCHAR *_saveImageProperty{ L"Save Image Property" };
+	float _saveImagePropertyWidth{ 0 };
 
 	const WCHAR *_loadImageText{ L"LoadIM" };
 	float _loadImageTextWidth{ 0 };
@@ -85,6 +101,9 @@ private  :
 	const WCHAR *_maskText{ L"Do Mask" };
 	float _maskTextWidth{0};
 
+	Timer _timer;
+
+	Timer _applySuccessFlagTimer;
 
 
 };

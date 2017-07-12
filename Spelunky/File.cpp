@@ -134,6 +134,7 @@ namespace FileUtils
 		va_start(args, format);
 		rc = vfwscanf(fp, format, args);
 		va_end(args);
+
 	}
 
 	std::wstring File::GetLine(void)

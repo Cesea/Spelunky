@@ -186,30 +186,50 @@ inline void TileSet<T>::Clear(T value)
 template<typename T>
 inline int32 TileSet<T>::GetValue(uint32 x, uint32 y)
 {
+	if ((x < 0) || (x > countX - 1) || (y < 0) || (y > countY - 1))
+	{
+		Console::Log("Aceessing out of border\n");
+	}
 	return tiles[x + countX * y];
 }
 
 template<typename T>
 inline void TileSet<T>::SetValue(uint32 x, uint32 y, int32 value)
 {
+	if ((x < 0) || (x > countX - 1) || (y < 0) || (y > countY - 1))
+	{
+		Console::Log("Aceessing out of border\n");
+	}
 	tiles[x + countX * y] = value;
 }
 
 template<typename T>
 inline void TileSet<T>::SetInfo(uint32 x, uint32 y, const T & value)
 {
+	if ((x < 0) || (x > countX - 1) || (y < 0) || (y > countY - 1))
+	{
+		Console::Log("Aceessing out of border\n");
+	}
 	infos[x + countX * y] = value;
 }
 
 template<typename T>
 inline T & TileSet<T>::AtInfo(uint32 x, uint32 y)
 {
+	if ((x < 0) || (x > countX - 1) || (y < 0) || (y > countY - 1))
+	{
+		Console::Log("Aceessing out of border\n");
+	}
 	return infos[x + countX * y];
 }
 
 template<typename T>
 inline T & TileSet<T>::AtInfo(uint32 i)
 {
+	if ((i < 0) || i > countX * countY - 1)
+	{
+		Console::Log("Aceessing out of border\n");
+	}
 	return infos[i];
 }
 

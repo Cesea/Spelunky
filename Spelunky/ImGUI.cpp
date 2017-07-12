@@ -36,10 +36,10 @@ UIState uistate;
 
 	int RegionHit(int x, int y, int w, int h)
 	{
-		if (uistate.mouseX >= x&&
-			uistate.mouseY >= y&&
-			uistate.mouseX <= x + w&&
-			uistate.mouseY <= y + h)
+		if (uistate.mouseX > x &&
+			uistate.mouseY > y &&
+			uistate.mouseX < x + w &&
+			uistate.mouseY < y + h)
 		{
 			return 1;
 		}
@@ -61,6 +61,8 @@ UIState uistate;
 		FillBox(gRenderTarget, x, y, w, 30, D2D1::ColorF(0.2, 0.3, 0.5, 0.8));
 		_dWrite.PrintText(gRenderTarget, x, y, w, 30, name.c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
 		uistate.editorChild = true;
+		uistate.editorWindowX = x;
+		uistate.editorWindowY = y;
 	}
 
 	void EndWindow()
@@ -72,7 +74,7 @@ UIState uistate;
 	int CheckEditorHit(int id, int localX, int localY, int localW, int localH)
 	{
 		if (uistate.editorOn && uistate.editorChild &&
-			RegionHit(uistate.editorRect.x, uistate.editorRect.y, uistate.editorRect.width, uistate.editorRect.height))
+			RegionHit(uistate.editorWindowX, uistate.editorWindowY, uistate.editorRect.width, uistate.editorRect.height))
 		{
 			//리턴을 어디서 해야할까
 			if (RegionHit(localX, localY, localW, localH))
@@ -101,13 +103,17 @@ UIState uistate;
 			name, TEXT_COLOR);
 	}
 
-	void Label(int id, int x, int y, const WCHAR *name)
+	void Label(int id, int x, int y, int w, const WCHAR *name)
 	{
 		int currentX = uistate.lastWindowPos.back().x + x;
 		int currentY = uistate.lastWindowPos.back().y + y;
 
-		FillBox(gRenderTarget, currentX, currentY, 70, 30, LABEL_COLOR);
-		_dWrite.PrintText(gRenderTarget, currentX, currentY, 70, 30, name, LABEL_COLOR);
+		FillBox(gRenderTarget, currentX, currentY, w, LABEL_HEIGHT, LABEL_COLOR);
+		_dWrite.PrintText(gRenderTarget, currentX, currentY, w, LABEL_HEIGHT, name, TEXT_COLOR);
+	}
+
+	void BorderLabel(int id, int x, int y, int w, const WCHAR * name)
+	{
 	}
 
 	//Button imgui widget
@@ -180,10 +186,10 @@ UIState uistate;
 		}
 		uistate.lastWidget = id;
 
-		if (uistate.editorChild)
-		{
-			Console::Log("mouseDown : %d, activeItem : %d, id : %d\n", uistate.mouseLeftDown, uistate.activeItem, id);
-		}
+		//if (uistate.editorChild)
+		//{
+		//Console::Log("mouseDown : %d, activeItem : %d, id : %d\n", uistate.mouseLeftDown, uistate.activeItem, id);
+		//}
 		if (uistate.mouseLeftDown == 0 &&
 			uistate.activeItem == id &&
 			uistate.hotItem == id)
@@ -733,133 +739,6 @@ UIState uistate;
 		return 0;
 	}
 
-	//일단은 버리는것
-	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight, 
-							int frameWidth, int frameHeight, int & xIndex, int & yIndex, D2DSprite * sprite)
-	{
-		int totalXIndex = totalWidth / frameWidth;
-		int totalYIndex = totalHeight / frameHeight;
-
-		int currentX = uistate.lastWindowPos.back().x + x;
-		int currentY = uistate.lastWindowPos.back().y + y;
-
-		if (uistate.kbdItem == 0)
-		{
-			uistate.kbdItem = id;
-		}
-		if (uistate.kbdItem == id)
-		{
-			DrawBox(gRenderTarget, currentX - OFFSET * 2, currentY - OFFSET * 2, 
-				totalWidth + OFFSET * 4, totalHeight + OFFSET * 4, HOT_COLOR, 6.0f);
-		}
-		if (!CheckEditorHit(id, currentX, currentY, totalWidth, totalHeight))
-		{
-			if (RegionHit(currentX, currentY, totalWidth, totalHeight))
-			{
-				uistate.hotItem = id;
-				if (uistate.activeItem == 0 &&
-					uistate.mouseLeftDown || uistate.mouseRightRelease)
-				{
-					uistate.activeItem = id;
-					uistate.kbdItem = id;
-				}
-			}
-		}
-
-		if (sprite->GetSourceImage() == nullptr)
-		{
-			FillBox(gRenderTarget, currentX, currentY, totalWidth, totalHeight, GRID_EMPTY_COLOR);
-			DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
-				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
-		}
-		else
-		{
-			sprite->Render(gRenderTarget, currentX, currentY);
-			//Draw Grids
-			for (int y = 1; y < totalXIndex; ++y)
-			{
-				DrawLine(gRenderTarget, currentX, currentY + y * frameHeight,
-					currentX + totalWidth, currentY + y * frameHeight, BLACK, 1.5f);
-			}
-			for (int x = 1; x < totalXIndex; ++x)
-			{
-				DrawLine(gRenderTarget, currentX + x * frameWidth, currentY,
-					currentX + x * frameWidth, currentY + totalHeight, BLACK, 1.5f);
-			}
-			DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
-				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
-
-			DrawBox(gRenderTarget, currentX + xIndex * frameWidth, currentY + yIndex * frameHeight,
-				frameWidth, frameHeight, HOT_COLOR, 2.0f);
-		}
-
-		if (uistate.kbdItem == id)
-		{
-			switch (uistate.keyEntered)
-			{
-			case VK_TAB:
-			{
-				uistate.kbdItem = 0;
-				if (KEYMANAGER->IsStayKeyDown(VK_SHIFT))
-				{
-					uistate.kbdItem = uistate.lastWidget;
-				}
-				uistate.keyEntered = 0;
-			}break;
-			case VK_UP :
-			{
-				ClampInt(&--yIndex, 0, totalYIndex - 1);
-				return 1;
-			}break;
-			case VK_DOWN :
-			{
-				ClampInt(&++yIndex, 0, totalYIndex - 1);
-				return 1;
-			}break;
-			case VK_LEFT :
-			{
-				ClampInt(&--xIndex, 0, totalXIndex - 1);
-				return 1;
-			}break;
-			case VK_RIGHT :
-			{
-				ClampInt(&++xIndex, 0, totalXIndex - 1);
-				return 1;
-			}break;
-			case VK_RETURN:
-			{
-				return 1;
-			}break;
-			}
-		}
-		uistate.lastWidget = id;
-
-		if (uistate.activeItem == id)
-		{
-			int mouseRelX = uistate.mouseX - currentX;
-			int mouseRelY = uistate.mouseY - currentY;
-			int mouseXIndex = mouseRelX / frameWidth;
-			int mouseYIndex = mouseRelY / frameHeight;
-
-			xIndex = mouseXIndex;
-			yIndex = mouseYIndex;
-
-
-			//만약에 이 아이템이 엑티브 아이템인데 마우스 오른쪽이 false이면 에디터 온
-			if (!uistate.editorOn)
-			{
-				if (uistate.mouseRightRelease)
-				{
-					uistate.editorOn = true;
-					uistate.mouseRightRelease = false;
-					uistate.editorRect = RectMake(uistate.lastRightMouseX, uistate.lastRightMouseY, 300, 300);
-				}
-			}
-			return 1;
-		}
-		return 0;
-	}
-
 	//
 	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight, int frameWidth, int frameHeight, 
 		IntRect & selectorRect, D2DSprite * sprite)
@@ -933,34 +812,6 @@ UIState uistate;
 				}
 				uistate.keyEntered = 0;
 			}break;
-			case VK_UP:
-			{
-				ClampInt(&--selectorRect.y, 0, totalYIndex - 1);
-				return 1;
-			}break;
-			case VK_DOWN:
-			{
-				if (selectorRect.y + selectorRect.height < totalYIndex)
-				{
-					selectorRect.y--;
-				}
-				//ClampInt(&++selectorRect.y, 0, totalYIndex - 1);
-				return 1;
-			}break;
-			case VK_LEFT:
-			{
-				ClampInt(&--selectorRect.x, 0, totalXIndex - 1);
-				return 1;
-			}break;
-			case VK_RIGHT:
-			{
-				if (selectorRect.x + selectorRect.width < totalXIndex)
-				{
-					selectorRect.x++;
-				}
-				//ClampInt(&++selectorRect.x, 0, totalXIndex - 1);
-				return 1;
-			}break;
 			case VK_RETURN:
 			{
 				return 1;
@@ -982,16 +833,29 @@ UIState uistate;
 			ClampInt(&relCurrentLeftY, 0, totalYIndex - 1);
 
 			//셀렉터 렉트 인덱스 지정
-			selectorRect = IntRectMakeWidthCorners(IntVector2(relLastLeftX, relLastLeftY), IntVector2(relCurrentLeftX, relCurrentLeftY));
+			//만약 에디터 타일이 닫혀있을때만
+			if (!uistate.editorOn)
+			{
+				selectorRect = IntRectMakeWidthCorners(IntVector2(relLastLeftX, relLastLeftY), 
+					IntVector2(relCurrentLeftX, relCurrentLeftY));
+			}
 
 			//만약에 이 아이템이 엑티브 아이템인데 마우스 오른쪽이 false이면 에디터 온
 			if (!uistate.editorOn)
 			{
 				if (uistate.mouseRightRelease)
 				{
+					selectorRect.x = (uistate.lastRightMouseX - currentX) / frameWidth;
+					selectorRect.y = (uistate.lastRightMouseY - currentY) / frameHeight;
+					selectorRect.width = 0;
+					selectorRect.height = 0;
+
 					uistate.editorOn = true;
 					uistate.mouseRightRelease = false;
-					uistate.editorRect = RectMake(uistate.lastRightMouseX, uistate.lastRightMouseY, 300, 300);
+					uistate.editorRect = RectMake(uistate.lastRightMouseX, uistate.lastRightMouseY, 620, 150);
+
+					//이 상황에서는 2를 반환하여 MapToolScene에서 알맞은 처리를 할 수 있게끔 한다.
+					return 2;
 				}
 			}
 			return 1;
@@ -1002,6 +866,8 @@ UIState uistate;
 	int GridPainter(int id, int x, int y, int totalWidth, int totalHeight,
 						int frameWidth, int frameHeight, int &xIndex, int &yIndex)
 	{
+		int innerFlag = 0;
+
 		int totalXIndex = totalWidth / frameWidth;
 		int totalYIndex = totalHeight / frameHeight;
 
@@ -1017,19 +883,46 @@ UIState uistate;
 			DrawBox(gRenderTarget, currentX - OFFSET * 2, currentY - OFFSET * 2, 
 				totalWidth + OFFSET * 4, totalHeight + OFFSET * 4, HOT_COLOR, 6.0f);
 		}
-		if (!CheckEditorHit(id, currentX, currentY, totalWidth, totalHeight))
+
+		//if(!RegionHit())
+		if (uistate.editorOn)
 		{
+			//에디터 윈도우가 켜져 있고 에디터 원도우에 충돌 되어있지 않으면...
+			if (!RegionHit(uistate.editorRect.x, uistate.editorRect.y, uistate.editorRect.width, uistate.editorRect.height))
+			{
+				if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+				{
+					uistate.hotItem = id;
+					if (uistate.activeItem == 0 && uistate.mouseLeftDown)
+					{
+						uistate.activeItem = id;
+						uistate.kbdItem = id;
+					}
+				}
+			}
+		}
+		else
+		{
+			//에디터 원도우가 꺼져있으면....
 			if (RegionHit(currentX, currentY, totalWidth, totalHeight))
 			{
 				uistate.hotItem = id;
-				if (uistate.activeItem == 0 &&
-					uistate.mouseLeftDown)
+				if (uistate.activeItem == 0 && uistate.mouseLeftDown)
 				{
 					uistate.activeItem = id;
 					uistate.kbdItem = id;
 				}
 			}
 		}
+
+		//if (!CheckEditorHit(id, currentX, currentY, totalWidth, totalHeight))
+		//{
+		//}
+		//else
+		//{
+		//	innerFlag = 1;
+		//}
+
 		for (int y = 1; y < totalYIndex; ++y)
 		{
 			DrawLine(gRenderTarget, currentX, currentY + y * frameHeight,
@@ -1040,6 +933,7 @@ UIState uistate;
 			DrawLine(gRenderTarget, currentX + x * frameWidth, currentY,
 				currentX + x * frameWidth, currentY + totalHeight, BLACK, 1.5f);
 		}
+
 		DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
 			totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
 
@@ -1083,7 +977,7 @@ UIState uistate;
 		}
 		uistate.lastWidget = id;
 
-		if (uistate.activeItem == id)
+		if (uistate.activeItem == id && !innerFlag)
 		{
 			int mouseRelX = uistate.mouseX - currentX;
 			int mouseRelY = uistate.mouseY - currentY;
