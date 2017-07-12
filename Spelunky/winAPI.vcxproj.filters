@@ -4,9 +4,6 @@
     <Filter Include="GameFramework2D">
       <UniqueIdentifier>{48c5b97f-9ef3-412a-a9eb-3ed8f81d4f30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameFramework2D\manager">
-      <UniqueIdentifier>{e1ac1446-e60c-4210-b0c0-3177c6a37c33}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game">
       <UniqueIdentifier>{749c4c70-07bd-4dcd-8c83-a55c02e90799}</UniqueIdentifier>
     </Filter>
@@ -27,9 +24,6 @@
     </Filter>
     <Filter Include="GameFramework2D\D2D\DWrite">
       <UniqueIdentifier>{7c2ab2ad-b461-4388-847f-587fd390ca0b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameFramework2D\manager\Timer">
-      <UniqueIdentifier>{9f10dd24-16cc-4331-90f0-b7d05a13aaf4}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameFramework2D\Types">
       <UniqueIdentifier>{7f896410-2aeb-4c7e-847c-003adb52b3a8}</UniqueIdentifier>
@@ -94,22 +88,28 @@
     <Filter Include="GameFramework2D\Utils\File">
       <UniqueIdentifier>{0f15e64b-de00-41d1-8eb8-163306245d81}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameFramework2D\Manager">
+      <UniqueIdentifier>{e1ac1446-e60c-4210-b0c0-3177c6a37c33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Manager\Timer">
+      <UniqueIdentifier>{9f10dd24-16cc-4331-90f0-b7d05a13aaf4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="gameNode.h">
       <Filter>GameFramework2D</Filter>
     </ClInclude>
     <ClInclude Include="keyManager.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="randomFunction.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>GameFramework2D\manager\Timer</Filter>
+      <Filter>GameFramework2D\Manager\Timer</Filter>
     </ClInclude>
     <ClInclude Include="commonMacroFunction.h">
       <Filter>GameFramework2D</Filter>
@@ -121,7 +121,7 @@
       <Filter>GameFramework2D\WinAPI</Filter>
     </ClInclude>
     <ClInclude Include="ImageManager.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Vector3.h">
       <Filter>GameFramework2D\Utils\Maths</Filter>
@@ -142,7 +142,7 @@
       <Filter>GameFramework2D\Utils\Layers</Filter>
     </ClInclude>
     <ClInclude Include="FileManager.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="D2DSprite.h">
       <Filter>GameFramework2D\D2D\Images</Filter>
@@ -154,7 +154,7 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="TimeManager.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Game\Camera</Filter>
@@ -163,10 +163,10 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="TextDataManager.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="GameCommonStructs.h">
       <Filter>Game</Filter>
@@ -208,7 +208,7 @@
       <Filter>GameFramework2D\Animation</Filter>
     </ClInclude>
     <ClInclude Include="KeyAnimationManager.h">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Game\Event</Filter>
@@ -261,10 +261,10 @@
       <Filter>GameFramework2D</Filter>
     </ClCompile>
     <ClCompile Include="keyManager.cpp">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>GameFramework2D\manager\Timer</Filter>
+      <Filter>GameFramework2D\Manager\Timer</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>GameFramework2D\WinAPI</Filter>
@@ -273,7 +273,7 @@
       <Filter>GameFramework2D\WinAPI</Filter>
     </ClCompile>
     <ClCompile Include="ImageManager.cpp">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Vector3.cpp">
       <Filter>GameFramework2D\Utils\Maths</Filter>
@@ -291,7 +291,7 @@
       <Filter>GameFramework2D\Utils\Maths</Filter>
     </ClCompile>
     <ClCompile Include="FileManager.cpp">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClCompile>
     <ClCompile Include="D2DSprite.cpp">
       <Filter>GameFramework2D\D2D\Images</Filter>
@@ -303,16 +303,16 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Game\Camera</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClCompile>
     <ClCompile Include="TextDataManager.cpp">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClCompile>
     <ClCompile Include="GameCommonMacroFunctions.cpp">
       <Filter>Game</Filter>
@@ -339,7 +339,7 @@
       <Filter>GameFramework2D\Animation</Filter>
     </ClCompile>
     <ClCompile Include="KeyAnimationManager.cpp">
-      <Filter>GameFramework2D\manager</Filter>
+      <Filter>GameFramework2D\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Game\Event</Filter>

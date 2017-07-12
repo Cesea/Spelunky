@@ -2,6 +2,66 @@
 
 #include <vector>
 
+inline float MinFloat(float f1, float f2)
+{
+	float result{};
+	if (f1 < f2) { result = f1; }
+	else { result = f2; }
+	return result;
+}
+inline float MaxFloat(float f1, float f2)
+{
+	float result{};
+	if (f1 > f2) { result = f1; }
+	else { result = f2; }
+	return result;
+}
+inline int MinInt(int i1, int i2)
+{
+	int result{};
+	if (i1 < i2) { result = i1; }
+	else { result = i2; }
+	return result;
+}
+inline int MaxInt(int i1, int i2)
+{
+	int result{};
+	if (i1 > i2) { result = i1; }
+	else { result = i2; }
+	return result;
+}
+
+struct IntRect
+{
+	int x{};
+	int y{};
+	int width{};
+	int height{};
+};
+
+inline IntRect IntRectMake(int x, int y, int width, int height)
+{
+	IntRect result;
+	result.x = x;
+	result.y = y;
+	result.width = width;
+	result.height = height;
+	return result;
+}
+
+inline IntRect IntRectMakeWidthCorners(const IntVector2 &p1, const IntVector2 &p2)
+{
+	IntRect result;
+	result.x = MinInt(p1.x, p2.x);
+	result.y = MinInt(p1.y, p2.y);
+
+	int maxX = MaxInt(p1.x, p2.x);
+	int maxY = MaxInt(p1.y, p2.y);
+	result.width = maxX - result.x;
+	result.height = maxY - result.y;
+	return result;
+}
+
 struct Rect
 {
 	float x{};
@@ -18,33 +78,6 @@ inline Rect RectMake(float x, float y, float width, float height)
 	result.width = width;
 	result.height = height;
 
-	return result;
-}
-
-inline float MinFloat(float f1, float f2)
-{
-	float result{};
-	if (f1 < f2)
-	{
-		result = f1;
-	}
-	else
-	{
-		result = f2;
-	}
-	return result;
-}
-inline float MaxFloat(float f1, float f2)
-{
-	float result{};
-	if (f1 > f2)
-	{
-		result = f1;
-	}
-	else
-	{
-		result = f2;
-	}
 	return result;
 }
 

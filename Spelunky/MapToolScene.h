@@ -49,16 +49,13 @@ private:
 	//Paint Action에서 추가되는 이미지들의 맵
 	std::map<std::wstring, D2DSprite *>_usingImages;
 
-	int _slider1Value{};
-	float _slider2Value{};
-
-	int _xSelector{};
-	int _ySelector{};
+	IntRect _selectorRect{};
+	
+	//int _xSelector{};
+	//int _ySelector{};
 
 	int _xPainter{};
 	int _yPainter{};
-
-	int _paintingValue{};
 
 	WCHAR _loadImageNameBuffer[40]{};
 	WCHAR _mapLoadSaveNameBuffer[40]{};

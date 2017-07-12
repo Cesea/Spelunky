@@ -28,7 +28,7 @@ public :
 	void Release();
 //	std::tstring a;
 
-	void LoadImageFromFile(const std::wstring& filePath, LPCTSTR keyName);
+	void LoadImageFromFile(const std::wstring& filePath, const std::wstring &keyName);
 	//void LoadImageFromParsedText(std::vector<LPCTSTR> *text);
 	D2DImage *GetImage(const std::wstring& key);
 

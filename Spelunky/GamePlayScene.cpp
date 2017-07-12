@@ -11,7 +11,7 @@ GamePlayScene::~GamePlayScene()
 
 HRESULT GamePlayScene::LoadContent()
 {
-	//IMAGEMANAGER->LoadImageFromFile(L"resources/gfx/background.png", L"background");
+	IMAGEMANAGER->LoadImageFromFile(L"resources/gfx/background.png", L"background");
 
 	return S_OK;
 }
@@ -26,6 +26,9 @@ HRESULT GamePlayScene::Init(void)
 
 	GameObject *player = OBJECTMANAGER->CreateObject(this, ArcheType::Player);
 
+
+	_sprite = new D2DSprite;
+	_sprite->Init(IMAGEMANAGER->GetImage(L"background"), 0, 0, 100, 100, IntVector2());
 	return S_OK;
 }
 
@@ -51,6 +54,8 @@ void GamePlayScene::Render(void)
 	//그리기 전에는 항상 BeginDraw()
 	gRenderTarget->BeginDraw();
 	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
+
+	_sprite->Render(gRenderTarget);
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

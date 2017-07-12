@@ -71,7 +71,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	_d2d.CreateRenderTarget(_hWnd);
 
 	_dWrite.Init();
-	_dWrite.SetFont(L"Terminal", 20);
+	_dWrite.SetFont(L"Terminal", 18);
 	
 	//화면에 윈도우 보여준다
 	ShowWindow(_hWnd, cmdShow);

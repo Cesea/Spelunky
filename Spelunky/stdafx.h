@@ -22,6 +22,7 @@
 //commdlg.h등등.... 필요없는 헤더파일 인클루드 하지 않는다
 
 //윈도우 헤더파일 인클루드
+#define NOMINMAX
 #include <windows.h>
 
 #include <stdint.h>

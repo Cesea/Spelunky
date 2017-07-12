@@ -66,7 +66,13 @@ struct UIState
 {
 	int mouseX{};
 	int mouseY{};
+	int lastLeftMouseX{};
+	int lastLeftMouseY{};
+	int leftDragWidth{};
+	int leftDragHeight{};
 	int mouseLeftDown{};
+	
+
 	int mouseRightDown{};
 	int mouseRightRelease{};
 
@@ -115,8 +121,11 @@ struct UIState
 
 	int GridSelector(int id, int x, int y, int totalWidth, int totalHeight,
 						int frameWidth, int frameHeight, int &xIndex, int &yIndex);
+	//버릴 버젼
 	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight,
 							int frameWidth, int frameHeight, int &xIndex, int &yIndex, D2DSprite *sprite);
+	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight,
+							int frameWidth, int frameHeight, IntRect &selectorRect, D2DSprite *sprite);
 
 	int GridPainter(int id, int x, int y, int totalWidth, int totalHeight,
 						int frameWidth, int frameHeight, int &xIndex, int &yIndex);

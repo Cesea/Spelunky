@@ -54,8 +54,7 @@ void D2D::EndDraw()
 	D2DRenderTarget->EndDraw();
 }
 
-HRESULT D2D::LoadBitmapFromFile( LPCTSTR fileName,
-		D2DImage *pImage)
+HRESULT D2D::LoadBitmapFromFile(const WCHAR *fileName, ID2D1Bitmap **ppBitmap)
 {
 	IWICBitmapDecoder *pDecoder = nullptr;
 	IWICBitmapFrameDecode * pSource = nullptr;
@@ -83,10 +82,9 @@ HRESULT D2D::LoadBitmapFromFile( LPCTSTR fileName,
 	}
 	if (SUCCEEDED(result))
 	{
-		D2DRenderTarget->CreateBitmapFromWicBitmap(pConverter, (ID2D1Bitmap **)pImage->GetBitmap());
+		result = D2DRenderTarget->CreateBitmapFromWicBitmap(pConverter, ppBitmap);
+		int a = 0;
 	}
-
-	pImage->Init();
 
 	SAFE_RELEASE(pConverter);
 	SAFE_RELEASE(pStream);

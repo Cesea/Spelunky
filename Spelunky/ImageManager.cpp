@@ -36,47 +36,40 @@ void ImageManager::Release()
 	_images.clear();
 }
 
-void ImageManager::LoadImageFromFile(const std::wstring &filePath, LPCTSTR keyName)
+void ImageManager::LoadImageFromFile(const std::wstring &filePath, const std::wstring &keyName)
 {
 
-	_imageIter = _images.end();
-	for (auto it = _images.begin(); it != _images.end(); )
-	{
-		if (_tcscmp(it->first.c_str(), keyName) == 0)
-		{
-			_imageIter = it;
-			break;
-		}
-		else
-		{
-			++it;
-		}
-	}
+	//_imageIter = _images.end();
+	//for (auto it = _images.begin(); it != _images.end(); )
+	//{
+	//	if (_tcscmp(it->first.c_str(), keyName) == 0)
+	//	{
+	//		_imageIter = it;
+	//		break;
+	//	}
+	//	else
+	//	{
+	//		++it;
+	//	}
+	//}
 
-	if (_imageIter != _images.end())
+	auto &found = _images.find(keyName);
+
+	if (found != _images.end())
 	{
-//		Assert(0);
 //		이미지가 있다.
-		TCHAR buffer[32];
-		wsprintf(buffer, _T("Image already exist\n"));
-		OutputDebugString(buffer);
+		Console::Log("Image %s already exist\n");
 		return;
 	}
 	else
 	{
 		D2DImage *insertImage = new D2DImage;
 
-		_d2d.LoadBitmapFromFile(filePath.c_str(), insertImage);
+		_d2d.LoadBitmapFromFile(filePath.c_str(), insertImage->GetBitmap());
+		insertImage->Init();
 		insertImage->SetName(keyName);
 
-		int numKeyName = _tcslen(keyName);
-		TCHAR *key = (TCHAR *)calloc(numKeyName, sizeof(TCHAR));
-		_tcscpy(key, keyName);
-		key[numKeyName] = 0;
-
 		_images.insert(std::make_pair(keyName, insertImage));
-
-//		Assert(inserted.second);
 	}
 }
 

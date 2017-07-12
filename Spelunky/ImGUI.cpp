@@ -733,6 +733,7 @@ UIState uistate;
 		return 0;
 	}
 
+	//일단은 버리는것
 	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight, 
 							int frameWidth, int frameHeight, int & xIndex, int & yIndex, D2DSprite * sprite)
 	{
@@ -843,6 +844,145 @@ UIState uistate;
 			xIndex = mouseXIndex;
 			yIndex = mouseYIndex;
 
+
+			//만약에 이 아이템이 엑티브 아이템인데 마우스 오른쪽이 false이면 에디터 온
+			if (!uistate.editorOn)
+			{
+				if (uistate.mouseRightRelease)
+				{
+					uistate.editorOn = true;
+					uistate.mouseRightRelease = false;
+					uistate.editorRect = RectMake(uistate.lastRightMouseX, uistate.lastRightMouseY, 300, 300);
+				}
+			}
+			return 1;
+		}
+		return 0;
+	}
+
+	//
+	int ImageGridSelector(int id, int x, int y, int totalWidth, int totalHeight, int frameWidth, int frameHeight, 
+		IntRect & selectorRect, D2DSprite * sprite)
+	{
+		int totalXIndex = totalWidth / frameWidth;
+		int totalYIndex = totalHeight / frameHeight;
+
+		int currentX = uistate.lastWindowPos.back().x + x;
+		int currentY = uistate.lastWindowPos.back().y + y;
+
+		if (uistate.kbdItem == 0)
+		{
+			uistate.kbdItem = id;
+		}
+		if (uistate.kbdItem == id)
+		{
+			DrawBox(gRenderTarget, currentX - OFFSET * 2, currentY - OFFSET * 2,
+				totalWidth + OFFSET * 4, totalHeight + OFFSET * 4, HOT_COLOR, 6.0f);
+		}
+		if (!CheckEditorHit(id, currentX, currentY, totalWidth, totalHeight))
+		{
+			if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+			{
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 &&
+					uistate.mouseLeftDown || uistate.mouseRightRelease)
+				{
+					uistate.activeItem = id;
+					uistate.kbdItem = id;
+				}
+			}
+		}
+
+		if (sprite->GetSourceImage() == nullptr)
+		{
+			FillBox(gRenderTarget, currentX, currentY, totalWidth, totalHeight, GRID_EMPTY_COLOR);
+			DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
+				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
+		}
+		else
+		{
+			sprite->Render(gRenderTarget, currentX, currentY);
+			//Draw Grids
+			for (int y = 1; y < totalXIndex; ++y)
+			{
+				DrawLine(gRenderTarget, currentX, currentY + y * frameHeight,
+					currentX + totalWidth, currentY + y * frameHeight, BLACK, 1.5f);
+			}
+			for (int x = 1; x < totalXIndex; ++x)
+			{
+				DrawLine(gRenderTarget, currentX + x * frameWidth, currentY,
+					currentX + x * frameWidth, currentY + totalHeight, BLACK, 1.5f);
+			}
+			DrawBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET,
+				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, BLACK, 4.0f);
+
+			DrawBox(gRenderTarget, currentX + selectorRect.x * frameWidth, currentY + selectorRect.y * frameHeight,
+				frameWidth * (selectorRect.width + 1), frameHeight * (selectorRect.height + 1), HOT_COLOR, 2.0f);
+		}
+
+		if (uistate.kbdItem == id)
+		{
+			switch (uistate.keyEntered)
+			{
+			case VK_TAB:
+			{
+				uistate.kbdItem = 0;
+				if (KEYMANAGER->IsStayKeyDown(VK_SHIFT))
+				{
+					uistate.kbdItem = uistate.lastWidget;
+				}
+				uistate.keyEntered = 0;
+			}break;
+			case VK_UP:
+			{
+				ClampInt(&--selectorRect.y, 0, totalYIndex - 1);
+				return 1;
+			}break;
+			case VK_DOWN:
+			{
+				if (selectorRect.y + selectorRect.height < totalYIndex)
+				{
+					selectorRect.y--;
+				}
+				//ClampInt(&++selectorRect.y, 0, totalYIndex - 1);
+				return 1;
+			}break;
+			case VK_LEFT:
+			{
+				ClampInt(&--selectorRect.x, 0, totalXIndex - 1);
+				return 1;
+			}break;
+			case VK_RIGHT:
+			{
+				if (selectorRect.x + selectorRect.width < totalXIndex)
+				{
+					selectorRect.x++;
+				}
+				//ClampInt(&++selectorRect.x, 0, totalXIndex - 1);
+				return 1;
+			}break;
+			case VK_RETURN:
+			{
+				return 1;
+			}break;
+			}
+		}
+		uistate.lastWidget = id;
+
+		if (uistate.activeItem == id)
+		{
+			int relLastLeftX = (uistate.lastLeftMouseX - currentX) / frameWidth;
+			int relLastLeftY = (uistate.lastLeftMouseY - currentY) / frameHeight;
+			int relCurrentLeftX = (uistate.mouseX - currentX) / frameWidth;
+			int relCurrentLeftY = (uistate.mouseY - currentY) / frameHeight;
+
+			ClampInt(&relLastLeftX, 0, totalXIndex - 1);
+			ClampInt(&relLastLeftY, 0, totalYIndex - 1);
+			ClampInt(&relCurrentLeftX, 0, totalXIndex - 1);
+			ClampInt(&relCurrentLeftY, 0, totalYIndex - 1);
+
+			//셀렉터 렉트 인덱스 지정
+			selectorRect = IntRectMakeWidthCorners(IntVector2(relLastLeftX, relLastLeftY), IntVector2(relCurrentLeftX, relCurrentLeftY));
 
 			//만약에 이 아이템이 엑티브 아이템인데 마우스 오른쪽이 false이면 에디터 온
 			if (!uistate.editorOn)

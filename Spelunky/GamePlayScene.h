@@ -19,6 +19,7 @@ public:
 
 	//private functions
 private:
+	D2DSprite *_sprite;
 
 private:
 	ObjectMap _objects;
@@ -29,5 +30,6 @@ private:
 
 	ObjectId _lastId{1};
 	ObjectId GetNextId() { return _lastId++; }
+
 };
 #endif

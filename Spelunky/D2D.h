@@ -19,8 +19,7 @@ public :
 	void BeginDraw();
 	void EndDraw();
 
-	HRESULT LoadBitmapFromFile( LPCTSTR fileName,
-		D2DImage *pImage);
+	HRESULT LoadBitmapFromFile(const WCHAR *fileName, ID2D1Bitmap **ppBitmap);
 
 //	void ProcessImageAppropreatly();
 

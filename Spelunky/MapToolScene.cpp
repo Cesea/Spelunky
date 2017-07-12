@@ -66,10 +66,18 @@ void MapToolScene::Update(void)
 	if (rawInput.mouse.leftButton.down)
 	{
 		IM::uistate.mouseLeftDown = true;
+		if (rawInput.mouse.leftButton.pressed)
+		{
+			IM::uistate.lastLeftMouseX = (int)rawInput.mouse.currentPoint.x;
+			IM::uistate.lastLeftMouseY = (int)rawInput.mouse.currentPoint.y;
+		}
 	}
-	if (rawInput.mouse.leftButton.released)
+	else if (rawInput.mouse.leftButton.released)
 	{
 		IM::uistate.mouseLeftDown = false;
+
+		IM::uistate.leftDragWidth =  (int)rawInput.mouse.currentPoint.x - IM::uistate.lastLeftMouseX;
+		IM::uistate.leftDragHeight = (int)rawInput.mouse.currentPoint.y - IM::uistate.lastLeftMouseY;
 	}
 
 	if (rawInput.mouse.rightButton.down)
@@ -84,36 +92,10 @@ void MapToolScene::Update(void)
 		IM::uistate.lastRightMouseX = (rawInput.mouse.currentPoint.x);
 		IM::uistate.lastRightMouseY = (rawInput.mouse.currentPoint.y);
 	}
-
-	//if (rawInput.mouse.rightButton.released)
-	//{
-	//	if (_showEditWindow)
-	//	{
-	//		_showEditWindow = false;
-	//	}
-	//	IM::uistate.lastRightMouseX = (int)rawInput.mouse.currentPoint.x;
-	//	IM::uistate.lastRightMouseY = (int)rawInput.mouse.currentPoint.y;
-	//}
-
 	ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
 
-	if (KEYMANAGER->IsOnceKeyDown('0'))
-	{
-		_paintingValue = 0;
-	}
-	else if (KEYMANAGER->IsOnceKeyDown('1'))
-	{
-		_paintingValue = 1;
-	}
-	else if(KEYMANAGER->IsOnceKeyDown('2'))
-	{
-		_paintingValue = 2;
-	}
-	else if (KEYMANAGER->IsOnceKeyDown('3'))
-	{
-		_paintingValue = 3;
-	}
-
+	//Console::Log("lastX : %d, lastY : %d, dragWidth : %d, dragHeight : %d\n",
+	//	IM::uistate.lastLeftMouseX, IM::uistate.lastLeftMouseY, IM::uistate.leftDragWidth, IM::uistate.leftDragHeight);
 }
 
 void MapToolScene::Render()
@@ -122,12 +104,10 @@ void MapToolScene::Render()
 	gRenderTarget->BeginDraw();
 	gRenderTarget->Clear(_sceneClearColor);
 
-
 	//Begin of First Window
 	IM::BeginWindow(20, 20, 552, WINSIZEY - 40, L"Window");
-	if (IM::ImageGridSelector(GEN_ID, 20, 20, 512, 512, 64, 64, _xSelector, _ySelector, _gridSelectorSprite))
-	{
-	}
+	IM::ImageGridSelector(GEN_ID, 20, 20, 512, 512, 64, 64, _selectorRect, _gridSelectorSprite);
+	//if (IM::ImageGridSelector(GEN_ID, 20, 20, 512, 512, 64, 64, _xSelector, _ySelector, _gridSelectorSprite))
 
 	IM::TextBox(GEN_ID, 20, 600, 400, _loadImageNameBuffer);
 	if (IM::Button(GEN_ID, 430, 600, _loadImageTextWidth, _loadImageText))
@@ -174,28 +154,6 @@ void MapToolScene::Render()
 	}
 
 	IM::EndWindow();
-
-
-	if (IM::uistate.editorOn)
-	{
-		if (IM::uistate.mouseRightRelease == true)
-		{
-			IM::uistate.editorOn = false;
-		}
-		else
-		{
-			IM::BeginPropertyWindow(IM::uistate.lastRightMouseX, IM::uistate.lastRightMouseY, 300, 300, _propertyEditorText);
-			if (IM::Button(GEN_ID, 20, 100, 80, L"HI"))
-			{
-				int a = 0;
-			}
-			IM::TextBox(GEN_ID, 20, 150, 150, _propertyEditBuffer);
-			IM::EndWindow();
-		}
-	}
-
-
-	IM::IMGUIFinish();
 	//End of Second Window
 
 	//이미지가 있으면
@@ -218,6 +176,25 @@ void MapToolScene::Render()
 		}
 	}
 	//그린 후에는 항상 EndDraw()
+
+	if (IM::uistate.editorOn)
+	{
+		if (IM::uistate.mouseRightRelease == true)
+		{
+			IM::uistate.editorOn = false;
+		}
+		else
+		{
+			IM::BeginPropertyWindow(IM::uistate.lastRightMouseX, IM::uistate.lastRightMouseY, 300, 300, _propertyEditorText);
+			if (IM::Button(GEN_ID, 20, 100, 80, L"HI"))
+			{
+				int a = 0;
+			}
+			IM::TextBox(GEN_ID, 20, 150, 150, _propertyEditBuffer);
+			IM::EndWindow();
+		}
+	}
+	IM::IMGUIFinish();
 	gRenderTarget->EndDraw();
 }
 
@@ -249,7 +226,7 @@ void MapToolScene::PainterAction()
 		if (_drawingMode == DrawingMode::Draw)
 		{
 			const std::wstring &imageName = _gridSelectorSprite->GetSourceImage()->GetName();
-			_editingTileSet->SetInfo(_xPainter, _yPainter, TileInfo(imageName, IntVector2(_xSelector, _ySelector)));
+			_editingTileSet->SetInfo(_xPainter, _yPainter, TileInfo(imageName, IntVector2(_selectorRect.x, _selectorRect.y)) );
 			_editingTileSet->SetValue(_xPainter, _yPainter, 1);
 
 			auto &found = _usingImages.find(imageName);
@@ -267,7 +244,6 @@ void MapToolScene::PainterAction()
 			_editingTileSet->AtInfo(_xPainter, _yPainter).name.clear();
 			_editingTileSet->AtInfo(_xPainter, _yPainter).sourceIndex = IntVector2(-1, -1);
 		}
-
 	}
 }
 
