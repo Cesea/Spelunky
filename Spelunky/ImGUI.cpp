@@ -12,7 +12,7 @@ UIState uistate;
 
 	void IMGUIFinish()
 	{
-		if (uistate.mouseDown == 0)
+		if (uistate.mouseLeftDown == 0)
 		{
 			uistate.activeItem = 0;
 		}
@@ -23,6 +23,8 @@ UIState uistate;
 				uistate.activeItem = -1;
 			}
 		}
+
+		uistate.mouseRightRelease = 0;
 
 		if (uistate.keyEntered == VK_TAB)
 		{
@@ -52,9 +54,41 @@ UIState uistate;
 		FillBox(gRenderTarget, x, y, w, h, D2D1::ColorF(0.5, 0.5, 0.7, 0.3));
 	}
 
+	void BeginPropertyWindow(int x, int y, int w, int h, const std::wstring & name)
+	{
+		uistate.lastWindowPos.emplace_back(IntVector2(x, y + 30));
+		FillBox(gRenderTarget, x, y, w, h, D2D1::ColorF(0.3, 0.4, 0.6, 1.0));
+		FillBox(gRenderTarget, x, y, w, 30, D2D1::ColorF(0.2, 0.3, 0.5, 0.8));
+		_dWrite.PrintText(gRenderTarget, x, y, w, 30, name.c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
+		uistate.editorChild = true;
+	}
+
 	void EndWindow()
 	{
 		uistate.lastWindowPos.pop_back();
+		uistate.editorChild = false;
+	}
+
+	int CheckEditorHit(int id, int localX, int localY, int localW, int localH)
+	{
+		if (uistate.editorOn && uistate.editorChild &&
+			RegionHit(uistate.editorRect.x, uistate.editorRect.y, uistate.editorRect.width, uistate.editorRect.height))
+		{
+			//리턴을 어디서 해야할까
+			if (RegionHit(localX, localY, localW, localH))
+			{
+				uistate.hotItem = id;
+				//uistate.activeItem = 0;
+				//Console::Log("this id : %d, activeItem : %d\n", id, uistate.activeItem);
+				if (/*uistate.activeItem == 0 &&*/
+					uistate.mouseLeftDown )
+				{
+					uistate.activeItem = id;
+				}
+			}
+			return 1;
+		}
+		return 0;
 	}
 
 	void ImageLabel(int id, int x, int y, const WCHAR * name, D2DSprite * sprite)
@@ -92,13 +126,17 @@ UIState uistate;
 		{
 			FillBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, w + OFFSET * 2, BUTTON_HEIGHT + OFFSET * 2, HOT_COLOR);
 		}
-		if (RegionHit(currentX, currentY, w, BUTTON_HEIGHT))
+
+		if (!CheckEditorHit(id, currentX, currentY, w, BUTTON_HEIGHT))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 &&
-				uistate.mouseDown)
+			if (RegionHit(currentX, currentY, w, BUTTON_HEIGHT))
 			{
-				uistate.activeItem = id;
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 &&
+					uistate.mouseLeftDown)
+				{
+					uistate.activeItem = id;
+				}
 			}
 		}
 		if (uistate.hotItem == id)
@@ -142,7 +180,11 @@ UIState uistate;
 		}
 		uistate.lastWidget = id;
 
-		if (uistate.mouseDown == 0 &&
+		if (uistate.editorChild)
+		{
+			Console::Log("mouseDown : %d, activeItem : %d, id : %d\n", uistate.mouseLeftDown, uistate.activeItem, id);
+		}
+		if (uistate.mouseLeftDown == 0 &&
 			uistate.activeItem == id &&
 			uistate.hotItem == id)
 		{
@@ -167,11 +209,14 @@ UIState uistate;
 
 		int yPos = (int)(((float)value / (float)max) * h);
 
-		if (RegionHit(lastX, lastY, SLIDER_SIZE, h + SLIDER_SIZE))
+		if (!CheckEditorHit(id, lastX, lastY, SLIDER_SIZE, h))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 && uistate.mouseDown)
-				uistate.activeItem = id;
+			if (RegionHit(lastX, lastY, SLIDER_SIZE, h + SLIDER_SIZE))
+			{
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 && uistate.mouseLeftDown)
+					uistate.activeItem = id;
+			}
 		}
 // Render the scrollbar
 		FillBox(gRenderTarget, lastX, lastY, SLIDER_SIZE, h + SLIDER_SIZE, SLIDER_COLOR);
@@ -246,11 +291,14 @@ UIState uistate;
 
 		float yPos = (int)(((float)value / (float)max) * h);
 
-		if (RegionHit(lastX, lastY, SLIDER_SIZE, h + SLIDER_SIZE))
+		if (!CheckEditorHit(id, lastX, lastY, SLIDER_SIZE, h))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 && uistate.mouseDown)
-				uistate.activeItem = id;
+			if (RegionHit(lastX, lastY, SLIDER_SIZE, h + SLIDER_SIZE))
+			{
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 && uistate.mouseLeftDown)
+					uistate.activeItem = id;
+			}
 		}
 		// Render the scrollbar
 		FillBox(gRenderTarget, lastX, lastY, SLIDER_SIZE, h + SLIDER_SIZE, SLIDER_COLOR);
@@ -327,13 +375,16 @@ UIState uistate;
 
 		int xPos = (int)(((float)value / (float)max) * w);
 
-		if (RegionHit(lastX, lastY, w + SLIDER_SIZE, SLIDER_SIZE))
+		if (!CheckEditorHit(id, lastX, lastY, w, SLIDER_SIZE))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 && uistate.mouseDown)
-				uistate.activeItem = id;
+			if (RegionHit(lastX, lastY, w + SLIDER_SIZE, SLIDER_SIZE))
+			{
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 && uistate.mouseLeftDown)
+					uistate.activeItem = id;
+			}
 		}
-		// Render the scrollbar
+				// Render the scrollbar
 		FillBox(gRenderTarget, lastX, lastY, w + SLIDER_SIZE, SLIDER_SIZE, SLIDER_COLOR);
 
 		if (uistate.activeItem == id || uistate.hotItem == id)
@@ -406,11 +457,14 @@ UIState uistate;
 
 		float xPos = (((float)value / (float)max) * (float)w);
 
-		if (RegionHit(lastX, lastY, w + SLIDER_SIZE, SLIDER_SIZE))
+		if (!CheckEditorHit(id, lastX, lastY, w, SLIDER_SIZE))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 && uistate.mouseDown)
-				uistate.activeItem = id;
+			if (RegionHit(lastX, lastY, w + SLIDER_SIZE, SLIDER_SIZE))
+			{
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 && uistate.mouseLeftDown)
+					uistate.activeItem = id;
+			}
 		}
 		// Render the scrollbar
 		FillBox(gRenderTarget, lastX, lastY, w + SLIDER_SIZE, SLIDER_SIZE, SLIDER_COLOR);
@@ -484,13 +538,16 @@ UIState uistate;
 		//uistate.textTrack = length;
 		int changed = 0;
 
-		if (RegionHit(currentX, currentY, w, TEXTBOX_HEIGHT))
+		if (!CheckEditorHit(id, currentX, currentY, w, TEXTBOX_HEIGHT))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 && uistate.mouseDown)
+			if (RegionHit(currentX, currentY, w, TEXTBOX_HEIGHT))
 			{
-				uistate.activeItem = id;
-				uistate.kbdItem = id;
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 && uistate.mouseLeftDown)
+				{
+					uistate.activeItem = id;
+					uistate.kbdItem = id;
+				}
 			}
 		}
 		if (uistate.kbdItem == 0)
@@ -551,7 +608,7 @@ UIState uistate;
 				changed = 1;
 			}
 		}
-		if (uistate.mouseDown == 0 &&
+		if (uistate.mouseLeftDown == 0 &&
 			uistate.hotItem == id &&
 			uistate.activeItem == id)
 		{
@@ -582,14 +639,22 @@ UIState uistate;
 			FillBox(gRenderTarget, currentX - OFFSET, currentY - OFFSET, 
 				totalWidth + OFFSET * 2, totalHeight + OFFSET * 2, HOT_COLOR);
 		}
-		if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+		if (!CheckEditorHit(id, currentX, currentY, totalWidth, totalHeight))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 &&
-				uistate.mouseDown)
+			if (RegionHit(currentX, currentY, totalWidth, totalHeight))
 			{
-				uistate.activeItem = id;
-				uistate.kbdItem = id;
+				if (uistate.mouseRightRelease)
+				{
+					uistate.editorOn = true;
+				}
+
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 &&
+					uistate.mouseLeftDown)
+				{
+					uistate.activeItem = id;
+					uistate.kbdItem = id;
+				}
 			}
 		}
 		if (uistate.hotItem == id)
@@ -686,14 +751,17 @@ UIState uistate;
 			DrawBox(gRenderTarget, currentX - OFFSET * 2, currentY - OFFSET * 2, 
 				totalWidth + OFFSET * 4, totalHeight + OFFSET * 4, HOT_COLOR, 6.0f);
 		}
-		if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+		if (!CheckEditorHit(id, currentX, currentY, totalWidth, totalHeight))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 &&
-				uistate.mouseDown)
+			if (RegionHit(currentX, currentY, totalWidth, totalHeight))
 			{
-				uistate.activeItem = id;
-				uistate.kbdItem = id;
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 &&
+					uistate.mouseLeftDown || uistate.mouseRightRelease)
+				{
+					uistate.activeItem = id;
+					uistate.kbdItem = id;
+				}
 			}
 		}
 
@@ -775,6 +843,17 @@ UIState uistate;
 			xIndex = mouseXIndex;
 			yIndex = mouseYIndex;
 
+
+			//만약에 이 아이템이 엑티브 아이템인데 마우스 오른쪽이 false이면 에디터 온
+			if (!uistate.editorOn)
+			{
+				if (uistate.mouseRightRelease)
+				{
+					uistate.editorOn = true;
+					uistate.mouseRightRelease = false;
+					uistate.editorRect = RectMake(uistate.lastRightMouseX, uistate.lastRightMouseY, 300, 300);
+				}
+			}
 			return 1;
 		}
 		return 0;
@@ -798,14 +877,17 @@ UIState uistate;
 			DrawBox(gRenderTarget, currentX - OFFSET * 2, currentY - OFFSET * 2, 
 				totalWidth + OFFSET * 4, totalHeight + OFFSET * 4, HOT_COLOR, 6.0f);
 		}
-		if (RegionHit(currentX, currentY, totalWidth, totalHeight))
+		if (!CheckEditorHit(id, currentX, currentY, totalWidth, totalHeight))
 		{
-			uistate.hotItem = id;
-			if (uistate.activeItem == 0 &&
-				uistate.mouseDown)
+			if (RegionHit(currentX, currentY, totalWidth, totalHeight))
 			{
-				uistate.activeItem = id;
-				uistate.kbdItem = id;
+				uistate.hotItem = id;
+				if (uistate.activeItem == 0 &&
+					uistate.mouseLeftDown)
+				{
+					uistate.activeItem = id;
+					uistate.kbdItem = id;
+				}
 			}
 		}
 		for (int y = 1; y < totalYIndex; ++y)

@@ -62,25 +62,13 @@ static D2D1::ColorF GRID_EMPTY_COLOR = D2D1::ColorF(0.2f, 0.3f, 0.5f, 0.4f);
 //D2D1::ColorF RED = D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f);
 
 
-
-struct WindowStruct
-{
-	int x;
-	int y;
-	int width;
-	int height;
-	std::wstring name;
-
-	bool hasTab{false};
-	int tabCount{ 0 };
-	std::vector<std::wstring> tabNames;
-};
-
 struct UIState
 {
 	int mouseX{};
 	int mouseY{};
-	int mouseDown{};
+	int mouseLeftDown{};
+	int mouseRightDown{};
+	int mouseRightRelease{};
 
 	int kbdItem{};
 	int keyEntered{};
@@ -89,8 +77,15 @@ struct UIState
 
 	int lastWidget{};
 
+	int lastRightMouseX{};
+	int lastRightMouseY{};
+
 	int hotItem{};
 	int activeItem{};
+
+	int editorOn{ 0 };
+	int editorChild{ 0 };
+	Rect editorRect{};
 
 	std::vector<IntVector2> lastWindowPos;
 };
@@ -101,7 +96,11 @@ struct UIState
 	int RegionHit(int x, int y, int w, int h);
 
 	void BeginWindow(int x, int y, int w, int h, const std::wstring &name);
+	void BeginPropertyWindow(int x, int y, int w, int h, const std::wstring &name);
 	void EndWindow();
+
+	int CheckEditorHit(int id, int localX, int localY, int localW, int localH);
+
 
 	void ImageLabel(int id, int x, int y, const WCHAR *name, D2DSprite *sprite);
 
@@ -122,7 +121,6 @@ struct UIState
 	int GridPainter(int id, int x, int y, int totalWidth, int totalHeight,
 						int frameWidth, int frameHeight, int &xIndex, int &yIndex);
 
-	int GridPainter(int id, int x, int y);
 
 	void DrawGUIS();
 

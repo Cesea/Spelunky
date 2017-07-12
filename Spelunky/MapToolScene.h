@@ -6,6 +6,12 @@
 
 #include "TileInfo.h"
 
+enum class DrawingMode
+{
+	Draw,
+	Erase
+};
+
 class MapToolScene : public IScene
 {
 public:
@@ -21,13 +27,19 @@ public:
 
 	//private functions
 private :
+	void DoGUIS();
+
 	void LoadButtonAction();
 	void PainterAction();
 	void SaveMapButtonAction();
 	void LoadMapButtonAction();
 
 	void CheckUsingImageExistence(const std::wstring &key);
+
+	void CalculateBitMask(TileSet<TileInfo> &tileSet);
+	void RenderMasks(int drawXIndex, int drawYIndex, const uint16 maskInfo, D2DSprite *image);
 private:
+
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 
 	TileSet<TileInfo> *_editingTileSet{};
@@ -50,9 +62,14 @@ private:
 
 	WCHAR _loadImageNameBuffer[40]{};
 	WCHAR _mapLoadSaveNameBuffer[40]{};
+	WCHAR _propertyEditBuffer[40]{};
+
+	DrawingMode _drawingMode{};
 
 //Using Character
 private  :
+	const WCHAR *_propertyEditorText{L"Property Editor"};
+
 	const WCHAR *_loadImageText{ L"LoadIM" };
 	float _loadImageTextWidth{ 0 };
 	const WCHAR *_save{ L"Save" };
@@ -62,6 +79,15 @@ private  :
 	float _saveMapTextWidth{0};
 	const WCHAR *_loadMapText{ L"LoadMap" };
 	float _loadMapTextWidth{0};
+
+	const WCHAR *_drawText{ L"Draw" };
+	float _drawTextWidth{0};
+	const WCHAR *_eraseText{ L"Erase" };
+	float _eraseTextWidth{0};
+
+	const WCHAR *_maskText{ L"Do Mask" };
+	float _maskTextWidth{0};
+
 
 
 };

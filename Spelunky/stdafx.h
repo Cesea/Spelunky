@@ -103,6 +103,7 @@
 #define GRAVITY 1250.0f
 
 #define TILE_SIZE 64
+#define TILE_SIZE_HALF 32
 
 #define ROOM_TILE_COUNTX 10
 #define ROOM_TILE_COUNTY 8

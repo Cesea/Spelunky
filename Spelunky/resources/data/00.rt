@@ -1,103 +1,73 @@
 --resources\data\00.rt--
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-1, 0
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-4, 3
-
-texture name : minetile
-3, 1
-
-texture name : minetile
-3, 1
-
-texture name : minetile
-3, 1
-
-texture name : minetile
-3, 1
-
-texture name : minetile
-3, 1
-
-texture name : minetile
-3, 1
-
-texture name : minetile
-3, 1
-
-texture name : minetile
-4, 3
-
-texture name : minetile
-4, 3
-
-texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
 3, 1
@@ -121,10 +91,40 @@ texture name : minetile
 3, 1
 
 texture name : minetile
-4, 3
+3, 4
 
 texture name : minetile
-4, 3
+3, 4
+
+texture name : minetile
+3, 4
+
+texture name : minetile
+3, 1
+
+texture name : minetile
+3, 1
+
+texture name : minetile
+3, 1
+
+texture name : minetile
+3, 1
+
+texture name : minetile
+3, 1
+
+texture name : minetile
+3, 1
+
+texture name : minetile
+3, 1
+
+texture name : minetile
+3, 4
+
+texture name : minetile
+3, 4
 
 texture name : minetile
 4, 3
