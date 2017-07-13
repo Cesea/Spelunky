@@ -273,6 +273,11 @@ void MapToolScene::LoadButtonAction()
 	if (image)
 	{
 		_gridSelectorSprite->Init(image, 0, 0, 512, 512, IntVector2());
+		for (int i = 0; i < 8 * 8; ++i)
+		{
+			_editingTileImageInfo.applied[i] = false;
+			_editingTileImageInfo.tileInfos[i] = TileInfo();
+		}
 		for (int y = 0; y < 8; ++y)
 		{
 			for (int x = 0; x < 8; ++x)
@@ -390,32 +395,6 @@ void MapToolScene::LoadMapButtonAction()
 	ReadTileInfoChunkForMap(loadFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 	ReadTileInfoChunkForMap(loadFile, _roomInfo.layer2, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 
-	//WCHAR buffer[32];
-	//for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	//{
-	//	for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-	//	{
-	//		loadFile.Read(L"texture name : %s\n", buffer);
-	//		if (buffer[0] == L'-')
-	//		{
-	//			loadFile.GetLine();
-	//			continue;
-	//		}
-	//		_editingTileSet->AtInfo(x, y).imageKey = buffer;
-	//		CheckUsingImageExistence(buffer);
-
-	//		int tempX{};
-	//		int tempY{};
-	//		loadFile.Read(L"%d, %d\n", &tempX, &tempY);
-	//		_editingTileSet->AtInfo(x, y).sourceIndex.x = tempX;
-	//		_editingTileSet->AtInfo(x, y).sourceIndex.y = tempY;
-	//		if (tempX != -1)
-	//		{
-	//			_editingTileSet->SetValue(x, y, 1);
-	//		}
-	//		loadFile.GetLine();
-	//	}
-	//}
 	loadFile.Close();
 }
 void MapToolScene::CheckUsingImageExistence(const std::wstring &key)
@@ -449,9 +428,6 @@ void MapToolScene::SaveCurrentEditingImageInfoAction()
 	saveFile.Write(L"--%s--\n", wBuffer);
 	saveFile.Write(L"%s\n", _loadImageNameBuffer);
 	
-
-	bool canBeDestroyedByBomb{false};
-
 	for (int y = 0; y < 8; ++y)
 	{
 		for (int x = 0; x < 8; ++x)

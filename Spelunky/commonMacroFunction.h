@@ -164,3 +164,9 @@ inline Rect operator- (const Rect &rect, const Vector2 &v)
 {
 	return RectMake(rect.x - v.x, rect.y - v.y, rect.width, rect.height);
 }
+
+
+inline uint32 GetBitRange(uint32 min, uint32 max)
+{
+	return 0;
+}

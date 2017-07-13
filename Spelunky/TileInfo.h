@@ -44,7 +44,7 @@ struct TileInfo
 	IntVector2 sourceIndex{-1, -1};
 	IntVector2 destroyedIndex{};
 
-	bool32 canMask{false};
+	uint32 canMask{};
 	uint32 nearMaskInfo{};
 	TileCollisionType collisionType{};
 	uint32 maskInfo{};
