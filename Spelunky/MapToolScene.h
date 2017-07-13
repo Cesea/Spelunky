@@ -38,8 +38,11 @@ private :
 
 	void SaveCurrentEditingImageInfoAction();
 
-	void CalculateBitMask(TileSet<TileInfo> &tileSet);
-	void RenderMasks(int drawXIndex, int drawYIndex, const uint16 maskInfo, D2DSprite *image);
+	void CalculateBitMask(TileInfo *sourceLayer, TileInfo *maskLayer);
+	void RenderMasks(int drawXIndex, int drawYIndex, const uint32 maskInfo, D2DSprite *image);
+	void ClearAllTheBits(RoomInfo *roomInfo);
+
+	void TileInfoBitmaskCopy(const std::wstring imageKey, TileInfo &sourTile, TileInfo &maskTile, uint32 offset);
 
 	int InSyncImageInfo();
 	int OutSyncImageInfo();
@@ -48,7 +51,8 @@ private:
 	//현재 수정하고 있는 이미지의 정보
 	TileImageInfo _editingTileImageInfo{};
 	//현재 수정하고 있는 방의 정보
-	TileSet<TileInfo> *_editingTileSet{};
+	//TileSet<TileInfo> *_editingTileSet{};
+	RoomInfo _roomInfo{};
 	//그리드 셀렉터 이미지
 	D2DSprite *_gridSelectorSprite{};
 

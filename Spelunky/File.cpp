@@ -91,8 +91,9 @@ namespace FileUtils
 		Clear();
 	}
 
-	void File::Open(const char *name, FileAccess::Type access_type)
+	bool File::Open(const char *name, FileAccess::Type access_type)
 	{
+		bool result = true;
 		switch (access_type)
 		{
 		case FileAccess::Read:
@@ -105,7 +106,16 @@ namespace FileUtils
 			fp = fopen(name, "a");
 			break;
 		}
-		Assert(fp);
+		if (fp == nullptr)
+		{
+			result = false;
+		}
+		else
+		{
+			result = true;
+		}
+		return result;
+		//Assert(fp);
 	}
 
 	void File::Close(void)

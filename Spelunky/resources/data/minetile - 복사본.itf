@@ -3,7 +3,7 @@ minetile
 At X : 0, Y : 0
 Destroyed Index X : 2, Y : 0
 CanMask : 0
-Near Mask Info : 14
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
@@ -11,7 +11,7 @@ Applied : 1
 At X : 1, Y : 0
 Destroyed Index X : 3, Y : 0
 CanMask : 0
-Near Mask Info : 7
+Near Mask Info : 0
 Collision Type : 2
 Mask Info : 0
 Layer : 0
@@ -19,7 +19,7 @@ Applied : 1
 At X : 2, Y : 0
 Destroyed Index X : 2, Y : 0
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
@@ -27,7 +27,7 @@ Applied : 1
 At X : 3, Y : 0
 Destroyed Index X : 3, Y : 0
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
@@ -35,7 +35,7 @@ Applied : 1
 At X : 4, Y : 0
 Destroyed Index X : 4, Y : 0
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
@@ -99,7 +99,7 @@ Applied : 1
 At X : 4, Y : 1
 Destroyed Index X : 4, Y : 1
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
@@ -379,7 +379,7 @@ Applied : 0
 At X : 7, Y : 5
 Destroyed Index X : 7, Y : 5
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
@@ -419,7 +419,7 @@ Applied : 1
 At X : 4, Y : 6
 Destroyed Index X : 4, Y : 6
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 8
 Collision Type : 2
 Mask Info : 0
 Layer : 0
@@ -427,7 +427,7 @@ Applied : 1
 At X : 5, Y : 6
 Destroyed Index X : 5, Y : 6
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 8
 Collision Type : 2
 Mask Info : 0
 Layer : 0
@@ -435,7 +435,7 @@ Applied : 1
 At X : 6, Y : 6
 Destroyed Index X : 6, Y : 6
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 8
 Collision Type : 2
 Mask Info : 0
 Layer : 0
@@ -443,7 +443,7 @@ Applied : 1
 At X : 7, Y : 6
 Destroyed Index X : 7, Y : 6
 CanMask : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0

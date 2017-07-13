@@ -258,9 +258,6 @@
     <ClInclude Include="File.h">
       <Filter>GameFramework2D\Utils\File</Filter>
     </ClInclude>
-    <ClInclude Include="RoomInfo.h">
-      <Filter>Game\Common\RoomInfo</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
