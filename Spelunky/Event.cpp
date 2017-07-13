@@ -19,7 +19,7 @@ EventType ShouldChangeStateEvent::_type = EVENT_SHOULD_CHANGE_STATE;
 
 EventType FrameEndedEvent::_type = EVENT_FRAME_ENDED;
 
-EventType CollisionEvent::_type = EVENT_COLLISION;
+//EventType CollisionEvent::_type = EVENT_COLLISION;
 
 
 BaseEvent::BaseEvent(float timeStamp)
@@ -311,27 +311,27 @@ const char * FrameEndedEvent::GetName() const
 	return "Frame Ended Event";
 }
 
-CollisionEvent::CollisionEvent(ObjectId id, const TileProperty *properties, const Vector2 *overlapSize)
-	:_id(id)
-{
-	for (int i = 0; i < 8; ++i)
-	{
-		_properties[i] = properties[i];
-		_overlapSize[i] = overlapSize[i];
-	}
-}
-
-CollisionEvent::~CollisionEvent()
-{
-}
-
-IEvent * CollisionEvent::Copy() const
-{
-	return new CollisionEvent(_id, _properties, _overlapSize);
-}
-
-const char * CollisionEvent::GetName() const
-{
-	return "Collision Event";
-}
-
+//CollisionEvent::CollisionEvent(ObjectId id, const TileProperty *properties, const Vector2 *overlapSize)
+//	:_id(id)
+//{
+//	for (int i = 0; i < 8; ++i)
+//	{
+//		_properties[i] = properties[i];
+//		_overlapSize[i] = overlapSize[i];
+//	}
+//}
+//
+//CollisionEvent::~CollisionEvent()
+//{
+//}
+//
+//IEvent * CollisionEvent::Copy() const
+//{
+//	return new CollisionEvent(_id, _properties, _overlapSize);
+//}
+//
+//const char * CollisionEvent::GetName() const
+//{
+//	return "Collision Event";
+//}
+//

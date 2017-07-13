@@ -266,30 +266,30 @@ private:
 	static EventType _type;
 };
 
-class CollisionEvent : public BaseEvent
-{
-public:
-	explicit CollisionEvent(ObjectId id, const TileProperty *properties, const Vector2 *overlapSize);
-	virtual ~CollisionEvent();
-	IEvent *Copy() const override;
-	const char *GetName() const;
-	EventType GetType() const override { return _type; }
-
-	ObjectId GetId() { return _id; }
-
-	//CollisionDirection GetCollisionDirection() { return _direction; }
-	TileProperty *GetTileProperties() { return _properties; }
-	Vector2 *GetOverlapsSize() { return _overlapSize; }
-	//int *GetOverlapAmount() { return _overlapAmount; }
-
-private:
-	ObjectId _id;
-	TileProperty _properties[8];
-	Vector2 _overlapSize[8];
-	//int _overlapAmount[6]{};
-	//CollisionDirection _direction;
-	static EventType _type;
-};
+//class CollisionEvent : public BaseEvent
+//{
+//public:
+//	explicit CollisionEvent(ObjectId id, const TileProperty *properties, const Vector2 *overlapSize);
+//	virtual ~CollisionEvent();
+//	IEvent *Copy() const override;
+//	const char *GetName() const;
+//	EventType GetType() const override { return _type; }
+//
+//	ObjectId GetId() { return _id; }
+//
+//	//CollisionDirection GetCollisionDirection() { return _direction; }
+//	TileProperty *GetTileProperties() { return _properties; }
+//	Vector2 *GetOverlapsSize() { return _overlapSize; }
+//	//int *GetOverlapAmount() { return _overlapAmount; }
+//
+//private:
+//	ObjectId _id;
+//	TileProperty _properties[8];
+//	Vector2 _overlapSize[8];
+//	//int _overlapAmount[6]{};
+//	//CollisionDirection _direction;
+//	static EventType _type;
+//};
 
 
 #endif

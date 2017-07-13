@@ -120,6 +120,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="singletonBase.h" />
     <ClInclude Include="State.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextDataManager.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="TileInfo.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Timer.h" />
@@ -168,6 +170,7 @@
     <ClCompile Include="MapToolScene.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

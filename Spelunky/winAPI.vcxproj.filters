@@ -94,9 +94,6 @@
     <Filter Include="GameFramework2D\Manager\Timer">
       <UniqueIdentifier>{9f10dd24-16cc-4331-90f0-b7d05a13aaf4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\RoomInfo">
-      <UniqueIdentifier>{0be61fdb-bfe6-4f4f-a151-1d8b5456a006}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -258,6 +255,12 @@
     <ClInclude Include="File.h">
       <Filter>GameFramework2D\Utils\File</Filter>
     </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -382,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>GameFramework2D\Utils\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

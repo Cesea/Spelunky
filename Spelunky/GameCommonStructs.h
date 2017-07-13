@@ -122,14 +122,19 @@ struct ControlCommand
 };
 
 
-enum TileProperty
+enum TileCollisionType
 {
-	TILE_None,
-	TILE_Block,
-	TILE_Pushable,
-	TILE_Climbable,
-	TILE_StandableClimb,
-	TILE_VerticalDeath,
+	TILE_COLLISION_NONE,
+	TILE_COLLISION_BLOCK,
+	TILE_COLLISION_UPPER,
+	TILE_COLLISION_LADDER,
+	TILE_COLLISION_EOF_LADDER
+};
+enum ObjectLayer
+{
+	LAYER_TILE,
+	LAYER_OBJECT,
+	LAYER_MASK,
 };
 
 enum class EntityState

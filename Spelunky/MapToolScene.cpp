@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MapToolScene.h"
 
+using namespace MapTool;
+
 MapToolScene::MapToolScene()
 {
 }
@@ -146,9 +148,18 @@ void MapToolScene::Render()
 		}
 	}
 	//Draw Button
+	if (_drawingMode == DrawingMode::Draw)
+	{
+		FillBox(gRenderTarget, 595, 605, 92, 40, IM::RED);
+	}
 	if (IM::Button(GEN_ID, 20, 560, _drawTextWidth, _drawText))
 	{
 		_drawingMode = DrawingMode::Draw;
+	}
+
+	if (_drawingMode == DrawingMode::Erase)
+	{
+		FillBox(gRenderTarget, 694, 605, 92, 40, IM::RED);
 	}
 	//Erase Button
 	if (IM::Button(GEN_ID, 120, 560, _eraseTextWidth, _eraseText))
@@ -203,9 +214,10 @@ void MapToolScene::Render()
 				if ((_roomInfo.layer2[index].sourceIndex.x != -1) || 
 					(_roomInfo.layer2[index].maskInfo != 0))
 				{
-					//const auto & infoRef = _roomInfo.layer2[index];
 					const IntVector2 &tileIndex = _roomInfo.layer2[index].sourceIndex;
 					const std::wstring &tileString = _roomInfo.layer2[index].imageKey;
+					auto &found = _usingImages.find(tileString);
+					found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE, tileIndex.x, tileIndex.y);
 
 					for (int i = 0; i < 4; ++i)
 					{
@@ -234,6 +246,7 @@ void MapToolScene::Render()
 			}
 		}
 	}
+
 	if (IM::uistate.editorOn)
 	{
 		if ( IM::uistate.mouseRightRelease && 
@@ -404,7 +417,6 @@ void MapToolScene::LoadMapButtonAction()
 		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer0, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer2, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
-
 	}
 	loadFile.Close();
 }

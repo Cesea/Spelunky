@@ -38,27 +38,26 @@ private :
 
 	void SaveCurrentEditingImageInfoAction();
 
-	void CalculateBitMask(TileInfo *sourceLayer, TileInfo *maskLayer);
+	void CalculateBitMask(MapTool::TileInfo *sourceLayer, MapTool::TileInfo *maskLayer);
 	void RenderMasks(int drawXIndex, int drawYIndex, const uint32 maskInfo, D2DSprite *image);
-	void ClearAllTheBits(RoomInfo *roomInfo);
+	void ClearAllTheBits(MapTool::RoomInfo *roomInfo);
 
-	void TileInfoBitmaskCopy(const std::wstring imageKey, TileInfo &sourTile, TileInfo &maskTile, uint32 offset);
+	void TileInfoBitmaskCopy(const std::wstring imageKey, MapTool::TileInfo &sourTile, MapTool::TileInfo &maskTile, uint32 offset);
 
 	int InSyncImageInfo();
 	int OutSyncImageInfo();
 
-	void WriteTileInfoChunkForMap(FileUtils::File &file, const TileInfo *infos, int xCount, int yCount);
-	void ReadTileInfoChunkForMap(FileUtils::File &file, TileInfo *infos, int xCount, int yCount);
+	void WriteTileInfoChunkForMap(FileUtils::File &file, const MapTool::TileInfo *infos, int xCount, int yCount);
+	void ReadTileInfoChunkForMap(FileUtils::File &file, MapTool::TileInfo *infos, int xCount, int yCount);
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 	//현재 수정하고 있는 이미지의 정보
-	TileImageInfo _editingTileImageInfo{};
+	MapTool::TileImageInfo _editingTileImageInfo{};
 	//현재 수정하고 있는 방의 정보
 	//TileSet<TileInfo> *_editingTileSet{};
-	RoomInfo _roomInfo{};
+	MapTool::RoomInfo _roomInfo{};
 	//그리드 셀렉터 이미지
 	D2DSprite *_gridSelectorSprite{};
-
 	//Paint Action에서 추가되는 이미지들의 맵
 	std::map<std::wstring, D2DSprite *>_usingImages;
 
