@@ -361,36 +361,13 @@ void MapToolScene::SaveMapButtonAction()
 	mbstowcs(wBuffer, filePath, 39);
 
 	saveFile.Write(L"--%s--\n\n", wBuffer);
+	//Write for first chunk
+	WriteTileInfoChunkForMap(saveFile, _roomInfo.layer0, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
+	//Write for second chunk
+	WriteTileInfoChunkForMap(saveFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
+	//Write for third chunk
+	WriteTileInfoChunkForMap(saveFile, _roomInfo.layer2, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 
-	saveFile.Write(L"Layer 0\n");
-	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	{
-		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-		{
-			int index = x + ROOM_TILE_COUNTX * y;
-			//_roomInfo.layer0[index].
-		}
-	}
-	//const TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[index];
-	//saveFile.Write(L"At X : %d, Y : %d\n", x, y);
-	//saveFile.Write(L"Destroyed Index X : %d, Y : %d\n",
-	//	currentTileInfo.destroyedIndex.x, currentTileInfo.destroyedIndex.y);
-	//saveFile.Write(L"CanMask : %d\n", currentTileInfo.canMask);
-	//saveFile.Write(L"Near Mask Info : %d\n", currentTileInfo.nearMaskInfo);
-	//saveFile.Write(L"Collision Type : %d\n", (int)currentTileInfo.collisionType);
-	//saveFile.Write(L"Mask Info : %u\n", currentTileInfo.maskInfo);
-	//saveFile.Write(L"Layer : %d\n", currentTileInfo.layer);
-
-
-	//for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	//{
-	//	for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-	//	{
-	//		saveFile.Write(L"texture name : %s\n", _editingTileSet->AtInfo(x, y).imageKey.c_str());
-	//		saveFile.Write(L"%d, %d\n\n", 
-	//			_editingTileSet->AtInfo(x, y).sourceIndex.x, _editingTileSet->AtInfo(x, y).sourceIndex.y);
-	//	}
-	//}
 	saveFile.Close();
 }
 void MapToolScene::LoadMapButtonAction()
@@ -408,6 +385,10 @@ void MapToolScene::LoadMapButtonAction()
 
 	loadFile.GetLine();
 	loadFile.GetLine();
+
+	ReadTileInfoChunkForMap(loadFile, _roomInfo.layer0, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
+	ReadTileInfoChunkForMap(loadFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
+	ReadTileInfoChunkForMap(loadFile, _roomInfo.layer2, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 
 	//WCHAR buffer[32];
 	//for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
@@ -851,4 +832,63 @@ int MapToolScene::OutSyncImageInfo()
 	_stprintf(_layerBuffer, L"");
 
 	return success;
+}
+
+void MapToolScene::WriteTileInfoChunkForMap(FileUtils::File &file, const TileInfo *infos, int xCount, int yCount)
+{
+	for (int y = 0; y < yCount; ++y)
+	{
+		for (int x = 0; x < xCount; ++x)
+		{
+			int index = x + xCount * y;
+			const TileInfo &currentTileInfo = infos[index];
+			file.Write(L"At X : %d, Y : %d\n", x, y);
+			file.Write(L"Image Key : %s\n", currentTileInfo.imageKey.empty() ? L"e" : currentTileInfo.imageKey.c_str());
+			file.Write(L"SourceIndex X : %d, Y : %d\n", currentTileInfo.sourceIndex.x, currentTileInfo.sourceIndex.y);
+			file.Write(L"Destroyed Index X : %d, Y : %d\n",
+				currentTileInfo.destroyedIndex.x, currentTileInfo.destroyedIndex.y);
+			file.Write(L"CanMask : %d\n", currentTileInfo.canMask);
+			file.Write(L"Near Mask Info : %d\n", currentTileInfo.nearMaskInfo);
+			file.Write(L"Collision Type : %d\n", (int)currentTileInfo.collisionType);
+			file.Write(L"Mask Info : %u\n", currentTileInfo.maskInfo);
+			file.Write(L"Layer : %d\n", currentTileInfo.layer);
+		}
+	}
+}
+
+void MapToolScene::ReadTileInfoChunkForMap(FileUtils::File & file, TileInfo * infos, int xCount, int yCount)
+{
+	WCHAR buffer[40];
+
+	for (int y = 0; y < yCount; ++y)
+	{
+		for (int x = 0; x < xCount; ++x)
+		{
+
+			int index = x + xCount * y;
+			TileInfo &currentTileInfo = infos[index];
+
+			std::wstring str = file.GetLine();
+			file.Read(L"Image Key : %s\n", &buffer);
+			file.Read(L"SourceIndex X : %d, Y : %d\n", &currentTileInfo.sourceIndex.x, &currentTileInfo.sourceIndex.y);
+			file.Read(L"Destroyed Index X : %d, Y : %d\n",
+				&currentTileInfo.destroyedIndex.x, &currentTileInfo.destroyedIndex.y);
+			file.Read(L"CanMask : %d\n", &currentTileInfo.canMask);
+			file.Read(L"Near Mask Info : %d\n", &currentTileInfo.nearMaskInfo);
+			file.Read(L"Collision Type : %d\n", &currentTileInfo.collisionType);
+			file.Read(L"Mask Info : %u\n", &currentTileInfo.maskInfo);
+			file.Read(L"Layer : %d\n", &currentTileInfo.layer);
+
+			if (wcscmp(buffer, L"e") == 0)
+			{
+				currentTileInfo.imageKey.clear();
+			}
+			else
+			{
+				currentTileInfo.imageKey = buffer;
+				CheckUsingImageExistence(currentTileInfo.imageKey);
+			}
+
+		}
+	}
 }

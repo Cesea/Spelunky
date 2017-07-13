@@ -46,6 +46,9 @@ private :
 
 	int InSyncImageInfo();
 	int OutSyncImageInfo();
+
+	void WriteTileInfoChunkForMap(FileUtils::File &file, const TileInfo *infos, int xCount, int yCount);
+	void ReadTileInfoChunkForMap(FileUtils::File &file, TileInfo *infos, int xCount, int yCount);
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 	//현재 수정하고 있는 이미지의 정보
