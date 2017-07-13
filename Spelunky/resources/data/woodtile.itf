@@ -1,514 +1,578 @@
 --resources\data\woodtile.itf--
 woodtile
 At X : 0, Y : 0
+Boomb Destroy : 0
 Destroyed Index X : 0, Y : 0
-CanMask : 0
-Near Mask Info : 15
+This Mask Info : 0
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
 Applied : 1
 At X : 1, Y : 0
+Boomb Destroy : 0
 Destroyed Index X : 1, Y : 0
-CanMask : 0
-Near Mask Info : 15
+This Mask Info : 0
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
 Applied : 1
 At X : 2, Y : 0
+Boomb Destroy : 0
 Destroyed Index X : 2, Y : 0
-CanMask : 0
-Near Mask Info : 15
+This Mask Info : 0
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
 Applied : 1
 At X : 3, Y : 0
-Destroyed Index X : 3, Y : 0
-CanMask : 0
-Near Mask Info : 15
+Boomb Destroy : 0
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
 Applied : 1
 At X : 4, Y : 0
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 0
+Destroyed Index X : 2, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
 Applied : 0
 At X : 5, Y : 0
+Boomb Destroy : 0
 Destroyed Index X : 5, Y : 0
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 6, Y : 0
+Boomb Destroy : 0
 Destroyed Index X : 6, Y : 0
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 7, Y : 0
-Destroyed Index X : 7, Y : 0
-CanMask : 0
+Boomb Destroy : 0
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 0, Y : 1
+Boomb Destroy : 1
 Destroyed Index X : 1, Y : 0
-CanMask : 1
+This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
 Layer : 0
 Applied : 1
 At X : 1, Y : 1
-Destroyed Index X : 1, Y : 0
-CanMask : 1
+Boomb Destroy : 0
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
-Applied : 1
+Applied : 0
 At X : 2, Y : 1
-Destroyed Index X : 1, Y : 0
-CanMask : 1
+Boomb Destroy : 0
+Destroyed Index X : 5, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
-Applied : 1
+Applied : 0
 At X : 3, Y : 1
-Destroyed Index X : 1, Y : 0
-CanMask : 1
+Boomb Destroy : 0
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 4, Y : 1
-Destroyed Index X : 4, Y : 1
-CanMask : 1
+Boomb Destroy : 0
+Destroyed Index X : 6, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
-Applied : 1
+Applied : 0
 At X : 5, Y : 1
+Boomb Destroy : 0
 Destroyed Index X : 5, Y : 1
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 6, Y : 1
+Boomb Destroy : 0
 Destroyed Index X : 6, Y : 1
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 7, Y : 1
+Boomb Destroy : 0
 Destroyed Index X : 7, Y : 1
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 0, Y : 2
+Boomb Destroy : 0
 Destroyed Index X : 1, Y : 0
-CanMask : 1
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
-Applied : 1
+Applied : 0
 At X : 1, Y : 2
-Destroyed Index X : 1, Y : 0
-CanMask : 1
+Boomb Destroy : 0
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
 Layer : 0
 Applied : 1
 At X : 2, Y : 2
+Boomb Destroy : 0
 Destroyed Index X : 1, Y : 0
-CanMask : 1
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
-Applied : 1
+Applied : 0
 At X : 3, Y : 2
-Destroyed Index X : 1, Y : 0
-CanMask : 1
+Boomb Destroy : 0
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
 Layer : 0
 Applied : 1
 At X : 4, Y : 2
+Boomb Destroy : 0
 Destroyed Index X : 1, Y : 0
-CanMask : 1
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
-Applied : 1
+Applied : 0
 At X : 5, Y : 2
+Boomb Destroy : 0
 Destroyed Index X : 5, Y : 2
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 15
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 6, Y : 2
+Boomb Destroy : 0
 Destroyed Index X : 6, Y : 2
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 15
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 7, Y : 2
+Boomb Destroy : 0
 Destroyed Index X : 7, Y : 2
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 2
 Applied : 1
 At X : 0, Y : 3
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 3, Y : 0
+This Mask Info : 12
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 1, Y : 3
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 14
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 2, Y : 3
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 10
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 3, Y : 3
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 3, Y : 0
+This Mask Info : 6
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 4, Y : 3
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 12
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 5, Y : 3
+Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 14
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 6, Y : 3
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 10
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 7, Y : 3
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 0, Y : 4
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 13
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 1, Y : 4
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 15
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 2, Y : 4
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 11
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 3, Y : 4
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 9
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 4, Y : 4
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 13
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 5, Y : 4
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 3, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 6, Y : 4
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 11
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 7, Y : 4
+Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 0, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 5
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 1, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 7
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 2, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 3
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 3, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 4, Y : 0
+This Mask Info : 15
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 4, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 5
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 5, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 7
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 6, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 3
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 7, Y : 5
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 8
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 0, Y : 6
+Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 14
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 1, Y : 6
+Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 14
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 2, Y : 6
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 13
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 3, Y : 6
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 13
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 4, Y : 6
+Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 15
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 5, Y : 6
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 3, Y : 0
+This Mask Info : 15
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 6, Y : 6
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 3, Y : 0
+This Mask Info : 15
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 7, Y : 6
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 1
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 0, Y : 7
+Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 11
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 1, Y : 7
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 11
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 2, Y : 7
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 1, Y : 0
+This Mask Info : 7
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 3, Y : 7
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 2, Y : 0
+This Mask Info : 7
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 4, Y : 7
-Destroyed Index X : 0, Y : 0
-CanMask : 0
+Boomb Destroy : 1
+Destroyed Index X : 3, Y : 0
+This Mask Info : 1
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1
 At X : 5, Y : 7
+Boomb Destroy : 0
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
 Applied : 0
 At X : 6, Y : 7
+Boomb Destroy : 0
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
 Layer : 0
 Applied : 0
 At X : 7, Y : 7
+Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-CanMask : 0
+This Mask Info : 15
 Near Mask Info : 0
-Collision Type : 0
+Collision Type : 1
 Mask Info : 0
 Layer : 0
-Applied : 0
+Applied : 1

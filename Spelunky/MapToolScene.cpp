@@ -137,7 +137,6 @@ void MapToolScene::Render()
 
 	//Begin of Second Window
 	IM::BeginWindow(580, 20, 680, WINSIZEY - 40, L"Tile");
-
 	if (IM::GridPainter(GEN_ID, 20, 20, ROOM_TILE_COUNTX * TILE_SIZE, ROOM_TILE_COUNTY * TILE_SIZE,
 		TILE_SIZE, TILE_SIZE, _xPainter, _yPainter))
 	{
@@ -146,7 +145,6 @@ void MapToolScene::Render()
 			PainterAction();
 		}
 	}
-
 	//Draw Button
 	if (IM::Button(GEN_ID, 20, 560, _drawTextWidth, _drawText))
 	{
@@ -193,7 +191,6 @@ void MapToolScene::Render()
 					const std::wstring &tileString = _roomInfo.layer0[index].imageKey;
 					auto &found = _usingImages.find(tileString);
 					found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE, tileIndex.x, tileIndex.y);
-
 				}
 				//RenderMasks(x, y, infoRef.maskInfo, found->second);
 			}
@@ -217,8 +214,6 @@ void MapToolScene::Render()
 			}
 		}
 	}
-	//그린 후에는 항상 EndDraw()
-
 	if (IM::uistate.editorOn)
 	{
 		if ( IM::uistate.mouseRightRelease && 
@@ -246,21 +241,21 @@ void MapToolScene::Render()
 
 			IM::Label(GEN_ID, 10, 10, 150, L"Bom Destroy");
 			IM::Label(GEN_ID, 10, 45, 150, L"Destroyed Index");
-			IM::Label(GEN_ID, 10, 80, 150, L"Can Mask");
+			IM::Label(GEN_ID, 10, 80, 150, L"This Mask");
 			
 			IM::Label(GEN_ID, 310, 10, 150, L"Near Mask");
 			IM::Label(GEN_ID, 310, 45, 150, L"Collision Type");
 			IM::Label(GEN_ID, 310, 80, 150, L"Layer");
 			IM::TextBox(GEN_ID, 170, 10, 130, _boomDestroyBuffer);
 			IM::TextBox(GEN_ID, 170, 45, 130, _destroyedIndexBuffer);
-			IM::TextBox(GEN_ID, 170, 80, 130, _canMaskBuffer);
+			IM::TextBox(GEN_ID, 170, 80, 130, _thisMaskBuffer);
 			IM::TextBox(GEN_ID, 470, 10, 130, _nearMaskBuffer);
 			IM::TextBox(GEN_ID, 470, 45, 130, _collisionTypeBuffer);
 			IM::TextBox(GEN_ID, 470, 80, 130, _layerBuffer);
-
 		}
 	}
 	IM::IMGUIFinish();
+	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();
 }
 
@@ -295,7 +290,6 @@ void MapToolScene::LoadButtonAction()
 		_stprintf(_loadImageNameBuffer, L"ERROR!! No Such Sprite");
 	}
 }
-
 void MapToolScene::PainterAction()
 {
 	if (_gridSelectorSprite->GetSourceImage())
@@ -341,14 +335,9 @@ void MapToolScene::PainterAction()
 		{
 			_roomInfo.layer0[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
 			_roomInfo.layer2[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
-			//_editingTileSet->SetValue(_xPainter, _yPainter, 0);
-			//_editingTileSet->AtInfo(_xPainter, _yPainter).maskInfo = 0;
-			//_editingTileSet->AtInfo(_xPainter, _yPainter).imageKey.clear();
-			//_editingTileSet->AtInfo(_xPainter, _yPainter).sourceIndex = IntVector2(-1, -1);
 		}
 	}
 }
-
 void MapToolScene::SaveMapButtonAction()
 {
 	FileUtils::File saveFile;
@@ -407,7 +396,6 @@ void MapToolScene::CheckUsingImageExistence(const std::wstring &key)
 		_usingImages.insert(std::make_pair(key, insertImage));
 	}
 }
-
 void MapToolScene::SaveCurrentEditingImageInfoAction()
 {
 	FileUtils::File saveFile;
@@ -435,10 +423,11 @@ void MapToolScene::SaveCurrentEditingImageInfoAction()
 			int index = x + 8 * y;
 			const TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[index];
 			saveFile.Write(L"At X : %d, Y : %d\n", x, y);
+			saveFile.Write(L"Boomb Destroy : %d\n", currentTileInfo.canBeDestroyedByBomb);
 			saveFile.Write(L"Destroyed Index X : %d, Y : %d\n", 
 				currentTileInfo.destroyedIndex.x, currentTileInfo.destroyedIndex.y);
-			saveFile.Write(L"CanMask : %d\n", currentTileInfo.canMask);
-			saveFile.Write(L"Near Mask Info : %d\n", currentTileInfo.nearMaskInfo);
+			saveFile.Write(L"This Mask Info : %u\n", currentTileInfo.thisMaskInfo);
+			saveFile.Write(L"Near Mask Info : %u\n", currentTileInfo.nearMaskInfo);
 			saveFile.Write(L"Collision Type : %d\n", (int)currentTileInfo.collisionType);
 			saveFile.Write(L"Mask Info : %u\n", currentTileInfo.maskInfo);
 			saveFile.Write(L"Layer : %d\n", currentTileInfo.layer);
@@ -447,7 +436,6 @@ void MapToolScene::SaveCurrentEditingImageInfoAction()
 	}
 	saveFile.Close();
 }
-
 void MapToolScene::LoadEditingTileImageInfo()
 {
 	FileUtils::File loadFile;
@@ -474,10 +462,11 @@ void MapToolScene::LoadEditingTileImageInfo()
 				int index = x + 8 * y;
 				const TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[index];
 				loadFile.GetLine();
+				loadFile.Read(L"Boomb Destroy : %d\n", &currentTileInfo.canBeDestroyedByBomb);
 				loadFile.Read(L"Destroyed Index X : %d, Y : %d\n",
 					&currentTileInfo.destroyedIndex.x, &currentTileInfo.destroyedIndex.y);
-				loadFile.Read(L"CanMask : %d\n", &currentTileInfo.canMask);
-				loadFile.Read(L"Near Mask Info : %d\n", &currentTileInfo.nearMaskInfo);
+				loadFile.Read(L"This Mask Info : %u\n", &currentTileInfo.thisMaskInfo);
+				loadFile.Read(L"Near Mask Info : %u\n", &currentTileInfo.nearMaskInfo);
 				loadFile.Read(L"Collision Type : %d\n", &currentTileInfo.collisionType);
 				loadFile.Read(L"Mask Info : %u\n", &currentTileInfo.maskInfo);
 				loadFile.Read(L"Layer : %d\n", &currentTileInfo.layer);
@@ -495,7 +484,6 @@ void MapToolScene::LoadEditingTileImageInfo()
 //만약 타일이 없다면 현재 타일에다 해당되는 방향에 비트마스크를 적용 시킨다.
 //만약 타일이 있다면 해당 타일이 특정 방향의 비트마스크를 적용시키는지에 대한 정보를 확인한다.
 //정보에 따라서 현재 타일에 대한 비트마스크 정보를 업데이트 시킨다.
-
 void MapToolScene::CalculateBitMask(TileInfo *sourceLayer, TileInfo *maskLayer)
 {
 	ClearAllTheBits(&_roomInfo);
@@ -504,15 +492,16 @@ void MapToolScene::CalculateBitMask(TileInfo *sourceLayer, TileInfo *maskLayer)
 		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
 		{
 			int index = x + ROOM_TILE_COUNTX * y;
-			if (sourceLayer[index].canMask)
+			if (sourceLayer[index].thisMaskInfo)
 			{
 				const std::wstring &imageKey = sourceLayer[index].imageKey;
 				//위에 타일이 있는지 검사
 				int upperY = y - 1;
 				if (upperY >= 0)
 				{
-					//위에 타일이 없다.
-					if (sourceLayer[x + ROOM_TILE_COUNTX * upperY].sourceIndex.x == -1)
+					//위에 타일이 없고 현재 타일이 위쪽에 마스크를 그리는 걸 허용하면..
+					if ((sourceLayer[x + ROOM_TILE_COUNTX * upperY].sourceIndex.x == -1) && 
+						((sourceLayer[index].thisMaskInfo >> 0) & 1))
 					{
 						TileInfoBitmaskCopy(imageKey,
 							sourceLayer[x + ROOM_TILE_COUNTX * upperY], maskLayer[x + ROOM_TILE_COUNTX * upperY], 0);
@@ -531,8 +520,9 @@ void MapToolScene::CalculateBitMask(TileInfo *sourceLayer, TileInfo *maskLayer)
 				int leftX = x - 1;
 				if (leftX >= 0)
 				{
-					//왼쪽 타일이 없다
-					if (sourceLayer[leftX + ROOM_TILE_COUNTX * y].sourceIndex.x == -1)
+					//왼쪽 타일이 없고 현재 타일이 왼쪽에 마스크를 그리는 걸 허용하면..
+					if ((sourceLayer[leftX + ROOM_TILE_COUNTX * y].sourceIndex.x == -1) &&
+						((sourceLayer[index].thisMaskInfo >> 1) & 1))
 					{
 						TileInfoBitmaskCopy(imageKey,
 							sourceLayer[leftX + ROOM_TILE_COUNTX * y], maskLayer[leftX + ROOM_TILE_COUNTX * y], 1);
@@ -551,8 +541,9 @@ void MapToolScene::CalculateBitMask(TileInfo *sourceLayer, TileInfo *maskLayer)
 				int rightX = x + 1;
 				if (rightX < ROOM_TILE_COUNTX)
 				{
-					//오른쪽 타일이 없다
-					if (sourceLayer[rightX + ROOM_TILE_COUNTX * y].sourceIndex.x == -1)
+					//오른쪽 타일이 없고 현재 타일이 오른쪽에 마스크를 그리는 걸 허용하면..
+					if ((sourceLayer[rightX + ROOM_TILE_COUNTX * y].sourceIndex.x == -1) && 
+						((sourceLayer[index].thisMaskInfo >> 2) & 1))
 					{
 						TileInfoBitmaskCopy(imageKey,
 							sourceLayer[rightX + ROOM_TILE_COUNTX * y], maskLayer[rightX + ROOM_TILE_COUNTX * y], 2);
@@ -571,8 +562,9 @@ void MapToolScene::CalculateBitMask(TileInfo *sourceLayer, TileInfo *maskLayer)
 				int lowerY = y + 1;
 				if (lowerY < ROOM_TILE_COUNTY)
 				{
-					//아래쪽 타일이 없다
-					if (sourceLayer[x + ROOM_TILE_COUNTX * lowerY].sourceIndex.x == -1)
+					//아래쪽 타일이 없고 현재 타일이 아래쪽에 그리는 걸 허용하면..
+					if ((sourceLayer[x + ROOM_TILE_COUNTX * lowerY].sourceIndex.x == -1) &&
+						((sourceLayer[index].thisMaskInfo >> 3) & 1))
 					{
 						TileInfoBitmaskCopy(imageKey,
 							sourceLayer[x + ROOM_TILE_COUNTX * lowerY], maskLayer[x + ROOM_TILE_COUNTX * lowerY], 3);
@@ -631,8 +623,15 @@ void MapToolScene::ClearAllTheBits(RoomInfo * roomInfo)
 void MapToolScene::TileInfoBitmaskCopy(const std::wstring imageKey, TileInfo &sourTile, TileInfo &maskTile, uint32 offset)
 {
 	sourTile.maskInfo |= (1 << offset);
+
 	maskTile.maskInfo |= (1 << offset);
 	maskTile.imageKey = imageKey;
+
+	sourTile.imageMaskInfo[offset].hasMask = true;
+	sourTile.imageMaskInfo[offset].maskImageKey = imageKey;
+
+	maskTile.imageMaskInfo[offset].hasMask = true;
+	maskTile.imageMaskInfo[offset].maskImageKey = imageKey;
 }
 
 int MapToolScene::InSyncImageInfo()
@@ -653,9 +652,21 @@ int MapToolScene::InSyncImageInfo()
 		str += std::to_wstring(currentTileInfo.destroyedIndex.y);
 		wcscpy(_destroyedIndexBuffer, str.c_str());
 
-		if (currentTileInfo.canMask) { str = L"true"; }
-		else { str = L"false"; }
-		wcscpy(_canMaskBuffer, str.c_str());
+		str = L"";
+		int thisMaskValue = currentTileInfo.thisMaskInfo;
+		for (int i = 3; i >= 0; --i)
+		{
+			if ((thisMaskValue >> i) & 1)
+			{
+				str += L"1";
+			}
+			else
+			{
+				str += L"0";
+			}
+		}
+		wcscpy(_thisMaskBuffer, str.c_str());
+
 
 		str = L"";
 		int nearMaskValue = currentTileInfo.nearMaskInfo;
@@ -719,19 +730,26 @@ int MapToolScene::OutSyncImageInfo()
 	}
 
 
-	bool canMask = false;
-	//마스크를 해당 타일에 할 수 있는지 없는지 체크
-	if (wcscmp(L"true", _canMaskBuffer) == 0 ||
-		wcscmp(L"True", _canMaskBuffer) == 0)
+	//현재 타일의 주변에 마스크를 칠 할수 있는지 없는지 체크
+	uint32 thisBitValue = 0;
+	if (wcslen(_thisMaskBuffer) == 4)
 	{
-		canMask = true;
-		//currentTileInfo.canMask = true;
-	}
-	else if (wcscmp(L"false", _canMaskBuffer) == 0 ||
-		wcscmp(L"False", _canMaskBuffer) == 0)
-	{
-		canMask = false;
-		//currentTileInfo.canMask = true;
+		WCHAR *pointer = _thisMaskBuffer;
+		while (*pointer)
+		{
+			if (*pointer != L'0' && *pointer != L'1')
+			{
+				_stprintf(_nearMaskBuffer, L"");
+				success = false;
+				break;
+			}
+			pointer++;
+		}
+		for (int i = 0; i < 4; ++i)
+		{
+			uint32 temp = _thisMaskBuffer[i] - 48;
+			thisBitValue |= (temp << (3 - i));
+		}
 	}
 	else
 	{
@@ -739,7 +757,7 @@ int MapToolScene::OutSyncImageInfo()
 	}
 
 	//주변에 마스크를 칠 할 수 있는지 없는지 체크
-	uint32 bitValue = 0;
+	uint32 nearBitValue = 0;
 	if (wcslen(_nearMaskBuffer) == 4)
 	{
 		WCHAR *pointer = _nearMaskBuffer;
@@ -757,7 +775,7 @@ int MapToolScene::OutSyncImageInfo()
 		for (int i = 0; i < 4; ++i)
 		{
 			uint32 temp = _nearMaskBuffer[i] - 48;
-			bitValue |= (temp << (3 - i));
+			nearBitValue |= (temp << (3 - i));
 		}
 	}
 	else
@@ -793,8 +811,8 @@ int MapToolScene::OutSyncImageInfo()
 		_editingTileImageInfo.applied[_selectorRect.x + 8 * _selectorRect.y] = true;
 		currentTileInfo.canBeDestroyedByBomb = boomDes;
 		currentTileInfo.destroyedIndex = IntVector2(desX, desY);
-		currentTileInfo.canMask = canMask;
-		currentTileInfo.nearMaskInfo = bitValue;
+		currentTileInfo.thisMaskInfo = thisBitValue;
+		currentTileInfo.nearMaskInfo = nearBitValue;
 		currentTileInfo.collisionType = (TileCollisionType)(colType);
 		currentTileInfo.layer = (ObjectLayer)(lay);
 
@@ -802,7 +820,7 @@ int MapToolScene::OutSyncImageInfo()
 
 	_stprintf(_boomDestroyBuffer, L"");
 	_stprintf(_destroyedIndexBuffer, L"");
-	_stprintf(_canMaskBuffer, L"");
+	_stprintf(_thisMaskBuffer, L"");
 	_stprintf(_nearMaskBuffer, L"");
 	_stprintf(_collisionTypeBuffer, L"");
 	_stprintf(_layerBuffer, L"");
@@ -823,8 +841,8 @@ void MapToolScene::WriteTileInfoChunkForMap(FileUtils::File &file, const TileInf
 			file.Write(L"SourceIndex X : %d, Y : %d\n", currentTileInfo.sourceIndex.x, currentTileInfo.sourceIndex.y);
 			file.Write(L"Destroyed Index X : %d, Y : %d\n",
 				currentTileInfo.destroyedIndex.x, currentTileInfo.destroyedIndex.y);
-			file.Write(L"CanMask : %d\n", currentTileInfo.canMask);
-			file.Write(L"Near Mask Info : %d\n", currentTileInfo.nearMaskInfo);
+			file.Write(L"This Mask Info : %u\n", currentTileInfo.thisMaskInfo);
+			file.Write(L"Near Mask Info : %u\n", currentTileInfo.nearMaskInfo);
 			file.Write(L"Collision Type : %d\n", (int)currentTileInfo.collisionType);
 			file.Write(L"Mask Info : %u\n", currentTileInfo.maskInfo);
 			file.Write(L"Layer : %d\n", currentTileInfo.layer);
@@ -849,8 +867,8 @@ void MapToolScene::ReadTileInfoChunkForMap(FileUtils::File & file, TileInfo * in
 			file.Read(L"SourceIndex X : %d, Y : %d\n", &currentTileInfo.sourceIndex.x, &currentTileInfo.sourceIndex.y);
 			file.Read(L"Destroyed Index X : %d, Y : %d\n",
 				&currentTileInfo.destroyedIndex.x, &currentTileInfo.destroyedIndex.y);
-			file.Read(L"CanMask : %d\n", &currentTileInfo.canMask);
-			file.Read(L"Near Mask Info : %d\n", &currentTileInfo.nearMaskInfo);
+			file.Read(L"This Mask Info : %u\n", &currentTileInfo.thisMaskInfo);
+			file.Read(L"Near Mask Info : %u\n", &currentTileInfo.nearMaskInfo);
 			file.Read(L"Collision Type : %d\n", &currentTileInfo.collisionType);
 			file.Read(L"Mask Info : %u\n", &currentTileInfo.maskInfo);
 			file.Read(L"Layer : %d\n", &currentTileInfo.layer);

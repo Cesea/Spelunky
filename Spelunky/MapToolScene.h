@@ -73,7 +73,7 @@ private:
 
 	WCHAR _boomDestroyBuffer[16]{};
 	WCHAR _destroyedIndexBuffer[16]{};
-	WCHAR _canMaskBuffer[16]{};
+	WCHAR _thisMaskBuffer[16]{};
 	WCHAR _nearMaskBuffer[16]{};
 	WCHAR _collisionTypeBuffer[16]{};
 	WCHAR _layerBuffer[16]{};
