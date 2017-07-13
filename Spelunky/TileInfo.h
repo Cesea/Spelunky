@@ -20,6 +20,12 @@ enum ObjectLayer
 	LAYER_MASK,
 };
 
+struct MaskInfo
+{
+	std::wstring maskImageKey{};
+	bool32 hasMask{};
+};
+
 
 struct TileInfo
 {
@@ -65,11 +71,6 @@ struct TileImageInfo
 	int applied[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{false,};
 };
 
-struct MaskInfo
-{
-	std::wstring maskImageKey{};
-	bool32 hasMask{};
-};
 //복도 방,
 //다 막힌 방
 //위만 뚤린 방
