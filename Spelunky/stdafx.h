@@ -157,7 +157,8 @@ typedef Vector3 MeterVector3;
 
 #include "Console.h"
 
-#include "D2DSprite.h"
+#include "D2DAnimationSprite.h"
+#include "D2DFrameSprite.h"
 
 #include "File.h"
 

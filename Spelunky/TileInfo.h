@@ -51,20 +51,12 @@ namespace MapTool
 		int applied[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{ false, };
 	};
 
-	//복도 방,
-	//다 막힌 방
-	//위만 뚤린 방
-	//아래만 뚤린 방
-	enum RoomType
-	{
-		//ROOM_,
-	};
 
 	struct RoomInfo
 	{
+		RoomType roomType;
 		TileInfo layer0[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
 		TileInfo layer1[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
-		TileInfo layer2[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
 	};
 }
 #endif

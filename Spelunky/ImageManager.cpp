@@ -38,27 +38,12 @@ void ImageManager::Release()
 
 void ImageManager::LoadImageFromFile(const std::wstring &filePath, const std::wstring &keyName)
 {
-
-	//_imageIter = _images.end();
-	//for (auto it = _images.begin(); it != _images.end(); )
-	//{
-	//	if (_tcscmp(it->first.c_str(), keyName) == 0)
-	//	{
-	//		_imageIter = it;
-	//		break;
-	//	}
-	//	else
-	//	{
-	//		++it;
-	//	}
-	//}
-
 	auto &found = _images.find(keyName);
 
 	if (found != _images.end())
 	{
 //		이미지가 있다.
-		Console::Log("Image %s already exist\n");
+		Console::Log("Image %s already exist\n", keyName.c_str());
 		return;
 	}
 	else

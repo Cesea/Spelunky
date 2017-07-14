@@ -78,6 +78,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	
 	//PeekMessage : 메시지가 없어도 리턴되는 함수이다... 넌블럭... (뺑뺑이~~)
 	//GetMessage : 메시지를 꺼내올때까지 블럭되는 함수...
+	_console.Init();
 
 	//노드 초기화
 	if (FAILED(_game.Init()))
@@ -87,7 +88,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	}
 	_running = true;
 
-	_console.Init();
 	
 	Console::Log("Hello\n");
 	BringWindowToTop(_hWnd);

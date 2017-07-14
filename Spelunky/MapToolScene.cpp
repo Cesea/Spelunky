@@ -169,7 +169,7 @@ void MapToolScene::Render()
 	//BitMask Button
 	if (IM::Button(GEN_ID, 240, 560, _maskTextWidth, _maskText))
 	{
-		CalculateBitMask(_roomInfo.layer0, _roomInfo.layer2);
+		CalculateBitMask(_roomInfo.layer0, _roomInfo.layer1);
 	}
 
 	IM::TextBox(GEN_ID, 20, 600, 400, _mapLoadSaveNameBuffer);
@@ -203,7 +203,6 @@ void MapToolScene::Render()
 					auto &found = _usingImages.find(tileString);
 					found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE, tileIndex.x, tileIndex.y);
 				}
-				//RenderMasks(x, y, infoRef.maskInfo, found->second);
 			}
 		}
 		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
@@ -211,19 +210,19 @@ void MapToolScene::Render()
 			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
 			{
 				int index = x + y * ROOM_TILE_COUNTX;
-				if ((_roomInfo.layer2[index].sourceIndex.x != -1) || 
-					(_roomInfo.layer2[index].maskInfo != 0))
+				if ((_roomInfo.layer1[index].sourceIndex.x != -1) || 
+					(_roomInfo.layer1[index].maskInfo != 0))
 				{
-					const IntVector2 &tileIndex = _roomInfo.layer2[index].sourceIndex;
-					const std::wstring &tileString = _roomInfo.layer2[index].imageKey;
+					const IntVector2 &tileIndex = _roomInfo.layer1[index].sourceIndex;
+					const std::wstring &tileString = _roomInfo.layer1[index].imageKey;
 					auto &found = _usingImages.find(tileString);
 					found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE, tileIndex.x, tileIndex.y);
 
 					for (int i = 0; i < 4; ++i)
 					{
-						if (_roomInfo.layer2[index].imageMaskInfo[i].hasMask)
+						if (_roomInfo.layer1[index].imageMaskInfo[i].hasMask)
 						{
-							auto &found = _usingImages.find(_roomInfo.layer2[index].imageMaskInfo[i].maskImageKey);
+							auto &found = _usingImages.find(_roomInfo.layer1[index].imageMaskInfo[i].maskImageKey);
 							if (i == 0)
 							{
 								found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE + TILE_SIZE_HALF, 5, 0);
@@ -351,7 +350,7 @@ void MapToolScene::PainterAction()
 					}
 					else if (selectorInfo.layer == 2)
 					{
-						_roomInfo.layer2[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
+						_roomInfo.layer1[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
 					}
 				}
 			}
@@ -367,7 +366,7 @@ void MapToolScene::PainterAction()
 		else if(_drawingMode == DrawingMode::Erase)
 		{
 			_roomInfo.layer0[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
-			_roomInfo.layer2[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
+			_roomInfo.layer1[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
 		}
 	}
 }
@@ -393,7 +392,6 @@ void MapToolScene::SaveMapButtonAction()
 		//Write for second chunk
 		WriteTileInfoChunkForMap(saveFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 		//Write for third chunk
-		WriteTileInfoChunkForMap(saveFile, _roomInfo.layer2, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 	}
 
 	saveFile.Close();
@@ -416,7 +414,6 @@ void MapToolScene::LoadMapButtonAction()
 
 		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer0, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
-		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer2, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 	}
 	loadFile.Close();
 }
@@ -660,11 +657,11 @@ void MapToolScene::ClearAllTheBits(RoomInfo * roomInfo)
 	}
 	for (int i = 0; i < ROOM_TILE_COUNTX * ROOM_TILE_COUNTY; ++i)
 	{
-		roomInfo->layer2[i].maskInfo = 0;
+		roomInfo->layer1[i].maskInfo = 0;
 		for (int j = 0; j < 4; ++j)
 		{
-			roomInfo->layer2[i].imageMaskInfo[j].hasMask = false;
-			roomInfo->layer2[i].imageMaskInfo[j].maskImageKey.clear();
+			roomInfo->layer1[i].imageMaskInfo[j].hasMask = false;
+			roomInfo->layer1[i].imageMaskInfo[j].maskImageKey.clear();
 		}
 	}
 }
@@ -853,7 +850,6 @@ int MapToolScene::OutSyncImageInfo()
 	{
 		success = false;
 	}
-
 	//여기서 타일 인포에 대한 값을 최종 최신화를 한다.
 	if (success)
 	{

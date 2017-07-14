@@ -15,8 +15,22 @@ namespace PlayScene
 
 	struct Tile
 	{
-		D2DSprite *_sprite{};
-		//std::wstring imageKey{};
+		Tile &operator= (Tile &other)
+		{
+			sprite = other.sprite;
+			memcpy(spriteMaskInfo, other.spriteMaskInfo, sizeof(MaskInfo) * 4);
+			sourceIndex = other.sourceIndex;
+			destroyedIndex = other.destroyedIndex;
+			thisMaskInfo = other.thisMaskInfo;
+			nearMaskInfo = other.nearMaskInfo;
+			collisionType = other.collisionType;
+			maskInfo = other.maskInfo;
+			canBeDestroyedByBomb = other.canBeDestroyedByBomb;
+			layer = other.layer;
+			return *this;
+		}
+
+		D2DSprite *sprite{};
 		MaskInfo spriteMaskInfo[4]{};
 		IntVector2 sourceIndex{ -1, -1 };
 		IntVector2 destroyedIndex{};

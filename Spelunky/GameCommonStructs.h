@@ -121,6 +121,18 @@ struct ControlCommand
 	Command dash{};
 };
 
+//복도 방,
+//다 막힌 방
+//위만 뚤린 방
+//아래만 뚤린 방
+enum RoomType
+{
+	ROOM_CLOSED,
+	ROOM_AISLE,
+	ROOM_UPPER,
+	ROOM_LOWER,
+};
+
 
 enum TileCollisionType
 {
@@ -238,57 +250,6 @@ inline T & TileSet<T>::AtInfo(uint32 i)
 	return infos[i];
 }
 
-
-//template<typename T>
-//inline TileSet<T>::TileSet(uint32 countX, uint32 countY, const T & clearValue)
-//{
-//	this->countX = countX;
-//	this->countY = countY;
-//	tiles = new T[countX * countY];
-//	Clear(clearValue);
-//}
-//
-//template<typename T>
-//inline TileSet<T>::~TileSet()
-//{
-//	delete[] tiles;
-//}
-//
-//template<typename T>
-//inline void TileSet<T>::Clear(T value)
-//{
-//	for (int i = 0; i < countX * countY; ++i)
-//	{
-//		tiles[i] = 0;
-//		infos[i] = value;
-//	}
-//}
-//
-//template<typename T>
-//inline T TileSet<T>::GetValue(uint32 x, uint32 y)
-//{
-//	return tiles[x + countX * y];
-//}
-//
-//template<typename T>
-//inline void TileSet<T>::SetValue(uint32 x, uint32 y, const T & value)
-//{
-//	tiles[x + countX * y] = value;
-//}
-//
-//template<typename T>
-//inline T & TileSet<T>::At(uint32 x, uint32 y)
-//{
-//	return tiles[x + countX	* y];
-//}
-//
-//template<typename T>
-//inline T & TileSet<T>::At(uint32 i)
-//{
-//	Assert(i >= 0 && i < countX* countY);
-//	return tiles[i];
-//}
-//
 
 #endif
 

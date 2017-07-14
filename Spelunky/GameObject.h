@@ -22,9 +22,10 @@ public :
 
 	ObjectId GetId() { return _id; }
 
-protected :
-	Vector2 _position;
+	TilePosition position;
+	TilePosition desiredPosition;
 
+protected :
 	ObjectId _id;
 
 	ArcheType _type;

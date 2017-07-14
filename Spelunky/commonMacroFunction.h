@@ -124,16 +124,20 @@ inline bool IsPointInRect(Vector2 p, Rect rect)
 	return result;
 }
 
-inline void ClampFloat(float *f, float min, float max)
+inline bool ClampFloat(float *f, float min, float max)
 {
+	bool result = false;
 	if (*f < min) { *f = min; }
 	if (*f > max) { *f = max; }
+	return result;
 }
 
-inline void ClampInt(int *i, int min, int max)
+inline bool ClampInt(int *i, int min, int max)
 {
+	bool result = false;
 	if (*i < min) { *i = min; }
 	if (*i > max) { *i = max; }
+	return result;
 }
 
 inline float InterpolateFloat(float start, float end, float t)
@@ -163,6 +167,13 @@ inline Rect operator+ (const Vector2 &v, const Rect &rect)
 inline Rect operator- (const Rect &rect, const Vector2 &v)
 {
 	return RectMake(rect.x - v.x, rect.y - v.y, rect.width, rect.height);
+}
+
+inline int ConvertFloatToInt(float f)
+{
+	int result{};
+	result = (int)(f + 0.5f);
+	return result;
 }
 
 

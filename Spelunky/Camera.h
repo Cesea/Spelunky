@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 
-
 class Camera
 {
 public :
@@ -13,23 +12,28 @@ public :
 	virtual HRESULT Init();
 	virtual void Release(void);
 	virtual void Update(void);
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget);
 
-	inline ScreenVector2 GetPosition()
-	{
-		return _position;
-	}
+	void SetTarget(GameObject *target);
+	void SetPosition(const TilePosition& position);
 
-	inline ScreenVector2 GetSeeingRange()
-	{
-		return _seeingRange;
-	}
+	const TilePosition &GetPosition() { return _position; }
+
+	void Move(const Vector2 &v);
 
 	
 private :
 
-	ScreenVector2 _position{};
-	ScreenVector2 _seeingRange{WINSIZEX, WINSIZEY};
+	void KeepCameraInsideAnchorRect();
+
+	TilePosition _position{};
+	Rect _seeingRect{};
+	Rect _anchorRect{};
+	Rect _worldRect{};
+
+	GameObject *_target{};
+
+	bool _following{ false };
+
 };
 
 

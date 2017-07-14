@@ -3,6 +3,8 @@
 
 #include "IScene.h"
 
+#include "Room.h"
+
 class GamePlayScene : public IScene
 {
 	friend class GameObjectManager;
@@ -20,6 +22,11 @@ public:
 	//private functions
 private:
 	D2DSprite *_sprite;
+
+	//PlayScene::StageRandomizer _stageRandomizer;
+	PlayScene::Stage _stage;
+
+	Camera _camera;
 
 private:
 	ObjectMap _objects;
