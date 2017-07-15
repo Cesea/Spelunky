@@ -24,9 +24,27 @@ public:
 		SAFE_DELETE(_currentState);
 		SAFE_DELETE(_prevState)
 	}
-	void Update(float deltaTime, Command command)
+	void Update(float deltaTime)
 	{
-		State<T> *newState = _currentState->Update(_pActor, deltaTime, command);
+		State<T> *newState = _currentState->Update(_pActor, deltaTime);
+		if (newState != nullptr)
+		{
+			ChangeState(newState);
+		}
+	}
+
+	void HandleCommand(const ControlCommand &command)
+	{
+		State<T> *newState = _currentState->HandleCommand(_pActor, command);
+		if (newState != nullptr)
+		{
+			ChangeState(newState);
+		}
+	}
+
+	void HandleFrameEndEvent(void)
+	{
+		State<T> *newState = _currentState->HandleFrameEndEvent(_pActor);
 		if (newState != nullptr)
 		{
 			ChangeState(newState);

@@ -35,6 +35,7 @@ public:
 	void AddToTileY(int i) { tileY += i; }
 
 	void AddToTileRel(float x, float y);
+	void AddToTileRel(const Vector2 &v);
 	void AddToTileRelX(float f);
 	void AddToTileRelY(float f);
 

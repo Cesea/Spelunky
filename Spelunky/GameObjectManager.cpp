@@ -3,6 +3,8 @@
 
 #include "IScene.h"
 
+#include "Player.h"
+
 GameObjectManager::GameObjectManager()
 {
 }
@@ -27,6 +29,8 @@ GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
 	{
 	case ArcheType::Player :
 	{
+		result = new Player(scene->GetNextId());
+		result->Init(ArcheType::Player);
 	}break;
 	case ArcheType::Tile : 
 	{
@@ -35,10 +39,7 @@ GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
 	{
 	}break;
 	}
-	if (result != nullptr)
-	{
-		scene->_objects.insert(std::make_pair(result->GetId(), result));
-	}
+	_objects.insert(std::make_pair(result->GetId(), result));
 	return result;
 }
 

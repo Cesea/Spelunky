@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Animation.h"
 
+#include "GameObject.h"
+
 Animation::Animation(void)
 {
 }
@@ -212,17 +214,7 @@ void Animation::SetPlayFrame(int start, int end, BOOL reverse, BOOL loop)
 	}
 }
 
-void Animation::AddEndFunction(Delegate<void> delegate)
-{
-	_hasEndFunction = true;
-	_endFunction = delegate;
-}
 
-void Animation::AddUpdateFunction(Delegate<void> delegate)
-{
-	_hasUpdateFunction = true;
-	_frameUpdateFunction = delegate;
-}
 
 void Animation::SetFPS(int framePerSec)
 {
@@ -241,10 +233,6 @@ void Animation::FrameUpdate(float elapsedTime)
 			_elapsedSec -= _frameUpdateSec;
 			_nowPlayIdx++;
 
-			if (_hasUpdateFunction)
-			{
-				_frameUpdateFunction();
-			}
 			if (_nowPlayIdx == _playList.size())
 			{
 				//»±»±ÀÌ³Ä?
@@ -257,9 +245,9 @@ void Animation::FrameUpdate(float elapsedTime)
 					_nowPlayIdx--;
 					_isPlay = false;
 
-					if (_hasEndFunction)
+					if (_pOwner)
 					{
-						_endFunction();
+						EVENTMANAGER->QueueEvent(new FrameEndedEvent(_pOwner->GetId()));
 					}
 				}
 			}

@@ -6,6 +6,11 @@
 #include "D2DSprite.h"
 #include "D2DAnimationSprite.h"
 
+#include "StateManager.h"
+#include "DataSet.h"
+
+#include "File.h"
+
 class GameObject : public gameNode
 {
 public :
@@ -16,6 +21,9 @@ public :
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
+
+	virtual void Serialize(FileUtils::File &file) {}
+	virtual void DeSerialize(FileUtils::File &file) {}
 
 	virtual GameObject *Copy(ObjectId id) = 0;
 	virtual void HandleMessage(const IEvent *event) = 0;

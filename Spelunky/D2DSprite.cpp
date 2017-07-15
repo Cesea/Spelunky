@@ -61,55 +61,25 @@ void D2DSprite::Render(ID2D1HwndRenderTarget *renderTarget, float destX, float d
 	}
 }
 
-//void D2DSprite::Render(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, float destWidth, float destHeight, float alpha)
-//{
-//	if (!_flipedX)
-//	{
-//		_sourceImage->Render(renderTarget, destX, destY, destWidth, destHeight, _sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
-//	}
-//	else
-//	{
-//		_sourceImage->RenderFlipX(renderTarget, destX, destY, _sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
-//	}
-//}
-//
-//void D2DSprite::RenderFromCenter(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, float alpha)
-//{
-//	if (!_flipedX)
-//	{
-//		_sourceImage->Render(renderTarget, destX - _widthPerFrame / 2,
-//			destY - _heightPerFrame / 2,
-//			_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
-//	}
-//	//x 축만 반전
-//	else if (_flipedX)
-//	{
-//		_sourceImage->RenderFlipX(renderTarget, destX - _widthPerFrame / 2,
-//			destY - _heightPerFrame / 2,
-//			_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
-//	}
-//}
-//
-//void D2DSprite::RenderFromCenter(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, float destWidth, float destHeight, float alpha)
-//{
-//	if (!_flipedX)
-//	{
-//		_sourceImage->Render(renderTarget, destX - destWidth / 2,
-//			destY - destHeight / 2,
-//			destWidth, destHeight,
-//			_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
-//	}
-//	//x 축만 반전
-//	else if (_flipedX)
-//	{
-//		//_sourceImage->RenderFlipX(renderTarget, destX - _widthPerFrame / 2,
-//		//	destY - _heightPerFrame / 2,
-//		//	destWidth, destHeight,
-//		//	_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
-//	}
-//}
-
 void D2DSprite::Release()
 {
 	_sourceImage = nullptr;
+}
+
+void D2DSprite::SyncFlip(Direction direction)
+{
+	if (_flipedX)
+	{
+		if (direction == Direction::Right)
+		{
+			_flipedX = false;
+		}
+	}
+	else
+	{
+		if (direction == Direction::Left)
+		{
+			_flipedX = true;
+		}
+	}
 }

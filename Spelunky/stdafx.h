@@ -82,7 +82,7 @@
 #define M_PI16 (M_PI/16)
 #define M_PI32 (M_PI/32)
 
-#define EPSILON 0.001f
+#define EPSILON 0.1f
 
 #define RND randomFunction::getSingleton()
 #define KEYMANAGER keyManager::getSingleton()

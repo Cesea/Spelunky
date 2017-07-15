@@ -20,13 +20,21 @@ public :
 	HRESULT Init();
 	void Relase();
 
+	void SetCurrentScene(IScene *scene) { _currentScene = scene; }
+	void DetachCurrentScene() { _currentScene = nullptr; }
+
 	GameObject *CreateObject(IScene *scene, ArcheType type);
 
 	void DestroyObject(IScene *scene, GameObject *object);
 	void DestroyObject(IScene *scene, ObjectId id);
 	void DestroyObject(IScene *scene, ArcheType type);
 
+	ObjectMap &GetObjectMapRef() { return _objects; }
+
 private :
+	ObjectMap _objects;
+
+	IScene *_currentScene{0};
 
 	friend class GameObject;
 

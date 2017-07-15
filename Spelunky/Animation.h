@@ -2,8 +2,9 @@
 #define ANIMATION_H
 
 #include "stdafx.h"
-
 #include "Delegate.h"
+
+class GameObject;
 
 class Animation
 {
@@ -18,6 +19,7 @@ public:
 	//초기화
 	HRESULT Init(int totalW, int totalH, int frameW, int frameH);
 	HRESULT InitCopy(const Animation *animaiton);
+	void SetOwner(GameObject *owner) { _pOwner = owner; }
 	void Release(void);
 
 	//처음부터 끝까지 애니메이션... (디폴트 값)
@@ -28,9 +30,6 @@ public:
 
 	//구간 애니메이션...
 	void SetPlayFrame(int start, int end, BOOL reverse = FALSE, BOOL loop = FALSE);
-
-	void AddEndFunction(Delegate<void> delegate);
-	void AddUpdateFunction(Delegate<void> delegate);
 
 	//초당 갱신 횟수임...
 	void SetFPS(int framePerSec);
@@ -74,12 +73,14 @@ private:
 	bool _isPlay{};			//재생중?
 
 
-	bool _hasEndFunction{ false };
-	Delegate<void> _endFunction{};
-	bool _hasUpdateFunction{ false };
-	Delegate<void> _frameUpdateFunction{};
+	//bool _hasEndFunction{ false };
+	//Delegate<void> _endFunction{};
+	//bool _hasUpdateFunction{ false };
+	//Delegate<void> _frameUpdateFunction{};
 
 	bool _copyed{ false };
+
+	GameObject *_pOwner{nullptr};
 };
 
 

@@ -8,7 +8,9 @@ class State
 {
 public:
 	virtual void OnEnter(T *actor) = 0;
-	virtual State *Update(T *actor, float deltaTime, Command command) = 0;
+	virtual State *Update(T *actor, float deltaTime) = 0;
+	virtual State *HandleCommand(T *actor, const ControlCommand &command)  = 0;
+	virtual State *HandleFrameEndEvent(T *actor) = 0;
 	virtual void OnExit(T *actor) = 0;
 };
 

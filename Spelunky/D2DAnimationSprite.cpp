@@ -25,6 +25,7 @@ HRESULT D2DAnimationSprite::Init(D2DImage * sourceImage, Animation *animation, c
 
 void D2DAnimationSprite::Update(float deltaTime)
 {
+	_animation->FrameUpdate(deltaTime);
 }
 
 void D2DAnimationSprite::Render(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, float alpha)

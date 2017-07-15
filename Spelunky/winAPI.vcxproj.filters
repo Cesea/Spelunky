@@ -94,6 +94,15 @@
     <Filter Include="GameFramework2D\Manager\Timer">
       <UniqueIdentifier>{9f10dd24-16cc-4331-90f0-b7d05a13aaf4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player">
+      <UniqueIdentifier>{872b753e-915b-408d-a6c6-67f7bc854fef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States">
+      <UniqueIdentifier>{72c03208-0256-4b97-968f-a627b43e430d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Crawl">
+      <UniqueIdentifier>{5d59a0fe-7110-48cc-aa6a-a12eb76bc30e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -240,9 +249,6 @@
     <ClInclude Include="IScene.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="ImGUI.h">
       <Filter>Game\Scene\MapToolScene\IMGUI</Filter>
     </ClInclude>
@@ -260,6 +266,24 @@
     </ClInclude>
     <ClInclude Include="Room.h">
       <Filter>Game\Scene\GamePlayScene\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
+    </ClInclude>
+    <ClInclude Include="LookUpState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CrawlState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
+    </ClInclude>
+    <ClInclude Include="StandUpState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -374,9 +398,6 @@
     <ClCompile Include="MovingObject.cpp">
       <Filter>Game\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="ImGUI.cpp">
       <Filter>Game\Scene\MapToolScene\IMGUI</Filter>
     </ClCompile>
@@ -388,6 +409,24 @@
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="IdleState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
+    </ClCompile>
+    <ClCompile Include="LookUpState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CrawlState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
+    </ClCompile>
+    <ClCompile Include="StandUpState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

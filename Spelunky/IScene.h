@@ -23,7 +23,7 @@ public:
 	virtual HRESULT LoadContent() = 0;
 
 protected:
-	ObjectMap _objects;
+	std::vector<ObjectId> _objectIds;
 
 	InputMapper _inputMapper;
 

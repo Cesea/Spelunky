@@ -19,9 +19,9 @@ public:
 
 	HRESULT LoadContent() override;
 
-	//private functions
+	void CreateAndPlaceObject(ArcheType type, const TilePosition &position);
+
 private:
-	D2DSprite *_sprite;
 
 	//PlayScene::StageRandomizer _stageRandomizer;
 	PlayScene::Stage _stage;
@@ -29,7 +29,7 @@ private:
 	Camera _camera;
 
 private:
-	ObjectMap _objects;
+	//ObjectMap _objects;
 
 	InputMapper _inputMapper;
 

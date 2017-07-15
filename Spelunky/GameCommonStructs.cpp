@@ -16,6 +16,13 @@ void TilePosition::AddToTileRel(float x, float y)
 	ReTilelize();
 }
 
+void TilePosition::AddToTileRel(const Vector2 & v)
+{
+	tileRel.x += v.x;
+	tileRel.y += v.y;
+	ReTilelize();
+}
+
 void TilePosition::AddToTileRelX(float f)
 {
 	tileRel.x += f;

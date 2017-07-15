@@ -41,6 +41,8 @@ public:
 	inline float GetSourceX() { return _sourceX; }
 	inline float GetSourceY() { return _sourceY; }
 
+	void SyncFlip(Direction direction);
+
 	virtual inline bool IsEnd() { return false; }
 
 	virtual IntVector2 GetCurrentAnchor() { return _anchor; }
@@ -80,7 +82,4 @@ protected:
 
 private:
 };
-
-
-
 #endif
