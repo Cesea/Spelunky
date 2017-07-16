@@ -6,6 +6,8 @@
 
 #include "CrawlState.h"
 
+#include "OnLedgeState.h"
+
 void CrawlMoveState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"crawlMove");
@@ -57,6 +59,11 @@ State<Player>* CrawlMoveState::HandleCommand(Player * object, const ControlComma
 		else
 		{
 			object->_accel.x = -object->_speed.x * 0.5f;
+			if (object->_onLedge)
+			{
+				newState = new LedgeGrabState;
+				return newState;
+			}
 		}
 	}
 	else if (command.horizontal == Command::MoveRight)
@@ -71,6 +78,11 @@ State<Player>* CrawlMoveState::HandleCommand(Player * object, const ControlComma
 		else
 		{
 			object->_accel.x = object->_speed.x * 0.5f;
+			if (object->_onLedge)
+			{
+				newState = new LedgeGrabState;
+				return newState;
+			}
 		}
 	}	
 

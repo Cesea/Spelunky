@@ -89,13 +89,6 @@ State<Player>* JumpState::HandleCommand(Player * object, const ControlCommand & 
 		return newState;
 	}
 
-	if (object->_canClimb && 
-		command.vertical == Command::MoveUp)
-	{
-		newState = new LadderClimbState;
-		return newState;
-	}
-
 	return newState;
 }
 

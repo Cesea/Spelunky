@@ -54,6 +54,16 @@ public:
 	Vector2 tileRel;
 };
 
+inline TilePosition InterpolateTilePosition(const TilePosition &start, const TilePosition & end, float t)
+{
+	Vector2 startUntiled = start.UnTilelize();
+	Vector2 endUntiled = end.UnTilelize();
+
+	Vector2 pos = InterpolateVector(startUntiled, endUntiled, t);
+	return TilePosition(pos.x, pos.y);
+}
+
+
 template<typename T>
 struct TileSet
 {

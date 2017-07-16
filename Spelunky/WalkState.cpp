@@ -9,6 +9,8 @@
 
 #include "LadderClimbState.h"
 
+#include "OnLedgeState.h"
+
 void WalkState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"walk");

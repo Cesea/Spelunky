@@ -115,6 +115,9 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Climb">
       <UniqueIdentifier>{3ca1b163-7bb7-49dd-8622-80164c5a743f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\OnLedge">
+      <UniqueIdentifier>{9bc8d1cd-2de0-4467-9c01-71122e9790e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -315,6 +318,9 @@
     <ClInclude Include="LadderClimbState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Climb</Filter>
     </ClInclude>
+    <ClInclude Include="OnLedgeState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\OnLedge</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -437,9 +443,6 @@
     <ClCompile Include="File.cpp">
       <Filter>GameFramework2D\Utils\File</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
-    </ClCompile>
     <ClCompile Include="IdleState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
     </ClCompile>
@@ -475,6 +478,12 @@
     </ClCompile>
     <ClCompile Include="LadderClimbState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Climb</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="OnLedgeState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\OnLedge</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

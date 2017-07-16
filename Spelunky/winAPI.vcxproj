@@ -125,6 +125,7 @@
     <ClInclude Include="LookUpState.h" />
     <ClInclude Include="MapToolScene.h" />
     <ClInclude Include="MovingObject.h" />
+    <ClInclude Include="OnLedgeState.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="LookUpState.cpp" />
     <ClCompile Include="MapToolScene.cpp" />
     <ClCompile Include="MovingObject.cpp" />
+    <ClCompile Include="OnLedgeState.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />

@@ -35,6 +35,8 @@ HRESULT Player::Init(ArcheType type)
 	BuildAnimationSprite(L"falling", IntVector2(-40, -72));
 	BuildAnimationSprite(L"ladderIdle", IntVector2(-40, -72));
 	BuildAnimationSprite(L"ladderClimb", IntVector2(-40, -72));
+	BuildAnimationSprite(L"onLedge", IntVector2(-40, -72));
+	BuildAnimationSprite(L"ledgeGrab", IntVector2(-40, -72));
 
 	SetGraphics(L"idle");
 
@@ -62,8 +64,11 @@ void Player::Update(float deltaTime)
 	_canClimb = false;
 	_canClimbUp = false;
 
-	CollisionCheck();
-	CheckCurrentTile();
+	if (!_interpolating)
+	{
+		CollisionCheck();
+		CheckCurrentTile();
+	}
 }
 
 void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -144,29 +149,43 @@ void Player::CollisionCheck()
 		if (_nearTiles.tiles[i] == nullptr || 
 			_nearTiles.tiles[i]->sourceIndex.x == -1)
 			continue;
-		Rect absRect = desiredPosition.UnTilelize() + _rect + _rectOffset;
-		Rect tileRect = RectMake(_nearTiles.tiles[i]->position.x * TILE_SIZE, _nearTiles.tiles[i]->position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
+		PlayScene::Tile *currentTile = _nearTiles.tiles[i];
+
+		Rect absRect = desiredPosition.UnTilelize() + _rect + _rectOffset;
+		Rect tileRect = RectMake(currentTile->position.x * TILE_SIZE, currentTile->position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+
+		Rect overlapRect;
+		//아래 타일의 경우 체크를 해 주어야 할 경우가 있다. 사다리, 위에서 떨어지면 죽는 타일 등....
 		if (i == 0)
 		{
-
+			if (IsRectangleOverlap(absRect, tileRect, overlapRect))
+			{
+				if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+				{
+					desiredPosition.AddToTileRel(0, -overlapRect.height);
+					_velocity.y = 0.0f;
+					_onGround = true;
+				}
+				else if ((currentTile->collisionType == TileCollisionType::TILE_COLLISION_EOF_LADDER) && 
+							/*(desiredPosition.tileRel.y < 3.0f) &&*/
+							(!_stateClimbing))
+				{
+					desiredPosition.AddToTileRel(0, -overlapRect.height);
+					_velocity.y = 0.0f;
+					_canClimb = true;
+					_onGround = true;
+				}
+			}
 		}
 		else
 		{
-			if (_nearTiles.tiles[i]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+			if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
 			{
-				Rect overlapRect;
 				if (IsRectangleOverlap(absRect, tileRect, overlapRect))
 				{
-					//아래 타일
-					if (i == 0)
-					{
-						desiredPosition.AddToTileRel(0, -overlapRect.height);
-						_velocity.y = 0.0f;
-						_onGround = true;
-					}
 					//위 타일
-					else if (i == 1)
+					if (i == 1)
 					{
 						desiredPosition.AddToTileRel(0, overlapRect.height);
 						_velocity.y = 0.0f;
@@ -225,9 +244,7 @@ void Player::CollisionCheck()
 					}
 				}
 			}
-
 		}
-
 	}
 	position = desiredPosition;
 }
@@ -237,6 +254,9 @@ void Player::CheckCurrentTile()
 	TileCollisionType centerTileCollisionType = _nearTiles.tiles[8]->collisionType;
 	TileCollisionType upperTileCollisionType = _nearTiles.tiles[1]->collisionType;
 	TileCollisionType lowerTileCollisionType = _nearTiles.tiles[0]->collisionType;
+
+	TileCollisionType lowerLeftTileCollisionType = _nearTiles.tiles[6]->collisionType;
+	TileCollisionType lowerRightTileCollisionType = _nearTiles.tiles[4]->collisionType;
 	if (centerTileCollisionType == TILE_COLLISION_LADDER || centerTileCollisionType == TILE_COLLISION_EOF_LADDER)
 	{
 		if (position.tileRel.x > 20 && position.tileRel.x < 44)
@@ -248,6 +268,23 @@ void Player::CheckCurrentTile()
 			(position.tileRel.y < 4.0f))
 		{
 			_canClimbUp = false;
+		}
+	}
+
+	if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
+		(lowerLeftTileCollisionType == TILE_COLLISION_NONE))
+	{
+		if (position.tileRel.x < 8)
+		{
+			_onLedge = true;
+		}
+	}
+	else if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
+		(lowerRightTileCollisionType == TILE_COLLISION_NONE))
+	{
+		if (position.tileRel.x > 56)
+		{
+			_onLedge = true;
 		}
 	}
 }

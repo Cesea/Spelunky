@@ -148,7 +148,7 @@ inline float InterpolateFloat(float start, float end, float t)
 	return result;
 }
 
-inline ScreenVector2 InterpolateVector(const ScreenVector2 &start, const ScreenVector2 end, float t)
+inline Vector2 InterpolateVector(const Vector2 &start, const Vector2 &end, float t)
 {
 	ScreenVector2 result = {};
 	result.x = InterpolateFloat(start.x, end.x, t);

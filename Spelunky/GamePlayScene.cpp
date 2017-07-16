@@ -53,6 +53,12 @@ HRESULT GamePlayScene::LoadContent()
 	int ladderClimbArray[] = {72, 73, 74, 75, 76, 77};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_ladderClimb", L"char_orange", 80, 80, ladderClimbArray, 6, 10, true);
 
+	int onLedgeArray[] = {36, 37, 38, 39, 40, 41, 42, 43};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_onLedge", L"char_orange", 80, 80, onLedgeArray, 8, 15, true);
+
+	int grabLedgeArray[] = {29, 30, 31, 32, 33, 34};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_ledgeGrab", L"char_orange", 80, 80, grabLedgeArray, 6, 10, false);
+
 
 	return S_OK;
 }

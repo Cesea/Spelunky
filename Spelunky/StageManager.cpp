@@ -16,7 +16,7 @@ namespace PlayScene
 		_currentStage = new Stage;
 		RoomType roomTypes[16]{};
 		_currentStage->InitFromRoomTypes(roomTypes);
-		//_stage.CalculateMask(0, 0, STAGE_TILE_COUNTX, STAGE_TILE_COUNTY);
+		_currentStage->CalculateMask(0, 0, STAGE_TILE_COUNTX, STAGE_TILE_COUNTY);
 		return S_OK;
 	}
 

@@ -11,6 +11,7 @@
 #include "JumpState.h"
 
 #include "LadderClimbState.h"
+#include "OnLedgeState.h"
 
 void IdleState::OnEnter(Player * object)
 {
@@ -21,13 +22,20 @@ void IdleState::OnEnter(Player * object)
 State<Player>* IdleState::Update(Player * object, float deltaTime)
 {
 	State<Player> *newState = nullptr;
+
+	object->_velocity += object->_accel * deltaTime;
+	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
+
 	if (!object->_onGround)
 	{
 		newState = new FallingState;
 	}
 
-	object->_velocity += object->_accel * deltaTime;
-	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
+	if(object->_onLedge)
+	{
+		newState = new OnLedgeState;
+		return newState;
+	}
 	return newState;
 }
 
@@ -51,6 +59,7 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 		return newState;
 	}
 
+
 	if (command.jump == Command::Jump)
 	{
 		newState = new JumpState;
@@ -59,12 +68,7 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 	//CrawlState로의 이전 처리
 	if (command.vertical == Command::MoveDown)
 	{
-		newState = new CrawlState;
-		return newState;
-	}
-	//LookUpState로의 이전 처리
-	else if (command.vertical == Command::MoveUp)
-	{
+		//LadderClimbState로의 이전 처리
 		if (object->_canClimb)
 		{
 			newState = new LadderClimbState;
@@ -72,6 +76,21 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 		}
 		else
 		{
+			newState = new CrawlState;
+			return newState;
+		}
+	}
+	else if (command.vertical == Command::MoveUp)
+	{
+		//LadderClimbState로의 이전 처리
+		if (object->_canClimb)
+		{
+			newState = new LadderClimbState;
+			return newState;
+		}
+		else
+		{
+			//LookUpState로의 이전 처리
 			newState = new LookUpState;
 			return newState;
 		}

@@ -34,7 +34,7 @@ HRESULT Game::Init(void)
 	SCENEMANAGER->AddScene(_T("LoadingScene"), loadingScene);
 
 	//ÇöÀç ¾À ¼³Á¤
-	SCENEMANAGER->ChangeScene(_T("GamePlayScene"));
+	SCENEMANAGER->ChangeScene(_T("MapToolScene"));
 
 	//IMAGEMANAGER->LoadImageFromFile(_T("resources/gfx/ground01.png"), _T("ground01"));
 
