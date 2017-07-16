@@ -76,17 +76,11 @@ HRESULT GamePlayScene::Init(void)
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
-	CreateAndPlaceObject(ArcheType::Player, TilePosition(2, 5));
-
-	RoomType roomTypes[16]{};
-	//_stageRandomizer.Randomize(roomTypes);
+	CreateAndPlaceObject(ArcheType::Player, TilePosition(2, 3));
 
 	_camera.Init();
 
 	STAGEMANAGER->Init();
-
-	//_stage.InitFromRoomTypes(roomTypes);
-	//_stage.CalculateMask(0, 0, STAGE_TILE_COUNTX, STAGE_TILE_COUNTY);
 
 	return S_OK;
 }

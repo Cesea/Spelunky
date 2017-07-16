@@ -172,12 +172,12 @@ Collision Type : 0
 Mask Info : 0
 Layer : 0
 At X : 9, Y : 1
-Image Key : minetile
-SourceIndex X : 0, Y : 1
-Destroyed Index X : 4, Y : 3
-This Mask Info : 15
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
 At X : 0, Y : 2
@@ -262,12 +262,12 @@ Collision Type : 3
 Mask Info : 0
 Layer : 0
 At X : 9, Y : 2
-Image Key : minetile
-SourceIndex X : 0, Y : 2
-Destroyed Index X : 4, Y : 4
-This Mask Info : 15
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
 Layer : 0
 At X : 0, Y : 3

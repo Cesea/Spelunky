@@ -7,6 +7,8 @@
 #include "FallingState.h"
 #include "JumpState.h"
 
+#include "LadderClimbState.h"
+
 void WalkState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"walk");
@@ -87,7 +89,13 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 		return newState;
 	}
 
-	return nullptr;
+	if (object->_canClimb && 
+		command.vertical != Command::None)
+	{
+		newState = new LadderClimbState;
+		return newState;
+	}
+	return newState;
 }
 
 void WalkState::OnExit(Player * object)

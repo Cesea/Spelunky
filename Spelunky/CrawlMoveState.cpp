@@ -39,7 +39,6 @@ State<Player>* CrawlMoveState::Update(Player * object, float deltaTime)
 			newState = new CrawlIdleState;
 		}
 	}
-	object->_accel.x = 0;
 	return newState;
 }
 

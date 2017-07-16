@@ -5,6 +5,7 @@
 
 #include "IdleState.h"
 #include "WalkState.h"
+#include "LadderClimbState.h"
 
 void FallingState::OnEnter(Player * object)
 {
@@ -52,6 +53,7 @@ State<Player>* FallingState::Update(Player * object, float deltaTime)
 
 State<Player>* FallingState::HandleCommand(Player * object, const ControlCommand & command)
 {
+	State<Player> *newState = nullptr;
 	if (command.horizontal == Command::MoveLeft)
 	{
 		_wasControlled = true;
@@ -80,7 +82,15 @@ State<Player>* FallingState::HandleCommand(Player * object, const ControlCommand
 			object->_accel.x = object->_speed.x;
 		}
 	}
-	return nullptr;
+
+	if (object->_canClimb && 
+		command.vertical == Command::MoveUp)
+	{
+		newState = new LadderClimbState;
+		return newState;
+	}
+
+	return newState;
 }
 
 void FallingState::OnExit(Player * object)

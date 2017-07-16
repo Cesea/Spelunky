@@ -4,6 +4,7 @@
 #include "Player.h"
 
 #include "FallingState.h"
+#include "LadderClimbState.h"
 
 void JumpState::OnEnter(Player * object)
 {
@@ -84,6 +85,15 @@ State<Player>* JumpState::HandleCommand(Player * object, const ControlCommand & 
 	if (command.jump == Command::JumpOff)
 	{
 		newState = new FallingState;
+		object->_velocity.y = 0.0f;
+		return newState;
+	}
+
+	if (object->_canClimb && 
+		command.vertical == Command::MoveUp)
+	{
+		newState = new LadderClimbState;
+		return newState;
 	}
 
 	return newState;

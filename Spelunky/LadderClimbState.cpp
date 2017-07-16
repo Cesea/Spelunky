@@ -4,6 +4,7 @@
 #include "Player.h"
 
 #include "IdleState.h"
+#include "JumpState.h"
 
 void LadderIdleState::OnEnter(Player * object)
 {
@@ -21,14 +22,24 @@ State<Player>* LadderIdleState::HandleCommand(Player * object, const ControlComm
 	State<Player> *newState = nullptr;
 	if (command.vertical == Command::MoveUp)
 	{
-		object->_accel.y -= object->_speed.y;
-		newState = new LadderClimbState;
+		if (object->_canClimbUp)
+		{
+			object->_accel.y -= object->_speed.y;
+			newState = new LadderClimbState;
+		}
 	}
 	else if(command.vertical == Command::MoveDown)
 	{
 		object->_accel.y -= object->_speed.y;
 		newState = new LadderClimbState;
 	}
+
+	if (command.jump == Command::Jump)
+	{
+		newState = new JumpState;
+		return newState;
+	}
+
 	return newState;
 }
 
@@ -73,17 +84,28 @@ State<Player>* LadderClimbState::Update(Player * object, float deltaTime)
 
 State<Player>* LadderClimbState::HandleCommand(Player * object, const ControlCommand & command)
 {
+	State<Player> *newState = nullptr;
 	if (command.vertical == Command::MoveUp)
 	{
-		_wasControlled = true;
-		object->_accel.y = -object->_speed.y;
+		if (object->_canClimbUp)
+		{
+			_wasControlled = true;
+			object->_accel.y = -object->_speed.y;
+		}
 	}
 	else if(command.vertical == Command::MoveDown)
 	{
 		_wasControlled = true;
 		object->_accel.y = object->_speed.y;
 	}
-	return nullptr;
+
+	if (command.jump == Command::Jump)
+	{
+		newState = new JumpState;
+		return newState;
+	}
+
+	return newState;
 }
 
 void LadderClimbState::OnExit(Player * object)

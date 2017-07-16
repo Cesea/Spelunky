@@ -72,6 +72,7 @@ private :
 	bool _onLedge{ false };
 	bool _onWall{ false };
 	bool _canClimb{ false };
+	bool _canClimbUp{ false };
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};

@@ -48,7 +48,8 @@ void CrawlIdleState::OnEnter(Player * object)
 
 State<Player>* CrawlIdleState::Update(Player * object, float deltaTime)
 {
-
+	object->_velocity += object->_accel * deltaTime;
+	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
 	return nullptr;
 }
 

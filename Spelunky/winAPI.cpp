@@ -94,8 +94,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	gRenderTarget = _d2d.GetRenderTarget();
 
-	TIMEMANAGER->Tick();
+	bool firstUpdata = false;
 
+
+	TIMEMANAGER->Tick();
 	while (_running) //°ÔÀÓ¿ë
 	{
 		BOOL result = PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE);
@@ -110,6 +112,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		}
 		else
 		{
+			if (!firstUpdata)
+			{
+				TIMEMANAGER->Tick();
+				firstUpdata = true;
+			}
 			_game.Update();
 			_game.Render();
 			EVENTMANAGER->Update(TIMEMANAGER->GetElapsedTime());
