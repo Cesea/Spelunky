@@ -23,11 +23,36 @@ HRESULT GamePlayScene::LoadContent()
 	int walkArray[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_walk", L"char_orange", 80, 80, walkArray, 8, 15, true);
 
-	int crawlArray[] = {12, 13, 14};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawl", L"char_orange", 80, 80, crawlArray, 3, 10, false);
+	int crawlArray[] = {12, 13};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawl", L"char_orange", 80, 80, crawlArray, 2, 12, false);
+
+	int crawlIdleArray[] = {14};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawlIdle", L"char_orange", 80, 80, crawlIdleArray, 1, 12, false);
 
 	int standUpArray[] = {15, 16};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_standUp", L"char_orange", 80, 80, standUpArray, 2, 10, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_standUp", L"char_orange", 80, 80, standUpArray, 2, 12, false);
+
+	int crawlMoveArray[] = {17, 18, 19, 20, 21, 22, 23};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawlMove", L"char_orange", 80, 80, crawlMoveArray, 7, 14, true);
+
+	int lookUpArray[] = {96, 97, 98, 99};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_lookUp", L"char_orange", 80, 80, lookUpArray, 4, 14, false);
+
+	int lookRevertArray[] = {100, 101, 102};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_lookRevert", L"char_orange", 80, 80, lookRevertArray, 3, 14, false);
+
+	int jumpArray[] = {108, 109, 110, 111, 112};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_jump", L"char_orange", 80, 80, jumpArray, 5, 14, false);
+
+	int fallingArray[] = {113, 114, 115};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_falling", L"char_orange", 80, 80, fallingArray, 3, 14, false);
+
+	int ladderIdleArray[] = {72};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_ladderIdle", L"char_orange", 80, 80, ladderIdleArray, 1, 1, true);
+
+	int ladderClimbArray[] = {72, 73, 74, 75, 76, 77};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_ladderClimb", L"char_orange", 80, 80, ladderClimbArray, 6, 10, true);
+
 
 	return S_OK;
 }
@@ -36,6 +61,7 @@ void GamePlayScene::CreateAndPlaceObject(ArcheType type, const TilePosition & po
 {
 	GameObject *object = OBJECTMANAGER->CreateObject(this, type);
 	object->position = position;
+	object->desiredPosition = position;
 	if (type == ArcheType::Player)
 	{
 		_playerId = object->GetId();
@@ -50,14 +76,16 @@ HRESULT GamePlayScene::Init(void)
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
-	CreateAndPlaceObject(ArcheType::Player, TilePosition(2, 2));
+	CreateAndPlaceObject(ArcheType::Player, TilePosition(2, 5));
 
 	RoomType roomTypes[16]{};
 	//_stageRandomizer.Randomize(roomTypes);
 
 	_camera.Init();
 
-	_stage.InitFromRoomTypes(roomTypes);
+	STAGEMANAGER->Init();
+
+	//_stage.InitFromRoomTypes(roomTypes);
 	//_stage.CalculateMask(0, 0, STAGE_TILE_COUNTX, STAGE_TILE_COUNTY);
 
 	return S_OK;
@@ -65,6 +93,7 @@ HRESULT GamePlayScene::Init(void)
 
 void GamePlayScene::Release(void)
 {
+	STAGEMANAGER->Release();
 	//SAFE_RELEASE_AND_DELETE(_obstacle);
 }
 
@@ -87,23 +116,8 @@ void GamePlayScene::Update(void)
 		object.second->Update(deltaTime);
 	}
 
-	//ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
-	//if (KEYMANAGER->IsStayKeyDown(VK_LEFT))
-	//{
-	//	_camera.Move(Vector2(-camSpeed, 0) * deltaTime);
-	//}
-	//else if (KEYMANAGER->IsStayKeyDown(VK_RIGHT))
-	//{
-	//	_camera.Move(Vector2(camSpeed, 0) * deltaTime);
-	//}
-	//if (KEYMANAGER->IsStayKeyDown(VK_UP))
-	//{
-	//	_camera.Move(Vector2(0, -camSpeed) * deltaTime);
-	//}
-	//else if (KEYMANAGER->IsStayKeyDown(VK_DOWN))
-	//{
-	//	_camera.Move(Vector2(0, camSpeed) * deltaTime);
-	//}
+	//STAGEMANAGER->
+
 	_camera.Update();
 
 }
@@ -114,7 +128,7 @@ void GamePlayScene::Render(void)
 	gRenderTarget->BeginDraw();
 	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
-	_stage.RenderTileLayer(_camera.GetPosition());
+	STAGEMANAGER->RenderTileLayer();
 	
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();
 	for (auto &object : OBJECTMANAGER->GetObjectMapRef())
@@ -122,7 +136,7 @@ void GamePlayScene::Render(void)
 		object.second->Render(gRenderTarget, unTiledCamPos);
 	}
 
-	_stage.RenderMaskLayer(_camera.GetPosition());
+	STAGEMANAGER->RenderMaskLayer();
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();
 }

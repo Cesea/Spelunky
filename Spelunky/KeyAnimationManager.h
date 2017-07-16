@@ -2,7 +2,7 @@
 #define FRAME_ANIMATION_MANAGER_H
 
 #include "singletonBase.h"
-#include <map>
+#include <unordered_map>
 
 class D2DImage;
 class Animation;
@@ -10,8 +10,8 @@ class Animation;
 class KeyAnimationManager : public singletonBase <KeyAnimationManager>
 {
 private:
-	typedef std::map<std::wstring, Animation*> AnimationMap;
-	typedef std::map<std::wstring, Animation*>::iterator AnimationMapIter;
+	typedef std::unordered_map<std::wstring, Animation*> AnimationMap;
+	typedef std::unordered_map<std::wstring, Animation*>::iterator AnimationMapIter;
 
 private:
 	AnimationMap _totalAnimations;

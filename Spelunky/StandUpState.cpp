@@ -16,6 +16,9 @@ State<Player>* StandUpState::Update(Player * object, float deltaTime)
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+	object->_velocity += object->_accel * deltaTime;
+	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
+
 	return nullptr;
 }
 

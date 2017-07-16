@@ -1,10 +1,10 @@
-#ifndef IDLE_STATE_H
-#define IDLE_STATE_H
+#ifndef JUMP_STATE_H
+#define JUMP_STATE_H
 
 #include "State.h"
 class Player;
 
-class IdleState : public State<Player>
+class JumpState : public State<Player>
 {
 public :
 	void OnEnter(Player *object);
@@ -12,6 +12,10 @@ public :
 	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
 	State<Player> *HandleFrameEndEvent(Player *actor) override { return nullptr; }
 	void OnExit(Player *object);
+
+private :
+	bool _wasControlled{ true };
 };
+
 
 #endif

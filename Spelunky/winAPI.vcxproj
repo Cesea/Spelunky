@@ -89,6 +89,7 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="CrawlMoveState.h" />
     <ClInclude Include="CrawlState.h" />
     <ClInclude Include="D2D.h" />
     <ClInclude Include="D2DAnimationSprite.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="DWrite.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="FallingState.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameCommonMacroFunctions.h" />
@@ -113,10 +115,13 @@
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="ImGUI.h" />
     <ClInclude Include="IntVector2.h" />
+    <ClInclude Include="JumpState.h" />
     <ClInclude Include="KeyAnimationManager.h" />
     <ClInclude Include="keyManager.h" />
+    <ClInclude Include="LadderClimbState.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LoadingScene.h" />
+    <ClInclude Include="LookRevertState.h" />
     <ClInclude Include="LookUpState.h" />
     <ClInclude Include="MapToolScene.h" />
     <ClInclude Include="MovingObject.h" />
@@ -126,6 +131,7 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="singletonBase.h" />
+    <ClInclude Include="StageManager.h" />
     <ClInclude Include="StandUpState.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
@@ -149,6 +155,7 @@
     <ClCompile Include="ColiidingObject.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="CrawlMoveState.cpp" />
     <ClCompile Include="CrawlState.cpp" />
     <ClCompile Include="D2D.cpp" />
     <ClCompile Include="D2DAnimationSprite.cpp" />
@@ -158,6 +165,7 @@
     <ClCompile Include="DWrite.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="FallingState.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GameCommonMacroFunctions.cpp" />
@@ -171,15 +179,19 @@
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="ImGUI.cpp" />
     <ClCompile Include="IntVector2.cpp" />
+    <ClCompile Include="JumpState.cpp" />
     <ClCompile Include="KeyAnimationManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
+    <ClCompile Include="LadderClimbState.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
+    <ClCompile Include="LookRevertState.cpp" />
     <ClCompile Include="LookUpState.cpp" />
     <ClCompile Include="MapToolScene.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="StageManager.cpp" />
     <ClCompile Include="StandUpState.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -9,39 +9,32 @@ Player::Player(ObjectId id)
 	_seeingDirection = Direction::Left;
 
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
+
+	_rect = RectMake(0, 0, 56, 64);
+	_rectOffset = Vector2(-28, -64);
 }
 
 Player::~Player()
 {
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
 }
 
 HRESULT Player::Init(ArcheType type)
 {
-	Animation *idleAnimation = new Animation;
-	idleAnimation->InitCopy(KEYANIMANAGER->FindAnimation(L"char_orange_idle"));
-	D2DSprite *idleSprite = new D2DAnimationSprite;
-	idleSprite->Init(IMAGEMANAGER->GetImage(L"char_orange"), idleAnimation, IntVector2(-40, -72));
-
-	Animation *walkAnimation = new Animation;
-	walkAnimation->InitCopy(KEYANIMANAGER->FindAnimation(L"char_orange_walk"));
-	D2DSprite *walkSprite = new D2DAnimationSprite;
-	walkSprite->Init(IMAGEMANAGER->GetImage(L"char_orange"), walkAnimation, IntVector2(-40, -72));
-
-	Animation *crawlAnimation = new Animation;
-	crawlAnimation->InitCopy(KEYANIMANAGER->FindAnimation(L"char_orange_crawl"));
-	D2DSprite *crawlSprite = new D2DAnimationSprite;
-	crawlSprite->Init(IMAGEMANAGER->GetImage(L"char_orange"), crawlAnimation, IntVector2(-40, -72));
-
-	Animation *standUpAnimation = new Animation;
-	standUpAnimation->InitCopy(KEYANIMANAGER->FindAnimation(L"char_orange_standUp"));
-	D2DSprite *standUpSprite = new D2DAnimationSprite;
-	standUpSprite->Init(IMAGEMANAGER->GetImage(L"char_orange"), standUpAnimation, IntVector2(-40, -72));
-
-	_graphics.AddData(L"idle", idleSprite);
-	_graphics.AddData(L"walk", walkSprite);
-	_graphics.AddData(L"crawl", crawlSprite);
-	_graphics.AddData(L"standUp", standUpSprite);
+	BuildAnimationSprite(L"idle", IntVector2(-40, -72));
+	BuildAnimationSprite(L"walk", IntVector2(-40, -72));
+	BuildAnimationSprite(L"crawl", IntVector2(-40, -72));
+	BuildAnimationSprite(L"crawlIdle", IntVector2(-40, -72));
+	BuildAnimationSprite(L"crawlMove", IntVector2(-40, -72));
+	BuildAnimationSprite(L"standUp", IntVector2(-40, -72));
+	BuildAnimationSprite(L"lookUp", IntVector2(-40, -72));
+	BuildAnimationSprite(L"lookRevert", IntVector2(-40, -72));
+	BuildAnimationSprite(L"jump", IntVector2(-40, -72));
+	BuildAnimationSprite(L"falling", IntVector2(-40, -72));
+	BuildAnimationSprite(L"ladderIdle", IntVector2(-40, -72));
+	BuildAnimationSprite(L"ladderClimb", IntVector2(-40, -72));
 
 	SetGraphics(L"idle");
 
@@ -57,7 +50,19 @@ void Player::Release(void)
 
 void Player::Update(float deltaTime)
 {
+	_accel.y += GRAVITY;
 	_stateManager.Update(deltaTime);
+	_accel = Vector2();
+
+	_onGround = false;
+	_headHit = false;
+	_onWall = false;
+	_canGrab = false;
+	_onLedge = false;
+	_canClimb = false;
+
+	CollisionCheck();
+	CheckCurrentTile();
 }
 
 void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -110,5 +115,124 @@ void Player::SetGraphics(const std::wstring & key)
 		_currentSprite = found;
 		_currentSprite->GetAnimation()->Start();
 		_currentSprite->SyncFlip(_seeingDirection);
+	}
+}
+
+void Player::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 & anchor)
+{
+	std::wstring imageKey = L"char_orange";
+	Animation *animation = new Animation;
+	animation->InitCopy(KEYANIMANAGER->FindAnimation(imageKey + L"_" + aniKey));
+	animation->SetOwner(this);
+	D2DSprite *sprite = new D2DAnimationSprite;
+	sprite->Init(IMAGEMANAGER->GetImage(imageKey), animation, anchor);
+
+	_graphics.AddData(aniKey, sprite);
+}
+
+void Player::CollisionCheck()
+{
+
+	TilePosition centerTilePos = desiredPosition;
+	centerTilePos.AddToTileRelY(-32.0f);
+
+	_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacentTiles9(IntVector2(centerTilePos.tileX, centerTilePos.tileY));
+
+	for (int i = 0; i < 8; ++i)
+	{
+		if (_nearTiles.tiles[i] == nullptr || 
+			_nearTiles.tiles[i]->sourceIndex.x == -1)
+			continue;
+
+		Rect absRect = desiredPosition.UnTilelize() + _rect + _rectOffset;
+		Rect tileRect = RectMake(_nearTiles.tiles[i]->position.x * TILE_SIZE, _nearTiles.tiles[i]->position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+
+		if (_nearTiles.tiles[i]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+		{
+			Rect overlapRect;
+			if (IsRectangleOverlap(absRect, tileRect, overlapRect))
+			{
+				//아래 타일
+				if (i == 0)
+				{
+					desiredPosition.AddToTileRel(0, -overlapRect.height);
+					_velocity.y = 0.0f;
+					_onGround = true;
+				}
+				//위 타일
+				else if (i == 1)
+				{
+					desiredPosition.AddToTileRel(0, overlapRect.height);
+					_velocity.y = 0.0f;
+					_headHit = true;
+				}
+				//왼 타일
+				else if (i == 2)
+				{
+					desiredPosition.AddToTileRel(overlapRect.width, 0);
+					_velocity.x = 0.0f;
+					_onWall = true;
+				}
+				//오른 타일
+				else if (i == 3)
+				{
+					desiredPosition.AddToTileRel(-overlapRect.width, 0);
+					_velocity.x = 0.0f;
+					_onWall = true;
+				}
+				//대각선
+				else
+				{
+					//수직으로 충돌이 일어남
+					if (overlapRect.width > overlapRect.height)
+					{
+						_velocity.y = 0.0f;
+						float pushingHeight;
+						if (i == 4 || i == 6)
+						{
+							pushingHeight = -overlapRect.height;
+							_onGround = true;
+						}
+						else
+						{
+							pushingHeight = overlapRect.height;
+							_headHit = true;
+						}
+						desiredPosition.AddToTileRel(0, pushingHeight);
+					}
+					//수평으로 충돌이 일어남
+					else
+					{
+						_velocity.x = 0.0f;
+						_onWall = true;
+						float pushingWidth;
+						if (i == 5 || i == 6)
+						{
+							pushingWidth = overlapRect.width;
+						}
+						else
+						{
+							pushingWidth = -overlapRect.width;
+						}
+						desiredPosition.AddToTileRel(pushingWidth, 0);
+					}
+				}
+			}
+		}
+	}
+	position = desiredPosition;
+}
+
+void Player::CheckCurrentTile()
+{
+	switch (_nearTiles.tiles[8]->collisionType)
+	{
+	case TileCollisionType::TILE_COLLISION_LADDER :
+	{
+		if (position.tileRel.x > 20 && position.tileRel.x < 44)
+		{
+			_canClimb = true;
+		}
+	}break;
 	}
 }

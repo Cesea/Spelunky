@@ -44,6 +44,8 @@ namespace PlayScene
 		
 		//이 변수가 여기에 있어야 할까??? 아니면 룸에서 가지고 있어야 할까??
 		int layer{};
+
+		IntVector2 position;
 	};
 
 }

@@ -1,5 +1,8 @@
-#ifndef PLAYER_H
+﻿#ifndef PLAYER_H
 #define PLAYER_H
+
+
+//모든 상태에서 중력의 영향을 받아야지 제대로 작동함...
 
 #include "MovingObject.h"
 
@@ -8,6 +11,16 @@ class Player : public MovingObject
 	friend class StateManager<Player>;
 	friend class IdleState;
 	friend class WalkState;
+	friend class CrawlState;
+	friend class CrawlIdleState;
+	friend class CrawlMoveState;
+	friend class StandUpState;
+	friend class LookUpState;
+	friend class LookRevertState;
+	friend class JumpState;
+	friend class FallingState;
+	friend class LadderClimbState;
+	friend class LadderIdleState;
 
 public :
 	Player(ObjectId id);
@@ -38,10 +51,27 @@ public :
 	//void HandleCommand(IEvent *event);
 
 private :
-	Vector2 _speed{400, 200};
+	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
+
+	void CollisionCheck();
+	void CheckCurrentTile();
+
+private :
+	Vector2 _speed{400, 300};
 	Vector2 _accel{};
 	Vector2 _velocity{};
-	Vector2 _maxVelocity{350, 550};
+	Vector2 _prevVelocity{};
+	Vector2 _maxVelocity{300, 550};
+
+	float _dashSpeed{200};
+	float _climbSpeed{ 120.0f };
+
+	bool _canGrab{false};
+	bool _headHit{ false };
+	bool _onGround{ false };
+	bool _onLedge{ false };
+	bool _onWall{ false };
+	bool _canClimb{ false };
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
@@ -49,6 +79,8 @@ private :
 	Direction _seeingDirection{};
 
 	StateManager<Player> _stateManager;
+
+	PlayScene::ReturnTile _nearTiles;
 };
 
 #endif

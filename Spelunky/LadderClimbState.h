@@ -1,26 +1,33 @@
-#ifndef CRAWL_STATE_H
-#define CRAWL_STATE_H
+#ifndef LADDER_CLIMB_STATE_H
+#define LADDER_CLIMB_STATE_H
 
 #include "State.h"
 class Player;
 
-class CrawlState : public State<Player>
+class LadderIdleState : public State<Player>
 {
-public :
-	void OnEnter(Player *object);
-	State<Player> *Update(Player *object, float deltaTime);
-	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
-	State<Player> *HandleFrameEndEvent(Player *actor) override;
-	void OnExit(Player *object);
-};
-
-class CrawlIdleState : public State<Player>
-{
+public:
 	void OnEnter(Player *object);
 	State<Player> *Update(Player *object, float deltaTime);
 	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
 	State<Player> *HandleFrameEndEvent(Player *actor) override { return nullptr; }
 	void OnExit(Player *object);
+
+private:
+};
+
+
+class LadderClimbState : public State<Player>
+{
+public:
+	void OnEnter(Player *object);
+	State<Player> *Update(Player *object, float deltaTime);
+	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
+	State<Player> *HandleFrameEndEvent(Player *actor) override { return nullptr; }
+	void OnExit(Player *object);
+
+private:
+	bool _wasControlled{ true };
 };
 
 

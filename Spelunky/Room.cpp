@@ -133,24 +133,153 @@ Tile & PlayScene::Stage::GetTileRef(int x, int y)
 	return tileLayer0[x + (STAGE_TILE_COUNTX* y)];
 }
 
-ReturnTile PlayScene::Stage::GetAdjacent4()
+ReturnTile PlayScene::Stage::GetAdjacent4(const IntVector2 &p)
 {
-	return ReturnTile();
+	ReturnTile result{};
+	result.tileNum = 4;
+
+	int index = p.x + p.y * STAGE_TILE_COUNTX;
+
+	if (p.x > 0)
+	{
+		result.tiles[0] = &tileLayer0[index - 1];
+	}
+	if (p.x < STAGE_TILE_COUNTX - 2)
+	{
+		result.tiles[2] = &tileLayer0[index + 1];
+	}
+	if (p.y > 0)
+	{
+		result.tiles[1] = &tileLayer0[index - STAGE_TILE_COUNTY];
+	}
+	if (p.y < STAGE_TILE_COUNTY - 2)
+	{
+		result.tiles[3] = &tileLayer0[index + STAGE_TILE_COUNTY];
+	}
+
+	return result;
 }
 
-ReturnTile PlayScene::Stage::GetAdjacent5()
+ReturnTile PlayScene::Stage::GetAdjacent5(const IntVector2 &p)
 {
-	return ReturnTile();
+	ReturnTile result{};
+	result.tileNum = 5;
+
+	int index = p.x + p.y * STAGE_TILE_COUNTX;
+
+	if (p.x > 0)
+	{
+		result.tiles[0] = &tileLayer0[index - 1];
+	}
+	if (p.x < STAGE_TILE_COUNTX - 2)
+	{
+		result.tiles[2] = &tileLayer0[index + 1];
+	}
+	if (p.y > 0)
+	{
+		result.tiles[1] = &tileLayer0[index - STAGE_TILE_COUNTY];
+	}
+	if (p.y < STAGE_TILE_COUNTY - 2)
+	{
+		result.tiles[3] = &tileLayer0[index + STAGE_TILE_COUNTY];
+	}
+
+	result.tiles[4] = &tileLayer0[index];
+
+	return result;
 }
 
-ReturnTile PlayScene::Stage::GetAdjacentTiles8()
+ReturnTile PlayScene::Stage::GetAdjacentTiles8(const IntVector2 &p)
 {
-	return ReturnTile();
+	ReturnTile result{};
+	result.tileNum = 8;
+
+	int index = 0;
+
+	for (int y = 1; y >= -1; --y)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			if (x == 0 && y == 0) { continue; }
+
+			IntVector2 absTilePos(p.x + x, p.y + y);
+			if (absTilePos.x < 0 || absTilePos.x > STAGE_TILE_COUNTX - 1 ||
+				absTilePos.y < 0 || absTilePos.y > STAGE_TILE_COUNTY - 1)
+			{
+				result.tiles[index] = nullptr;
+				index++;
+				continue;
+			}
+			result.tiles[index] = &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TILE_COUNTX];
+			index++;
+		}
+	}
+	Tile *temp;
+	temp = result.tiles[0];
+	result.tiles[0] = result.tiles[1];
+	result.tiles[1] = temp;
+
+	temp = result.tiles[1];
+	result.tiles[1] = result.tiles[6];
+	result.tiles[6] = temp;
+
+	temp = result.tiles[2];
+	result.tiles[2] = result.tiles[3];
+	result.tiles[3] = temp;
+
+	temp = result.tiles[3];
+	result.tiles[3] = result.tiles[4];
+	result.tiles[4] = temp;
+
+	return result;
 }
 
-ReturnTile PlayScene::Stage::GetAdjacentTiles9()
+ReturnTile PlayScene::Stage::GetAdjacentTiles9(const IntVector2 &p)
 {
-	return ReturnTile();
+	ReturnTile result{};
+	result.tileNum = 9;
+
+	int index = 0;
+
+	for (int y = 1; y >= -1; --y)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			if (x == 0 && y == 0) { continue; }
+
+			IntVector2 absTilePos(p.x + x, p.y + y);
+			if (absTilePos.x < 0 || absTilePos.x > STAGE_TILE_COUNTX - 1 ||
+				absTilePos.y < 0 || absTilePos.y > STAGE_TILE_COUNTY - 1)
+			{
+				result.tiles[index] = nullptr;
+				index++;
+				continue;
+			}
+			result.tiles[index] = &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TILE_COUNTX];
+			index++;
+		}
+	}
+
+	result.tiles[8] = &tileLayer0[p.x + p.y * STAGE_TILE_COUNTX];
+
+	Tile *temp;
+	temp = result.tiles[0];
+	result.tiles[0] = result.tiles[1];
+	result.tiles[1] = temp;
+
+	temp = result.tiles[1];
+	result.tiles[1] = result.tiles[6];
+	result.tiles[6] = temp;
+
+	temp = result.tiles[2];
+	result.tiles[2] = result.tiles[3];
+	result.tiles[3] = temp;
+
+	temp = result.tiles[3];
+	result.tiles[3] = result.tiles[4];
+	result.tiles[4] = temp;
+
+	return result;
 }
 
 void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int height)
@@ -287,12 +416,11 @@ void PlayScene::Stage::CopyTilesFromRooms(Room * rooms)
 			{
 				for (int i = xStartIndex; i < xStartIndex + ROOM_TILE_COUNTX; ++i)
 				{
-					if ((i + STAGE_TILE_COUNTX * j) == 87)
-					{
-						int a = 0;
-					}
 					tileLayer0[i + STAGE_TILE_COUNTX * j] = currentRoom.layer0[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
 					tileLayer1[i + STAGE_TILE_COUNTX * j] = currentRoom.layer1[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
+
+					tileLayer0[i + STAGE_TILE_COUNTX * j].position = IntVector2(i, j);
+					tileLayer1[i + STAGE_TILE_COUNTX * j].position = IntVector2(i, j);
 				}
 			}
 		}
@@ -368,6 +496,7 @@ void PlayScene::Stage::BuildTileLayerFromFile(FileUtils::File & file, Tile * til
 			file.Read(L"Layer : %d\n", &currentTile.layer);
 
 			ZeroMemory(buffer, 40);
+
 		}
 	}
 }

@@ -1,33 +1,34 @@
 #include "stdafx.h"
-#include "WalkState.h"
+#include "FallingState.h"
 
 #include "Player.h"
 
 #include "IdleState.h"
-#include "FallingState.h"
-#include "JumpState.h"
+#include "WalkState.h"
 
-void WalkState::OnEnter(Player * object)
+void FallingState::OnEnter(Player * object)
 {
-	object->SetGraphics(L"walk");
+	object->SetGraphics(L"falling");
 }
 
-State<Player>* WalkState::Update(Player * object, float deltaTime)
+State<Player>* FallingState::Update(Player * object, float deltaTime)
 {
 	State<Player> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+	if (object->_onGround)
+	{
+		newState = new WalkState;
+	}
+
+	object->_prevVelocity = object->_velocity;
 	object->_velocity += object->_accel * deltaTime;
+
 	ClampFloat(&object->_velocity.x, -object->_maxVelocity.x, object->_maxVelocity.x);
 	ClampFloat(&object->_velocity.y, -object->_maxVelocity.y, object->_maxVelocity.y);
 
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
-
-	if (!object->_onGround)
-	{
-		newState = new FallingState;
-	}
 
 	if (_wasControlled)
 	{
@@ -42,16 +43,15 @@ State<Player>* WalkState::Update(Player * object, float deltaTime)
 		else
 		{
 			object->_velocity.x = 0.0f;
-			newState = new IdleState;
-			Console::Log("Im Idle\n");
 		}
 	}
+
+	//if(object->position.tileY == 7 &&)
 	return newState;
 }
 
-State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & command)
+State<Player>* FallingState::HandleCommand(Player * object, const ControlCommand & command)
 {
-	State<Player> *newState = nullptr;
 	if (command.horizontal == Command::MoveLeft)
 	{
 		_wasControlled = true;
@@ -80,16 +80,10 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 			object->_accel.x = object->_speed.x;
 		}
 	}
-
-	if (command.jump == Command::Jump)
-	{
-		newState = new JumpState;
-		return newState;
-	}
-
 	return nullptr;
 }
 
-void WalkState::OnExit(Player * object)
+void FallingState::OnExit(Player * object)
 {
+	object->_velocity.y = 0;
 }

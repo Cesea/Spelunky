@@ -22,6 +22,7 @@ public :
 
 protected  :
 	Rect _rect;
+	Vector2 _rectOffset{};
 };
 
 

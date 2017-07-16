@@ -1,17 +1,22 @@
-#ifndef IDLE_STATE_H
-#define IDLE_STATE_H
+#ifndef CRAWL_MOVE_STATE_H
+#define CRAWL_MOVE_STATE_H
 
 #include "State.h"
 class Player;
 
-class IdleState : public State<Player>
+class CrawlMoveState : public State<Player>
 {
-public :
+public:
 	void OnEnter(Player *object);
 	State<Player> *Update(Player *object, float deltaTime);
 	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
 	State<Player> *HandleFrameEndEvent(Player *actor) override { return nullptr; }
 	void OnExit(Player *object);
+
+private :
+	bool _wasControlled{false};
 };
+
+
 
 #endif

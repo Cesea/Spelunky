@@ -1,34 +1,35 @@
 #include "stdafx.h"
-#include "WalkState.h"
+#include "JumpState.h"
 
 #include "Player.h"
 
-#include "IdleState.h"
 #include "FallingState.h"
-#include "JumpState.h"
 
-void WalkState::OnEnter(Player * object)
+void JumpState::OnEnter(Player * object)
 {
-	object->SetGraphics(L"walk");
+	object->SetGraphics(L"jump");
+	object->_velocity.y -= 500.0f;
+
+	object->_onGround = false;
 }
 
-State<Player>* WalkState::Update(Player * object, float deltaTime)
+State<Player>* JumpState::Update(Player * object, float deltaTime)
 {
 	State<Player> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+	object->_prevVelocity = object->_velocity;
 	object->_velocity += object->_accel * deltaTime;
+
+	if (object->_prevVelocity.y < 0.0f && object->_velocity.y > 0.0f)
+	{
+		newState = new FallingState;
+	}
 	ClampFloat(&object->_velocity.x, -object->_maxVelocity.x, object->_maxVelocity.x);
 	ClampFloat(&object->_velocity.y, -object->_maxVelocity.y, object->_maxVelocity.y);
 
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
-
-	if (!object->_onGround)
-	{
-		newState = new FallingState;
-	}
-
 	if (_wasControlled)
 	{
 		_wasControlled = false;
@@ -42,14 +43,13 @@ State<Player>* WalkState::Update(Player * object, float deltaTime)
 		else
 		{
 			object->_velocity.x = 0.0f;
-			newState = new IdleState;
-			Console::Log("Im Idle\n");
 		}
 	}
+
 	return newState;
 }
 
-State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & command)
+State<Player>* JumpState::HandleCommand(Player * object, const ControlCommand & command)
 {
 	State<Player> *newState = nullptr;
 	if (command.horizontal == Command::MoveLeft)
@@ -81,15 +81,14 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 		}
 	}
 
-	if (command.jump == Command::Jump)
+	if (command.jump == Command::JumpOff)
 	{
-		newState = new JumpState;
-		return newState;
+		newState = new FallingState;
 	}
 
-	return nullptr;
+	return newState;
 }
 
-void WalkState::OnExit(Player * object)
+void JumpState::OnExit(Player * object)
 {
 }

@@ -37,10 +37,10 @@ namespace PlayScene
 		const Tile &GetTileConstRef(int x, int y);
 		Tile &GetTileRef(int x, int y);
 
-		ReturnTile GetAdjacent4();
-		ReturnTile GetAdjacent5();
-		ReturnTile GetAdjacentTiles8();
-		ReturnTile GetAdjacentTiles9();
+		ReturnTile GetAdjacent4(const IntVector2 &p);
+		ReturnTile GetAdjacent5(const IntVector2 &p);
+		ReturnTile GetAdjacentTiles8(const IntVector2 &p);
+		ReturnTile GetAdjacentTiles9(const IntVector2 &p);
 
 		void CalculateMask(int xStartIndex, int yStartIndex, int width, int height);
 		void ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height);

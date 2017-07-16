@@ -22,10 +22,6 @@ public:
 	void CreateAndPlaceObject(ArcheType type, const TilePosition &position);
 
 private:
-
-	//PlayScene::StageRandomizer _stageRandomizer;
-	PlayScene::Stage _stage;
-
 	Camera _camera;
 
 private:

@@ -38,7 +38,7 @@ private:
 	bool _isHardware;			//고성능 타이머 지원되냐?
 	float _timeScale;			//시간의 경과량 조절
 	float _timeElapsed;			//마지막 시간과 현재 시간의 경과량
-	float _prevTimeElapsed;
+	float _prevTimeElapsed{0.016f};
 	__int64 _curTime;			//현재시간
 	__int64 _lastTime;			//이전시간
 	__int64 _periodFrequency;	//시간주기

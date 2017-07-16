@@ -94,6 +94,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	gRenderTarget = _d2d.GetRenderTarget();
 
+	TIMEMANAGER->Tick();
+
 	while (_running) //∞‘¿”øÎ
 	{
 		BOOL result = PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE);

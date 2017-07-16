@@ -149,6 +149,7 @@ typedef Vector3 MeterVector3;
 #include "EventManager.h"
 #include "GameObjectManager.h"
 
+
 #define EVENTMANAGER EventManager::getSingleton()
 #define OBJECTMANAGER GameObjectManager::getSingleton()
 
@@ -161,6 +162,10 @@ typedef Vector3 MeterVector3;
 #include "D2DFrameSprite.h"
 
 #include "File.h"
+
+#include "StageManager.h"
+
+#define STAGEMANAGER PlayScene::StageManager::getSingleton()
 
 //=================================================
 //======== 20170309 #전역변수# ========

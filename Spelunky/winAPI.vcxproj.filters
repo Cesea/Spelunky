@@ -103,6 +103,18 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Crawl">
       <UniqueIdentifier>{5d59a0fe-7110-48cc-aa6a-a12eb76bc30e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\LookUp">
+      <UniqueIdentifier>{987495a4-94e9-4b09-b6b0-83ae087fa504}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\InAir">
+      <UniqueIdentifier>{16eb143d-7b57-4a60-8a9e-22cb84d287ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Stage">
+      <UniqueIdentifier>{c6e0e98b-30d2-49bb-aa3f-0a0589724766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Climb">
+      <UniqueIdentifier>{3ca1b163-7bb7-49dd-8622-80164c5a743f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -261,12 +273,6 @@
     <ClInclude Include="File.h">
       <Filter>GameFramework2D\Utils\File</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
     </ClInclude>
@@ -276,14 +282,38 @@
     <ClInclude Include="WalkState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
     </ClInclude>
-    <ClInclude Include="LookUpState.h">
-      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
-    </ClInclude>
     <ClInclude Include="CrawlState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
     </ClInclude>
     <ClInclude Include="StandUpState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
+    </ClInclude>
+    <ClInclude Include="LookUpState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\LookUp</Filter>
+    </ClInclude>
+    <ClInclude Include="LookRevertState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\LookUp</Filter>
+    </ClInclude>
+    <ClInclude Include="CrawlMoveState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
+    </ClInclude>
+    <ClInclude Include="JumpState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\InAir</Filter>
+    </ClInclude>
+    <ClInclude Include="FallingState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\InAir</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="StageManager.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="LadderClimbState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Climb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +437,6 @@
     <ClCompile Include="File.cpp">
       <Filter>GameFramework2D\Utils\File</Filter>
     </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>Game\Scene\GamePlayScene\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
     </ClCompile>
@@ -419,14 +446,35 @@
     <ClCompile Include="WalkState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
     </ClCompile>
-    <ClCompile Include="LookUpState.cpp">
-      <Filter>Game\Scene\GamePlayScene\Objects\Player\States</Filter>
-    </ClCompile>
     <ClCompile Include="CrawlState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
     </ClCompile>
     <ClCompile Include="StandUpState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
+    </ClCompile>
+    <ClCompile Include="LookUpState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\LookUp</Filter>
+    </ClCompile>
+    <ClCompile Include="LookRevertState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\LookUp</Filter>
+    </ClCompile>
+    <ClCompile Include="CrawlMoveState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Crawl</Filter>
+    </ClCompile>
+    <ClCompile Include="JumpState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\InAir</Filter>
+    </ClCompile>
+    <ClCompile Include="FallingState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\InAir</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="StageManager.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="LadderClimbState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Climb</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
