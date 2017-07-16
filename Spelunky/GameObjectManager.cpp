@@ -5,6 +5,8 @@
 
 #include "Player.h"
 
+#include "Gem.h"
+
 GameObjectManager::GameObjectManager()
 {
 }
@@ -27,19 +29,35 @@ GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
 	GameObject *result = nullptr;
 	switch (type)
 	{
-	case ArcheType::Player :
+	case ArcheType::Player:
 	{
 		result = new Player(scene->GetNextId());
 		result->Init(ArcheType::Player);
 	}break;
-	case ArcheType::Tile : 
+	case ArcheType::Tile:
 	{
 	}break;
-	case ArcheType::MineBG : 
+	case ArcheType::MineBG:
 	{
 	}break;
+	case ArcheType::Gem:
+	{
+		result = new Gem(scene->GetNextId());
+		result->Init(ArcheType::Gem);
+	}
 	}
 	_objects.insert(std::make_pair(result->GetId(), result));
+	return result;
+}
+
+GameObject * GameObjectManager::FindObjectId(ObjectId id)
+{
+	GameObject *result = nullptr;
+	auto &found = _objects.find(id);
+	if (found != _objects.end())
+	{
+		result = found->second;
+	}
 	return result;
 }
 

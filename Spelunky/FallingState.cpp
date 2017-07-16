@@ -7,9 +7,12 @@
 #include "WalkState.h"
 #include "LadderClimbState.h"
 
+#include "GrabState.h"
+
 void FallingState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"falling");
+	_canGrabAgainTimer.Init(0.15f);
 }
 
 State<Player>* FallingState::Update(Player * object, float deltaTime)
@@ -18,9 +21,18 @@ State<Player>* FallingState::Update(Player * object, float deltaTime)
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+	if (_canGrabAgainTimer.Tick(deltaTime))
+	{
+		_canGrabAgain = true;
+	}
+
 	if (object->_onGround)
 	{
 		newState = new WalkState;
+	}
+	if (object->_canGrab)
+	{
+		newState = new GrabState;
 	}
 
 	object->_prevVelocity = object->_velocity;
@@ -46,8 +58,6 @@ State<Player>* FallingState::Update(Player * object, float deltaTime)
 			object->_velocity.x = 0.0f;
 		}
 	}
-
-	//if(object->position.tileY == 7 &&)
 	return newState;
 }
 

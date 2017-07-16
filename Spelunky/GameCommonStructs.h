@@ -63,7 +63,6 @@ inline TilePosition InterpolateTilePosition(const TilePosition &start, const Til
 	return TilePosition(pos.x, pos.y);
 }
 
-
 template<typename T>
 struct TileSet
 {
@@ -98,6 +97,7 @@ enum class ArcheType
 	Tile,
 	MineBG,
 	GUI,
+	Gem,
 };
 
 enum Direction

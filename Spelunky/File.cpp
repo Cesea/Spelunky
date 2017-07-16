@@ -91,19 +91,22 @@ namespace FileUtils
 		Clear();
 	}
 
-	bool File::Open(const char *name, FileAccess::Type access_type)
+	bool File::Open(const std::wstring &fileName, FileAccess::Type access_type)
 	{
+		char buffer[80]{};
+		wcstombs(buffer, fileName.c_str(), 79);
+
 		bool result = true;
 		switch (access_type)
 		{
 		case FileAccess::Read:
-			fp = fopen(name, "r");
+			fp = fopen(buffer, "r");
 			break;
 		case FileAccess::Write:
-			fp = fopen(name, "w");
+			fp = fopen(buffer, "w");
 			break;
 		case FileAccess::Append:
-			fp = fopen(name, "a");
+			fp = fopen(buffer, "a");
 			break;
 		}
 		if (fp == nullptr)

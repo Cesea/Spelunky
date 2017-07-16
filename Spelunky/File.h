@@ -19,7 +19,7 @@ namespace FileUtils
 		File(FILE *file);
 		~File();
 
-		bool Open(const char *fileName, FileAccess::Type accessType);
+		bool Open(const std::wstring &fileName, FileAccess::Type accessType);
 		void Close(void); // Close file pointer
 		void Clear(void); // Close file pointer (if open) and clear file name
 		void Write(const WCHAR *format, ...);

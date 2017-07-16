@@ -16,7 +16,7 @@ namespace PlayScene
 		_currentStage = new Stage;
 		RoomType roomTypes[16]{};
 		_currentStage->InitFromRoomTypes(roomTypes);
-		_currentStage->CalculateMask(0, 0, STAGE_TILE_COUNTX, STAGE_TILE_COUNTY);
+		_currentStage->CalculateMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 		return S_OK;
 	}
 
@@ -32,12 +32,12 @@ namespace PlayScene
 
 	void StageManager::RenderTileLayer()
 	{
-		_currentStage->RenderTileLayer(TilePosition());
+		_currentStage->RenderTileLayer(_pCamera->GetPosition());
 	}
 
 	void StageManager::RenderMaskLayer()
 	{
-		_currentStage->RenderMaskLayer(TilePosition());
+		_currentStage->RenderMaskLayer(_pCamera->GetPosition());
 	}
 
 	Stage * PlayScene::StageManager::GetCurrentStage()

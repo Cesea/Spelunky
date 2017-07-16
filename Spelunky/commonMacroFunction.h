@@ -68,6 +68,12 @@ struct Rect
 	float y{};
 	float width{};
 	float height{};
+
+	void operator+= (const Vector2 &v)
+	{
+		x += v.x;
+		y += v.y;
+	}
 };
 
 inline Rect RectMake(float x, float y, float width, float height)
@@ -81,7 +87,7 @@ inline Rect RectMake(float x, float y, float width, float height)
 	return result;
 }
 
-inline bool IsRectangleOverlap(Rect rect1, Rect rect2)
+inline bool IsRectangleOverlap(const Rect &rect1, const Rect &rect2)
 {
 	bool result = false;
 	if ((rect1.x < rect2.x + rect2.width) && (rect1.x + rect1.width > rect2.x) && 
@@ -155,6 +161,8 @@ inline Vector2 InterpolateVector(const Vector2 &start, const Vector2 &end, float
 	result.y = InterpolateFloat(start.y, end.y, t);
 	return result;
 }
+
+
 
 inline Rect operator+ (const Rect &rect, const Vector2 &v)
 {

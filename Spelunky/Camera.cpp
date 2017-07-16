@@ -11,7 +11,7 @@ Camera::~Camera()
 
 HRESULT Camera::Init()
 {
-	_worldRect = RectMake(0, 0, TILE_SIZE * STAGE_TILE_COUNTX, TILE_SIZE * STAGE_TILE_COUNTY);
+	_worldRect = RectMake(0, 0, TILE_SIZE * STAGE_TOTAL_COUNTX, TILE_SIZE * STAGE_TOTAL_COUNTY);
 	_anchorRect = RectMake(0, 0, _worldRect.width - WINSIZEX, _worldRect.height - WINSIZEY);
 	return S_OK;
 }
@@ -22,6 +22,11 @@ void Camera::Release(void)
 
 void Camera::Update(void)
 {
+	if (_target && _following)
+	{
+		_position = _target->position;
+		_position.AddToTile(-10, -6);
+	}
 	KeepCameraInsideAnchorRect();
 	//_position = _pPlayerCar->GetPosition();
 }
@@ -54,9 +59,9 @@ void Camera::KeepCameraInsideAnchorRect()
 		_position.tileRel.y = 0;
 	}
 
-	if (_position.tileX > STAGE_TILE_COUNTX - 2 - 20)
+	if (_position.tileX > STAGE_TOTAL_COUNTX - 2 - 20)
 	{
-		_position.tileX = STAGE_TILE_COUNTX - 2- 20;
+		_position.tileX = STAGE_TOTAL_COUNTX - 2- 20;
 		_position.tileRel.x = 64;
 	}
 		//if (_position.tileRel.x > TILE_SIZE)
@@ -64,9 +69,9 @@ void Camera::KeepCameraInsideAnchorRect()
 		//	_position.tileRel.x = TILE_SIZE;
 		//}
 
-	if (_position.tileY > STAGE_TILE_COUNTY - 13)
+	if (_position.tileY > STAGE_TOTAL_COUNTY - 13)
 	{
-		_position.tileY = STAGE_TILE_COUNTY - 13;
+		_position.tileY = STAGE_TOTAL_COUNTY - 13;
 		_position.tileRel.y = 64;
 		//if (_position.tileRel.y > TILE_SIZE)
 		//{

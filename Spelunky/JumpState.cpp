@@ -9,7 +9,7 @@
 void JumpState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"jump");
-	object->_velocity.y -= 500.0f;
+	object->_velocity.y -= 540.0f;
 
 	object->_onGround = false;
 }
@@ -31,6 +31,11 @@ State<Player>* JumpState::Update(Player * object, float deltaTime)
 	ClampFloat(&object->_velocity.y, -object->_maxVelocity.y, object->_maxVelocity.y);
 
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
+
+	if (object->_headHit)
+	{
+		newState = new FallingState;
+	}
 	if (_wasControlled)
 	{
 		_wasControlled = false;

@@ -16,6 +16,9 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\jungletile.png", L"jungletile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\char_orange.png", L"char_orange");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gem.png", L"gem");
 
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
@@ -59,6 +62,9 @@ HRESULT GamePlayScene::LoadContent()
 	int grabLedgeArray[] = {29, 30, 31, 32, 33, 34};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_ledgeGrab", L"char_orange", 80, 80, grabLedgeArray, 6, 10, false);
 
+	int grabArray[] = {44, 45, 46, 47};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_grab", L"char_orange", 80, 80, grabArray, 4, 10, false);
+
 
 	return S_OK;
 }
@@ -82,11 +88,14 @@ HRESULT GamePlayScene::Init(void)
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
-	CreateAndPlaceObject(ArcheType::Player, TilePosition(2, 3));
+	CreateAndPlaceObject(ArcheType::Player, TilePosition(5, 5));
+	CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
 
 	_camera.Init();
-
+	_camera.SetTarget(OBJECTMANAGER->FindObjectId(_playerId));
 	STAGEMANAGER->Init();
+
+	STAGEMANAGER->SetCameraLink(&_camera);
 
 	return S_OK;
 }

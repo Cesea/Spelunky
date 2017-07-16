@@ -112,8 +112,11 @@
 #define ROOM_COUNTX 4
 #define ROOM_COUTY 4
 
-#define STAGE_TILE_COUNTX 40
-#define STAGE_TILE_COUNTY 32
+#define STAGE_TILE_COUNTXaaj 40
+#define STAGE_TILE_COUNTYaaj 32
+
+#define STAGE_TOTAL_COUNTX 46
+#define STAGE_TOTAL_COUNTY 38
 
 typedef uint8_t uint8;
 typedef uint16_t uint16;
@@ -185,6 +188,10 @@ extern Console _console;
 extern char dataPath[50];
 extern char gfxPath[50];
 extern char sfxPath[50];
+
+extern WCHAR LdataPath[50];
+extern WCHAR LgfxPath[50];
+extern WCHAR LsfxPath[50];
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 

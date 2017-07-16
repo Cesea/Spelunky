@@ -46,10 +46,13 @@ namespace PlayScene
 		void ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height);
 
 	private :
+		void BuildBorder();
+		void CopyBorderTiles(Room *rooms);
+
 		void CopyTilesFromRooms(Room *rooms);
 		bool GetRandomFileNameFromRoomType(RoomType types, WCHAR *buffer);
 
-		void BuildRoomFromFile(const WCHAR *fileName, Room *room, std::map<std::wstring, D2DSprite *> &usingSprites);
+		void BuildRoomFromFile(const std::wstring &fileName, Room *room, std::map<std::wstring, D2DSprite *> &usingSprites);
 		void BuildTileLayerFromFile(FileUtils::File & file, Tile * tileLayer, std::map<std::wstring, D2DSprite *> &usingSprites);
 
 		void TileInfoBitmaskCopy(D2DSprite *sourSprite, Tile &sourTile, Tile &maskTile, uint32 offset);
@@ -57,8 +60,8 @@ namespace PlayScene
 		void CheckUsingSpriteExistence(const std::wstring &key);
 	private :
 
-		Tile tileLayer0[STAGE_TILE_COUNTX * STAGE_TILE_COUNTY];
-		Tile tileLayer1[STAGE_TILE_COUNTX * STAGE_TILE_COUNTY];
+		Tile tileLayer0[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
+		Tile tileLayer1[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
 
 		std::map<std::wstring, D2DSprite *> _usingSprites;
 	};

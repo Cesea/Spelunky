@@ -1,10 +1,11 @@
-#ifndef FALLING_STATE_H
-#define FALLING_STATE_H
+#ifndef GRAB_STATE_H
+#define GRAB_STATE_H
 
 #include "State.h"
+
 class Player;
 
-class FallingState : public State<Player>
+class GrabState : public State<Player>
 {
 public:
 	void OnEnter(Player *object);
@@ -12,12 +13,6 @@ public:
 	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
 	State<Player> *HandleFrameEndEvent(Player *actor) override { return nullptr; }
 	void OnExit(Player *object);
-
-private :
-	bool _wasControlled{ true };
-
-	bool _canGrabAgain{ false };
-	Timer _canGrabAgainTimer;
 };
 
 #endif

@@ -24,6 +24,7 @@ public :
 	void DetachCurrentScene() { _currentScene = nullptr; }
 
 	GameObject *CreateObject(IScene *scene, ArcheType type);
+	GameObject *FindObjectId(ObjectId id);
 
 	void DestroyObject(IScene *scene, GameObject *object);
 	void DestroyObject(IScene *scene, ObjectId id);

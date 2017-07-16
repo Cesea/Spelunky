@@ -37,6 +37,7 @@ HRESULT Player::Init(ArcheType type)
 	BuildAnimationSprite(L"ladderClimb", IntVector2(-40, -72));
 	BuildAnimationSprite(L"onLedge", IntVector2(-40, -72));
 	BuildAnimationSprite(L"ledgeGrab", IntVector2(-40, -72));
+	BuildAnimationSprite(L"grab", IntVector2(-40, -72));
 
 	SetGraphics(L"idle");
 
@@ -69,6 +70,7 @@ void Player::Update(float deltaTime)
 		CollisionCheck();
 		CheckCurrentTile();
 	}
+	EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset));
 }
 
 void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -138,7 +140,6 @@ void Player::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 
 
 void Player::CollisionCheck()
 {
-
 	TilePosition centerTilePos = desiredPosition;
 	centerTilePos.AddToTileRelY(-32.0f);
 
@@ -168,7 +169,7 @@ void Player::CollisionCheck()
 					_onGround = true;
 				}
 				else if ((currentTile->collisionType == TileCollisionType::TILE_COLLISION_EOF_LADDER) && 
-							/*(desiredPosition.tileRel.y < 3.0f) &&*/
+							(_velocity.y >= 0.0f) && (desiredPosition.tileRel.y < 10) &&
 							(!_stateClimbing))
 				{
 					desiredPosition.AddToTileRel(0, -overlapRect.height);
@@ -231,7 +232,7 @@ void Player::CollisionCheck()
 							_velocity.x = 0.0f;
 							_onWall = true;
 							float pushingWidth;
-							if (i == 5 || i == 6)
+							if (i == 5 || i == 7)
 							{
 								pushingWidth = overlapRect.width;
 							}
@@ -257,6 +258,13 @@ void Player::CheckCurrentTile()
 
 	TileCollisionType lowerLeftTileCollisionType = _nearTiles.tiles[6]->collisionType;
 	TileCollisionType lowerRightTileCollisionType = _nearTiles.tiles[4]->collisionType;
+
+	TileCollisionType leftTileCollisionType = _nearTiles.tiles[2]->collisionType;
+	TileCollisionType rightTileCollisionType = _nearTiles.tiles[3]->collisionType;
+
+	TileCollisionType upperLeftTileCollisionType = _nearTiles.tiles[5]->collisionType;
+	TileCollisionType upperRightTileCollisionType = _nearTiles.tiles[7]->collisionType;
+
 	if (centerTileCollisionType == TILE_COLLISION_LADDER || centerTileCollisionType == TILE_COLLISION_EOF_LADDER)
 	{
 		if (position.tileRel.x > 20 && position.tileRel.x < 44)
@@ -279,12 +287,29 @@ void Player::CheckCurrentTile()
 			_onLedge = true;
 		}
 	}
-	else if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
+	if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
 		(lowerRightTileCollisionType == TILE_COLLISION_NONE))
 	{
 		if (position.tileRel.x > 56)
 		{
 			_onLedge = true;
 		}
+	}
+
+	if ((!_onGround) && 
+		(leftTileCollisionType == TILE_COLLISION_BLOCK) && 
+		(upperLeftTileCollisionType == TILE_COLLISION_NONE) &&
+		(position.tileRel.x < 32.0f) &&
+		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
+	{
+		_canGrab = true;
+	}
+	else if((!_onGround) && 
+		(rightTileCollisionType == TILE_COLLISION_BLOCK) && 
+		(upperRightTileCollisionType == TILE_COLLISION_NONE) &&
+		(position.tileRel.x > 32.0f) &&
+		(desiredPosition.tileRel.y > 40.0f) && desiredPosition.tileRel.y < 46.0f)
+	{
+		_canGrab = true;
 	}
 }

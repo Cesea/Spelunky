@@ -32,7 +32,7 @@ private :
 
 	GameObject *_target{};
 
-	bool _following{ false };
+	bool _following{ true };
 
 };
 

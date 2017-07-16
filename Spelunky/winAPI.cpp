@@ -17,6 +17,10 @@ char dataPath[50] = "resources\\data\\";
 char gfxPath[50] = "resources\\gfx";
 char sfxPath[50] = "resources\\sfx";
 
+WCHAR LdataPath[50] = L"resources\\data\\";;
+WCHAR LgfxPath[50]= L"resources\\gfx";;
+WCHAR LsfxPath[50] = L"resources\\sfx";;
+
 ID2D1HwndRenderTarget *	gRenderTarget;
 
 bool _running = false;

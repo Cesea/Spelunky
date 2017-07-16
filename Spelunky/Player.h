@@ -3,7 +3,6 @@
 
 
 //모든 상태에서 중력의 영향을 받아야지 제대로 작동함...
-
 #include "MovingObject.h"
 
 class Player : public MovingObject
@@ -69,6 +68,7 @@ private :
 	float _climbSpeed{ 120.0f };
 
 	bool _canGrab{false};
+	bool _wasGrab{ false };
 	bool _headHit{ false };
 	bool _onGround{ false };
 	bool _onLedge{ false };

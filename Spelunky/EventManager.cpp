@@ -93,10 +93,7 @@ bool EventManager::Update(float deltaTime)
 
 		auto &eventDelegates = _eventDelegatesMap.find(event->GetType());
 
-		if (event->GetType() == EVENT_MOVE_ENTITY)
-		{
-			count++;
-		}
+
 
 		if (eventDelegates != _eventDelegatesMap.end())
 		{

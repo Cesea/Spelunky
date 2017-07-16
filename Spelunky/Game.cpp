@@ -34,14 +34,8 @@ HRESULT Game::Init(void)
 	SCENEMANAGER->AddScene(_T("LoadingScene"), loadingScene);
 
 	//ÇöÀç ¾À ¼³Á¤
-	SCENEMANAGER->ChangeScene(_T("MapToolScene"));
+	SCENEMANAGER->ChangeScene(_T("GamePlayScene"));
 
-	//IMAGEMANAGER->LoadImageFromFile(_T("resources/gfx/ground01.png"), _T("ground01"));
-
-	//_sprite = new D2DSprite();
-	//_sprite->Init(IMAGEMANAGER->GetImage(_T("ground01")), 0, 0, 32, 32);
-
-	////GAMESTATE->ChangeState(new MenuState());
 
 	return S_OK;
 }

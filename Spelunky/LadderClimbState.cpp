@@ -9,9 +9,9 @@
 void LadderIdleState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"ladderIdle");
-	object->_velocity.y = 0.0f;
+	object->_velocity = Vector2();
 
-	object->position.tileRel.x = 32.0f;
+	object->desiredPosition.tileRel.x = 32.0f;
 	object->_stateClimbing = true;
 }
 
@@ -55,8 +55,10 @@ void LadderIdleState::OnExit(Player * object)
 void LadderClimbState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"ladderClimb");
+	object->_velocity = Vector2();
+	object->_accel.x = 0.0f;
 	object->_stateClimbing = true;
-	object->position.tileRel.x = 32.0f;
+	object->desiredPosition.tileRel.x = 32.0f;
 }
 
 State<Player>* LadderClimbState::Update(Player * object, float deltaTime)
@@ -70,11 +72,6 @@ State<Player>* LadderClimbState::Update(Player * object, float deltaTime)
 	ClampFloat(&object->_velocity.y, -object->_climbSpeed, object->_climbSpeed);
 
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
-
-	//if (object->_onGround)
-	//{
-	//	newState = new IdleState;
-	//}
 
 	if (!_wasControlled)
 	{

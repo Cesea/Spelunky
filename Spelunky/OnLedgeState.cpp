@@ -146,8 +146,16 @@ State<Player>* LedgeGrabState::HandleCommand(Player * object, const ControlComma
 	State<Player> *newState = nullptr;
 	if (command.jump == Command::Jump)
 	{
-		newState = new JumpState;
-		return newState;
+		if (command.vertical == Command::MoveDown)
+		{
+			newState = new FallingState;
+			return newState;
+		}
+		else
+		{
+			newState = new JumpState;
+			return newState;
+		}
 	}
 	return newState;
 }
@@ -156,4 +164,13 @@ void LedgeGrabState::OnExit(Player * object)
 {
 	object->desiredPosition = object->position;
 	object->_interpolating = false;
+
+	if (object->GetDirection() == Direction::Left)
+	{
+		object->SetDirection(Direction::Right);
+	}
+	else if(object->GetDirection() == Direction::Right)
+	{
+		object->SetDirection(Direction::Left);
+	}
 }

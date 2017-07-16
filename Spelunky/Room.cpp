@@ -18,6 +18,8 @@ HRESULT PlayScene::Stage::Init()
 
 HRESULT PlayScene::Stage::InitFromRoomTypes(RoomType *randomRoomType)
 {
+	BuildBorder();
+
 	WCHAR buffer[50]{};
 	Room rooms[16];
 	for (int i = 0; i < 16; ++i)
@@ -49,8 +51,8 @@ void PlayScene::Stage::RenderTileLayer(const TilePosition &camPos)
 	int maxY = camPos.tileY + 12;
 	if (minX < 0) { minX = 0; }
 	if (minY < 0) { minY = 0; }
-	if (maxX > STAGE_TILE_COUNTX - 1) { maxX = STAGE_TILE_COUNTX - 1; }
-	if (maxY > STAGE_TILE_COUNTY - 1) { maxY = STAGE_TILE_COUNTY - 1; }
+	if (maxX > STAGE_TOTAL_COUNTX - 1) { maxX = STAGE_TOTAL_COUNTX - 1; }
+	if (maxY > STAGE_TOTAL_COUNTY - 1) { maxY = STAGE_TOTAL_COUNTY - 1; }
 	//ClampInt(&minX, 0, STAGE_TILE_COUNTX);
 	//ClampInt(&minY, 0, STAGE_TILE_COUNTY);
 
@@ -58,7 +60,7 @@ void PlayScene::Stage::RenderTileLayer(const TilePosition &camPos)
 	{
 		for (int x = minX; x <= maxX; ++x)
 		{
-			int index = x + y * STAGE_TILE_COUNTX;
+			int index = x + y * STAGE_TOTAL_COUNTX;
 			if (tileLayer0[index].sourceIndex.x != -1)
 			{
 				const auto & tile = tileLayer0[index];
@@ -78,14 +80,14 @@ void PlayScene::Stage::RenderMaskLayer(const TilePosition &camPos)
 	int maxY = camPos.tileY + 12;
 	if (minX < 0) { minX = 0; }
 	if (minY < 0) { minY = 0; }
-	if (maxX > STAGE_TILE_COUNTX - 1) { maxX = STAGE_TILE_COUNTX - 1; }
-	if (maxY > STAGE_TILE_COUNTY - 1) { maxY = STAGE_TILE_COUNTY - 1; }
+	if (maxX > STAGE_TOTAL_COUNTX - 1) { maxX = STAGE_TOTAL_COUNTX - 1; }
+	if (maxY > STAGE_TOTAL_COUNTY - 1) { maxY = STAGE_TOTAL_COUNTY - 1; }
 
 	for (int y = minY; y <= maxY; ++y)
 	{
 		for (int x = minX; x <= maxX; ++x)
 		{
-			int index = x + y * STAGE_TILE_COUNTX;
+			int index = x + y * STAGE_TOTAL_COUNTX;
 			if ((tileLayer1[index].sourceIndex.x != -1) ||
 				(tileLayer1[index].maskInfo != 0))
 			{
@@ -126,11 +128,11 @@ void PlayScene::Stage::RenderMaskLayer(const TilePosition &camPos)
 
 const Tile & PlayScene::Stage::GetTileConstRef(int x, int y)
 {
-	return tileLayer0[x + (STAGE_TILE_COUNTX* y)];
+	return tileLayer0[x + (STAGE_TOTAL_COUNTX * y)];
 }
 Tile & PlayScene::Stage::GetTileRef(int x, int y)
 {
-	return tileLayer0[x + (STAGE_TILE_COUNTX* y)];
+	return tileLayer0[x + (STAGE_TOTAL_COUNTX* y)];
 }
 
 ReturnTile PlayScene::Stage::GetAdjacent4(const IntVector2 &p)
@@ -138,23 +140,23 @@ ReturnTile PlayScene::Stage::GetAdjacent4(const IntVector2 &p)
 	ReturnTile result{};
 	result.tileNum = 4;
 
-	int index = p.x + p.y * STAGE_TILE_COUNTX;
+	int index = p.x + p.y * STAGE_TOTAL_COUNTX;
 
 	if (p.x > 0)
 	{
 		result.tiles[0] = &tileLayer0[index - 1];
 	}
-	if (p.x < STAGE_TILE_COUNTX - 2)
+	if (p.x < STAGE_TOTAL_COUNTX - 2)
 	{
 		result.tiles[2] = &tileLayer0[index + 1];
 	}
 	if (p.y > 0)
 	{
-		result.tiles[1] = &tileLayer0[index - STAGE_TILE_COUNTY];
+		result.tiles[1] = &tileLayer0[index - STAGE_TOTAL_COUNTY];
 	}
-	if (p.y < STAGE_TILE_COUNTY - 2)
+	if (p.y < STAGE_TOTAL_COUNTY - 2)
 	{
-		result.tiles[3] = &tileLayer0[index + STAGE_TILE_COUNTY];
+		result.tiles[3] = &tileLayer0[index + STAGE_TOTAL_COUNTY];
 	}
 
 	return result;
@@ -165,23 +167,23 @@ ReturnTile PlayScene::Stage::GetAdjacent5(const IntVector2 &p)
 	ReturnTile result{};
 	result.tileNum = 5;
 
-	int index = p.x + p.y * STAGE_TILE_COUNTX;
+	int index = p.x + p.y * STAGE_TOTAL_COUNTX;
 
 	if (p.x > 0)
 	{
 		result.tiles[0] = &tileLayer0[index - 1];
 	}
-	if (p.x < STAGE_TILE_COUNTX - 2)
+	if (p.x < STAGE_TOTAL_COUNTX - 2)
 	{
 		result.tiles[2] = &tileLayer0[index + 1];
 	}
 	if (p.y > 0)
 	{
-		result.tiles[1] = &tileLayer0[index - STAGE_TILE_COUNTY];
+		result.tiles[1] = &tileLayer0[index - STAGE_TOTAL_COUNTY];
 	}
-	if (p.y < STAGE_TILE_COUNTY - 2)
+	if (p.y < STAGE_TOTAL_COUNTY - 2)
 	{
-		result.tiles[3] = &tileLayer0[index + STAGE_TILE_COUNTY];
+		result.tiles[3] = &tileLayer0[index + STAGE_TOTAL_COUNTY];
 	}
 
 	result.tiles[4] = &tileLayer0[index];
@@ -203,14 +205,14 @@ ReturnTile PlayScene::Stage::GetAdjacentTiles8(const IntVector2 &p)
 			if (x == 0 && y == 0) { continue; }
 
 			IntVector2 absTilePos(p.x + x, p.y + y);
-			if (absTilePos.x < 0 || absTilePos.x > STAGE_TILE_COUNTX - 1 ||
-				absTilePos.y < 0 || absTilePos.y > STAGE_TILE_COUNTY - 1)
+			if (absTilePos.x < 0 || absTilePos.x > STAGE_TOTAL_COUNTX - 1 ||
+				absTilePos.y < 0 || absTilePos.y > STAGE_TOTAL_COUNTY - 1)
 			{
 				result.tiles[index] = nullptr;
 				index++;
 				continue;
 			}
-			result.tiles[index] = &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TILE_COUNTX];
+			result.tiles[index] = &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
 			index++;
 		}
 	}
@@ -248,19 +250,19 @@ ReturnTile PlayScene::Stage::GetAdjacentTiles9(const IntVector2 &p)
 			if (x == 0 && y == 0) { continue; }
 
 			IntVector2 absTilePos(p.x + x, p.y + y);
-			if (absTilePos.x < 0 || absTilePos.x > STAGE_TILE_COUNTX - 1 ||
-				absTilePos.y < 0 || absTilePos.y > STAGE_TILE_COUNTY - 1)
+			if (absTilePos.x < 0 || absTilePos.x > STAGE_TOTAL_COUNTX - 1 ||
+				absTilePos.y < 0 || absTilePos.y > STAGE_TOTAL_COUNTY - 1)
 			{
 				result.tiles[index] = nullptr;
 				index++;
 				continue;
 			}
-			result.tiles[index] = &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TILE_COUNTX];
+			result.tiles[index] = &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
 			index++;
 		}
 	}
 
-	result.tiles[8] = &tileLayer0[p.x + p.y * STAGE_TILE_COUNTX];
+	result.tiles[8] = &tileLayer0[p.x + p.y * STAGE_TOTAL_COUNTX];
 
 	Tile *temp;
 	temp = result.tiles[0];
@@ -289,7 +291,7 @@ void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width
 	{
 		for (int x = xStartIndex; x < xStartIndex + width; ++x)
 		{
-			int index = x + STAGE_TILE_COUNTX * y;
+			int index = x + STAGE_TOTAL_COUNTX * y;
 			if (tileLayer0[index].thisMaskInfo)
 			{
 				D2DSprite *thisTileSprite = tileLayer0[index].sprite;
@@ -298,18 +300,18 @@ void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width
 				if (upperY >= 0)
 				{
 					//위에 타일이 없고 현재 타일이 위쪽에 마스크를 그리는 걸 허용하면..
-					if ((tileLayer0[x + STAGE_TILE_COUNTX * upperY].sourceIndex.x == -1) &&
+					if ((tileLayer0[x + STAGE_TOTAL_COUNTX * upperY].sourceIndex.x == -1) &&
 						((tileLayer0[index].thisMaskInfo >> 0) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TILE_COUNTX * upperY], tileLayer1[x + STAGE_TILE_COUNTX * upperY], 0);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * upperY], tileLayer1[x + STAGE_TOTAL_COUNTX * upperY], 0);
 					}
 					//위에 타일이 있다. 
 					else
 					{
-						if (((tileLayer0[x + STAGE_TILE_COUNTX * upperY].nearMaskInfo >> 3) & 1) &&
+						if (((tileLayer0[x + STAGE_TOTAL_COUNTX * upperY].nearMaskInfo >> 3) & 1) &&
 							(tileLayer0[index].thisMaskInfo >> 0) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TILE_COUNTX * upperY], tileLayer1[x + STAGE_TILE_COUNTX * upperY], 0);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * upperY], tileLayer1[x + STAGE_TOTAL_COUNTX * upperY], 0);
 						}
 					}
 				}
@@ -318,58 +320,58 @@ void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width
 				if (leftX >= 0)
 				{
 					//왼쪽 타일이 없고 현재 타일이 왼쪽에 마스크를 그리는 걸 허용하면..
-					if ((tileLayer0[leftX + STAGE_TILE_COUNTX * y].sourceIndex.x == -1) &&
+					if ((tileLayer0[leftX + STAGE_TOTAL_COUNTX * y].sourceIndex.x == -1) &&
 						((tileLayer0[index].thisMaskInfo >> 1) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[leftX + STAGE_TILE_COUNTX * y], tileLayer1[leftX + STAGE_TILE_COUNTX * y], 1);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[leftX + STAGE_TOTAL_COUNTX * y], tileLayer1[leftX + STAGE_TOTAL_COUNTX * y], 1);
 					}
 					//왼쪽 타일이 있다
 					else
 					{
-						if (((tileLayer0[leftX + STAGE_TILE_COUNTX * y].nearMaskInfo >> 2) & 1) &&
+						if (((tileLayer0[leftX + STAGE_TOTAL_COUNTX * y].nearMaskInfo >> 2) & 1) &&
 							((tileLayer0[index].thisMaskInfo >> 1) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[leftX + STAGE_TILE_COUNTX * y], tileLayer1[leftX + STAGE_TILE_COUNTX * y], 1);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[leftX + STAGE_TOTAL_COUNTX * y], tileLayer1[leftX + STAGE_TOTAL_COUNTX * y], 1);
 						}
 					}
 				}
 				//오른 타일이 있는지 검사
 				int rightX = x + 1;
-				if (rightX < STAGE_TILE_COUNTX)
+				if (rightX < STAGE_TOTAL_COUNTX)
 				{
 					//오른쪽 타일이 없고 현재 타일이 오른쪽에 마스크를 그리는 걸 허용하면..
-					if ((tileLayer0[rightX + STAGE_TILE_COUNTX * y].sourceIndex.x == -1) &&
+					if ((tileLayer0[rightX + STAGE_TOTAL_COUNTX * y].sourceIndex.x == -1) &&
 						((tileLayer0[index].thisMaskInfo >> 2) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[rightX + STAGE_TILE_COUNTX * y], tileLayer1[rightX + STAGE_TILE_COUNTX * y], 2);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[rightX + STAGE_TOTAL_COUNTX * y], tileLayer1[rightX + STAGE_TOTAL_COUNTX * y], 2);
 					}
 					//오른쪽 타일이 있다
 					else
 					{
-						if (((tileLayer0[rightX + STAGE_TILE_COUNTX * y].nearMaskInfo >> 1) & 1) &&
+						if (((tileLayer0[rightX + STAGE_TOTAL_COUNTX * y].nearMaskInfo >> 1) & 1) &&
 							((tileLayer0[index].thisMaskInfo >> 2) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[rightX + STAGE_TILE_COUNTX * y], tileLayer1[rightX + STAGE_TILE_COUNTX * y], 2);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[rightX + STAGE_TOTAL_COUNTX * y], tileLayer1[rightX + STAGE_TOTAL_COUNTX * y], 2);
 						}
 					}
 				}
 				//아래 타일이 있는지 검사
 				int lowerY = y + 1;
-				if (lowerY < STAGE_TILE_COUNTY)
+				if (lowerY < STAGE_TOTAL_COUNTY)
 				{
 					//아래쪽 타일이 없고 현재 타일이 아래쪽에 그리는 걸 허용하면..
-					if ((tileLayer0[x + STAGE_TILE_COUNTX * lowerY].sourceIndex.x == -1) &&
+					if ((tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY].sourceIndex.x == -1) &&
 						((tileLayer0[index].thisMaskInfo >> 3) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TILE_COUNTX * lowerY], tileLayer1[x + STAGE_TILE_COUNTX * lowerY], 3);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY], tileLayer1[x + STAGE_TOTAL_COUNTX * lowerY], 3);
 					}
 					//아래쪽 타일이 있다
 					else
 					{
-						if (((tileLayer0[x + STAGE_TILE_COUNTX * lowerY].nearMaskInfo >> 0) & 1) &&
+						if (((tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY].nearMaskInfo >> 0) & 1) &&
 							(tileLayer0[index].thisMaskInfo >> 3) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TILE_COUNTX * lowerY], tileLayer1[x + STAGE_TILE_COUNTX * lowerY], 3);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY], tileLayer1[x + STAGE_TOTAL_COUNTX * lowerY], 3);
 						}
 					}
 				}
@@ -380,7 +382,7 @@ void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width
 
 void PlayScene::Stage::ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height)
 {
-	for (int i = 0; i < STAGE_TILE_COUNTX * STAGE_TILE_COUNTY; ++i)
+	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
 	{
 		tileLayer0[i].maskInfo = 0;
 		for (int j = 0; j < 4; ++j)
@@ -390,13 +392,86 @@ void PlayScene::Stage::ClearAllTheBits(int xStartIndex, int yStartIndex, int wid
 		}
 	}
 
-	for (int i = 0; i < STAGE_TILE_COUNTX * STAGE_TILE_COUNTY; ++i)
+	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
 	{
 		tileLayer1[i].maskInfo = 0;
 		for (int j = 0; j < 4; ++j)
 		{
 			tileLayer1[i].spriteMaskInfo[j].hasMask = 0;
 			tileLayer1[i].spriteMaskInfo[j].maskSprite = nullptr;
+		}
+	}
+}
+
+void PlayScene::Stage::BuildBorder()
+{
+	std::wstring path = LdataPath;
+	Room borderRooms[4];
+	BuildRoomFromFile( L"border_top_left.rt", &borderRooms[0], _usingSprites);
+	//BuildRoomFromFile(path + L"border_top.rt", &borderRooms[1], _usingSprites);
+	BuildRoomFromFile(L"border_top_right.rt", &borderRooms[1], _usingSprites);
+	//BuildRoomFromFile(path + L"border_right.rt", &borderRooms[3], _usingSprites);
+	BuildRoomFromFile(L"border_bottom_right.rt", &borderRooms[2], _usingSprites);
+	//BuildRoomFromFile(path + L"border_bottom.rt", &borderRooms[5], _usingSprites);
+	BuildRoomFromFile(L"border_bottom_left.rt", &borderRooms[3], _usingSprites);
+	//BuildRoomFromFile(path + L"border_left.rt", &borderRooms[7], _usingSprites);
+	CopyBorderTiles(borderRooms);
+}
+
+void PlayScene::Stage::CopyBorderTiles(Room * rooms)
+{
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
+			int localIndex = x + ROOM_TILE_COUNTX * y;
+			tileLayer0[worldIndex] = rooms[0].layer0[localIndex];
+			tileLayer1[worldIndex] = rooms[0].layer1[localIndex];
+			tileLayer0[worldIndex].position = IntVector2(x, y);
+			tileLayer1[worldIndex].position = IntVector2(x, y);
+		}
+	}
+
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX; x < STAGE_TOTAL_COUNTX; ++x)
+		{
+			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
+
+			int localX = x - (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX);
+			int localY = y;
+
+			tileLayer0[worldIndex] = rooms[1].layer0[localX + localY * ROOM_TILE_COUNTX];
+			tileLayer1[worldIndex] = rooms[1].layer1[localX + localY * ROOM_TILE_COUNTX];
+			tileLayer0[worldIndex].position = IntVector2(localX, localY);
+			tileLayer1[worldIndex].position = IntVector2(localX, localY);
+		}
+	}
+	for (int y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY; y < STAGE_TOTAL_COUNTY; ++y)
+	{
+		for (int x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX; x < STAGE_TOTAL_COUNTX; ++x)
+		{
+			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
+
+			int localX = x - (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX);
+			int localY = y - (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY);;
+
+			tileLayer0[worldIndex] = rooms[2].layer0[localX + ROOM_TILE_COUNTX * localY];
+			tileLayer1[worldIndex] = rooms[2].layer1[localX + ROOM_TILE_COUNTX * localY];
+			tileLayer0[worldIndex].position = IntVector2(localX, localY);
+			tileLayer1[worldIndex].position = IntVector2(localX, localY);
+		}
+	}
+
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			int worldIndex = (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + x) + STAGE_TOTAL_COUNTX * (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY + y);
+			int localIndex = x + ROOM_TILE_COUNTX * y;
+			tileLayer0[worldIndex] = rooms[3].layer0[localIndex];
+			tileLayer1[worldIndex] = rooms[3].layer1[localIndex];
 		}
 	}
 }
@@ -409,18 +484,19 @@ void PlayScene::Stage::CopyTilesFromRooms(Room * rooms)
 		{
 			int index = x + 4 * y;
 			Room &currentRoom = rooms[index];
-			int xStartIndex = x * ROOM_TILE_COUNTX;
-			int yStartIndex = y * ROOM_TILE_COUNTY;
+
+			int xStartIndex = x * ROOM_TILE_COUNTX + 3;
+			int yStartIndex = y * ROOM_TILE_COUNTY + 3;
 
 			for (int j = yStartIndex; j < yStartIndex + ROOM_TILE_COUNTY; ++j)
 			{
 				for (int i = xStartIndex; i < xStartIndex + ROOM_TILE_COUNTX; ++i)
 				{
-					tileLayer0[i + STAGE_TILE_COUNTX * j] = currentRoom.layer0[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
-					tileLayer1[i + STAGE_TILE_COUNTX * j] = currentRoom.layer1[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
+					tileLayer0[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer0[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
+					tileLayer1[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer1[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
 
-					tileLayer0[i + STAGE_TILE_COUNTX * j].position = IntVector2(i, j);
-					tileLayer1[i + STAGE_TILE_COUNTX * j].position = IntVector2(i, j);
+					tileLayer0[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
+					tileLayer1[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
 				}
 			}
 		}
@@ -445,17 +521,14 @@ void PlayScene::Stage::CheckUsingSpriteExistence(const std::wstring & key)
 	}
 }
 
-void PlayScene::Stage::BuildRoomFromFile(const WCHAR *fileName, Room *room, std::map<std::wstring, D2DSprite *> &usingSprites)
+void PlayScene::Stage::BuildRoomFromFile(const std::wstring &fileName, Room *room, std::map<std::wstring, D2DSprite *> &usingSprites)
 {
 	FileUtils::File loadFile;
 
-	char filePath[50];
-	strcpy(filePath, dataPath);
+	std::wstring filePath;
+	filePath += LdataPath;
+	filePath += fileName;
 
-	char tempBuffer[50];
-	wcstombs(tempBuffer, fileName, 29);
-
-	strcat(filePath, tempBuffer);
 	if (loadFile.Open(filePath, FileUtils::FileAccess::Read))
 	{
 		loadFile.GetLine();

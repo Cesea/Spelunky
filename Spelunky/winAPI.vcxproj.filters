@@ -118,6 +118,18 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\OnLedge">
       <UniqueIdentifier>{9bc8d1cd-2de0-4467-9c01-71122e9790e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Grab">
+      <UniqueIdentifier>{101940c6-abd1-48e7-96ff-86234da340e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Item">
+      <UniqueIdentifier>{aaf3468a-1bc7-4715-b80b-dfaeae80c7e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Item\Passive">
+      <UniqueIdentifier>{bd616866-8152-40e1-9570-07ef565c3617}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Item\Passive\Gems">
+      <UniqueIdentifier>{a274ef5e-c9c2-471e-8659-aa9b372455ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -321,6 +333,21 @@
     <ClInclude Include="OnLedgeState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\OnLedge</Filter>
     </ClInclude>
+    <ClInclude Include="GrabState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Grab</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipItem.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="PassiveItem.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Passive</Filter>
+    </ClInclude>
+    <ClInclude Include="Gem.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Passive\Gems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -484,6 +511,21 @@
     </ClCompile>
     <ClCompile Include="OnLedgeState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\OnLedge</Filter>
+    </ClCompile>
+    <ClCompile Include="GrabState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Grab</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipItem.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="PassiveItem.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Passive</Filter>
+    </ClCompile>
+    <ClCompile Include="Gem.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Passive\Gems</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

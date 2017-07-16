@@ -375,19 +375,18 @@ void MapToolScene::SaveMapButtonAction()
 {
 	FileUtils::File saveFile;
 
-	char filePath[40];
-	strcpy(filePath, dataPath);
+	//char filePath[40];
+	//strcpy(filePath, dataPath);
+	std::wstring filePath;
+	filePath += LdataPath;
+	filePath += _mapLoadSaveNameBuffer;
 
-	char tempBuffer[40];
-	wcstombs(tempBuffer, _mapLoadSaveNameBuffer, 29);
-
-	strcat(filePath, tempBuffer);
 	if (saveFile.Open(filePath, FileUtils::FileAccess::Write))
 	{
-		WCHAR wBuffer[40];
-		mbstowcs(wBuffer, filePath, 39);
+		//WCHAR wBuffer[40];
+		//mbstowcs(wBuffer, filePath, 39);
 
-		saveFile.Write(L"--%s--\n\n", wBuffer);
+		saveFile.Write(L"--%s--\n\n", filePath.c_str());
 		//Write for first chunk
 		WriteTileInfoChunkForMap(saveFile, _roomInfo.layer0, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 		//Write for second chunk
@@ -401,13 +400,11 @@ void MapToolScene::LoadMapButtonAction()
 {
 	FileUtils::File loadFile;
 
-	char filePath[40];
-	strcpy(filePath, dataPath);
+	std::wstring filePath;
+	filePath += LdataPath;
 
-	char tempBuffer[40];
-	wcstombs(tempBuffer, _mapLoadSaveNameBuffer, 29);
+	filePath += _mapLoadSaveNameBuffer;
 
-	strcat(filePath, tempBuffer);
 	if (loadFile.Open(filePath, FileUtils::FileAccess::Read))
 	{
 		loadFile.GetLine();
@@ -432,20 +429,14 @@ void MapToolScene::SaveCurrentEditingImageInfoAction()
 {
 	FileUtils::File saveFile;
 
-	char filePath[40];
-	strcpy(filePath, dataPath);
+	std::wstring filePath;
+	filePath += LdataPath;
+	filePath += _loadImageNameBuffer;
+	filePath += L".itf";
 
-	char tempBuffer[40];
-	wcstombs(tempBuffer, _loadImageNameBuffer, 29);
-
-	strcat(filePath, tempBuffer);
-	strcat(filePath, ".itf");
 	saveFile.Open(filePath, FileUtils::FileAccess::Write);
 
-	WCHAR wBuffer[40];
-	mbstowcs(wBuffer, filePath, 39);
-
-	saveFile.Write(L"--%s--\n", wBuffer);
+	saveFile.Write(L"--%s--\n", filePath.c_str());
 	saveFile.Write(L"%s\n", _loadImageNameBuffer);
 	
 	for (int y = 0; y < 8; ++y)
@@ -472,14 +463,11 @@ void MapToolScene::LoadEditingTileImageInfo()
 {
 	FileUtils::File loadFile;
 
-	char filePath[40];
-	strcpy(filePath, dataPath);
+	std::wstring filePath;
 
-	char tempBuffer[40];
-	wcstombs(tempBuffer, _loadImageNameBuffer, 29);
-
-	strcat(filePath, tempBuffer);
-	strcat(filePath, ".itf");
+	filePath += LdataPath;
+	filePath += _loadImageNameBuffer;
+	filePath += L".itf";
 
 	if (loadFile.Open(filePath, FileUtils::FileAccess::Read))
 	{

@@ -99,6 +99,7 @@
     <ClInclude Include="DataSet.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="DWrite.h" />
+    <ClInclude Include="EquipItem.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="FallingState.h" />
@@ -111,10 +112,13 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="GamePlayScene.h" />
+    <ClInclude Include="Gem.h" />
+    <ClInclude Include="GrabState.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="ImGUI.h" />
     <ClInclude Include="IntVector2.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="JumpState.h" />
     <ClInclude Include="KeyAnimationManager.h" />
     <ClInclude Include="keyManager.h" />
@@ -126,6 +130,7 @@
     <ClInclude Include="MapToolScene.h" />
     <ClInclude Include="MovingObject.h" />
     <ClInclude Include="OnLedgeState.h" />
+    <ClInclude Include="PassiveItem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
@@ -164,6 +169,7 @@
     <ClCompile Include="D2DImage.cpp" />
     <ClCompile Include="D2DSprite.cpp" />
     <ClCompile Include="DWrite.cpp" />
+    <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="FallingState.cpp" />
@@ -176,10 +182,13 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="GamePlayScene.cpp" />
+    <ClCompile Include="Gem.cpp" />
+    <ClCompile Include="GrabState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="ImGUI.cpp" />
     <ClCompile Include="IntVector2.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="JumpState.cpp" />
     <ClCompile Include="KeyAnimationManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
@@ -190,6 +199,7 @@
     <ClCompile Include="MapToolScene.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="OnLedgeState.cpp" />
+    <ClCompile Include="PassiveItem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
