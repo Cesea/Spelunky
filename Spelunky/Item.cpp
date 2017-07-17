@@ -9,6 +9,7 @@ Item::Item(ObjectId id)
 
 Item::~Item()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Item, &Item::HandlePlayerPositionEvent>(this));
 }
 
 HRESULT Item::Init(ArcheType type)
@@ -33,9 +34,6 @@ GameObject * Item::Copy(ObjectId id)
 	return nullptr;
 }
 
-void Item::HandleMessage(const IEvent * event)
-{
-}
 
 void Item::HandlePlayerPositionEvent(const IEvent * event)
 {
@@ -50,10 +48,13 @@ void Item::HandlePlayerPositionEvent(const IEvent * event)
 	playerAbsRect += convertedEvent->GetRectOffset();
 
 	Rect itemAbsRect =
-		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _rect.width, _rect.height);
-	itemAbsRect	+= _rectOffset;
+		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect	+= _collisionComp->GetOffset();
 	if (IsRectangleOverlap(playerAbsRect, itemAbsRect))
 	{
-		int a = 0;
+		_onActorId = convertedEvent->GetId();
+		_actorOn = true;
+		//Console::Log("on\n");
 	}
 }
+

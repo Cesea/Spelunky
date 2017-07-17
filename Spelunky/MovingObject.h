@@ -3,6 +3,9 @@
 
 #include "GameObject.h"
 
+#include "ColliisonComponent.h"
+#include "MoveComponent.h"
+
 
 class MovingObject : public GameObject
 {
@@ -16,13 +19,25 @@ public :
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
 	virtual GameObject *Copy(ObjectId id)  = 0;
-	virtual void HandleMessage(const IEvent *event) = 0;
 
-	Rect GetRect() { return _rect; }
 
 protected  :
-	Rect _rect;
-	Vector2 _rectOffset{};
+
+	Vector2 _speed{};
+	Vector2 _accel{};
+	Vector2 _velocity{};
+	Vector2 _prevVelocity{};
+	Vector2 _maxVelocity{};
+
+	bool _onGround{ false };
+
+	CollisionComponent *_collisionComp{};
+
+	friend class MoveComponent;
+	friend class SimpleMoveComponent;
+	friend class CollisionComponent;
+	friend class RectCollisionComponent;
+	
 };
 
 

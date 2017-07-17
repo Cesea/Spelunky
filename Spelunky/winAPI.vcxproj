@@ -86,6 +86,7 @@
     <ClInclude Include="ArcheType.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColiidingObject.h" />
+    <ClInclude Include="ColliisonComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="Console.h" />
@@ -128,12 +129,14 @@
     <ClInclude Include="LookRevertState.h" />
     <ClInclude Include="LookUpState.h" />
     <ClInclude Include="MapToolScene.h" />
+    <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="MovingObject.h" />
     <ClInclude Include="OnLedgeState.h" />
     <ClInclude Include="PassiveItem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
+    <ClInclude Include="Rock.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="singletonBase.h" />
@@ -159,6 +162,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColiidingObject.cpp" />
+    <ClCompile Include="ColliisonComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CrawlMoveState.cpp" />
@@ -197,10 +201,12 @@
     <ClCompile Include="LookRevertState.cpp" />
     <ClCompile Include="LookUpState.cpp" />
     <ClCompile Include="MapToolScene.cpp" />
+    <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="OnLedgeState.cpp" />
     <ClCompile Include="PassiveItem.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="StageManager.cpp" />

@@ -39,6 +39,7 @@ public :
 
 	void HandlePlayerInputEvent(const IEvent *event);
 	void HandleFrameEndEvent(const IEvent *event);
+	void HandleCollectedMoneyEvent(const IEvent *event);
 	virtual void HandleMessage(const IEvent *event);
 
 	Rect GetRect() { return _rect; }
@@ -49,7 +50,7 @@ public :
 	void SetDirection(Direction direction) { _seeingDirection = direction; }
 	Direction GetDirection() { return _seeingDirection; }
 
-	//void HandleCommand(IEvent *event);
+	int GetMoney() { return _money; }
 
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
@@ -58,11 +59,8 @@ private :
 	void CheckCurrentTile();
 
 private :
-	Vector2 _speed{400, 300};
-	Vector2 _accel{};
-	Vector2 _velocity{};
-	Vector2 _prevVelocity{};
-	Vector2 _maxVelocity{300, 550};
+	Rect _rect;
+	Vector2 _rectOffset;
 
 	float _dashSpeed{200};
 	float _climbSpeed{ 120.0f };
@@ -70,7 +68,6 @@ private :
 	bool _canGrab{false};
 	bool _wasGrab{ false };
 	bool _headHit{ false };
-	bool _onGround{ false };
 	bool _onLedge{ false };
 	bool _onWall{ false };
 	bool _canClimb{ false };
@@ -88,6 +85,8 @@ private :
 	StateManager<Player> _stateManager;
 
 	PlayScene::ReturnTile _nearTiles;
+
+	int _money{ 0 };
 };
 
 #endif

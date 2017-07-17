@@ -15,7 +15,6 @@ public :
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
 	virtual GameObject *Copy(ObjectId id) = 0;
-	virtual void HandleMessage(const IEvent *event) = 0;
 
 	Rect GetRect() { return _rect; }
 

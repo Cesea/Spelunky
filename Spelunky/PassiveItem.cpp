@@ -27,19 +27,13 @@ void PassiveItem::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & c
 {
 }
 
-void PassiveItem::Use()
-{
-}
 
 GameObject * PassiveItem::Copy(ObjectId id)
 {
 	return nullptr;
 }
 
-void PassiveItem::HandleMessage(const IEvent * event)
-{
-}
 
-void PassiveItem::Apply(GameObject * object)
+void PassiveItem::Apply(ObjectId id)
 {
 }

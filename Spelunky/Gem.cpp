@@ -10,15 +10,17 @@ Gem::~Gem()
 {
 }
 
-HRESULT Gem::Init(ArcheType type)
+HRESULT Gem::Init(ArcheType type, int value)
 {
 	_sprite = new D2DSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"gem"), 0, 0, 80, 80, IntVector2(-40, -80));
 
 	_type = type;
 
-	_rect = RectMake(0, 0, 48, 48);
-	_rectOffset = Vector2(-24, -48);
+
+	//_rect = RectMake(0, 0, 48, 48);
+	//_rectOffset = Vector2(-24, -48);
+	_value = value;
 
 	return S_OK;
 }
@@ -30,6 +32,14 @@ void Gem::Release(void)
 
 void Gem::Update(float deltaTime)
 {
+	if (_actorOn)
+	{
+		Apply(_onActorId);
+	}
+	if (!_valid)
+	{
+		EVENTMANAGER->QueueEvent(new DestroyObjectEvent(_id));
+	}
 }
 
 void Gem::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -39,19 +49,15 @@ void Gem::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 
 }
 
-void Gem::Use()
-{
-}
 
 GameObject * Gem::Copy(ObjectId id)
 {
 	return nullptr;
 }
 
-void Gem::HandleMessage(const IEvent * event)
-{
-}
 
-void Gem::Apply(GameObject * object)
+void Gem::Apply(ObjectId id)
 {
+	EVENTMANAGER->QueueEvent(new CollectMoneyEvent(_id, _onActorId, _value));
+	_valid = false;
 }

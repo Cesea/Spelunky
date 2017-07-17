@@ -10,15 +10,20 @@ Player::Player(ObjectId id)
 
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
 
 	_rect = RectMake(0, 0, 56, 64);
 	_rectOffset = Vector2(-28, -64);
+
+	_speed = Vector2(400, 300);
+	_maxVelocity = Vector2(300, 550);
 }
 
 Player::~Player()
 {
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
 }
 
 HRESULT Player::Init(ArcheType type)
@@ -105,6 +110,12 @@ void Player::HandleFrameEndEvent(const IEvent * event)
 	//각각의 클래스에서 처리하면 어쨌던 찾아야 한다...
 	FrameEndedEvent *convertedEvent = (FrameEndedEvent *)(event);
 	_stateManager.HandleFrameEndEvent();
+}
+
+void Player::HandleCollectedMoneyEvent(const IEvent * event)
+{
+	CollectMoneyEvent *convertedEvent = (CollectMoneyEvent *)event;
+	_money += convertedEvent->GetValue();
 }
 
 void Player::HandleMessage(const IEvent * event)

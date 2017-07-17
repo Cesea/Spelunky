@@ -98,6 +98,7 @@ enum class ArcheType
 	MineBG,
 	GUI,
 	Gem,
+	Rock
 };
 
 enum Direction

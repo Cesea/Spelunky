@@ -17,6 +17,8 @@ public :
 	GameObject(ObjectId id);
 	virtual ~GameObject();
 
+	ArcheType GetArcheType() { return _type; }
+
 	virtual HRESULT Init(ArcheType type);
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
@@ -26,7 +28,6 @@ public :
 	virtual void DeSerialize(FileUtils::File &file) {}
 
 	virtual GameObject *Copy(ObjectId id) = 0;
-	virtual void HandleMessage(const IEvent *event) = 0;
 
 	ObjectId GetId() { return _id; }
 

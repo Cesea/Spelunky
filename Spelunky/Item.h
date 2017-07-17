@@ -15,18 +15,17 @@ public :
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
 	virtual GameObject *Copy(ObjectId id);
-	virtual void HandleMessage(const IEvent *event);
 
-	virtual void Apply(GameObject *object) = 0;
+	virtual void Apply(ObjectId id) = 0;
 
 	void HandlePlayerPositionEvent(const IEvent *event);
 
 protected  :
 	D2DSprite *_sprite{};
 
-	bool _valid{true};
-
-
+	bool32 _actorOn{false};
+	ObjectId _onActorId{ 0 };
+	bool32 _valid{true};
 };
 
 #endif

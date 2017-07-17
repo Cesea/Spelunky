@@ -20,6 +20,11 @@ HRESULT GamePlayScene::LoadContent()
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gem.png", L"gem");
 
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\playerhud.png", L"playerhud");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\moneyhud.png", L"moneyhud");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\rock.png", L"rock");
+
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
 
@@ -77,6 +82,7 @@ void GamePlayScene::CreateAndPlaceObject(ArcheType type, const TilePosition & po
 	if (type == ArcheType::Player)
 	{
 		_playerId = object->GetId();
+		_pPlayer = (Player *)object;
 	}
 }
 
@@ -89,13 +95,22 @@ HRESULT GamePlayScene::Init(void)
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
 	CreateAndPlaceObject(ArcheType::Player, TilePosition(5, 5));
-	CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
+	//CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
+	CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 10));
+
 
 	_camera.Init();
 	_camera.SetTarget(OBJECTMANAGER->FindObjectId(_playerId));
 	STAGEMANAGER->Init();
 
 	STAGEMANAGER->SetCameraLink(&_camera);
+
+	_playerHudSprite = new D2DFrameSprite();
+	_playerHudSprite->Init(IMAGEMANAGER->GetImage(L"playerhud"), 360.0f, 90.0f, IntVector2(0, 0));
+
+	_moneyHudSprite = new D2DSprite();
+	_moneyHudSprite->Init(IMAGEMANAGER->GetImage(L"moneyhud"), 0, 0, 320.0f, 80.0f, IntVector2(0, 0));
+
 
 	return S_OK;
 }
@@ -146,6 +161,12 @@ void GamePlayScene::Render(void)
 	}
 
 	STAGEMANAGER->RenderMaskLayer();
+
+	_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
+	_moneyHudSprite->Render(gRenderTarget, 0, 140);
+
+	_dWrite.PrintText(gRenderTarget, 105, 155, 110, 30, std::to_wstring(_pPlayer->GetMoney()).c_str(), D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
+
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();
 }

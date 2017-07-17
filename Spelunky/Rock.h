@@ -1,28 +1,27 @@
-#ifndef GEM_H
-#define GEM_H
+#ifndef ROCK_H
+#define ROCK_H
 
-#include "PassiveItem.h"
+#include "EquipItem.h"
 
-class Gem : public PassiveItem
+class Rock : public EquipItem
 {
-public :
-	Gem(ObjectId id);
-	virtual ~Gem();
+public:
+	Rock(ObjectId id);
+	virtual ~Rock();
 
-	virtual HRESULT Init(ArcheType type, int value);
+	virtual HRESULT Init(ArcheType type);
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
+	virtual void Use();
 
 	virtual GameObject *Copy(ObjectId id);
 
 	virtual void Apply(ObjectId id);
 
-private :
+private:
 
-	int _value{};
 };
-
 
 #endif

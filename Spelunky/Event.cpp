@@ -3,12 +3,14 @@
 
 EventType CreateEntityEvent::_type = EVENT_CREATE_ENTITY;
 EventType NotifyAfterCreateEvent::_type = EVENT_NOTIFY_AFTER_CREATE;
-EventType DestroyEntityEvent::_type = EVENT_DESTROY_ENTITY;
-EventType DestroyAllEntityEvent::_type = EVENT_DESTROY_ALL_ENTITY;
+EventType DestroyObjectEvent::_type = EVENT_DESTROY_OBJECT;
+EventType DestroyAllObjectEvent::_type = EVENT_DESTROY_ALL_OBJECT;
 EventType PlayerInputEvent::_type = EVENT_PLAYER_INPUT;
 EventType PlayerPositionEvent::_type = EVENT_PLAYER_POSITION;
 
 EventType FrameEndedEvent::_type = EVENT_FRAME_ENDED;
+EventType CollectMoneyEvent::_type = EVENT_COLLECT_MONEY;
+
 
 //EventType CollisionEvent::_type = EVENT_COLLISION;
 
@@ -41,41 +43,41 @@ const WCHAR * CreateEntityEvent::GetName() const
 	return L"Create Entity Event";
 }
 
-DestroyEntityEvent::DestroyEntityEvent(ObjectId id)
+DestroyObjectEvent::DestroyObjectEvent(ObjectId id)
 	:_id(id)
 {
 }
 
-DestroyEntityEvent::~DestroyEntityEvent()
+DestroyObjectEvent::~DestroyObjectEvent()
 {
 }
 
-IEvent * DestroyEntityEvent::Copy() const
+IEvent * DestroyObjectEvent::Copy() const
 {
-	return new DestroyEntityEvent(_id);
+	return new DestroyObjectEvent(_id);
 }
 
-const WCHAR * DestroyEntityEvent::GetName() const
+const WCHAR * DestroyObjectEvent::GetName() const
 {
-	return L"Destroy Entity Event";
+	return L"Destroy Object Event";
 }
 
-DestroyAllEntityEvent::DestroyAllEntityEvent()
-{
-}
-
-DestroyAllEntityEvent::~DestroyAllEntityEvent()
+DestroyAllObjectEvent::DestroyAllObjectEvent()
 {
 }
 
-IEvent * DestroyAllEntityEvent::Copy() const
+DestroyAllObjectEvent::~DestroyAllObjectEvent()
 {
-	return new DestroyAllEntityEvent;
 }
 
-const WCHAR * DestroyAllEntityEvent::GetName() const
+IEvent * DestroyAllObjectEvent::Copy() const
 {
-	return L"Destroy All Entity Event";
+	return new DestroyAllObjectEvent;
+}
+
+const WCHAR * DestroyAllObjectEvent::GetName() const
+{
+	return L"Destroy All Object Event";
 }
 
 NotifyAfterCreateEvent::NotifyAfterCreateEvent(ObjectId id)
@@ -162,4 +164,23 @@ IEvent * PlayerPositionEvent::Copy() const
 const WCHAR * PlayerPositionEvent::GetName() const
 {
 	return L"Player Position";
+}
+
+CollectMoneyEvent::CollectMoneyEvent(ObjectId id, ObjectId targetId, int value)
+	:_id(id), _targetId(targetId), _value(value)
+{
+}
+
+CollectMoneyEvent::~CollectMoneyEvent()
+{
+}
+
+IEvent * CollectMoneyEvent::Copy() const
+{
+	return new CollectMoneyEvent(_id, _targetId, _value);
+}
+
+const WCHAR * CollectMoneyEvent::GetName() const
+{
+	return L"Collect Money Event";
 }

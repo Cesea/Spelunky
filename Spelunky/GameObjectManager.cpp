@@ -6,6 +6,7 @@
 #include "Player.h"
 
 #include "Gem.h"
+#include "Rock.h"
 
 GameObjectManager::GameObjectManager()
 {
@@ -17,11 +18,13 @@ GameObjectManager::~GameObjectManager()
 
 HRESULT GameObjectManager::Init()
 {
+	RegisterDelegates();
 	return S_OK;
 }
 
 void GameObjectManager::Relase()
 {
+	UnRegisterDelegates();
 }
 
 GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
@@ -42,9 +45,18 @@ GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
 	}break;
 	case ArcheType::Gem:
 	{
-		result = new Gem(scene->GetNextId());
-		result->Init(ArcheType::Gem);
+		Gem *result = new Gem(scene->GetNextId());
+		result->Init(ArcheType::Gem, 10);
+		_objects.insert(std::make_pair(result->GetId(), result));
+		return result;
 	}
+	case ArcheType::Rock :
+	{
+		Rock *result = new Rock	 (scene->GetNextId());
+		result->Init(ArcheType::Rock);
+		_objects.insert(std::make_pair(result->GetId(), result));
+		return result;
+	}break;
 	}
 	_objects.insert(std::make_pair(result->GetId(), result));
 	return result;
@@ -61,14 +73,22 @@ GameObject * GameObjectManager::FindObjectId(ObjectId id)
 	return result;
 }
 
-void GameObjectManager::DestroyObject(IScene *scene, GameObject * object)
+void GameObjectManager::DestroyObject(const IEvent * event)
 {
+	DestroyObjectEvent *convertedEvent = (DestroyObjectEvent *)(event);
+	auto &found = _objects.find(convertedEvent->GetId());
+	if (found != _objects.end())
+	{
+		_objects.erase(found);
+	}
 }
 
-void GameObjectManager::DestroyObject(IScene *scene, ObjectId id)
+void GameObjectManager::RegisterDelegates()
 {
+	EVENTMANAGER->RegisterDelegate(EVENT_DESTROY_OBJECT, EventDelegate::FromFunction<GameObjectManager, &GameObjectManager::DestroyObject>(this));
 }
 
-void GameObjectManager::DestroyObject(IScene *scene, ArcheType type)
+void GameObjectManager::UnRegisterDelegates()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_DESTROY_OBJECT, EventDelegate::FromFunction<GameObjectManager, &GameObjectManager::DestroyObject>(this));
 }

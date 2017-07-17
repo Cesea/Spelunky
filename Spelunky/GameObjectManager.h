@@ -26,18 +26,19 @@ public :
 	GameObject *CreateObject(IScene *scene, ArcheType type);
 	GameObject *FindObjectId(ObjectId id);
 
-	void DestroyObject(IScene *scene, GameObject *object);
-	void DestroyObject(IScene *scene, ObjectId id);
-	void DestroyObject(IScene *scene, ArcheType type);
+	void DestroyObject(const IEvent *event);
 
 	ObjectMap &GetObjectMapRef() { return _objects; }
 
 private :
 	ObjectMap _objects;
 
-	IScene *_currentScene{0};
+	IScene *_currentScene{nullptr};
 
 	friend class GameObject;
+
+	void RegisterDelegates();
+	void UnRegisterDelegates();
 
 };
 

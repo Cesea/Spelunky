@@ -1,16 +1,19 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+
 enum  EventType
 {
 	EVENT_CREATE_ENTITY = 0xba1a49b3,
 	EVENT_NOTIFY_AFTER_CREATE = 0xdb75ade7,
-	EVENT_DESTROY_ENTITY = 0xad72e4fd,
-	EVENT_DESTROY_ALL_ENTITY = 0x9bbb4be2,
+	EVENT_DESTROY_OBJECT = 0xad72e4fd,
+	EVENT_DESTROY_ALL_OBJECT = 0x9bbb4be2,
 
 	EVENT_PLAYER_INPUT = 0x7a25da9b,
 	EVENT_PLAYER_POSITION = 0xa30ef9af,
 	EVENT_FRAME_ENDED = 0xeae1adf4,
+
+	EVENT_COLLECT_MONEY = 0xe7d8e46e,
 };
 
 class IEvent
@@ -63,11 +66,11 @@ private:
 	static EventType _type;
 };
 
-class DestroyEntityEvent : public BaseEvent
+class DestroyObjectEvent : public BaseEvent
 {
 public:
-	explicit DestroyEntityEvent(ObjectId id);
-	virtual ~DestroyEntityEvent();
+	explicit DestroyObjectEvent(ObjectId id);
+	virtual ~DestroyObjectEvent();
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
 	ObjectId GetId() { return _id; };
@@ -77,11 +80,11 @@ private:
 	static EventType _type;
 };
 
-class DestroyAllEntityEvent : public BaseEvent
+class DestroyAllObjectEvent : public BaseEvent
 {
 public:
-	explicit DestroyAllEntityEvent();
-	virtual ~DestroyAllEntityEvent();
+	explicit DestroyAllObjectEvent();
+	virtual ~DestroyAllObjectEvent();
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
 	EventType GetType() const override { return _type; }
@@ -138,7 +141,6 @@ public :
 	const Rect &GetRect() { return _rect; }
 	const Vector2 &GetRectOffset() { return _rectOffset; }
 
-
 private:
 	ObjectId _id;
 
@@ -146,6 +148,25 @@ private:
 	Rect _rect;
 	Vector2 _rectOffset;
 
+	static EventType _type;
+};
+
+class CollectMoneyEvent : public BaseEvent
+{
+public :
+	explicit CollectMoneyEvent(ObjectId id, ObjectId targetId, int value);
+	virtual ~CollectMoneyEvent();
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+	ObjectId GetTargetid() { return _targetId; }
+	int GetValue() { return _value; }
+private :
+	ObjectId _id;
+	ObjectId _targetId;
+	int _value;
 	static EventType _type;
 };
 

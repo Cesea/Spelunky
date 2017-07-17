@@ -14,12 +14,21 @@ public :
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
+	virtual void Use();
+
 	virtual GameObject *Copy(ObjectId id);
-	virtual void HandleMessage(const IEvent *event);
 
-	virtual void Apply(GameObject *object);
+	void HandlePlayerInputEvent(const IEvent *event);
 
-private :
+	virtual void Apply(ObjectId id);
+
+	void SetEquiped(bool32 equiped) { _equiped = equiped; }
+	bool32 GetEquiped() { return _equiped; }
+
+protected :
+	
+	bool32 _equiped{ false };
+	TilePosition _playerPosition{};
 
 };
 
