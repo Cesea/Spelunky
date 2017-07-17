@@ -28,7 +28,10 @@ public :
 protected :
 	
 	bool32 _equiped{ false };
-	TilePosition _playerPosition{};
+	MovingObject *_pOwner{};
+
+	bool _wasControlled{ false };
+
 
 };
 

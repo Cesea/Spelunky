@@ -19,7 +19,6 @@ State<Player>* OnLedgeState::Update(Player * object, float deltaTime)
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
-
 	object->_velocity += object->_accel * deltaTime;
 	ClampFloat(&object->_velocity.x, -object->_maxVelocity.x, object->_maxVelocity.x);
 	ClampFloat(&object->_velocity.y, -object->_maxVelocity.y, object->_maxVelocity.y);

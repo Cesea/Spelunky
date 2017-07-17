@@ -10,6 +10,7 @@ EventType PlayerPositionEvent::_type = EVENT_PLAYER_POSITION;
 
 EventType FrameEndedEvent::_type = EVENT_FRAME_ENDED;
 EventType CollectMoneyEvent::_type = EVENT_COLLECT_MONEY;
+EventType ObjectDeadEvent::_type = EVENT_OBJECT_DEAD;
 
 
 //EventType CollisionEvent::_type = EVENT_COLLISION;
@@ -183,4 +184,23 @@ IEvent * CollectMoneyEvent::Copy() const
 const WCHAR * CollectMoneyEvent::GetName() const
 {
 	return L"Collect Money Event";
+}
+
+ObjectDeadEvent::ObjectDeadEvent(ObjectId id, bool32 fromAbove)
+	:_id(id), _fromAbove(fromAbove)
+{
+}
+
+ObjectDeadEvent::~ObjectDeadEvent()
+{
+}
+
+IEvent * ObjectDeadEvent::Copy() const
+{
+	return new ObjectDeadEvent(_id, _fromAbove);
+}
+
+const WCHAR * ObjectDeadEvent::GetName() const
+{
+	return L"Object Dead Event";
 }

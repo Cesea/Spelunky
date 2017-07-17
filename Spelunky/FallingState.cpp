@@ -9,6 +9,8 @@
 
 #include "GrabState.h"
 
+#include "UpperDeathState.h"
+
 void FallingState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"falling");
@@ -33,6 +35,10 @@ State<Player>* FallingState::Update(Player * object, float deltaTime)
 	if (object->_canGrab)
 	{
 		newState = new GrabState;
+	}
+	if (object->_upperDeath)
+	{
+		newState = new UpperDeathState;
 	}
 
 	object->_prevVelocity = object->_velocity;

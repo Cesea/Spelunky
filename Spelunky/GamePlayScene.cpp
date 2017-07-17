@@ -70,6 +70,12 @@ HRESULT GamePlayScene::LoadContent()
 	int grabArray[] = {44, 45, 46, 47};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_grab", L"char_orange", 80, 80, grabArray, 4, 10, false);
 
+	int upperDeathArray[] = {26, 27};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_upperDeath", L"char_orange", 80, 80, upperDeathArray, 2, 2, true);
+
+	int faintArray[] = { 24, 25, 26, 27 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_faint", L"char_orange", 80, 80, faintArray, 4, 10, false);
+
 
 	return S_OK;
 }
@@ -94,7 +100,7 @@ HRESULT GamePlayScene::Init(void)
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
-	CreateAndPlaceObject(ArcheType::Player, TilePosition(5, 5));
+	CreateAndPlaceObject(ArcheType::Player, TilePosition(7, 5));
 	//CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
 	CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 10));
 

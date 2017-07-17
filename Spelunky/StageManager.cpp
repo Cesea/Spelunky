@@ -16,7 +16,7 @@ namespace PlayScene
 		_currentStage = new Stage;
 		RoomType roomTypes[16]{};
 		_currentStage->InitFromRoomTypes(roomTypes);
-		_currentStage->CalculateMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
+		//_currentStage->CalculateMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 		return S_OK;
 	}
 

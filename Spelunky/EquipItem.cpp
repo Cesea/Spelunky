@@ -14,7 +14,7 @@ HRESULT EquipItem::Init(ArcheType type)
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePlayerInputEvent>(this));
 	_collisionComp = new CollisionComponent();
-	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -50));
+	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -40));
 
 	return S_OK;
 }
@@ -27,11 +27,29 @@ void EquipItem::Release(void)
 
 void EquipItem::Update(float deltaTime)
 {
-	_velocity += _accel * deltaTime;
+	if (_equiped)
+	{
+		desiredPosition = _pOwner->desiredPosition;
+		desiredPosition.AddToTileRelY(-4);
+		position = desiredPosition;
+	}
+	else
+	{
+		if (_velocity.DistanceSquare() > 1.0f)
+		{
 
-	position.AddToTileRel(_velocity * deltaTime);
+			_accel.y += GRAVITY;
+			_velocity += _accel * deltaTime;
 
-	_accel = Vector2();
+			_accel = Vector2();
+			desiredPosition.AddToTileRel(_velocity * deltaTime);
+
+			TilePosition centerPos = desiredPosition;
+			centerPos.AddToTileRelY(-32.0f);
+			_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacentTiles9(IntVector2(centerPos.tileX, centerPos.tileY));
+			_collisionComp->Update(this, deltaTime, &_nearTiles);
+		}
+	}
 }
 
 void EquipItem::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -43,6 +61,7 @@ void EquipItem::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & cam
 void EquipItem::Use()
 {
 	_equiped = false;
+	_pOwner = nullptr;
 }
 
 GameObject * EquipItem::Copy(ObjectId id)
@@ -59,7 +78,9 @@ void EquipItem::HandlePlayerInputEvent(const IEvent * event)
 		const ControlCommand &commands = convertedEvent->GetControlCommand();
 		if (commands.action == Command::Attack)
 		{
+			_pOwner = (MovingObject *)OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 			_equiped = true;
+			return;
 			//EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::Move>(this));
 		}
 	}
@@ -68,17 +89,10 @@ void EquipItem::HandlePlayerInputEvent(const IEvent * event)
 	{
 		PlayerInputEvent *convertedEvent = (PlayerInputEvent *)(event);
 		const ControlCommand &commands = convertedEvent->GetControlCommand();
-		if (commands.horizontal == Command::MoveLeft)
-		{
-			_accel.x = -_speed.x;
-		}
-		else if (commands.horizontal == Command::MoveRight)
-		{
-			_accel.x = _speed.x;
-		}
 
 		if (commands.action == Command::Attack)
 		{
+			_collisionComp->SetRepulse(true);
 			Use();
 		}
 	}

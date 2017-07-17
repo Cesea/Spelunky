@@ -187,7 +187,7 @@ Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 1
+Mask Info : 0
 Layer : 0
 At X : 1, Y : 2
 Image Key : e
@@ -271,13 +271,13 @@ Collision Type : 0
 Mask Info : 0
 Layer : 0
 At X : 0, Y : 3
-Image Key : minetile
-SourceIndex X : 0, Y : 3
-Destroyed Index X : 4, Y : 3
-This Mask Info : 15
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
-Mask Info : 0
+Collision Type : 0
+Mask Info : 1
 Layer : 0
 At X : 1, Y : 3
 Image Key : e
@@ -286,7 +286,7 @@ Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 4
+Mask Info : 0
 Layer : 0
 At X : 2, Y : 3
 Image Key : e
@@ -362,8 +362,8 @@ Mask Info : 1
 Layer : 0
 At X : 0, Y : 4
 Image Key : minetile
-SourceIndex X : 0, Y : 4
-Destroyed Index X : 4, Y : 4
+SourceIndex X : 0, Y : 1
+Destroyed Index X : 4, Y : 3
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
@@ -452,8 +452,8 @@ Mask Info : 0
 Layer : 0
 At X : 0, Y : 5
 Image Key : minetile
-SourceIndex X : 0, Y : 5
-Destroyed Index X : 4, Y : 3
+SourceIndex X : 0, Y : 7
+Destroyed Index X : 4, Y : 4
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
@@ -466,7 +466,7 @@ Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 4
+Mask Info : 0
 Layer : 0
 At X : 2, Y : 5
 Image Key : e
@@ -514,13 +514,13 @@ Collision Type : 3
 Mask Info : 0
 Layer : 0
 At X : 7, Y : 5
-Image Key : e
-SourceIndex X : -1, Y : -1
-Destroyed Index X : 0, Y : 0
+Image Key : minetile
+SourceIndex X : 6, Y : 6
+Destroyed Index X : 4, Y : 5
 This Mask Info : 0
-Near Mask Info : 0
-Collision Type : 0
-Mask Info : 3
+Near Mask Info : 15
+Collision Type : 2
+Mask Info : 0
 Layer : 0
 At X : 8, Y : 5
 Image Key : minetile
@@ -542,7 +542,7 @@ Mask Info : 0
 Layer : 0
 At X : 0, Y : 6
 Image Key : minetile
-SourceIndex X : 0, Y : 6
+SourceIndex X : 0, Y : 1
 Destroyed Index X : 4, Y : 3
 This Mask Info : 15
 Near Mask Info : 0
@@ -550,22 +550,22 @@ Collision Type : 1
 Mask Info : 0
 Layer : 0
 At X : 1, Y : 6
-Image Key : e
-SourceIndex X : -1, Y : -1
-Destroyed Index X : 0, Y : 0
-This Mask Info : 0
+Image Key : minetile
+SourceIndex X : 1, Y : 3
+Destroyed Index X : 5, Y : 3
+This Mask Info : 15
 Near Mask Info : 0
-Collision Type : 0
-Mask Info : 5
+Collision Type : 1
+Mask Info : 0
 Layer : 0
 At X : 2, Y : 6
-Image Key : e
-SourceIndex X : -1, Y : -1
-Destroyed Index X : 0, Y : 0
+Image Key : minetile
+SourceIndex X : 5, Y : 6
+Destroyed Index X : 4, Y : 5
 This Mask Info : 0
-Near Mask Info : 0
-Collision Type : 0
-Mask Info : 1
+Near Mask Info : 15
+Collision Type : 2
+Mask Info : 5
 Layer : 0
 At X : 3, Y : 6
 Image Key : e
@@ -907,7 +907,7 @@ Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 1
+Mask Info : 0
 Layer : 0
 At X : 1, Y : 2
 Image Key : e
@@ -991,13 +991,13 @@ Collision Type : 0
 Mask Info : 0
 Layer : 0
 At X : 0, Y : 3
-Image Key : e
+Image Key : minetile
 SourceIndex X : -1, Y : -1
 Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 0
+Mask Info : 1
 Layer : 0
 At X : 1, Y : 3
 Image Key : minetile
@@ -1006,7 +1006,7 @@ Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 4
+Mask Info : 0
 Layer : 0
 At X : 2, Y : 3
 Image Key : e
@@ -1180,13 +1180,13 @@ Collision Type : 0
 Mask Info : 0
 Layer : 0
 At X : 1, Y : 5
-Image Key : minetile
+Image Key : e
 SourceIndex X : -1, Y : -1
 Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 4
+Mask Info : 0
 Layer : 0
 At X : 2, Y : 5
 Image Key : e
@@ -1270,13 +1270,13 @@ Collision Type : 0
 Mask Info : 0
 Layer : 0
 At X : 1, Y : 6
-Image Key : minetile
+Image Key : e
 SourceIndex X : -1, Y : -1
 Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 5
+Mask Info : 0
 Layer : 0
 At X : 2, Y : 6
 Image Key : minetile
@@ -1285,7 +1285,7 @@ Destroyed Index X : 0, Y : 0
 This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
-Mask Info : 1
+Mask Info : 5
 Layer : 0
 At X : 3, Y : 6
 Image Key : minetile

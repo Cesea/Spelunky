@@ -22,6 +22,7 @@ class Player : public MovingObject
 	friend class LadderIdleState;
 	friend class OnLedgeState;
 	friend class LedgeGrabState;
+	friend class UpperDeathState;
 
 public :
 	Player(ObjectId id);
@@ -72,6 +73,7 @@ private :
 	bool _onWall{ false };
 	bool _canClimb{ false };
 	bool _canClimbUp{ false };
+	bool _upperDeath{ false };
 
 	bool _stateClimbing{ false };
 
@@ -80,7 +82,6 @@ private :
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
 
-	Direction _seeingDirection{};
 
 	StateManager<Player> _stateManager;
 

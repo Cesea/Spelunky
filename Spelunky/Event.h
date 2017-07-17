@@ -1,7 +1,6 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-
 enum  EventType
 {
 	EVENT_CREATE_ENTITY = 0xba1a49b3,
@@ -14,6 +13,7 @@ enum  EventType
 	EVENT_FRAME_ENDED = 0xeae1adf4,
 
 	EVENT_COLLECT_MONEY = 0xe7d8e46e,
+	EVENT_OBJECT_DEAD = 0x8772f719,
 };
 
 class IEvent
@@ -167,6 +167,23 @@ private :
 	ObjectId _id;
 	ObjectId _targetId;
 	int _value;
+	static EventType _type;
+};
+
+class ObjectDeadEvent : public BaseEvent
+{
+public :
+	explicit ObjectDeadEvent(ObjectId id, bool32 fromAbove);
+	virtual ~ObjectDeadEvent();
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+	bool32 GetFromAbove() { return _fromAbove; }
+private :
+	ObjectId _id;
+	bool32 _fromAbove;
 	static EventType _type;
 };
 

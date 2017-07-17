@@ -9,6 +9,11 @@
 
 class MovingObject : public GameObject
 {
+protected :
+	friend class MovingObject;
+	friend class MoveComponent;
+	friend class SimpleMoveComponent;
+	friend class CollisionComponent;
 public :
 	MovingObject(ObjectId id);
 	virtual ~MovingObject();
@@ -20,6 +25,8 @@ public :
 
 	virtual GameObject *Copy(ObjectId id)  = 0;
 
+	Direction GetDirection() { return _seeingDirection; }
+
 
 protected  :
 
@@ -28,15 +35,12 @@ protected  :
 	Vector2 _velocity{};
 	Vector2 _prevVelocity{};
 	Vector2 _maxVelocity{};
+	Direction _seeingDirection{};
 
 	bool _onGround{ false };
 
 	CollisionComponent *_collisionComp{};
 
-	friend class MoveComponent;
-	friend class SimpleMoveComponent;
-	friend class CollisionComponent;
-	friend class RectCollisionComponent;
 	
 };
 

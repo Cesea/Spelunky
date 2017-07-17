@@ -43,6 +43,7 @@ HRESULT Player::Init(ArcheType type)
 	BuildAnimationSprite(L"onLedge", IntVector2(-40, -72));
 	BuildAnimationSprite(L"ledgeGrab", IntVector2(-40, -72));
 	BuildAnimationSprite(L"grab", IntVector2(-40, -72));
+	BuildAnimationSprite(L"upperDeath", IntVector2(-40, -72));
 
 	SetGraphics(L"idle");
 
@@ -69,6 +70,7 @@ void Player::Update(float deltaTime)
 	_onLedge = false;
 	_canClimb = false;
 	_canClimbUp = false;
+	_upperDeath = false;
 
 	if (!_interpolating)
 	{
@@ -243,7 +245,7 @@ void Player::CollisionCheck()
 							_velocity.x = 0.0f;
 							_onWall = true;
 							float pushingWidth;
-							if (i == 5 || i == 7)
+							if (i == 5 || i == 6)
 							{
 								pushingWidth = overlapRect.width;
 							}
@@ -276,6 +278,12 @@ void Player::CheckCurrentTile()
 	TileCollisionType upperLeftTileCollisionType = _nearTiles.tiles[5]->collisionType;
 	TileCollisionType upperRightTileCollisionType = _nearTiles.tiles[7]->collisionType;
 
+	if (centerTileCollisionType == TILE_COLLISION_UPPER_DEAD && position.tileRel.y < 40)
+	{
+		_upperDeath = true;
+		return;
+	}
+
 	if (centerTileCollisionType == TILE_COLLISION_LADDER || centerTileCollisionType == TILE_COLLISION_EOF_LADDER)
 	{
 		if (position.tileRel.x > 20 && position.tileRel.x < 44)
@@ -291,7 +299,7 @@ void Player::CheckCurrentTile()
 	}
 
 	if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
-		(lowerLeftTileCollisionType == TILE_COLLISION_NONE))
+		(lowerLeftTileCollisionType != TILE_COLLISION_BLOCK))
 	{
 		if (position.tileRel.x < 8)
 		{
@@ -299,7 +307,7 @@ void Player::CheckCurrentTile()
 		}
 	}
 	if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
-		(lowerRightTileCollisionType == TILE_COLLISION_NONE))
+		(lowerRightTileCollisionType != TILE_COLLISION_BLOCK))
 	{
 		if (position.tileRel.x > 56)
 		{

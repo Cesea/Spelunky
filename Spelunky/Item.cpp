@@ -56,5 +56,9 @@ void Item::HandlePlayerPositionEvent(const IEvent * event)
 		_actorOn = true;
 		//Console::Log("on\n");
 	}
+	else
+	{
+		_actorOn = false;
+	}
 }
 

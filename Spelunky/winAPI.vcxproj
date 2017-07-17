@@ -152,6 +152,7 @@
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Trigger.h" />
+    <ClInclude Include="UpperDeathState.h" />
     <ClInclude Include="Utillities.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="UpperDeathState.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="WalkState.cpp" />

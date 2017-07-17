@@ -17,9 +17,16 @@ public :
 	const Rect &GetRect() { return _rect; }
 	const Vector2 &GetOffset() { return _rectOffset; }
 
+	void SetRepulse(bool b) { _repulse = b; }
+
 private :
+	void CollideRepulse(MovingObject *object, float deltaTime, const PlayScene::ReturnTile *nearTiles);
+	void CollideStop(MovingObject *object, float deltaTime, const PlayScene::ReturnTile *nearTiles);
+
 	Rect _rect;
 	Vector2 _rectOffset;
+
+	bool32 _repulse{ false };
 };
 
 

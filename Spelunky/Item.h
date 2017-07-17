@@ -26,6 +26,8 @@ protected  :
 	bool32 _actorOn{false};
 	ObjectId _onActorId{ 0 };
 	bool32 _valid{true};
+
+	PlayScene::ReturnTile _nearTiles{};
 };
 
 #endif
