@@ -13,6 +13,7 @@ EquipItem::~EquipItem()
 HRESULT EquipItem::Init(ArcheType type)
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePlayerInputEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PICK_UP, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePickupEvent>(this));
 	_collisionComp = new CollisionComponent();
 	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -40));
 
@@ -23,6 +24,7 @@ void EquipItem::Release(void)
 {
 	SAFE_DELETE(_collisionComp);
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePlayerInputEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PICK_UP, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePickupEvent>(this));
 }
 
 void EquipItem::Update(float deltaTime)
@@ -37,7 +39,6 @@ void EquipItem::Update(float deltaTime)
 	{
 		if (_velocity.DistanceSquare() > 1.0f)
 		{
-
 			_accel.y += GRAVITY;
 			_velocity += _accel * deltaTime;
 
@@ -71,20 +72,6 @@ GameObject * EquipItem::Copy(ObjectId id)
 
 void EquipItem::HandlePlayerInputEvent(const IEvent * event)
 {
-	//나중에 플레이어가 앉아있는 상태일때 다른 메시지를 주는 방식으로 변경 요망,
-	if (_actorOn && !_equiped)
-	{
-		PlayerInputEvent *convertedEvent = (PlayerInputEvent *)(event);
-		const ControlCommand &commands = convertedEvent->GetControlCommand();
-		if (commands.action == Command::Attack)
-		{
-			_pOwner = (MovingObject *)OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
-			_equiped = true;
-			return;
-			//EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::Move>(this));
-		}
-	}
-
 	if (_equiped)
 	{
 		PlayerInputEvent *convertedEvent = (PlayerInputEvent *)(event);
@@ -95,6 +82,17 @@ void EquipItem::HandlePlayerInputEvent(const IEvent * event)
 			_collisionComp->SetRepulse(true);
 			Use(commands);
 		}
+	}
+}
+
+void EquipItem::HandlePickupEvent(const IEvent * event)
+{
+	PickupEvent *convertedEvent = (PickupEvent *)(event);
+	if (_onActorId == convertedEvent->GetId())
+	{
+		_pOwner = (MovingObject *)OBJECTMANAGER->FindObjectId(_onActorId);
+		_equiped = true;
+		EVENTMANAGER->QueueEvent(new HoldingEvent(_id, _onActorId));
 	}
 }
 

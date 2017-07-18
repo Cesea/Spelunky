@@ -1,6 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+
 enum  EventType
 {
 	EVENT_CREATE_ENTITY = 0xba1a49b3,
@@ -14,6 +15,9 @@ enum  EventType
 
 	EVENT_COLLECT_MONEY = 0xe7d8e46e,
 	EVENT_OBJECT_DEAD = 0x8772f719,
+	EVENT_PICK_UP = 0x95460042,
+	EVENT_HOLDING = 0x8bd7ebf8,
+
 };
 
 class IEvent
@@ -186,5 +190,40 @@ private :
 	bool32 _fromAbove;
 	static EventType _type;
 };
+
+class PickupEvent : public BaseEvent
+{
+public :
+	explicit PickupEvent(ObjectId id);
+	virtual ~PickupEvent();
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+private :
+	ObjectId _id;
+	static EventType _type;
+};
+
+class HoldingEvent : public BaseEvent
+{
+public :
+	explicit HoldingEvent(ObjectId id, ObjectId ownerId);
+	virtual ~HoldingEvent();
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+	ObjectId GetOwnerId() { return _ownerId; }
+private :
+	ObjectId _id;
+	ObjectId _ownerId;
+	static EventType _type;
+private :
+
+};
+
 
 #endif

@@ -137,7 +137,6 @@
     <ClInclude Include="OnLedgeState.h" />
     <ClInclude Include="PassiveItem.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerStateManager.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
     <ClInclude Include="Rock.h" />
@@ -212,7 +211,6 @@
     <ClCompile Include="OnLedgeState.cpp" />
     <ClCompile Include="PassiveItem.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerStateManager.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />

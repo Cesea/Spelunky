@@ -59,6 +59,7 @@ void Item::HandlePlayerPositionEvent(const IEvent * event)
 	else
 	{
 		_actorOn = false;
+		_onActorId = UNVALID_OBJECT_ID;
 	}
 }
 

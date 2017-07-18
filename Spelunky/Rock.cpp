@@ -72,7 +72,7 @@ void Rock::Use(const ControlCommand &commands)
 	}
 	else if(commands.vertical == Command::MoveDown)
 	{
-		_velocity.y -= 200;
+		_velocity.y = 100;
 	}
 	else if (commands.vertical == Command::None)
 	{

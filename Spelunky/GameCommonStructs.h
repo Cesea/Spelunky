@@ -139,7 +139,7 @@ struct ControlCommand
 //아래만 뚤린 방
 enum RoomType
 {
-	ROOM_CLOSED,
+	ROOM_BLOCK,
 	ROOM_AISLE,
 	ROOM_TOP_OPEN,
 	ROOM_BOTTOM_OPEN,

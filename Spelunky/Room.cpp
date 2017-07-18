@@ -667,7 +667,25 @@ void PlayScene::Stage::CopyTilesFromRooms(Room * rooms)
 
 bool PlayScene::Stage::GetRandomFileNameFromRoomType(RoomType types, WCHAR * buffer)
 {
-	wcscpy(buffer, L"00.rt");
+	switch (types)
+	{
+	case RoomType::ROOM_BLOCK:
+	{
+		wcscpy(buffer, L"block_00.rt");
+	}break;
+	case RoomType::ROOM_AISLE :
+	{
+		wcscpy(buffer, L"aisle_00.rt");
+	}break;
+	case RoomType::ROOM_TOP_OPEN :
+	{
+		wcscpy(buffer, L"topopen_00.rt");
+	}break;
+	case RoomType::ROOM_BOTTOM_OPEN :
+	{
+		wcscpy(buffer, L"bottomopen_00.rt");
+	}break;
+	}
 	//buffer = L"resources\\data\\00.rt";
 	return true;
 }

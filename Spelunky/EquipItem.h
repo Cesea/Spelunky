@@ -3,6 +3,13 @@
 
 #include "Item.h"
 
+enum class EquipSlot
+{
+	None,
+	Weapon,
+	Jump
+};
+
 class EquipItem : public Item
 {
 public :
@@ -19,6 +26,7 @@ public :
 	virtual GameObject *Copy(ObjectId id);
 
 	void HandlePlayerInputEvent(const IEvent *event);
+	void HandlePickupEvent(const IEvent *event);
 
 	virtual void Apply(ObjectId id);
 
@@ -32,7 +40,7 @@ protected :
 
 	bool _wasControlled{ false };
 
-
+	EquipSlot _equipSlot{ EquipSlot::None };
 };
 
 #endif

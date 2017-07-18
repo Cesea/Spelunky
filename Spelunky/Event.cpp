@@ -12,6 +12,8 @@ EventType FrameEndedEvent::_type = EVENT_FRAME_ENDED;
 EventType CollectMoneyEvent::_type = EVENT_COLLECT_MONEY;
 EventType ObjectDeadEvent::_type = EVENT_OBJECT_DEAD;
 
+EventType PickupEvent::_type = EVENT_PICK_UP;
+EventType HoldingEvent::_type = EVENT_HOLDING;
 
 //EventType CollisionEvent::_type = EVENT_COLLISION;
 
@@ -203,4 +205,42 @@ IEvent * ObjectDeadEvent::Copy() const
 const WCHAR * ObjectDeadEvent::GetName() const
 {
 	return L"Object Dead Event";
+}
+
+PickupEvent::PickupEvent(ObjectId id)
+	:_id(id)
+{
+}
+
+PickupEvent::~PickupEvent()
+{
+}
+
+IEvent * PickupEvent::Copy() const
+{
+	return new PickupEvent(_id);
+}
+
+const WCHAR * PickupEvent::GetName() const
+{
+	return L"Pickup Event";
+}
+
+HoldingEvent::HoldingEvent(ObjectId id, ObjectId ownerId)
+	:_id(id), _ownerId(ownerId)
+{
+}
+
+HoldingEvent::~HoldingEvent()
+{
+}
+
+IEvent * HoldingEvent::Copy() const
+{
+	return new HoldingEvent(_id, _ownerId);
+}
+
+const WCHAR * HoldingEvent::GetName() const
+{
+	return L"Holding Event";
 }

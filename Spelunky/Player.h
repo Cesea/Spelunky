@@ -2,8 +2,13 @@
 #define PLAYER_H
 
 //모든 상태에서 중력의 영향을 받아야지 제대로 작동함...
+
+enum class StateType
+{
+	None, Walk, Climb, Air
+};
+
 #include "MovingObject.h"
-#include "PlayerStateManager.h"
 
 class Player : public MovingObject
 {
@@ -44,6 +49,7 @@ public :
 	void HandlePlayerInputEvent(const IEvent *event);
 	void HandleFrameEndEvent(const IEvent *event);
 	void HandleCollectedMoneyEvent(const IEvent *event);
+	void HandleHoldingEvent(const IEvent *event);
 	virtual void HandleMessage(const IEvent *event);
 
 	Rect GetRect() { return _rect; }
@@ -83,16 +89,17 @@ private :
 	bool _interpolating{ false };
 
 	bool _holding{ false };
+	bool _climbing{ false };
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
 
-
 	StateManager<Player> _stateManager;
 
 	PlayScene::ReturnTile _nearTiles;
-
 	int _money{ 0 };
+
+	ObjectId _holdingObjectId{UNVALID_OBJECT_ID};
 };
 
 #endif

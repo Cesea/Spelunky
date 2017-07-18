@@ -97,6 +97,20 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 			return newState;
 		}
 	}
+	//Attac이나 Throw 상태로의 이전 처리
+	if (command.action == Command::Attack)
+	{
+		if (object->_holding)
+		{
+			newState = new ThrowState;
+			return newState;
+		}
+		else
+		{
+			newState = new AttackState;
+			return newState;
+		}
+	}
 
 
 	return nullptr;

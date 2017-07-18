@@ -67,10 +67,7 @@ State<Player>* JumpState::HandleCommand(Player * object, const ControlCommand & 
 			object->GetCurrentGraphics()->SyncFlip(Direction::Left);
 			object->_velocity.x = -40.0f;
 		}
-		else
-		{
-			object->_accel.x = -object->_speed.x;
-		}
+		object->_accel.x = -object->_speed.x;
 	}
 	else if (command.horizontal == Command::MoveRight)
 	{
@@ -81,10 +78,8 @@ State<Player>* JumpState::HandleCommand(Player * object, const ControlCommand & 
 			object->GetCurrentGraphics()->SyncFlip(Direction::Right);
 			object->_velocity.x = 40.0f;
 		}
-		else
-		{
-			object->_accel.x = object->_speed.x;
-		}
+		object->_accel.x = object->_speed.x;
+		Console::Log("right\n");
 	}
 
 	if (command.jump == Command::JumpOff)

@@ -17,6 +17,7 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\char_orange.png", L"char_orange");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitdoors.png", L"exitdoors");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gem.png", L"gem");
 
@@ -32,19 +33,19 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_walk", L"char_orange", 80, 80, walkArray, 8, 15, true);
 
 	int crawlArray[] = {12, 13};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawl", L"char_orange", 80, 80, crawlArray, 2, 16, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawl", L"char_orange", 80, 80, crawlArray, 2, 18, false);
 
 	int crawlIdleArray[] = {14};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawlIdle", L"char_orange", 80, 80, crawlIdleArray, 1, 12, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawlIdle", L"char_orange", 80, 80, crawlIdleArray, 1, 1, false);
 
 	int standUpArray[] = {15, 16};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_standUp", L"char_orange", 80, 80, standUpArray, 2, 16, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_standUp", L"char_orange", 80, 80, standUpArray, 2, 18, false);
 
 	int crawlMoveArray[] = {17, 18, 19, 20, 21, 22, 23};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawlMove", L"char_orange", 80, 80, crawlMoveArray, 7, 14, true);
 
 	int lookUpArray[] = {96, 97, 98, 99};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_lookUp", L"char_orange", 80, 80, lookUpArray, 4, 14, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_lookUp", L"char_orange", 80, 80, lookUpArray, 4, 16, false);
 
 	int lookRevertArray[] = {100, 101, 102};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_lookRevert", L"char_orange", 80, 80, lookRevertArray, 3, 14, false);
@@ -165,14 +166,16 @@ void GamePlayScene::Render(void)
 	gRenderTarget->BeginDraw();
 	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
-	STAGEMANAGER->RenderBorderLayer();
-	STAGEMANAGER->RenderTileLayer();
-	
+
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();
 	for (auto &object : OBJECTMANAGER->GetObjectMapRef())
 	{
 		object.second->Render(gRenderTarget, unTiledCamPos);
 	}
+
+	STAGEMANAGER->RenderBorderLayer();
+	STAGEMANAGER->RenderTileLayer();
+	
 
 	STAGEMANAGER->RenderMaskLayer();
 

@@ -5,6 +5,7 @@
 
 #include "IdleState.h"
 #include "JumpState.h"
+#include "FallingState.h"
 
 #include "AttackState.h"
 
@@ -26,24 +27,69 @@ State<Player>* LadderIdleState::Update(Player * object, float deltaTime)
 State<Player>* LadderIdleState::HandleCommand(Player * object, const ControlCommand & command)
 {
 	State<Player> *newState = nullptr;
+
+	if (command.horizontal == Command::MoveLeft)
+	{
+		if (object->_seeingDirection == Direction::Right)
+		{
+			object->_seeingDirection = Direction::Left;
+		}
+	}
+	else if (command.horizontal == Command::MoveRight)
+	{
+		if (object->_seeingDirection == Direction::Left)
+		{
+			object->_seeingDirection = Direction::Right;
+		}
+	}
+
 	if (command.vertical == Command::MoveUp)
 	{
 		if (object->_canClimbUp)
 		{
 			object->_accel.y -= object->_speed.y;
 			newState = new LadderClimbState;
+			return newState;
+		}
+		if (command.jump == Command::Jump)
+		{
+			newState = new JumpState;
+			return newState;
 		}
 	}
 	else if(command.vertical == Command::MoveDown)
 	{
+		if (command.jump == Command::Jump)
+		{
+			newState = new FallingState;
+			object->_stateClimbing = false;
+			return newState;
+		}
+
 		object->_accel.y -= object->_speed.y;
 		newState = new LadderClimbState;
+
 	}
 
 	if (command.jump == Command::Jump)
 	{
 		newState = new JumpState;
+		object->_stateClimbing = false;
 		return newState;
+	}
+
+	if (command.action == Command::Attack)
+	{
+		if (object->_holding)
+		{
+			newState = new ThrowState;
+			return newState;
+		}
+		else
+		{
+			newState = new AttackState;
+			return newState;
+		}
 	}
 
 	return newState;
@@ -51,7 +97,7 @@ State<Player>* LadderIdleState::HandleCommand(Player * object, const ControlComm
 
 void LadderIdleState::OnExit(Player * object)
 {
-	object->_stateClimbing = false;
+	//object->_stateClimbing = false;
 }
 
 void LadderClimbState::OnEnter(Player * object)
@@ -75,6 +121,11 @@ State<Player>* LadderClimbState::Update(Player * object, float deltaTime)
 
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
 
+	if (object->_onGround)
+	{
+		newState = new IdleState;
+	}
+
 	if (!_wasControlled)
 	{
 		newState = new LadderIdleState;
@@ -91,6 +142,22 @@ State<Player>* LadderClimbState::Update(Player * object, float deltaTime)
 State<Player>* LadderClimbState::HandleCommand(Player * object, const ControlCommand & command)
 {
 	State<Player> *newState = nullptr;
+
+	if (command.horizontal == Command::MoveLeft)
+	{
+		if (object->_seeingDirection == Direction::Right)
+		{
+			object->_seeingDirection = Direction::Left;
+		}
+	}
+	else if (command.horizontal == Command::MoveRight)
+	{
+		if (object->_seeingDirection == Direction::Left)
+		{
+			object->_seeingDirection = Direction::Right;
+		}
+	}
+
 	if (command.vertical == Command::MoveUp)
 	{
 		if (object->_canClimbUp)
@@ -102,6 +169,12 @@ State<Player>* LadderClimbState::HandleCommand(Player * object, const ControlCom
 			_wasControlled = true;
 			object->_accel.y = -object->_speed.y;
 		}
+		if (command.jump == Command::Jump)
+		{
+			newState = new JumpState;
+			object->_stateClimbing = false;
+			return newState;
+		}
 	}
 	else if(command.vertical == Command::MoveDown)
 	{
@@ -111,19 +184,30 @@ State<Player>* LadderClimbState::HandleCommand(Player * object, const ControlCom
 		}
 		_wasControlled = true;
 		object->_accel.y = object->_speed.y;
+		if (command.jump == Command::Jump)
+		{
+			newState = new FallingState;
+			object->_stateClimbing = false;
+			return newState;
+		}
 	}
 
-	if (command.jump == Command::Jump)
+	if (command.action == Command::Attack)
 	{
-		newState = new JumpState;
-		return newState;
+		if (object->_holding)
+		{
+			newState = new ThrowState;
+			return newState;
+		}
+		else
+		{
+			newState = new AttackState;
+			return newState;
+		}
 	}
-
-
 	return newState;
 }
 
 void LadderClimbState::OnExit(Player * object)
 {
-	object->_stateClimbing = false;
 }

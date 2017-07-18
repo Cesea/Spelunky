@@ -80,6 +80,10 @@ State<Player>* CrawlIdleState::HandleCommand(Player * object, const ControlComma
 	{
 		newState = new StandUpState;
 	}
+	if (command.action == Command::Attack)
+	{
+		EVENTMANAGER->QueueEvent(new PickupEvent(object->_id));
+	}
 	return newState;
 }
 

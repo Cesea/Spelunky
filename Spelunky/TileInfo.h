@@ -55,6 +55,7 @@ namespace MapTool
 	struct RoomInfo
 	{
 		RoomType roomType;
+		IntVector2 doorPosition;
 		TileInfo layer0[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
 		TileInfo layer1[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
 	};

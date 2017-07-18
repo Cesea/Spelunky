@@ -60,6 +60,9 @@ namespace PlayScene
 		
 		IntVector2 prevPath(-1, -1);
 		IntVector2 currentPath = result.startRoomIndex;
+
+		Direction majorDirection = (Direction)RND->GetFromIntTo(0, 1);
+
 		bool ended{ false };
 		while (!ended)
 		{
@@ -69,10 +72,12 @@ namespace PlayScene
 			if (currentPath.x == 0 && prevPath.x == 0)
 			{
 				delta.x = 1;
+				majorDirection = Direction::Right;
 			}
 			else if (currentPath.x == 3 && prevPath.x == 3)
 			{
 				delta.x = -1;
+				majorDirection = Direction::Left;
 			}
 			else if(currentPath.x == 0 || currentPath.x == 3)
 			{
@@ -81,31 +86,35 @@ namespace PlayScene
 			else
 			{
 				int randomDirection = RND->GetFromIntTo(1, 5);
-				if (randomDirection == 1 || randomDirection == 2)
+				if (randomDirection != 5)
 				{
-					delta.x -= 1;
-				}
-				else if (randomDirection == 3 || randomDirection == 4)
-				{
-					delta.x += 1;
+					if (majorDirection == Direction::Left)
+					{
+						delta.x = -1;
+					}
+					else if(majorDirection == Direction::Right)
+					{
+						delta.x = 1;
+					}
 				}
 				else if (randomDirection == 5)
 				{
 					delta.y += 1;
 				}
 			}
+			prevPath = currentPath;
 			currentPath += delta;
 
 			if (currentPath.y == 4)
 			{
 				ended = true;
+				result.endRoomIndex = prevPath;
 				continue;
 			}
 
 			type = (RoomType)RND->GetFromIntTo(1, 3);
 			result.roomTypes[GetIndexFromXY(currentPath.x, currentPath.y, 4)] = type;
 
-			prevPath = currentPath;
 		}
 	return result;
 	}

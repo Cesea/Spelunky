@@ -64,7 +64,6 @@ public:
 		{
 			_currentState->OnExit(_pActor);
 			_prevState = _currentState;
-			delete _prevState;
 			_currentState = nullptr;
 		}
 		_currentState = state;

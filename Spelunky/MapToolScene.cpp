@@ -21,6 +21,8 @@ HRESULT MapToolScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
 
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\stuff.png", L"stuff");
+
 	return S_OK;
 }
 

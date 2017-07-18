@@ -98,6 +98,19 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 		newState = new LadderClimbState;
 		return newState;
 	}
+	if (command.action == Command::Attack)
+	{
+		if (object->_holding)
+		{
+			newState = new ThrowState;
+			return newState;
+		}
+		else
+		{
+			newState = new AttackState;
+			return newState;
+		}
+	}
 
 	return newState;
 }

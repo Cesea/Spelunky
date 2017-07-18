@@ -375,9 +375,6 @@
     <ClInclude Include="AttackState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Attack</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerStateManager.h">
-      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -571,9 +568,6 @@
     </ClCompile>
     <ClCompile Include="AttackState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerStateManager.cpp">
-      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

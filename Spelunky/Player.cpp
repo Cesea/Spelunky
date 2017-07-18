@@ -11,9 +11,10 @@ Player::Player(ObjectId id)
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
 
-	_rect = RectMake(0, 0, 56, 64);
-	_rectOffset = Vector2(-28, -64);
+	_rect = RectMake(0, 0, 38, 44);
+	_rectOffset = Vector2(-19, -44);
 
 	_speed = Vector2(460, 300);
 	_maxVelocity = Vector2(340, 630);
@@ -24,6 +25,7 @@ Player::~Player()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
 }
 
 HRESULT Player::Init(ArcheType type)
@@ -46,7 +48,7 @@ HRESULT Player::Init(ArcheType type)
 	BuildAnimationSprite(L"upperDeath", IntVector2(-40, -72));
 
 	BuildAnimationSprite(L"attack", IntVector2(-40, -72));
-	//BuildAnimationSprite(L"throw", IntVector2(-40, -72));
+	BuildAnimationSprite(L"throw", IntVector2(-40, -72));
 
 	SetGraphics(L"idle");
 
@@ -117,6 +119,10 @@ void Player::HandlePlayerInputEvent(const IEvent * event)
 		_maxVelocity.x -= 150;
 		_speed.x -= 50;
 	}
+	//if (controlCommand.action == Command::Attack && _holding)
+	//{
+	//	EVENTMANAGER->QueueEvent(new UseItemEvent())
+	//}
 	_stateManager.HandleCommand(controlCommand);
 }
 
@@ -132,6 +138,13 @@ void Player::HandleCollectedMoneyEvent(const IEvent * event)
 {
 	CollectMoneyEvent *convertedEvent = (CollectMoneyEvent *)event;
 	_money += convertedEvent->GetValue();
+}
+
+void Player::HandleHoldingEvent(const IEvent * event)
+{
+	HoldingEvent *convertedEvent = (HoldingEvent *)(event);
+	_holding = true;
+	_holdingObjectId = convertedEvent->GetId();
 }
 
 void Player::HandleMessage(const IEvent * event)
