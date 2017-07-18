@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PlayerStateManager.h"
 
+#include "Player.h"
+
 #include "AttackState.h"
 
 void PlayerStateManager::Update(float deltaTime)
@@ -24,6 +26,14 @@ void PlayerStateManager::HandleCommand(const ControlCommand & command)
 	}
 	else
 	{
-		//ChangeState()
+		if (_pActor->_holding)
+		{
+			_attackState = new AttackState;
+		}
+		else
+		{
+			_attackState = new ThrowState;
+		}
+		ChangeState(_attackState);
 	}
 }

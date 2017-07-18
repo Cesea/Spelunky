@@ -14,7 +14,7 @@ public :
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
-	virtual void Use();
+	virtual void Use(const ControlCommand &commands);
 
 	virtual GameObject *Copy(ObjectId id);
 

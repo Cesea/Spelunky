@@ -1,13 +1,14 @@
 ﻿#ifndef PLAYER_H
 #define PLAYER_H
 
-
 //모든 상태에서 중력의 영향을 받아야지 제대로 작동함...
 #include "MovingObject.h"
+#include "PlayerStateManager.h"
 
 class Player : public MovingObject
 {
 	friend class StateManager<Player>;
+	friend class PlayerStateManager;
 	friend class IdleState;
 	friend class WalkState;
 	friend class CrawlState;

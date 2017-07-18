@@ -58,7 +58,7 @@ void EquipItem::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & cam
 	_sprite->Render(renderTarget, drawPos.x, drawPos.y);
 }
 
-void EquipItem::Use()
+void EquipItem::Use(const ControlCommand &commands)
 {
 	_equiped = false;
 	_pOwner = nullptr;
@@ -93,7 +93,7 @@ void EquipItem::HandlePlayerInputEvent(const IEvent * event)
 		if (commands.action == Command::Attack)
 		{
 			_collisionComp->SetRepulse(true);
-			Use();
+			Use(commands);
 		}
 	}
 }

@@ -5,8 +5,16 @@
 #include "Camera.h"
 #include "Room.h"
 
+
 namespace PlayScene
 {
+
+	struct RandomRoomGenerated
+	{
+		IntVector2 startRoomIndex;
+		IntVector2 endRoomIndex;
+		RoomType roomTypes[16];
+	};
 
 	class StageManager : public singletonBase<StageManager>
 	{
@@ -27,8 +35,10 @@ namespace PlayScene
 
 		Stage *GetCurrentStage();
 	private :
-		Stage *_currentStage;
+		RandomRoomGenerated MakeRandomRoomTypes();
 
+	private :
+		Stage *_currentStage;
 		Camera *_pCamera{nullptr};
 	};
 }

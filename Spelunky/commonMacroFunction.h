@@ -184,8 +184,9 @@ inline int ConvertFloatToInt(float f)
 	return result;
 }
 
-
-inline uint32 GetBitRange(uint32 min, uint32 max)
+inline int GetIndexFromXY(int x, int y, int xCount)
 {
-	return 0;
+	int result = x + (y * xCount);
+	return result;
 }
+

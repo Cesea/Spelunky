@@ -7,6 +7,8 @@
 namespace PlayScene
 {
 
+	struct RandomRoomGenerated;
+
 	struct ReturnTile
 	{
 		Tile *tiles[9];
@@ -28,7 +30,7 @@ namespace PlayScene
 		Stage();
 		~Stage();
 		HRESULT Init();
-		HRESULT InitFromRoomTypes(RoomType *randomRoomType);
+		HRESULT InitFromRoomTypes(const RandomRoomGenerated &randomTypes);
 		void Release();
 
 		void RenderBorderLayer(const TilePosition &camPos);
@@ -63,12 +65,14 @@ namespace PlayScene
 
 		void CalculateMask(int xStartIndex, int yStartIndex, int width, int height, int layer);
 	private :
-
 		Tile tileLayer0[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
 		Tile tileLayer1[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
 		Tile tileLayer2[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
 
 		std::map<std::wstring, D2DSprite *> _usingSprites;
+
+		Tile _entrance{};
+		Tile _exit{};
 	};
 }
 

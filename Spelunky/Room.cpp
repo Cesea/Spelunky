@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Room.h"
 
+#include "StageManager.h"
+
 using namespace PlayScene;
 
 PlayScene::Stage::Stage()
@@ -16,7 +18,7 @@ HRESULT PlayScene::Stage::Init()
 	return S_OK;
 }
 
-HRESULT PlayScene::Stage::InitFromRoomTypes(RoomType *randomRoomType)
+HRESULT PlayScene::Stage::InitFromRoomTypes(const PlayScene::RandomRoomGenerated &randomTypes)
 {
 	BuildBorder();
 
@@ -24,7 +26,7 @@ HRESULT PlayScene::Stage::InitFromRoomTypes(RoomType *randomRoomType)
 	Room rooms[16];
 	for (int i = 0; i < 16; ++i)
 	{
-		if (GetRandomFileNameFromRoomType(randomRoomType[i], buffer))
+		if (GetRandomFileNameFromRoomType(randomTypes.roomTypes[i], buffer))
 		{
 			BuildRoomFromFile(buffer, &rooms[i], _usingSprites);
 		}

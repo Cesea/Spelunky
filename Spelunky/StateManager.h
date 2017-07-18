@@ -5,6 +5,13 @@
 #include "State.h"
 
 template <typename T>
+struct ReturnState
+{
+	State<T> *resultState;
+	bool32 popBack{ false };
+};
+
+template <typename T>
 class StateManager
 {
 public:
@@ -57,6 +64,7 @@ public:
 		{
 			_currentState->OnExit(_pActor);
 			_prevState = _currentState;
+			delete _prevState;
 			_currentState = nullptr;
 		}
 		_currentState = state;
@@ -77,7 +85,6 @@ public:
 	State<T> *GetPrevState() { return _prevState; }
 
 protected:
-
 	State<T> *_currentState{};
 	State<T> *_prevState{};
 

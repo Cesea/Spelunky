@@ -103,7 +103,7 @@ enum class ArcheType
 
 enum Direction
 {
-	Left, Right, Up, Down
+	Left, Right, Up, Down, None,
 };
 
 enum class Command
@@ -133,16 +133,16 @@ struct ControlCommand
 	Command dash{};
 };
 
-//복도 방,
 //다 막힌 방
+//복도 방,
 //위만 뚤린 방
 //아래만 뚤린 방
 enum RoomType
 {
 	ROOM_CLOSED,
 	ROOM_AISLE,
-	ROOM_UPPER,
-	ROOM_LOWER,
+	ROOM_TOP_OPEN,
+	ROOM_BOTTOM_OPEN,
 };
 
 

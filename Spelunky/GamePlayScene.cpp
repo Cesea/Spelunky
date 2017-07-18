@@ -81,7 +81,7 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_attack", L"char_orange", 80, 80, attackArray, 6, 12, false);
 
 	int throwArray[] = {54, 55, 56, 57, 58};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_throw", L"char_orange", 80, 80, throwArray, 4, 10, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_throw", L"char_orange", 80, 80, throwArray, 5, 10, false);
 
 
 	return S_OK;
@@ -109,7 +109,7 @@ HRESULT GamePlayScene::Init(void)
 
 	CreateAndPlaceObject(ArcheType::Player, TilePosition(7, 5));
 	//CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
-	CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 10));
+	CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 9));
 
 
 	_camera.Init();

@@ -39,19 +39,50 @@ void Rock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 	EquipItem::Render(renderTarget, camPos);
 }
 
-void Rock::Use()
+void Rock::Use(const ControlCommand &commands)
 {
 	_equiped = false;
-	if (_pOwner->GetDirection() == Direction::Left)
-	{
-		_velocity.x -= 900;
 
-	}
-	else if(_pOwner->GetDirection() == Direction::Right)
+	if (commands.horizontal == Command::None)
 	{
-		_velocity.x += 900;
+		if (_pOwner->GetDirection() == Direction::Left)
+		{
+			_velocity.x -= 900;
+		}
+		else if (_pOwner->GetDirection() == Direction::Right)
+		{
+			_velocity.x += 900;
+		}
 	}
-	_velocity.y -= 300;
+	else
+	{
+		if (commands.horizontal == Command::MoveLeft)
+		{
+			_velocity.x -= 900;
+		}
+		else if (commands.horizontal == Command::MoveRight)
+		{
+			_velocity.x += 900;
+		}
+	}
+
+	if (commands.vertical == Command::MoveUp)
+	{
+		_velocity.y -= 600;
+	}
+	else if(commands.vertical == Command::MoveDown)
+	{
+		_velocity.y -= 200;
+	}
+	else if (commands.vertical == Command::None)
+	{
+		_velocity.y -= 500;
+	}
+
+	_velocity.Normalize();
+	_velocity *= 1000.0f;
+
+
 	_pOwner = nullptr;
 }
 
