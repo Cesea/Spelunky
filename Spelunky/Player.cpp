@@ -15,8 +15,8 @@ Player::Player(ObjectId id)
 	_rect = RectMake(0, 0, 56, 64);
 	_rectOffset = Vector2(-28, -64);
 
-	_speed = Vector2(400, 300);
-	_maxVelocity = Vector2(300, 550);
+	_speed = Vector2(460, 300);
+	_maxVelocity = Vector2(340, 580);
 }
 
 Player::~Player()
@@ -45,6 +45,9 @@ HRESULT Player::Init(ArcheType type)
 	BuildAnimationSprite(L"grab", IntVector2(-40, -72));
 	BuildAnimationSprite(L"upperDeath", IntVector2(-40, -72));
 
+	BuildAnimationSprite(L"attack", IntVector2(-40, -72));
+	//BuildAnimationSprite(L"throw", IntVector2(-40, -72));
+
 	SetGraphics(L"idle");
 
 	_stateManager.Init(this, new IdleState);
@@ -59,6 +62,8 @@ void Player::Release(void)
 
 void Player::Update(float deltaTime)
 {
+	Console::Log("vel x : %f\n", _velocity.x);
+
 	_accel.y += GRAVITY;
 	_stateManager.Update(deltaTime);
 	_accel = Vector2();
@@ -103,6 +108,17 @@ void Player::HandlePlayerInputEvent(const IEvent * event)
 {
 	PlayerInputEvent *convertedEvent = (PlayerInputEvent *)(event);
 	const ControlCommand &controlCommand = convertedEvent->GetControlCommand();
+
+	if (controlCommand.dash == Command::DashOn)
+	{
+		_maxVelocity.x += 150;
+		_speed.x += 50;
+	}
+	else if (controlCommand.dash == Command::DashOff)
+	{
+		_maxVelocity.x -= 150;
+		_speed.x -= 50;
+	}
 	_stateManager.HandleCommand(controlCommand);
 }
 
@@ -315,19 +331,21 @@ void Player::CheckCurrentTile()
 		}
 	}
 
-	if ((!_onGround) && 
-		(leftTileCollisionType == TILE_COLLISION_BLOCK) && 
+	if ((!_onGround) &&
+		(leftTileCollisionType == TILE_COLLISION_BLOCK) &&
 		(upperLeftTileCollisionType == TILE_COLLISION_NONE) &&
-		(position.tileRel.x < 32.0f) &&
+		(_seeingDirection == Direction::Left) &&
+		(position.tileRel.x < 36.0f) &&
 		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
 	{
 		_canGrab = true;
 	}
-	else if((!_onGround) && 
-		(rightTileCollisionType == TILE_COLLISION_BLOCK) && 
+	else if ((!_onGround) &&
+		(rightTileCollisionType == TILE_COLLISION_BLOCK) &&
 		(upperRightTileCollisionType == TILE_COLLISION_NONE) &&
-		(position.tileRel.x > 32.0f) &&
-		(desiredPosition.tileRel.y > 40.0f) && desiredPosition.tileRel.y < 46.0f)
+		(_seeingDirection == Direction::Right) &&
+		(position.tileRel.x > 28.0f) &&
+		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
 	{
 		_canGrab = true;
 	}

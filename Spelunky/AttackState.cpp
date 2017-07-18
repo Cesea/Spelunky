@@ -1,23 +1,17 @@
 #include "stdafx.h"
-#include "WalkState.h"
+#include "AttackState.h"
 
 #include "Player.h"
 
-#include "IdleState.h"
-#include "FallingState.h"
-#include "JumpState.h"
+#include "WalkState.h"
 
-#include "LadderClimbState.h"
 
-#include "OnLedgeState.h"
-#include "AttackState.h"
-
-void WalkState::OnEnter(Player * object)
+void AttackState::OnEnter(Player * object)
 {
-	object->SetGraphics(L"walk");
+	object->SetGraphics(L"attack");
 }
 
-State<Player>* WalkState::Update(Player * object, float deltaTime)
+State<Player>* AttackState::Update(Player * object, float deltaTime)
 {
 	State<Player> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
@@ -28,11 +22,6 @@ State<Player>* WalkState::Update(Player * object, float deltaTime)
 	ClampFloat(&object->_velocity.y, -object->_maxVelocity.y, object->_maxVelocity.y);
 
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
-
-	if (!object->_onGround)
-	{
-		newState = new FallingState;
-	}
 
 	if (_wasControlled)
 	{
@@ -47,14 +36,13 @@ State<Player>* WalkState::Update(Player * object, float deltaTime)
 		else
 		{
 			object->_velocity.x = 0.0f;
-			newState = new IdleState;
-			Console::Log("Im Idle\n");
 		}
 	}
-	return newState;
+
+	return nullptr;
 }
 
-State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & command)
+State<Player>* AttackState::HandleCommand(Player * object, const ControlCommand & command)
 {
 	State<Player> *newState = nullptr;
 	if (command.horizontal == Command::MoveLeft)
@@ -63,7 +51,6 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 		if (object->GetDirection() != Direction::Left)
 		{
 			object->SetDirection(Direction::Left);
-			object->GetCurrentGraphics()->SyncFlip(Direction::Left);
 			object->_velocity.x = -40.0f;
 		}
 		else
@@ -77,7 +64,6 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 		if (object->GetDirection() != Direction::Right)
 		{
 			object->SetDirection(Direction::Right);
-			object->GetCurrentGraphics()->SyncFlip(Direction::Right);
 			object->_velocity.x = 40.0f;
 		}
 		else
@@ -85,23 +71,41 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 			object->_accel.x = object->_speed.x;
 		}
 	}
-
 	if (command.jump == Command::Jump)
 	{
-		newState = new JumpState;
-		return newState;
+		object->_velocity.y = -540;
 	}
-
-	if (object->_canClimb && 
-		command.vertical != Command::None)
-	{
-		newState = new LadderClimbState;
-		return newState;
-	}
-
 	return newState;
 }
 
-void WalkState::OnExit(Player * object)
+State<Player>* AttackState::HandleFrameEndEvent(Player * object)
+{
+	return object->_stateManager.GetPrevState();
+}
+
+void AttackState::OnExit(Player * object)
+{
+}
+
+void ThrowState::OnEnter(Player * object)
+{
+}
+
+State<Player>* ThrowState::Update(Player * object, float deltaTime)
+{
+	return nullptr;
+}
+
+State<Player>* ThrowState::HandleCommand(Player * object, const ControlCommand & command)
+{
+	return nullptr;
+}
+
+State<Player>* ThrowState::HandleFrameEndEvent(Player * actor)
+{
+	return nullptr;
+}
+
+void ThrowState::OnExit(Player * object)
 {
 }

@@ -139,6 +139,9 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Damaged">
       <UniqueIdentifier>{57de0e03-b413-4bbf-beed-737b27fb6703}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Attack">
+      <UniqueIdentifier>{c9c8989b-37d5-444b-a37f-028f1589f9b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -369,6 +372,12 @@
     <ClInclude Include="UpperDeathState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Damaged</Filter>
     </ClInclude>
+    <ClInclude Include="AttackState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStateManager.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -559,6 +568,12 @@
     </ClCompile>
     <ClCompile Include="UpperDeathState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerStateManager.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -345,7 +345,7 @@ void MapToolScene::PainterAction()
 
 					const TileInfo & selectorInfo = _editingTileImageInfo.tileInfos[selectX + 8 * selectY];
 					//LAYER_TILE¿œ∂ß
-					if (selectorInfo.layer == 0)
+					if (selectorInfo.layer == 0 || selectorInfo.layer == 1)
 					{
 						_roomInfo.layer0[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
 					}

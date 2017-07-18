@@ -20,6 +20,7 @@ namespace PlayScene
 		void SetCameraLink(Camera *camera) { _pCamera = camera; }
 
 		void Update(float deltaTime);
+		void RenderBorderLayer();
 		void RenderTileLayer();
 		void RenderMaskLayer();
 

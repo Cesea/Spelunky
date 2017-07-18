@@ -6,6 +6,8 @@
 #include "IdleState.h"
 #include "JumpState.h"
 
+#include "AttackState.h"
+
 void LadderIdleState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"ladderIdle");
@@ -93,12 +95,20 @@ State<Player>* LadderClimbState::HandleCommand(Player * object, const ControlCom
 	{
 		if (object->_canClimbUp)
 		{
+			if (object->GetDirection() == Direction::Down)
+			{
+				object->_velocity.y = -20.0f;
+			}
 			_wasControlled = true;
 			object->_accel.y = -object->_speed.y;
 		}
 	}
 	else if(command.vertical == Command::MoveDown)
 	{
+		if (object->GetDirection() == Direction::Up)
+		{
+			object->_velocity.y = 20.0f;
+		}
 		_wasControlled = true;
 		object->_accel.y = object->_speed.y;
 	}
@@ -108,6 +118,7 @@ State<Player>* LadderClimbState::HandleCommand(Player * object, const ControlCom
 		newState = new JumpState;
 		return newState;
 	}
+
 
 	return newState;
 }

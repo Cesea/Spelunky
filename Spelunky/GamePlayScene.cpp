@@ -32,13 +32,13 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_walk", L"char_orange", 80, 80, walkArray, 8, 15, true);
 
 	int crawlArray[] = {12, 13};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawl", L"char_orange", 80, 80, crawlArray, 2, 12, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawl", L"char_orange", 80, 80, crawlArray, 2, 16, false);
 
 	int crawlIdleArray[] = {14};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawlIdle", L"char_orange", 80, 80, crawlIdleArray, 1, 12, false);
 
 	int standUpArray[] = {15, 16};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_standUp", L"char_orange", 80, 80, standUpArray, 2, 12, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_standUp", L"char_orange", 80, 80, standUpArray, 2, 16, false);
 
 	int crawlMoveArray[] = {17, 18, 19, 20, 21, 22, 23};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_crawlMove", L"char_orange", 80, 80, crawlMoveArray, 7, 14, true);
@@ -73,8 +73,15 @@ HRESULT GamePlayScene::LoadContent()
 	int upperDeathArray[] = {26, 27};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_upperDeath", L"char_orange", 80, 80, upperDeathArray, 2, 2, true);
 
+	//FaintÇØ¾ßÇÔ
 	int faintArray[] = { 24, 25, 26, 27 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_faint", L"char_orange", 80, 80, faintArray, 4, 10, false);
+
+	int attackArray[] = {48, 49, 50, 51, 52, 53};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_attack", L"char_orange", 80, 80, attackArray, 6, 12, false);
+
+	int throwArray[] = {54, 55, 56, 57, 58};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_throw", L"char_orange", 80, 80, throwArray, 4, 10, false);
 
 
 	return S_OK;
@@ -158,6 +165,7 @@ void GamePlayScene::Render(void)
 	gRenderTarget->BeginDraw();
 	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
+	STAGEMANAGER->RenderBorderLayer();
 	STAGEMANAGER->RenderTileLayer();
 	
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();

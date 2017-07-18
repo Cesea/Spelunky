@@ -24,7 +24,7 @@ public:
 		SAFE_DELETE(_currentState);
 		SAFE_DELETE(_prevState)
 	}
-	void Update(float deltaTime)
+	virtual void Update(float deltaTime)
 	{
 		State<T> *newState = _currentState->Update(_pActor, deltaTime);
 		if (newState != nullptr)
@@ -33,7 +33,7 @@ public:
 		}
 	}
 
-	void HandleCommand(const ControlCommand &command)
+	virtual void HandleCommand(const ControlCommand &command)
 	{
 		State<T> *newState = _currentState->HandleCommand(_pActor, command);
 		if (newState != nullptr)
@@ -56,13 +56,27 @@ public:
 		if (_currentState)
 		{
 			_currentState->OnExit(_pActor);
+			_prevState = _currentState;
 			_currentState = nullptr;
 		}
 		_currentState = state;
 		_currentState->OnEnter(_pActor);
 	}
 
-private:
+	void PopBackState()
+	{
+		if (_prevState)
+		{
+			_currentState->OnExit(_pActor);
+			_currentState = _prevState;
+			_currentState->OnEnter(_pActor);
+		}
+	}
+
+	State<T> *GetCurrentState() { return _currentState; }
+	State<T> *GetPrevState() { return _prevState; }
+
+protected:
 
 	State<T> *_currentState{};
 	State<T> *_prevState{};

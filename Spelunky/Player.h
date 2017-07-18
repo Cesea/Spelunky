@@ -23,6 +23,8 @@ class Player : public MovingObject
 	friend class OnLedgeState;
 	friend class LedgeGrabState;
 	friend class UpperDeathState;
+	friend class AttackState;
+	friend class ThrowState;
 
 public :
 	Player(ObjectId id);
@@ -78,6 +80,8 @@ private :
 	bool _stateClimbing{ false };
 
 	bool _interpolating{ false };
+
+	bool _holding{ false };
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};

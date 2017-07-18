@@ -13,6 +13,8 @@
 #include "LadderClimbState.h"
 #include "OnLedgeState.h"
 
+#include "AttackState.h"
+
 void IdleState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"idle");
@@ -95,6 +97,8 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 			return newState;
 		}
 	}
+
+
 	return nullptr;
 }
 

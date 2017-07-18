@@ -42,9 +42,8 @@ void PlayScene::Stage::Release()
 {
 }
 
-void PlayScene::Stage::RenderTileLayer(const TilePosition &camPos)
+void PlayScene::Stage::RenderBorderLayer(const TilePosition & camPos)
 {
-	//나중에 카메라 위치에 기반해서 뿌릴거임..
 	int minX = camPos.tileX;
 	int maxX = camPos.tileX + 20;
 	int minY = camPos.tileY;
@@ -64,6 +63,36 @@ void PlayScene::Stage::RenderTileLayer(const TilePosition &camPos)
 			if (tileLayer0[index].sourceIndex.x != -1)
 			{
 				const auto & tile = tileLayer0[index];
+				const IntVector2 &tileIndex = tile.sourceIndex;
+				tile.sprite->FrameRender(gRenderTarget, (x - minX) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.x),
+					(y - minY) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.y), tileIndex.x, tileIndex.y);
+			}
+		}
+	}
+}
+
+void PlayScene::Stage::RenderTileLayer(const TilePosition &camPos)
+{
+	//나중에 카메라 위치에 기반해서 뿌릴거임..
+	int minX = camPos.tileX;
+	int maxX = camPos.tileX + 20;
+	int minY = camPos.tileY;
+	int maxY = camPos.tileY + 12;
+	if (minX < 0) { minX = 0; }
+	if (minY < 0) { minY = 0; }
+	if (maxX > STAGE_TOTAL_COUNTX - 1) { maxX = STAGE_TOTAL_COUNTX - 1; }
+	if (maxY > STAGE_TOTAL_COUNTY - 1) { maxY = STAGE_TOTAL_COUNTY - 1; }
+	//ClampInt(&minX, 0, STAGE_TILE_COUNTX);
+	//ClampInt(&minY, 0, STAGE_TILE_COUNTY);
+
+	for (int y = minY; y <= maxY; ++y)
+	{
+		for (int x = minX; x <= maxX; ++x)
+		{
+			int index = x + y * STAGE_TOTAL_COUNTX;
+			if (tileLayer1[index].sourceIndex.x != -1)
+			{
+				const auto & tile = tileLayer1[index];
 				const IntVector2 &tileIndex = tile.sourceIndex;
 				tile.sprite->FrameRender(gRenderTarget, (x - minX) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.x), 
 					(y - minY) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.y), tileIndex.x, tileIndex.y);
@@ -88,16 +117,16 @@ void PlayScene::Stage::RenderMaskLayer(const TilePosition &camPos)
 		for (int x = minX; x <= maxX; ++x)
 		{
 			int index = x + y * STAGE_TOTAL_COUNTX;
-			if ((tileLayer1[index].sourceIndex.x != -1) ||
-				(tileLayer1[index].maskInfo != 0))
+			if (/*(tileLayer2[index].sourceIndex.x != -1) ||*/
+				(tileLayer2[index].maskInfo != 0))
 			{
-				const auto &tile = tileLayer1[index];
+				const auto &tile = tileLayer2[index];
 				const IntVector2 &tileIndex = tile.sourceIndex;
 				//tile.sprite->FrameRender(gRenderTarget, (x - minX) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.x), 
 					//(y - minY) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.y), tileIndex.x, tileIndex.y);
 				for (int i = 0; i < 4; ++i)
 				{
-					if (tileLayer1[index].spriteMaskInfo[i].hasMask)
+					if (tileLayer2[index].spriteMaskInfo[i].hasMask)
 					{
 						if (i == 0)
 						{
@@ -257,12 +286,16 @@ ReturnTile PlayScene::Stage::GetAdjacentTiles9(const IntVector2 &p)
 				index++;
 				continue;
 			}
-			result.tiles[index] = &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
+			result.tiles[index] = &tileLayer1[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
+			if (result.tiles[index]->sourceIndex.x == -1)
+			{
+				result.tiles[index] =  &tileLayer0[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
+			}
 			index++;
 		}
 	}
 
-	result.tiles[8] = &tileLayer0[p.x + p.y * STAGE_TOTAL_COUNTX];
+	result.tiles[8] = &tileLayer1[p.x + p.y * STAGE_TOTAL_COUNTX];
 
 	Tile *temp;
 	temp = result.tiles[0];
@@ -284,34 +317,43 @@ ReturnTile PlayScene::Stage::GetAdjacentTiles9(const IntVector2 &p)
 	return result;
 }
 
-void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int height)
+void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int height, int layer)
 {
-	ClearAllTheBits(xStartIndex, yStartIndex, width, height);
+	Tile *tileLayer = nullptr;
+	if (layer == 0)
+	{
+		tileLayer = tileLayer0;
+	}
+	else if (layer == 1)
+	{
+		tileLayer = tileLayer1;
+	}
+
 	for (int y = yStartIndex; y < yStartIndex + height; ++y)
 	{
 		for (int x = xStartIndex; x < xStartIndex + width; ++x)
 		{
 			int index = x + STAGE_TOTAL_COUNTX * y;
-			if (tileLayer0[index].thisMaskInfo)
+			if (tileLayer[index].thisMaskInfo)
 			{
-				D2DSprite *thisTileSprite = tileLayer0[index].sprite;
+				D2DSprite *thisTileSprite = tileLayer[index].sprite;
 				//위에 타일이 있는지 검사
 				int upperY = y - 1;
 				if (upperY >= 0)
 				{
 					//위에 타일이 없고 현재 타일이 위쪽에 마스크를 그리는 걸 허용하면..
-					if ((tileLayer0[x + STAGE_TOTAL_COUNTX * upperY].sourceIndex.x == -1) &&
-						((tileLayer0[index].thisMaskInfo >> 0) & 1))
+					if ((tileLayer[x + STAGE_TOTAL_COUNTX * upperY].sourceIndex.x == -1) &&
+						((tileLayer[index].thisMaskInfo >> 0) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * upperY], tileLayer1[x + STAGE_TOTAL_COUNTX * upperY], 0);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * upperY], tileLayer2[x + STAGE_TOTAL_COUNTX * upperY], 0);
 					}
 					//위에 타일이 있다. 
 					else
 					{
-						if (((tileLayer0[x + STAGE_TOTAL_COUNTX * upperY].nearMaskInfo >> 3) & 1) &&
-							(tileLayer0[index].thisMaskInfo >> 0) & 1)
+						if (((tileLayer[x + STAGE_TOTAL_COUNTX * upperY].nearMaskInfo >> 3) & 1) &&
+							(tileLayer[index].thisMaskInfo >> 0) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * upperY], tileLayer1[x + STAGE_TOTAL_COUNTX * upperY], 0);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * upperY], tileLayer2[x + STAGE_TOTAL_COUNTX * upperY], 0);
 						}
 					}
 				}
@@ -320,18 +362,18 @@ void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width
 				if (leftX >= 0)
 				{
 					//왼쪽 타일이 없고 현재 타일이 왼쪽에 마스크를 그리는 걸 허용하면..
-					if ((tileLayer0[leftX + STAGE_TOTAL_COUNTX * y].sourceIndex.x == -1) &&
-						((tileLayer0[index].thisMaskInfo >> 1) & 1))
+					if ((tileLayer[leftX + STAGE_TOTAL_COUNTX * y].sourceIndex.x == -1) &&
+						((tileLayer[index].thisMaskInfo >> 1) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[leftX + STAGE_TOTAL_COUNTX * y], tileLayer1[leftX + STAGE_TOTAL_COUNTX * y], 1);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer[leftX + STAGE_TOTAL_COUNTX * y], tileLayer2[leftX + STAGE_TOTAL_COUNTX * y], 1);
 					}
 					//왼쪽 타일이 있다
 					else
 					{
-						if (((tileLayer0[leftX + STAGE_TOTAL_COUNTX * y].nearMaskInfo >> 2) & 1) &&
-							((tileLayer0[index].thisMaskInfo >> 1) & 1))
+						if (((tileLayer[leftX + STAGE_TOTAL_COUNTX * y].nearMaskInfo >> 2) & 1) &&
+							((tileLayer[index].thisMaskInfo >> 1) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[leftX + STAGE_TOTAL_COUNTX * y], tileLayer1[leftX + STAGE_TOTAL_COUNTX * y], 1);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[leftX + STAGE_TOTAL_COUNTX * y], tileLayer2[leftX + STAGE_TOTAL_COUNTX * y], 1);
 						}
 					}
 				}
@@ -340,18 +382,18 @@ void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width
 				if (rightX < STAGE_TOTAL_COUNTX)
 				{
 					//오른쪽 타일이 없고 현재 타일이 오른쪽에 마스크를 그리는 걸 허용하면..
-					if ((tileLayer0[rightX + STAGE_TOTAL_COUNTX * y].sourceIndex.x == -1) &&
-						((tileLayer0[index].thisMaskInfo >> 2) & 1))
+					if ((tileLayer[rightX + STAGE_TOTAL_COUNTX * y].sourceIndex.x == -1) &&
+						((tileLayer[index].thisMaskInfo >> 2) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[rightX + STAGE_TOTAL_COUNTX * y], tileLayer1[rightX + STAGE_TOTAL_COUNTX * y], 2);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer[rightX + STAGE_TOTAL_COUNTX * y], tileLayer2[rightX + STAGE_TOTAL_COUNTX * y], 2);
 					}
 					//오른쪽 타일이 있다
 					else
 					{
-						if (((tileLayer0[rightX + STAGE_TOTAL_COUNTX * y].nearMaskInfo >> 1) & 1) &&
-							((tileLayer0[index].thisMaskInfo >> 2) & 1))
+						if (((tileLayer[rightX + STAGE_TOTAL_COUNTX * y].nearMaskInfo >> 1) & 1) &&
+							((tileLayer[index].thisMaskInfo >> 2) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[rightX + STAGE_TOTAL_COUNTX * y], tileLayer1[rightX + STAGE_TOTAL_COUNTX * y], 2);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[rightX + STAGE_TOTAL_COUNTX * y], tileLayer2[rightX + STAGE_TOTAL_COUNTX * y], 2);
 						}
 					}
 				}
@@ -360,18 +402,18 @@ void PlayScene::Stage::CalculateMask(int xStartIndex, int yStartIndex, int width
 				if (lowerY < STAGE_TOTAL_COUNTY)
 				{
 					//아래쪽 타일이 없고 현재 타일이 아래쪽에 그리는 걸 허용하면..
-					if ((tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY].sourceIndex.x == -1) &&
-						((tileLayer0[index].thisMaskInfo >> 3) & 1))
+					if ((tileLayer[x + STAGE_TOTAL_COUNTX * lowerY].sourceIndex.x == -1) &&
+						((tileLayer[index].thisMaskInfo >> 3) & 1))
 					{
-						TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY], tileLayer1[x + STAGE_TOTAL_COUNTX * lowerY], 3);
+						TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * lowerY], tileLayer2[x + STAGE_TOTAL_COUNTX * lowerY], 3);
 					}
 					//아래쪽 타일이 있다
 					else
 					{
-						if (((tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY].nearMaskInfo >> 0) & 1) &&
-							(tileLayer0[index].thisMaskInfo >> 3) & 1)
+						if (((tileLayer[x + STAGE_TOTAL_COUNTX * lowerY].nearMaskInfo >> 0) & 1) &&
+							(tileLayer[index].thisMaskInfo >> 3) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer0[x + STAGE_TOTAL_COUNTX * lowerY], tileLayer1[x + STAGE_TOTAL_COUNTX * lowerY], 3);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * lowerY], tileLayer2[x + STAGE_TOTAL_COUNTX * lowerY], 3);
 						}
 					}
 				}
@@ -401,6 +443,24 @@ void PlayScene::Stage::ClearAllTheBits(int xStartIndex, int yStartIndex, int wid
 			tileLayer1[i].spriteMaskInfo[j].maskSprite = nullptr;
 		}
 	}
+
+	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
+	{
+		tileLayer2[i].maskInfo = 0;
+		for (int j = 0; j < 4; ++j)
+		{
+			tileLayer2[i].spriteMaskInfo[j].hasMask = 0;
+			tileLayer2[i].spriteMaskInfo[j].maskSprite = nullptr;
+		}
+	}
+
+}
+
+void PlayScene::Stage::CalculateAllMask(int xStartIndex, int yStartIndex, int width, int height)
+{
+	ClearAllTheBits(xStartIndex, yStartIndex, width, height);
+	CalculateMask(xStartIndex, yStartIndex, width, height, 1);
+	CalculateMask(xStartIndex, yStartIndex, width, height, 0);
 }
 
 void PlayScene::Stage::BuildBorder()
@@ -427,9 +487,9 @@ void PlayScene::Stage::CopyBorderTiles(Room * rooms)
 			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
 			int localIndex = x + ROOM_TILE_COUNTX * y;
 			tileLayer0[worldIndex] = rooms[0].layer0[localIndex];
-			tileLayer1[worldIndex] = rooms[0].layer1[localIndex];
+			tileLayer2[worldIndex] = rooms[0].layer1[localIndex];
 			tileLayer0[worldIndex].position = IntVector2(x, y);
-			tileLayer1[worldIndex].position = IntVector2(x, y);
+			tileLayer2[worldIndex].position = IntVector2(x, y);
 		}
 	}
 
@@ -443,9 +503,9 @@ void PlayScene::Stage::CopyBorderTiles(Room * rooms)
 			int localY = y;
 
 			tileLayer0[worldIndex] = rooms[1].layer0[localX + localY * ROOM_TILE_COUNTX];
-			tileLayer1[worldIndex] = rooms[1].layer1[localX + localY * ROOM_TILE_COUNTX];
-			tileLayer0[worldIndex].position = IntVector2(localX, localY);
-			tileLayer1[worldIndex].position = IntVector2(localX, localY);
+			tileLayer2[worldIndex] = rooms[1].layer1[localX + localY * ROOM_TILE_COUNTX];
+			tileLayer0[worldIndex].position = IntVector2(x, y);
+			tileLayer2[worldIndex].position = IntVector2(x, y);
 		}
 	}
 	for (int y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY; y < STAGE_TOTAL_COUNTY; ++y)
@@ -458,22 +518,22 @@ void PlayScene::Stage::CopyBorderTiles(Room * rooms)
 			int localY = y - (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY);;
 
 			tileLayer0[worldIndex] = rooms[2].layer0[localX + ROOM_TILE_COUNTX * localY];
-			tileLayer1[worldIndex] = rooms[2].layer1[localX + ROOM_TILE_COUNTX * localY];
-			tileLayer0[worldIndex].position = IntVector2(localX, localY);
-			tileLayer1[worldIndex].position = IntVector2(localX, localY);
+			tileLayer2[worldIndex] = rooms[2].layer1[localX + ROOM_TILE_COUNTX * localY];
+			tileLayer0[worldIndex].position = IntVector2(x, y);
+			tileLayer2[worldIndex].position = IntVector2(x, y);
 		}
 	}
 
-	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	{
-		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-		{
-			int worldIndex = (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + x) + STAGE_TOTAL_COUNTX * (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY + y);
-			int localIndex = x + ROOM_TILE_COUNTX * y;
-			tileLayer0[worldIndex] = rooms[3].layer0[localIndex];
-			tileLayer1[worldIndex] = rooms[3].layer1[localIndex];
-		}
-	}
+	//for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	//{
+	//	for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+	//	{
+	//		int worldIndex = (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + x) + STAGE_TOTAL_COUNTX * (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY + y);
+	//		int localIndex = x + ROOM_TILE_COUNTX * y;
+	//		tileLayer0[worldIndex] = rooms[3].layer0[localIndex];
+	//		tileLayer2[worldIndex] = rooms[3].layer1[localIndex];
+	//	}
+	//}
 }
 
 void PlayScene::Stage::CopyTilesFromRooms(Room * rooms)
@@ -492,11 +552,11 @@ void PlayScene::Stage::CopyTilesFromRooms(Room * rooms)
 			{
 				for (int i = xStartIndex; i < xStartIndex + ROOM_TILE_COUNTX; ++i)
 				{
-					tileLayer0[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer0[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
-					tileLayer1[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer1[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
+					tileLayer1[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer0[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
+					tileLayer2[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer1[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
 
-					tileLayer0[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
 					tileLayer1[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
+					tileLayer2[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
 				}
 			}
 		}
