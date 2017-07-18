@@ -101,7 +101,7 @@
 #define SAFE_RELEASE(p)			{if(p) {(p)->Release(); (p) = NULL;}}
 #define SAFE_RELEASE_AND_DELETE(p) {if(p) {(p)->Release(); delete(p); (p) = NULL;}}
 
-#define GRAVITY 1250.0f
+#define GRAVITY 1380.0f
 
 #define TILE_SIZE 64
 #define TILE_SIZE_HALF 32

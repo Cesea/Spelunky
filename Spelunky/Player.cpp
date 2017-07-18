@@ -16,7 +16,7 @@ Player::Player(ObjectId id)
 	_rectOffset = Vector2(-28, -64);
 
 	_speed = Vector2(460, 300);
-	_maxVelocity = Vector2(340, 580);
+	_maxVelocity = Vector2(340, 630);
 }
 
 Player::~Player()
@@ -62,8 +62,6 @@ void Player::Release(void)
 
 void Player::Update(float deltaTime)
 {
-	Console::Log("vel x : %f\n", _velocity.x);
-
 	_accel.y += GRAVITY;
 	_stateManager.Update(deltaTime);
 	_accel = Vector2();

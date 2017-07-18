@@ -295,7 +295,14 @@ ReturnTile PlayScene::Stage::GetAdjacentTiles9(const IntVector2 &p)
 		}
 	}
 
-	result.tiles[8] = &tileLayer1[p.x + p.y * STAGE_TOTAL_COUNTX];
+	if (tileLayer1[p.x + p.y * STAGE_TOTAL_COUNTX].sourceIndex.x == -1)
+	{
+		result.tiles[8] = &tileLayer0[p.x + p.y * STAGE_TOTAL_COUNTX];
+	}
+	else
+	{
+		result.tiles[8] = &tileLayer1[p.x + p.y * STAGE_TOTAL_COUNTX];
+	}
 
 	Tile *temp;
 	temp = result.tiles[0];
@@ -466,20 +473,22 @@ void PlayScene::Stage::CalculateAllMask(int xStartIndex, int yStartIndex, int wi
 void PlayScene::Stage::BuildBorder()
 {
 	std::wstring path = LdataPath;
-	Room borderRooms[4];
+	Room borderRooms[8];
 	BuildRoomFromFile( L"border_top_left.rt", &borderRooms[0], _usingSprites);
-	//BuildRoomFromFile(path + L"border_top.rt", &borderRooms[1], _usingSprites);
 	BuildRoomFromFile(L"border_top_right.rt", &borderRooms[1], _usingSprites);
-	//BuildRoomFromFile(path + L"border_right.rt", &borderRooms[3], _usingSprites);
 	BuildRoomFromFile(L"border_bottom_right.rt", &borderRooms[2], _usingSprites);
-	//BuildRoomFromFile(path + L"border_bottom.rt", &borderRooms[5], _usingSprites);
 	BuildRoomFromFile(L"border_bottom_left.rt", &borderRooms[3], _usingSprites);
-	//BuildRoomFromFile(path + L"border_left.rt", &borderRooms[7], _usingSprites);
+
+	BuildRoomFromFile(L"border_top.rt", &borderRooms[4], _usingSprites);
+	BuildRoomFromFile(L"border_bottom.rt", &borderRooms[5], _usingSprites);
+	BuildRoomFromFile(L"border_left.rt", &borderRooms[6], _usingSprites);
+	BuildRoomFromFile(L"border_right.rt", &borderRooms[7], _usingSprites);
 	CopyBorderTiles(borderRooms);
 }
 
 void PlayScene::Stage::CopyBorderTiles(Room * rooms)
 {
+#pragma region Corner borders
 	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
 	{
 		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
@@ -524,16 +533,107 @@ void PlayScene::Stage::CopyBorderTiles(Room * rooms)
 		}
 	}
 
-	//for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	//{
-	//	for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-	//	{
-	//		int worldIndex = (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + x) + STAGE_TOTAL_COUNTX * (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY + y);
-	//		int localIndex = x + ROOM_TILE_COUNTX * y;
-	//		tileLayer0[worldIndex] = rooms[3].layer0[localIndex];
-	//		tileLayer2[worldIndex] = rooms[3].layer1[localIndex];
-	//	}
-	//}
+	for (int y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY; y < STAGE_TOTAL_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
+
+			int localX = x;
+			int localY = y - (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY);;
+
+			tileLayer0[worldIndex] = rooms[3].layer0[localX + ROOM_TILE_COUNTX * localY];
+			tileLayer2[worldIndex] = rooms[3].layer1[localX + ROOM_TILE_COUNTX * localY];
+			tileLayer0[worldIndex].position = IntVector2(x, y);
+			tileLayer2[worldIndex].position = IntVector2(x, y);
+		}
+	}
+
+#pragma endregion
+
+#pragma region Side Borders
+	//여기서 상, 하 보더타일 카피
+	for (int i = 0; i < 3; ++i)
+	{
+		//위 보더
+		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+		{
+			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+			{
+				int worldX = 8 + (i) * ROOM_TILE_COUNTX + x;
+				int worldY = y;
+
+				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
+
+				int localIndex = x + ROOM_TILE_COUNTX * y;
+				tileLayer0[worldIndex] = rooms[4].layer0[localIndex];
+				tileLayer2[worldIndex] = rooms[4].layer1[localIndex];
+				tileLayer0[worldIndex].position = IntVector2(worldX, worldY);
+				tileLayer2[worldIndex].position = IntVector2(worldX, worldY);
+			}
+		}
+		//아래 보더
+		for (int y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY; y < STAGE_TOTAL_COUNTY; ++y)
+		{
+			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+			{
+				int worldX = 8 + (i) * ROOM_TILE_COUNTX + x;
+				int worldY = y;
+
+				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
+
+				int localIndex = x + ROOM_TILE_COUNTX * (y - (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY));
+				tileLayer0[worldIndex] = rooms[5].layer0[localIndex];
+				tileLayer2[worldIndex] = rooms[5].layer1[localIndex];
+				tileLayer0[worldIndex].position = IntVector2(worldX, worldY);
+				tileLayer2[worldIndex].position = IntVector2(worldX, worldY);
+			}
+		}
+	}
+
+	//여기서 좌, 우 보더타일 카피
+	for (int i = 0; i < 3; ++i)
+	{
+		//좌 보더
+		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+		{
+			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+			{
+				int worldX = x;
+				int worldY = 7 + (i) * ROOM_TILE_COUNTY + y;
+
+				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
+
+				int localIndex = x + ROOM_TILE_COUNTX * y;
+				tileLayer0[worldIndex] = rooms[6].layer0[localIndex];
+				tileLayer2[worldIndex] = rooms[6].layer1[localIndex];
+				tileLayer0[worldIndex].position = IntVector2(worldX, worldY);
+				tileLayer2[worldIndex].position = IntVector2(worldX, worldY);
+			}
+		}
+
+		//우 보더
+		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+		{
+			for (int x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX; x < STAGE_TOTAL_COUNTX; ++x)
+			{
+				int worldX = x;
+				int worldY = 7 + (i) * ROOM_TILE_COUNTY + y;
+
+				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
+
+				int localIndex = (x - (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX)) + ROOM_TILE_COUNTX * y;
+
+				tileLayer0[worldIndex] = rooms[7].layer0[localIndex];
+				tileLayer2[worldIndex] = rooms[7].layer1[localIndex];
+				tileLayer0[worldIndex].position = IntVector2(worldX, worldY);
+				tileLayer2[worldIndex].position = IntVector2(worldX, worldY);
+			}
+		}
+
+	}
+
+#pragma endregion
 }
 
 void PlayScene::Stage::CopyTilesFromRooms(Room * rooms)
