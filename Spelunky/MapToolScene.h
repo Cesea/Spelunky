@@ -12,6 +12,12 @@ enum class DrawingMode
 	Erase
 };
 
+enum EditingMode
+{
+	Tile,
+	Property
+};
+
 class MapToolScene : public IScene
 {
 public:
@@ -32,11 +38,11 @@ private :
 	void SaveMapButtonAction();
 	void LoadMapButtonAction();
 
-	void LoadEditingTileImageInfo();
 
 	void CheckUsingImageExistence(const std::wstring &key);
 
-	void SaveCurrentEditingImageInfoAction();
+	void LoadCurrentEditingInfoAction();
+	void SaveCurrentEditingInfoAction();
 
 	void CalculateBitMask(MapTool::TileInfo *sourceLayer, MapTool::TileInfo *maskLayer);
 	void RenderMasks(int drawXIndex, int drawYIndex, const uint32 maskInfo, D2DSprite *image);
@@ -52,10 +58,11 @@ private :
 
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
-	//현재 수정하고 있는 이미지의 정보
+	//현재 수정하고 있는 타일 이미지의 정보
 	MapTool::TileImageInfo _editingTileImageInfo{};
-	//현재 수정하고 있는 방의 정보
-	//TileSet<TileInfo> *_editingTileSet{};
+	//현재 수정하고 있는 프로퍼티 이미지 정보
+	MapTool::PropertyImageInfo _editingPropertyImageInfo{};
+
 	MapTool::RoomInfo _roomInfo{};
 	//그리드 셀렉터 이미지
 	D2DSprite *_gridSelectorSprite{};
@@ -78,17 +85,22 @@ private:
 	WCHAR _collisionTypeBuffer[16]{};
 	WCHAR _layerBuffer[16]{};
 
+	WCHAR _propertyBuffer[20]{};
+	WCHAR _typeBuffer[20]{};
+	WCHAR _percentBuffer[20{};
+
 	bool _applyTimerFlag{false};
 	WCHAR _applySuccessBuffer[16]{};
 
 	DrawingMode _drawingMode{};
+	EditingMode _editingMode{};
 
 //Using Character
 private  :
 	const WCHAR *_propertyEditorText{L"Property Editor"};
 
-	const WCHAR *_saveImageProperty{ L"Save Image Property" };
-	float _saveImagePropertyWidth{ 0 };
+	const WCHAR *_saveProperty{ L"Save Property" };
+	float _savePropertyWidth{ 0 };
 
 	const WCHAR *_loadImageText{ L"LoadIM" };
 	float _loadImageTextWidth{ 0 };
@@ -109,7 +121,6 @@ private  :
 	float _maskTextWidth{0};
 
 	Timer _timer;
-
 	Timer _applySuccessFlagTimer;
 };
 

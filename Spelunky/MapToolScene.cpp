@@ -21,7 +21,7 @@ HRESULT MapToolScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\stuff.png", L"stuff");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\property.png", L"property");
 
 	return S_OK;
 }
@@ -52,7 +52,7 @@ HRESULT MapToolScene::Init(void)
 	_eraseTextWidth = _dWrite.CalculateInputTextWidth(_eraseText);
 	_maskTextWidth = _dWrite.CalculateInputTextWidth(_maskText);
 
-	_saveImagePropertyWidth = _dWrite.CalculateInputTextWidth(_saveImageProperty);
+	_savePropertyWidth = _dWrite.CalculateInputTextWidth(_saveProperty);
 
 	return S_OK;
 }
@@ -100,6 +100,25 @@ void MapToolScene::Update(void)
 		IM::uistate.lastRightMouseY = (rawInput.mouse.currentPoint.y);
 	}
 	ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
+
+	if (KEYMANAGER->IsOnceKeyDown('1'))
+	{
+		_editingMode = EditingMode::Tile;
+	}
+	else if (KEYMANAGER->IsOnceKeyDown('2'))
+	{
+		_editingMode = EditingMode::Property;
+	}
+
+	if (KEYMANAGER->IsOnceKeyDown('8'))
+	{
+		_drawingMode = DrawingMode::Draw;
+	}
+	else if (KEYMANAGER->IsOnceKeyDown('9'))
+	{
+		_drawingMode = DrawingMode::Erase;
+	}
+
 }
 
 void MapToolScene::Render()
@@ -117,12 +136,12 @@ void MapToolScene::Render()
 		InSyncImageInfo();
 	}
 
-	if (IM::Button(GEN_ID, 20, 550, _saveImagePropertyWidth, _saveImageProperty))
+	if (IM::Button(GEN_ID, 20, 550, _savePropertyWidth, _saveProperty))
 	{
-		SaveCurrentEditingImageInfoAction();
+		SaveCurrentEditingInfoAction();
 	}
 
-	IM::Label(GEN_ID, 264, 550, 130, _applySuccessBuffer);
+	IM::Label(GEN_ID, 280, 550, 130, _applySuccessBuffer);
 	if (_applyTimerFlag)
 	{
 		if (_applySuccessFlagTimer.Tick(TIMEMANAGER->GetElapsedTime()))
@@ -132,11 +151,30 @@ void MapToolScene::Render()
 		}
 	}
 
-	IM::TextBox(GEN_ID, 20, 600, 400, _loadImageNameBuffer);
-	if (IM::Button(GEN_ID, 430, 600, _loadImageTextWidth, _loadImageText))
+	IM::TextBox(GEN_ID, 20, 600, 280, _loadImageNameBuffer);
+	if (IM::Button(GEN_ID, 310, 600, _loadImageTextWidth, _loadImageText))
 	{
 		LoadButtonAction();
 	}
+
+	if (_editingMode == EditingMode::Tile)
+	{
+		FillBox(gRenderTarget, 436, 596, 133, 38, IM::RED);
+	}
+	else
+	{
+		FillBox(gRenderTarget, 436, 646, 133, 38, IM::RED);
+	}
+
+	if (IM::Button(GEN_ID, 420, 550, 85, L"TileMode"))
+	{
+		_editingMode = EditingMode::Tile;
+	}
+	if (IM::Button(GEN_ID, 420, 600, 85, L"PropertyMode"))
+	{
+		_editingMode = EditingMode::Property;
+	}
+
 	IM::EndWindow();
 	//End of First Window
 
@@ -247,6 +285,19 @@ void MapToolScene::Render()
 				}
 			}
 		}
+		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+		{
+			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+			{
+				int index = x + ROOM_TILE_COUNTX * y;
+				if (_roomInfo.propertyLayer[index].sourceIndex.x != -1)
+				{
+					const IntVector2 &tileIndex = _roomInfo.propertyLayer[index].sourceIndex;
+					auto &found = _usingImages.find(L"property");
+					found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE, tileIndex.x, tileIndex.y);
+				}
+			}
+		}
 	}
 
 	if (IM::uistate.editorOn)
@@ -270,23 +321,46 @@ void MapToolScene::Render()
 		}
 		else
 		{
-			WCHAR editorText[20];
-			_stprintf(editorText, L"Tile At %d, %d", _selectorRect.x, _selectorRect.y);
-			IM::BeginPropertyWindow(IM::uistate.lastRightMouseX, IM::uistate.lastRightMouseY, 620, 150, editorText);
+			if (_editingMode == EditingMode::Tile)
+			{
+				WCHAR editorText[20];
+				_stprintf(editorText, L"Tile At %d, %d", _selectorRect.x, _selectorRect.y);
+				IM::BeginPropertyWindow(IM::uistate.lastRightMouseX, IM::uistate.lastRightMouseY, 620, 150, editorText);
 
-			IM::Label(GEN_ID, 10, 10, 150, L"Bom Destroy");
-			IM::Label(GEN_ID, 10, 45, 150, L"Destroyed Index");
-			IM::Label(GEN_ID, 10, 80, 150, L"This Mask");
-			
-			IM::Label(GEN_ID, 310, 10, 150, L"Near Mask");
-			IM::Label(GEN_ID, 310, 45, 150, L"Collision Type");
-			IM::Label(GEN_ID, 310, 80, 150, L"Layer");
-			IM::TextBox(GEN_ID, 170, 10, 130, _boomDestroyBuffer);
-			IM::TextBox(GEN_ID, 170, 45, 130, _destroyedIndexBuffer);
-			IM::TextBox(GEN_ID, 170, 80, 130, _thisMaskBuffer);
-			IM::TextBox(GEN_ID, 470, 10, 130, _nearMaskBuffer);
-			IM::TextBox(GEN_ID, 470, 45, 130, _collisionTypeBuffer);
-			IM::TextBox(GEN_ID, 470, 80, 130, _layerBuffer);
+				IM::Label(GEN_ID, 10, 10, 150, L"Bom Destroy");
+				IM::Label(GEN_ID, 10, 45, 150, L"Destroyed Index");
+				IM::Label(GEN_ID, 10, 80, 150, L"This Mask");
+
+				IM::Label(GEN_ID, 310, 10, 150, L"Near Mask");
+				IM::Label(GEN_ID, 310, 45, 150, L"Collision Type");
+				IM::Label(GEN_ID, 310, 80, 150, L"Layer");
+				IM::TextBox(GEN_ID, 170, 10, 130, _boomDestroyBuffer);
+				IM::TextBox(GEN_ID, 170, 45, 130, _destroyedIndexBuffer);
+				IM::TextBox(GEN_ID, 170, 80, 130, _thisMaskBuffer);
+				IM::TextBox(GEN_ID, 470, 10, 130, _nearMaskBuffer);
+				IM::TextBox(GEN_ID, 470, 45, 130, _collisionTypeBuffer);
+				IM::TextBox(GEN_ID, 470, 80, 130, _layerBuffer);
+				IM::EndWindow();
+			}
+			else if(_editingMode == EditingMode::Property)
+			{
+
+				WCHAR editorText[20];
+				_stprintf(editorText, L"Property At %d, %d", _selectorRect.x, _selectorRect.y);
+				IM::BeginPropertyWindow(IM::uistate.lastRightMouseX, IM::uistate.lastRightMouseY, 620, 150, editorText);
+
+				IM::Label(GEN_ID, 10, 10, 150, L"Property");
+				IM::Label(GEN_ID, 10, 45, 150, L"Type");
+				IM::Label(GEN_ID, 10, 80, 150, L"Percent");
+
+				IM::TextBox(GEN_ID, 170, 10, 130, _propertyBuffer);
+				IM::TextBox(GEN_ID, 170, 45, 130, _typeBuffer);
+				IM::TextBox(GEN_ID, 170, 80, 130, _percentBuffer);
+
+				IM::EndWindow();
+
+			}
+
 		}
 	}
 	IM::IMGUIFinish();
@@ -296,28 +370,47 @@ void MapToolScene::Render()
 
 void MapToolScene::LoadButtonAction()
 {
-	//SAFE_DELETE(_gridSelectorSprite);
 	std::wstring name = _loadImageNameBuffer;
 	D2DImage *image = IMAGEMANAGER->GetImage(name);
 	//load success
 	if (image)
 	{
 		_gridSelectorSprite->Init(image, 0, 0, 512, 512, IntVector2());
-		for (int i = 0; i < 8 * 8; ++i)
+		if (_editingMode == EditingMode::Tile)
 		{
-			_editingTileImageInfo.applied[i] = false;
-			_editingTileImageInfo.tileInfos[i] = TileInfo();
-		}
-		for (int y = 0; y < 8; ++y)
-		{
-			for (int x = 0; x < 8; ++x)
+			for (int i = 0; i < 8 * 8; ++i)
 			{
-				_editingTileImageInfo.tileInfos[x + 8 * y].sourceIndex.x = x;
-				_editingTileImageInfo.tileInfos[x + 8 * y].sourceIndex.y = y;
-				_editingTileImageInfo.tileInfos[x + 8 * y].imageKey = name;
+				_editingTileImageInfo.applied[i] = false;
+				_editingTileImageInfo.tileInfos[i] = TileInfo();
 			}
+			for (int y = 0; y < 8; ++y)
+			{
+				for (int x = 0; x < 8; ++x)
+				{
+					_editingTileImageInfo.tileInfos[x + 8 * y].sourceIndex.x = x;
+					_editingTileImageInfo.tileInfos[x + 8 * y].sourceIndex.y = y;
+					_editingTileImageInfo.tileInfos[x + 8 * y].imageKey = name;
+				}
+			}
+			LoadCurrentEditingInfoAction();
 		}
-		LoadEditingTileImageInfo();
+		else if (_editingMode == EditingMode::Property)
+		{
+			for (int i = 0; i < 8 * 8; ++i)
+			{
+				_editingPropertyImageInfo.applied[i] = false;
+				_editingPropertyImageInfo.propertyInfos[i] = PropertyInfo();
+			}
+			for (int y = 0; y < 8; ++y)
+			{
+				for (int x = 0; x < 8; ++x)
+				{
+					_editingPropertyImageInfo.propertyInfos[x + 8 * y].sourceIndex.x = x;
+					_editingPropertyImageInfo.propertyInfos[x + 8 * y].sourceIndex.y = y;
+				}
+			}
+			LoadCurrentEditingInfoAction();
+		}
 	}
 	//load failed
 	else
@@ -329,6 +422,7 @@ void MapToolScene::PainterAction()
 {
 	if (_gridSelectorSprite->GetSourceImage())
 	{
+		//그리기 모드일때 
 		if (_drawingMode == DrawingMode::Draw)
 		{
 			const std::wstring &imageName = _gridSelectorSprite->GetSourceImage()->GetName();
@@ -345,19 +439,26 @@ void MapToolScene::PainterAction()
 					int selectX = _selectorRect.x + x;
 					int selectY = _selectorRect.y + y;
 
-					const TileInfo & selectorInfo = _editingTileImageInfo.tileInfos[selectX + 8 * selectY];
 					//LAYER_TILE일때
-					if (selectorInfo.layer == 0 || selectorInfo.layer == 1)
+					if (_editingMode == EditingMode::Tile)
 					{
-						_roomInfo.layer0[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
+						const TileInfo & selectorInfo = _editingTileImageInfo.tileInfos[selectX + 8 * selectY];
+						if (selectorInfo.layer == 0 || selectorInfo.layer == 1)
+						{
+							_roomInfo.layer0[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
+						}
+						else if (selectorInfo.layer == 2)
+						{
+							_roomInfo.layer1[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
+						}
 					}
-					else if (selectorInfo.layer == 2)
+					else if (_editingMode == EditingMode::Property)
 					{
-						_roomInfo.layer1[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
+						const PropertyInfo &selectorInfo = _editingPropertyImageInfo.propertyInfos[selectX + 8 * selectY];
+						_roomInfo.propertyLayer[paintX + ROOM_TILE_COUNTX * paintY] = selectorInfo;
 					}
 				}
 			}
-
 			auto &found = _usingImages.find(imageName);
 			if (found == _usingImages.end())
 			{
@@ -366,10 +467,19 @@ void MapToolScene::PainterAction()
 				_usingImages.insert(std::make_pair(imageName, newSprite));
 			}
 		}
+		//지우기 모드일때
 		else if(_drawingMode == DrawingMode::Erase)
 		{
-			_roomInfo.layer0[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
-			_roomInfo.layer1[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
+			if (_editingMode == EditingMode::Tile)
+			{
+				_roomInfo.layer0[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
+				_roomInfo.layer1[_xPainter + ROOM_TILE_COUNTX * _yPainter] = TileInfo();
+			}
+			else if (_editingMode == EditingMode::Property)
+			{
+				_roomInfo.propertyLayer[_xPainter + ROOM_TILE_COUNTX * _yPainter] = PropertyInfo();
+				_roomInfo.propertyLayer[_xPainter + ROOM_TILE_COUNTX * _yPainter] = PropertyInfo();
+			}
 		}
 	}
 }
@@ -427,55 +537,22 @@ void MapToolScene::CheckUsingImageExistence(const std::wstring &key)
 		_usingImages.insert(std::make_pair(key, insertImage));
 	}
 }
-void MapToolScene::SaveCurrentEditingImageInfoAction()
+void MapToolScene::SaveCurrentEditingInfoAction()
 {
 	FileUtils::File saveFile;
 
 	std::wstring filePath;
 	filePath += LdataPath;
 	filePath += _loadImageNameBuffer;
-	filePath += L".itf";
 
-	saveFile.Open(filePath, FileUtils::FileAccess::Write);
-
-	saveFile.Write(L"--%s--\n", filePath.c_str());
-	saveFile.Write(L"%s\n", _loadImageNameBuffer);
-	
-	for (int y = 0; y < 8; ++y)
+	if (_editingMode == EditingMode::Tile)
 	{
-		for (int x = 0; x < 8; ++x)
-		{
-			int index = x + 8 * y;
-			const TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[index];
-			saveFile.Write(L"At X : %d, Y : %d\n", x, y);
-			saveFile.Write(L"Boomb Destroy : %d\n", currentTileInfo.canBeDestroyedByBomb);
-			saveFile.Write(L"Destroyed Index X : %d, Y : %d\n", 
-				currentTileInfo.destroyedIndex.x, currentTileInfo.destroyedIndex.y);
-			saveFile.Write(L"This Mask Info : %u\n", currentTileInfo.thisMaskInfo);
-			saveFile.Write(L"Near Mask Info : %u\n", currentTileInfo.nearMaskInfo);
-			saveFile.Write(L"Collision Type : %d\n", (int)currentTileInfo.collisionType);
-			saveFile.Write(L"Mask Info : %u\n", currentTileInfo.maskInfo);
-			saveFile.Write(L"Layer : %d\n", currentTileInfo.layer);
-			saveFile.Write(L"Applied : %d\n", _editingTileImageInfo.applied[index]);
-		}
-	}
-	saveFile.Close();
-}
-void MapToolScene::LoadEditingTileImageInfo()
-{
-	FileUtils::File loadFile;
+		filePath += L".itf";
 
-	std::wstring filePath;
+		saveFile.Open(filePath, FileUtils::FileAccess::Write);
 
-	filePath += LdataPath;
-	filePath += _loadImageNameBuffer;
-	filePath += L".itf";
-
-	if (loadFile.Open(filePath, FileUtils::FileAccess::Read))
-	{
-
-		loadFile.GetLine();
-		loadFile.GetLine();
+		saveFile.Write(L"--%s--\n", filePath.c_str());
+		saveFile.Write(L"%s\n", _loadImageNameBuffer);
 
 		for (int y = 0; y < 8; ++y)
 		{
@@ -483,19 +560,109 @@ void MapToolScene::LoadEditingTileImageInfo()
 			{
 				int index = x + 8 * y;
 				const TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[index];
-				loadFile.GetLine();
-				loadFile.Read(L"Boomb Destroy : %d\n", &currentTileInfo.canBeDestroyedByBomb);
-				loadFile.Read(L"Destroyed Index X : %d, Y : %d\n",
-					&currentTileInfo.destroyedIndex.x, &currentTileInfo.destroyedIndex.y);
-				loadFile.Read(L"This Mask Info : %u\n", &currentTileInfo.thisMaskInfo);
-				loadFile.Read(L"Near Mask Info : %u\n", &currentTileInfo.nearMaskInfo);
-				loadFile.Read(L"Collision Type : %d\n", &currentTileInfo.collisionType);
-				loadFile.Read(L"Mask Info : %u\n", &currentTileInfo.maskInfo);
-				loadFile.Read(L"Layer : %d\n", &currentTileInfo.layer);
-				loadFile.Read(L"Applied : %d\n", &_editingTileImageInfo.applied[index]);
+				saveFile.Write(L"At X : %d, Y : %d\n", x, y);
+				saveFile.Write(L"Boomb Destroy : %d\n", currentTileInfo.canBeDestroyedByBomb);
+				saveFile.Write(L"Destroyed Index X : %d, Y : %d\n",
+					currentTileInfo.destroyedIndex.x, currentTileInfo.destroyedIndex.y);
+				saveFile.Write(L"This Mask Info : %u\n", currentTileInfo.thisMaskInfo);
+				saveFile.Write(L"Near Mask Info : %u\n", currentTileInfo.nearMaskInfo);
+				saveFile.Write(L"Collision Type : %d\n", (int)currentTileInfo.collisionType);
+				saveFile.Write(L"Mask Info : %u\n", currentTileInfo.maskInfo);
+				saveFile.Write(L"Layer : %d\n", currentTileInfo.layer);
+				saveFile.Write(L"Applied : %d\n", _editingTileImageInfo.applied[index]);
 			}
 		}
-		loadFile.Close();
+		saveFile.Close();
+	}
+	else if (_editingMode == EditingMode::Property)
+	{
+		filePath += L".ipf";
+
+		saveFile.Open(filePath, FileUtils::FileAccess::Write);
+
+		saveFile.Write(L"--%s--\n", filePath.c_str());
+		saveFile.Write(L"%s\n", _loadImageNameBuffer);
+
+		for (int y = 0; y < 8; ++y)
+		{
+			for (int x = 0; x < 8; ++x)
+			{
+				int index = x + 8 * y;
+				const PropertyInfo &currentPropertyInfo = _editingPropertyImageInfo.propertyInfos[index];
+				saveFile.Write(L"At X : %d, Y : %d\n", x, y);
+				saveFile.Write(L"Property %d\n", (int)currentPropertyInfo.property);
+				saveFile.Write(L"Type %d\n", (int)currentPropertyInfo.type);
+				saveFile.Write(L"Percennt %f\n", currentPropertyInfo.percent);
+			}
+		}
+		saveFile.Close();
+	}
+}
+
+void MapToolScene::LoadCurrentEditingInfoAction()
+{
+	FileUtils::File loadFile;
+
+	std::wstring filePath;
+
+	filePath += LdataPath;
+	filePath += _loadImageNameBuffer;
+
+	if (_editingMode == EditingMode::Tile)
+	{
+		filePath += L".itf";
+
+		if (loadFile.Open(filePath, FileUtils::FileAccess::Read))
+		{
+			loadFile.GetLine();
+			loadFile.GetLine();
+
+			for (int y = 0; y < 8; ++y)
+			{
+				for (int x = 0; x < 8; ++x)
+				{
+					int index = x + 8 * y;
+					const TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[index];
+					loadFile.GetLine();
+					loadFile.Read(L"Boomb Destroy : %d\n", &currentTileInfo.canBeDestroyedByBomb);
+					loadFile.Read(L"Destroyed Index X : %d, Y : %d\n",
+						&currentTileInfo.destroyedIndex.x, &currentTileInfo.destroyedIndex.y);
+					loadFile.Read(L"This Mask Info : %u\n", &currentTileInfo.thisMaskInfo);
+					loadFile.Read(L"Near Mask Info : %u\n", &currentTileInfo.nearMaskInfo);
+					loadFile.Read(L"Collision Type : %d\n", &currentTileInfo.collisionType);
+					loadFile.Read(L"Mask Info : %u\n", &currentTileInfo.maskInfo);
+					loadFile.Read(L"Layer : %d\n", &currentTileInfo.layer);
+					loadFile.Read(L"Applied : %d\n", &_editingTileImageInfo.applied[index]);
+				}
+			}
+			loadFile.Close();
+		}
+	}
+	else if (_editingMode == EditingMode::Property)
+	{
+		filePath += L".ipf";
+
+		if (loadFile.Open(filePath, FileUtils::FileAccess::Read))
+		{
+			loadFile.GetLine();
+			loadFile.GetLine();
+			loadFile.GetLine();
+			loadFile.GetLine();
+
+			for (int y = 0; y < 8; ++y)
+			{
+				for (int x = 0; x < 8; ++x)
+				{
+					int index = x + 8 * y;
+					const PropertyInfo &currentPropertyInfo = _editingPropertyImageInfo.propertyInfos[index];
+					loadFile.GetLine();
+					//loadFile.Read(L"At X : %d, Y : %d\n", x, y);
+					loadFile.Read(L"Property %d\n", &currentPropertyInfo.property);
+					loadFile.Read(L"Type %d\n", &currentPropertyInfo.type);
+					loadFile.Read(L"Percennt %f\n", &currentPropertyInfo.percent);
+				}
+			}
+		}
 	}
 }
 
@@ -673,193 +840,192 @@ void MapToolScene::TileInfoBitmaskCopy(const std::wstring imageKey, TileInfo &so
 
 int MapToolScene::InSyncImageInfo()
 {
-	if (_editingTileImageInfo.applied[_selectorRect.x + 8 * _selectorRect.y])
+	if (_editingMode == EditingMode::Tile)
+	{
+#pragma region EditModeTile
+		if (_editingTileImageInfo.applied[_selectorRect.x + 8 * _selectorRect.y])
+		{
+			TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[_selectorRect.x + 8 * _selectorRect.y];
+
+			std::wstring str{};
+
+			if (currentTileInfo.canBeDestroyedByBomb) { str = L"true"; }
+			else { str = L"false"; }
+			wcscpy(_boomDestroyBuffer, str.c_str());
+
+			str = std::to_wstring(currentTileInfo.destroyedIndex.x);
+			str += L",";
+			str += std::to_wstring(currentTileInfo.destroyedIndex.y);
+			wcscpy(_destroyedIndexBuffer, str.c_str());
+
+			str = L"";
+			int thisMaskValue = currentTileInfo.thisMaskInfo;
+			for (int i = 3; i >= 0; --i)
+			{
+				if ((thisMaskValue >> i) & 1)
+				{
+					str += L"1";
+				}
+				else
+				{
+					str += L"0";
+				}
+			}
+			wcscpy(_thisMaskBuffer, str.c_str());
+
+			str = L"";
+			int nearMaskValue = currentTileInfo.nearMaskInfo;
+			for (int i = 3; i >= 0; --i)
+			{
+				if ((nearMaskValue >> i) & 1)
+				{
+					str += L"1";
+				}
+				else
+				{
+					str += L"0";
+				}
+			}
+			wcscpy(_nearMaskBuffer, str.c_str());
+
+			str = std::to_wstring((int)currentTileInfo.collisionType);
+			wcscpy(_collisionTypeBuffer, str.c_str());
+
+			str = std::to_wstring((int)currentTileInfo.layer);
+			wcscpy(_layerBuffer, str.c_str());
+		}
+#pragma endregion
+	}
+	else if (_editingMode == EditingMode::Property)
 	{
 
-		TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[_selectorRect.x + 8 * _selectorRect.y];
-
-		std::wstring str{};
-
-		if (currentTileInfo.canBeDestroyedByBomb) { str = L"true"; }
-		else { str = L"false"; }
-		wcscpy(_boomDestroyBuffer, str.c_str());
-
-		str = std::to_wstring(currentTileInfo.destroyedIndex.x);
-		str += L",";
-		str += std::to_wstring(currentTileInfo.destroyedIndex.y);
-		wcscpy(_destroyedIndexBuffer, str.c_str());
-
-		str = L"";
-		int thisMaskValue = currentTileInfo.thisMaskInfo;
-		for (int i = 3; i >= 0; --i)
-		{
-			if ((thisMaskValue >> i) & 1)
-			{
-				str += L"1";
-			}
-			else
-			{
-				str += L"0";
-			}
-		}
-		wcscpy(_thisMaskBuffer, str.c_str());
-
-
-		str = L"";
-		int nearMaskValue = currentTileInfo.nearMaskInfo;
-		for (int i = 3; i >= 0; --i)
-		{
-			if ((nearMaskValue >> i) & 1)
-			{
-				str += L"1";
-			}
-			else
-			{
-				str += L"0";
-			}
-		}
-		wcscpy(_nearMaskBuffer, str.c_str());
-
-		str = std::to_wstring((int)currentTileInfo.collisionType);
-		wcscpy(_collisionTypeBuffer, str.c_str());
-
-		str = std::to_wstring((int)currentTileInfo.layer);
-		wcscpy(_layerBuffer, str.c_str());
 	}
 	return 0;
 }
 int MapToolScene::OutSyncImageInfo()
 {
 	int success = true;
-
-	TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[_selectorRect.x + 8 * _selectorRect.y];
-
-	//폭탄으로 터지는지 안터지는지 체크
-	bool boomDes = false;
-	if (wcscmp(L"true", _boomDestroyBuffer) == 0 ||
-		wcscmp(L"True", _boomDestroyBuffer) == 0)
+	if (_editingMode == EditingMode::Tile)
 	{
-		boomDes = true;
-		//currentTileInfo.canBeDestroyedByBomb = true;
-	}
-	else if (wcscmp(L"false", _boomDestroyBuffer) == 0 ||
-		wcscmp(L"False", _boomDestroyBuffer) == 0)
-	{
-		boomDes = false;
-		//currentTileInfo.canBeDestroyedByBomb = true;
-	}
-	else
-	{
-		success = false;
-	}
-
-	//파괴되었을때 이미지
-	int desX{};
-	int desY{};
-	if (swscanf(_destroyedIndexBuffer, L"%d,%d",
-		&desX, &desY) == 2)
-	{
-		//currentTileInfo.destroyedIndex = IntVector2(desX, desY);
-	}
-	else
-	{
-		success = false;
-	}
-
-
-	//현재 타일의 주변에 마스크를 칠 할수 있는지 없는지 체크
-	uint32 thisBitValue = 0;
-	if (wcslen(_thisMaskBuffer) == 4)
-	{
-		WCHAR *pointer = _thisMaskBuffer;
-		while (*pointer)
+		TileInfo &currentTileInfo = _editingTileImageInfo.tileInfos[_selectorRect.x + 8 * _selectorRect.y];
+		//폭탄으로 터지는지 안터지는지 체크
+		bool boomDes = false;
+		if (wcscmp(L"true", _boomDestroyBuffer) == 0 ||
+			wcscmp(L"True", _boomDestroyBuffer) == 0)
 		{
-			if (*pointer != L'0' && *pointer != L'1')
+			boomDes = true;
+		}
+		else if (wcscmp(L"false", _boomDestroyBuffer) == 0 ||
+			wcscmp(L"False", _boomDestroyBuffer) == 0)
+		{
+			boomDes = false;
+		}
+		else
+		{
+			success = false;
+		}
+		//파괴되었을때 이미지
+		int desX{};
+		int desY{};
+		if (swscanf(_destroyedIndexBuffer, L"%d,%d",
+			&desX, &desY) == 2)
+		{
+		}
+		else
+		{
+			success = false;
+		}
+		//현재 타일의 주변에 마스크를 칠 할수 있는지 없는지 체크
+		uint32 thisBitValue = 0;
+		if (wcslen(_thisMaskBuffer) == 4)
+		{
+			WCHAR *pointer = _thisMaskBuffer;
+			while (*pointer)
 			{
-				_stprintf(_nearMaskBuffer, L"");
-				success = false;
-				break;
+				if (*pointer != L'0' && *pointer != L'1')
+				{
+					_stprintf(_nearMaskBuffer, L"");
+					success = false;
+					break;
+				}
+				pointer++;
 			}
-			pointer++;
-		}
-		for (int i = 0; i < 4; ++i)
-		{
-			uint32 temp = _thisMaskBuffer[i] - 48;
-			thisBitValue |= (temp << (3 - i));
-		}
-	}
-	else
-	{
-		success = false;
-	}
-
-	//주변에 마스크를 칠 할 수 있는지 없는지 체크
-	uint32 nearBitValue = 0;
-	if (wcslen(_nearMaskBuffer) == 4)
-	{
-		WCHAR *pointer = _nearMaskBuffer;
-		//값 테스트 체크
-		while (*pointer)
-		{
-			if (*pointer != L'0' && *pointer != L'1')
+			for (int i = 0; i < 4; ++i)
 			{
-				_stprintf(_nearMaskBuffer, L"");
-				success = false;
-				break;
+				uint32 temp = _thisMaskBuffer[i] - 48;
+				thisBitValue |= (temp << (3 - i));
 			}
-			pointer++;
 		}
-		for (int i = 0; i < 4; ++i)
+		else
 		{
-			uint32 temp = _nearMaskBuffer[i] - 48;
-			nearBitValue |= (temp << (3 - i));
+			success = false;
 		}
+		//주변에 마스크를 칠 할 수 있는지 없는지 체크
+		uint32 nearBitValue = 0;
+		if (wcslen(_nearMaskBuffer) == 4)
+		{
+			WCHAR *pointer = _nearMaskBuffer;
+			//값 테스트 체크
+			while (*pointer)
+			{
+				if (*pointer != L'0' && *pointer != L'1')
+				{
+					_stprintf(_nearMaskBuffer, L"");
+					success = false;
+					break;
+				}
+				pointer++;
+			}
+			for (int i = 0; i < 4; ++i)
+			{
+				uint32 temp = _nearMaskBuffer[i] - 48;
+				nearBitValue |= (temp << (3 - i));
+			}
+		}
+		else
+		{
+			success = false;
+		}
+		//콜리젼 타입 체크
+		int colType{};
+		if (swscanf(_collisionTypeBuffer, L"%d", &colType) == 1)
+		{
+		}
+		else
+		{
+			success = false;
+		}
+		//레이어 순서
+		int lay{};
+		if (swscanf(_layerBuffer, L"%d", &lay) == 1)
+		{
+		}
+		else
+		{
+			success = false;
+		}
+		//여기서 타일 인포에 대한 값을 최종 최신화를 한다.
+		if (success)
+		{
+			_editingTileImageInfo.applied[_selectorRect.x + 8 * _selectorRect.y] = true;
+			currentTileInfo.canBeDestroyedByBomb = boomDes;
+			currentTileInfo.destroyedIndex = IntVector2(desX, desY);
+			currentTileInfo.thisMaskInfo = thisBitValue;
+			currentTileInfo.nearMaskInfo = nearBitValue;
+			currentTileInfo.collisionType = (TileCollisionType)(colType);
+			currentTileInfo.layer = (ObjectLayer)(lay);
+		}
+		_stprintf(_boomDestroyBuffer, L"");
+		_stprintf(_destroyedIndexBuffer, L"");
+		_stprintf(_thisMaskBuffer, L"");
+		_stprintf(_nearMaskBuffer, L"");
+		_stprintf(_collisionTypeBuffer, L"");
+		_stprintf(_layerBuffer, L"");
 	}
-	else
+	else if (_editingMode == EditingMode::Property)
 	{
-		success = false;
-	}
 
-	//콜리젼 타입 체크
-	int colType{};
-	if (swscanf(_collisionTypeBuffer, L"%d", &colType) == 1)
-	{
-		//currentTileInfo.collisionType = (TileCollisionType)colType;
 	}
-	else
-	{
-		success = false;
-	}
-
-	//레이어 순서
-	int lay{};
-	if (swscanf(_layerBuffer, L"%d", &lay) == 1)
-	{
-		//currentTileInfo.layer = (ObjectLayer)lay;
-	}
-	else
-	{
-		success = false;
-	}
-	//여기서 타일 인포에 대한 값을 최종 최신화를 한다.
-	if (success)
-	{
-		_editingTileImageInfo.applied[_selectorRect.x + 8 * _selectorRect.y] = true;
-		currentTileInfo.canBeDestroyedByBomb = boomDes;
-		currentTileInfo.destroyedIndex = IntVector2(desX, desY);
-		currentTileInfo.thisMaskInfo = thisBitValue;
-		currentTileInfo.nearMaskInfo = nearBitValue;
-		currentTileInfo.collisionType = (TileCollisionType)(colType);
-		currentTileInfo.layer = (ObjectLayer)(lay);
-
-	}
-
-	_stprintf(_boomDestroyBuffer, L"");
-	_stprintf(_destroyedIndexBuffer, L"");
-	_stprintf(_thisMaskBuffer, L"");
-	_stprintf(_nearMaskBuffer, L"");
-	_stprintf(_collisionTypeBuffer, L"");
-	_stprintf(_layerBuffer, L"");
 
 	return success;
 }

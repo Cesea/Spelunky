@@ -11,6 +11,7 @@ namespace MapTool
 		std::wstring maskImageKey{};
 		bool32 hasMask{};
 	};
+
 	struct TileInfo
 	{
 		TileInfo()
@@ -42,6 +43,22 @@ namespace MapTool
 		int layer{};
 	};
 
+	struct PropertyInfo
+	{
+		PropertyInfo() 
+		{ }
+		PropertyInfo &operator= (const PropertyInfo &other) 
+		{
+			sourceIndex = other.sourceIndex;
+			property = other.property;
+			return *this;
+		}
+		IntVector2 sourceIndex{ -1, -1 };
+		TileProperty property{TileProperty::TILE_PROPERTY_NONE};
+		int type{};
+		float percent{};
+	};
+
 	struct TileImageInfo
 	{
 		TileImageInfo() {}
@@ -51,13 +68,24 @@ namespace MapTool
 		int applied[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{ false, };
 	};
 
+	struct PropertyImageInfo
+	{
+		PropertyImageInfo() {}
+		~PropertyImageInfo() {}
+
+		PropertyInfo propertyInfos[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
+		int applied[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{ false };
+	};
 
 	struct RoomInfo
 	{
 		RoomType roomType;
 		IntVector2 doorPosition;
+
 		TileInfo layer0[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
 		TileInfo layer1[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
+
+		PropertyInfo propertyLayer[ROOM_TILE_COUNTX * ROOM_TILE_COUNTX];
 	};
 }
 #endif

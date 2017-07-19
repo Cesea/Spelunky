@@ -110,7 +110,7 @@
 #define ROOM_TILE_COUNTY 8
 
 #define ROOM_COUNTX 4
-#define ROOM_COUTY 4
+#define ROOM_COUNTY 4
 
 #define STAGE_TILE_COUNTXaaj 40
 #define STAGE_TILE_COUNTYaaj 32

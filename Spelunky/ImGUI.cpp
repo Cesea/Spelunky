@@ -994,26 +994,5 @@ UIState uistate;
 		}
 		return 0;
 	}
-	//int GridPainter(int id, int x, int y, int totalWidth, int totalHeight, int frameWidth, int frameHeight, TileSet<IntVector2>& canvas)
-	//{
-	//	return 0;
-	//}
-	//int GridPainter(int id, int x, int y)
-	//{
-	//	return 0;
-	//}
-
 #pragma endregion
-
-	void DrawGUIS()
-	{
-		//for (int i = 0; i < uistate.freeWindowTracker; ++i)
-		//{
-		//	WindowStruct &windowRef = uistate.windows[i];
-		//	FillBox(gRenderTarget, windowRef.x, windowRef.y, windowRef.width, 30, D2D1::ColorF(0.2, 0.3, 0.5, 0.8));
-		//	_dWrite.PrintText(gRenderTarget, windowRef.x + 10, windowRef.y + 2, windowRef.width, 30, windowRef.name.c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
-		//	FillBox(gRenderTarget, windowRef.x, windowRef.y, windowRef.width, windowRef.height, D2D1::ColorF(0.5, 0.5, 0.7, 0.3));
-		//}
-	}
-
 }
