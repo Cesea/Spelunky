@@ -10,7 +10,7 @@ EquipItem::~EquipItem()
 {
 }
 
-HRESULT EquipItem::Init(ArcheType type)
+HRESULT EquipItem::Init(BaseProperty *property)
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePlayerInputEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PICK_UP, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePickupEvent>(this));
@@ -47,8 +47,8 @@ void EquipItem::Update(float deltaTime)
 
 			TilePosition centerPos = desiredPosition;
 			centerPos.AddToTileRelY(-32.0f);
-			_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacentTiles9(IntVector2(centerPos.tileX, centerPos.tileY));
-			_collisionComp->Update(this, deltaTime, &_nearTiles);
+			//_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacentTiles9(IntVector2(centerPos.tileX, centerPos.tileY));
+			//_collisionComp->Update(this, deltaTime, &_nearTiles);
 		}
 	}
 }

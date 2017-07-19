@@ -80,27 +80,6 @@ const char * ConvertEntityStateEnumToString(EntityState state)
 	}
 }
 
-const char * ConvertArchTypeEnumToString(ArcheType type)
-{
-	switch (type)
-	{
-	case ArcheType::Player:
-	{
-		return "Player";
-	}break;
-	case ArcheType::Tile:
-	{
-		return "Tile";
-	}
-	case ArcheType::MineBG :
-	{
-		return "MineBG";
-	}break;
-	}
-}
-
-
-
 void DrawBox(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height, const D2D1_COLOR_F &color, float strokeWidth)
 {
 	ID2D1SolidColorBrush *brush = nullptr;

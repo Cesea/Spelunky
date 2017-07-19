@@ -88,17 +88,17 @@ HRESULT GamePlayScene::LoadContent()
 	return S_OK;
 }
 
-void GamePlayScene::CreateAndPlaceObject(ArcheType type, const TilePosition & position)
-{
-	GameObject *object = OBJECTMANAGER->CreateObject(type);
-	object->position = position;
-	object->desiredPosition = position;
-	if (type == ArcheType::Player)
-	{
-		_playerId = object->GetId();
-		_pPlayer = (Player *)object;
-	}
-}
+//void GamePlayScene::CreateAndPlaceObject(ArcheType type, const TilePosition & position)
+//{
+//	GameObject *object = OBJECTMANAGER->CreateObject(type);
+//	object->position = position;
+//	object->desiredPosition = position;
+//	if (type == ArcheType::Player)
+//	{
+//		_playerId = object->GetId();
+//		_pPlayer = (Player *)object;
+//	}
+//}
 
 HRESULT GamePlayScene::Init(void)
 {
@@ -110,13 +110,13 @@ HRESULT GamePlayScene::Init(void)
 
 	OBJECTMANAGER->SetCurrentScene(this);
 
-	CreateAndPlaceObject(ArcheType::Player, TilePosition(7, 5));
-	//CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
-	CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 9));
+	//CreateAndPlaceObject(ArcheType::Player, TilePosition(7, 5));
+	////CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
+	//CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 9));
 
 
 	_camera.Init();
-	_camera.SetTarget(OBJECTMANAGER->FindObjectId(_playerId));
+	//_camera.SetTarget(OBJECTMANAGER->FindObjectId(_playerId));
 	STAGEMANAGER->Init();
 
 	STAGEMANAGER->SetCameraLink(&_camera);
@@ -170,21 +170,16 @@ void GamePlayScene::Render(void)
 
 
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();
+
 	for (auto &object : OBJECTMANAGER->GetObjectMapRef())
 	{
 		object.second->Render(gRenderTarget, unTiledCamPos);
 	}
 
-	STAGEMANAGER->RenderBorderLayer();
-	STAGEMANAGER->RenderTileLayer();
-	
+	//_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
+	//_moneyHudSprite->Render(gRenderTarget, 0, 140);
 
-	STAGEMANAGER->RenderMaskLayer();
-
-	_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
-	_moneyHudSprite->Render(gRenderTarget, 0, 140);
-
-	_dWrite.PrintText(gRenderTarget, 105, 155, 110, 30, std::to_wstring(_pPlayer->GetMoney()).c_str(), D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
+	//_dWrite.PrintText(gRenderTarget, 105, 155, 110, 30, std::to_wstring(_pPlayer->GetMoney()).c_str(), D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

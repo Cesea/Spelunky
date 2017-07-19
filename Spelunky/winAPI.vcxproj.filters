@@ -145,6 +145,12 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Props">
       <UniqueIdentifier>{ca989f74-6401-4200-9eaf-c49af440cb69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Properties">
+      <UniqueIdentifier>{f41db875-af34-4a58-9ff1-3d27cee28ca3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Tile">
+      <UniqueIdentifier>{c4aa3a2a-15f3-4fc5-b4f9-421e3bb0c089}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -330,9 +336,6 @@
     <ClInclude Include="FallingState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\InAir</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Game\Scene\GamePlayScene\Objects\Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Room.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Stage</Filter>
     </ClInclude>
@@ -380,6 +383,15 @@
     </ClInclude>
     <ClInclude Include="Door.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="Property.h">
+      <Filter>Game\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectFactory.h">
+      <Filter>Game\Common\ObjectFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Tile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -574,6 +586,15 @@
     </ClCompile>
     <ClCompile Include="AttackState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Property.cpp">
+      <Filter>Game\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectFactory.cpp">
+      <Filter>Game\Common\ObjectFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Tile</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

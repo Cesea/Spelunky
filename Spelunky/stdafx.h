@@ -168,7 +168,7 @@ typedef Vector3 MeterVector3;
 
 #include "StageManager.h"
 
-#define STAGEMANAGER PlayScene::StageManager::getSingleton()
+#define STAGEMANAGER StageManager::getSingleton()
 
 //=================================================
 //======== 20170309 #전역변수# ========

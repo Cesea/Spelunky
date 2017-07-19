@@ -1,6 +1,8 @@
 #ifndef GAME_COMMON_STRUCTS_H
 #define GAME_COMMON_STRUCTS_H
 
+#include "Property.h"
+
 class TilePosition
 {
 public:
@@ -89,22 +91,6 @@ struct TileSet
 	T *infos{};
 };
 
-typedef uint32 ObjectId;
-
-enum class ArcheType
-{
-	Player,
-	Tile,
-	MineBG,
-	GUI,
-	Gem,
-	Rock
-};
-
-enum Direction
-{
-	Left, Right, Up, Down, None,
-};
 
 enum class Command
 {
@@ -133,70 +119,6 @@ struct ControlCommand
 	Command dash{};
 };
 
-//다 막힌 방
-//복도 방,
-//위만 뚤린 방
-//아래만 뚤린 방
-enum RoomType
-{
-	ROOM_NONE,
-	ROOM_BLOCK,
-	ROOM_AISLE,
-	ROOM_TOP_OPEN,
-	ROOM_BOTTOM_OPEN,
-};
-
-enum TileProperty
-{
-	TILE_PROPERTY_NONE,
-	TILE_PROPERTY_EXIT,
-	TILE_PROPERTY_RANDOM_GEM_SPAWN,
-	TILE_PROPERTY_RANDOM_TILE_SPAWN,
-	TILE_PROPERTY_RANDOM_ITEM_SPAWN,
-	TILE_PROPERTY_RANDOM_ENEMY_SPAWN,
-	TILE_PROPERTY_ENEMY_SPAWN,
-};
-enum ExitType
-{
-	EXIT_NONE,
-	EXIT_STAGE_ONE,
-	EXIT_STAGE_TWO,
-	EXIT_STAGE_THREE,
-};
-enum GemType
-{
-	GEM_NONE,
-	GEM_GOLD_SMALL,
-	GEM_GOLD_BIG,
-	GEM_EMERALD,
-	GEM_SAPHIRE,
-	GEM_RUBY
-};
-enum ItemType
-{
-	ITEM_NONE,
-	ITEM_GEM_CRATE,
-	ITEM_ITEM_CRATE,
-	ITEM_ROCK,
-	ITEM_JAR,
-};
-int ConvertStringToTileProperty(const std::wstring &str);
-int ConvertStringToTypeByProperty(TileProperty property, const std::wstring &str);
-
-std::wstring ConvertTilePropertyToString(const TileProperty property);
-std::wstring ConverTileTypeToStringByProperty(const int type, const TileProperty property);
-
-
-enum TileCollisionType
-{
-	TILE_COLLISION_NONE,
-	TILE_COLLISION_BLOCK,
-	TILE_COLLISION_UPPER_DEAD,
-	TILE_COLLISION_LADDER,
-	TILE_COLLISION_EOF_LADDER,
-	TILE_COLLISION_EXIT,
-
-};
 enum ObjectLayer
 {
 	LAYER_TILE,

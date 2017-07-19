@@ -12,7 +12,7 @@ Item::~Item()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Item, &Item::HandlePlayerPositionEvent>(this));
 }
 
-HRESULT Item::Init(ArcheType type)
+HRESULT Item::Init(BaseProperty *property)
 {
 	return S_OK;
 }

@@ -2,6 +2,7 @@
 
 #include <vector>
 
+
 inline float MinFloat(float f1, float f2)
 {
 	float result{};

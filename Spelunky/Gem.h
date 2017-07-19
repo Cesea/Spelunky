@@ -9,7 +9,7 @@ public :
 	Gem(ObjectId id);
 	virtual ~Gem();
 
-	virtual HRESULT Init(ArcheType type, int value);
+	virtual HRESULT Init(BaseProperty *property);
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);

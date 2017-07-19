@@ -17,12 +17,10 @@ public :
 	GameObject(ObjectId id);
 	virtual ~GameObject();
 
-	ArcheType GetArcheType() { return _type; }
-
-	virtual HRESULT Init(ArcheType type);
-	virtual void Release(void);
-	virtual void Update(float deltaTime);
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
+	virtual HRESULT Init(BaseProperty *property) = 0;
+	virtual void Release(void) = 0;
+	virtual void Update(float deltaTime) = 0;
+	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos) = 0;
 
 	virtual void Serialize(FileUtils::File &file) {}
 	virtual void DeSerialize(FileUtils::File &file) {}
@@ -37,7 +35,6 @@ public :
 protected :
 	ObjectId _id;
 
-	ArcheType _type;
 };
 
 #endif

@@ -9,7 +9,7 @@ public:
 	PassiveItem(ObjectId id);
 	virtual ~PassiveItem();
 
-	virtual HRESULT Init(ArcheType type);
+	virtual HRESULT Init(BaseProperty *property);
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);

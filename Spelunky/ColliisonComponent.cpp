@@ -9,7 +9,7 @@ void CollisionComponent::Init(const Rect & rect, const Vector2 & offset)
 	_rectOffset = offset;
 }
 
-void CollisionComponent::Update(MovingObject * object, float deltaTime, const PlayScene::ReturnTile * nearTiles)
+void CollisionComponent::Update(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
 {
 	if (_repulse)
 	{
@@ -22,7 +22,7 @@ void CollisionComponent::Update(MovingObject * object, float deltaTime, const Pl
 	
 }
 
-void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, const PlayScene::ReturnTile * nearTiles)
+void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
 {
 	for (int i = 0; i < 8; ++i)
 	{
@@ -30,10 +30,10 @@ void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 			nearTiles->tiles[i]->sourceIndex.x == -1)
 			continue;
 
-		PlayScene::Tile *currentTile = nearTiles->tiles[i];
+		Tile *currentTile = nearTiles->tiles[i];
 
 		Rect absRect = object->desiredPosition.UnTilelize() + _rect + _rectOffset;
-		Rect tileRect = RectMake(currentTile->position.x * TILE_SIZE, currentTile->position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+		Rect tileRect = RectMake(currentTile->position.tileX * TILE_SIZE, currentTile->position.tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
 		Rect overlapRect;
 		//아래 타일의 경우 체크를 해 주어야 할 경우가 있다. 사다리, 위에서 떨어지면 죽는 타일 등....
@@ -116,7 +116,7 @@ void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 	object->position = object->desiredPosition;
 }
 
-void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, const PlayScene::ReturnTile * nearTiles)
+void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
 {
 	for (int i = 0; i < 8; ++i)
 	{
@@ -124,10 +124,10 @@ void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, con
 			nearTiles->tiles[i]->sourceIndex.x == -1)
 			continue;
 
-		PlayScene::Tile *currentTile = nearTiles->tiles[i];
+		Tile *currentTile = nearTiles->tiles[i];
 
 		Rect absRect = object->desiredPosition.UnTilelize() + _rect + _rectOffset;
-		Rect tileRect = RectMake(currentTile->position.x * TILE_SIZE, currentTile->position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+		Rect tileRect = RectMake(currentTile->position.tileX * TILE_SIZE, currentTile->position.tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
 		Rect overlapRect;
 		//아래 타일의 경우 체크를 해 주어야 할 경우가 있다. 사다리, 위에서 떨어지면 죽는 타일 등....

@@ -1,64 +1,40 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "stdafx.h"
+#include "ColiidingObject.h"	
 
-#include "D2DSprite.h"
-
-#include "GameCommonStructs.h"
-
-namespace PlayScene
+class Tile : public CollidingObject
 {
-	struct Property
-	{
-		int property{0};
-		int type{};
-		float percent{};
+public :
+	Tile(ObjectId id);
+	virtual ~Tile();
 
-		IntVector2 position{};
-	};
+	virtual HRESULT Init(BaseProperty *property);
+	virtual void Release(void);
+	virtual void Update(float deltaTime);
+	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
-	struct MaskInfo
-	{
-		D2DSprite *maskSprite{};
-		bool32 hasMask{};
-	};
+public :
 
-	struct Tile
-	{
-		Tile &operator= (Tile &other)
-		{
-			sprite = other.sprite;
-			memcpy(spriteMaskInfo, other.spriteMaskInfo, sizeof(MaskInfo) * 4);
-			sourceIndex = other.sourceIndex;
-			destroyedIndex = other.destroyedIndex;
-			thisMaskInfo = other.thisMaskInfo;
-			nearMaskInfo = other.nearMaskInfo;
-			collisionType = other.collisionType;
-			maskInfo = other.maskInfo;
-			canBeDestroyedByBomb = other.canBeDestroyedByBomb;
-			layer = other.layer;
-			return *this;
-		}
-		D2DSprite *sprite{};
-		MaskInfo spriteMaskInfo[4]{};
-		IntVector2 sourceIndex{ -1, -1 };
-		IntVector2 destroyedIndex{};
+	virtual GameObject *Copy(ObjectId id);
 
-		uint32 thisMaskInfo{};
-		uint32 nearMaskInfo{};
-		TileCollisionType collisionType{};
-		uint32 maskInfo{};
+	Tile &operator= (TileProperty *other);
+	Tile &operator= (const Tile &other);
 
-		bool32 canBeDestroyedByBomb{ false };
-		
-		//이 변수가 여기에 있어야 할까??? 아니면 룸에서 가지고 있어야 할까??
-		int layer{};
+	D2DSprite *sprite{};
+	MaskInfo spriteMaskInfo[4]{};
+	IntVector2 sourceIndex{ -1, -1 };
+	IntVector2 destroyedIndex{};
 
-		IntVector2 position;
-	};
+	uint32 thisMaskInfo{};
+	uint32 nearMaskInfo{};
+	TileCollisionType collisionType{};
+	uint32 maskInfo{};
 
-}
+	bool32 canBeDestroyedByBomb{ false };
 
+	int layer{};
+
+};
 
 #endif

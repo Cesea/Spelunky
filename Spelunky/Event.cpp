@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Event.h"
 
-EventType CreateEntityEvent::_type = EVENT_CREATE_ENTITY;
+EventType CreateObjectEvent::_type = EVENT_CREATE_OBJECT;
 EventType NotifyAfterCreateEvent::_type = EVENT_NOTIFY_AFTER_CREATE;
 EventType DestroyObjectEvent::_type = EVENT_DESTROY_OBJECT;
 EventType DestroyAllObjectEvent::_type = EVENT_DESTROY_ALL_OBJECT;
@@ -27,21 +27,22 @@ BaseEvent::~BaseEvent()
 }
 
 #pragma region Entity Create And Destroy Related
-CreateEntityEvent::CreateEntityEvent(ArcheType objectType)
-	:_objectType(objectType)
+CreateObjectEvent::CreateObjectEvent(const std::wstring &key, BaseProperty *property)
+	:_key(key), _property(property)
 {
 }
 
-CreateEntityEvent::~CreateEntityEvent()
+CreateObjectEvent::~CreateObjectEvent()
 {
+	delete _property;
 }
 
-IEvent * CreateEntityEvent::Copy() const
+IEvent * CreateObjectEvent::Copy() const
 {
-	return new CreateEntityEvent(_objectType);
+	return new CreateObjectEvent(_key, _property);
 }
 
-const WCHAR * CreateEntityEvent::GetName() const
+const WCHAR * CreateObjectEvent::GetName() const
 {
 	return L"Create Entity Event";
 }

@@ -10,17 +10,10 @@ Gem::~Gem()
 {
 }
 
-HRESULT Gem::Init(ArcheType type, int value)
+HRESULT Gem::Init(BaseProperty *property)
 {
 	_sprite = new D2DSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"gem"), 0, 0, 80, 80, IntVector2(-40, -80));
-
-	_type = type;
-
-
-	//_rect = RectMake(0, 0, 48, 48);
-	//_rectOffset = Vector2(-24, -48);
-	_value = value;
 
 	return S_OK;
 }

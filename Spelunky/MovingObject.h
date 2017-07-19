@@ -18,15 +18,14 @@ public :
 	MovingObject(ObjectId id);
 	virtual ~MovingObject();
 
-	virtual HRESULT Init(ArcheType type);
-	virtual void Release(void);
-	virtual void Update(float deltaTime);
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
+	virtual HRESULT Init(BaseProperty *property) = 0;
+	virtual void Release(void) = 0;
+	virtual void Update(float deltaTime) = 0;
+	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos) = 0;
 
 	virtual GameObject *Copy(ObjectId id)  = 0;
 
 	Direction GetDirection() { return _seeingDirection; }
-
 
 protected  :
 
@@ -40,8 +39,6 @@ protected  :
 	bool _onGround{ false };
 
 	CollisionComponent *_collisionComp{};
-
-	
 };
 
 

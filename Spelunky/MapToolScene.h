@@ -54,15 +54,14 @@ private :
 	void WriteTileInfoChunkForMap(FileUtils::File &file, const MapTool::TileInfo *infos, int xCount, int yCount);
 	void ReadTileInfoChunkForMap(FileUtils::File &file, MapTool::TileInfo *infos, int xCount, int yCount);
 
-	void WriteTilePropertyInfoChunkForMap(FileUtils::File &file, const MapTool::PropertyInfo *infos, int xCount, int yCount);
-	void ReadTilePropertyInfoChunkForMap(FileUtils::File &file, MapTool::PropertyInfo *infos, int xCount, int yCount);
+	//void WriteTilePropertyInfoChunkForMap(FileUtils::File &file, const MapTool::PropertyInfo *infos, int xCount, int yCount);
+	//void ReadTilePropertyInfoChunkForMap(FileUtils::File &file, MapTool::PropertyInfo *infos, int xCount, int yCount);
 
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 	//현재 수정하고 있는 타일 이미지의 정보
 	MapTool::TileImageInfo _editingTileImageInfo{};
 	//현재 수정하고 있는 프로퍼티 이미지 정보
-	MapTool::PropertyImageInfo _editingPropertyImageInfo{};
 
 	MapTool::RoomInfo _roomInfo{};
 	//그리드 셀렉터 이미지

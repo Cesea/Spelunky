@@ -10,10 +10,9 @@ Rock::~Rock()
 {
 }
 
-HRESULT Rock::Init(ArcheType type)
+HRESULT Rock::Init(BaseProperty *property)
 {
-	EquipItem::Init(type);
-	_type = type;
+	EquipItem::Init(property);
 	_sprite = new D2DSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"rock"), 0, 0, 80, 80, IntVector2(-40, -50));
 

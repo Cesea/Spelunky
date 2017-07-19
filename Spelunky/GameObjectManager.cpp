@@ -21,52 +21,28 @@ GameObjectManager::~GameObjectManager()
 HRESULT GameObjectManager::Init()
 {
 	RegisterDelegates();
+	_objectFactory.Init();
 	return S_OK;
 }
 
 void GameObjectManager::Relase()
 {
 	UnRegisterDelegates();
+	_objectFactory.Release();
 }
 
-GameObject * GameObjectManager::CreateObject(ArcheType type)
+GameObject * GameObjectManager::CreateObject(const std::wstring & key, BaseProperty * property)
 {
-	GameObject *result = nullptr;
-	switch (type)
-	{
-	case ArcheType::Player:
-	{
-		result = new Player(_currentScene->GetNextId());
-		result->Init(ArcheType::Player);
-	}break;
-	case ArcheType::Tile:
-	{
-	}break;
-	case ArcheType::MineBG:
-	{
-	}break;
-	case ArcheType::Gem:
-	{
-		Gem *result = new Gem(_currentScene->GetNextId());
-		result->Init(ArcheType::Gem, 10);
-		_objects.insert(std::make_pair(result->GetId(), result));
-		return result;
-	}
-	case ArcheType::Rock :
-	{
-		Rock *result = new Rock	 (_currentScene->GetNextId());
-		result->Init(ArcheType::Rock);
-		_objects.insert(std::make_pair(result->GetId(), result));
-		return result;
-	}break;
-	}
+	GameObject *result = _objectFactory.Build(_currentScene->GetNextId(), key, property);
 	_objects.insert(std::make_pair(result->GetId(), result));
 	return result;
 }
 
-GameObject * GameObjectManager::CreateObjectFromProperty(PlayScene::Property * property)
+GameObject * GameObjectManager::CreateObject(const IEvent * event)
 {
-	return nullptr;
+	CreateObjectEvent *convertedEvent = (CreateObjectEvent *)(event);
+	GameObject *result = _objectFactory.Build(_currentScene->GetNextId(), convertedEvent->GetKey(), convertedEvent->GetProperty());
+	return result;
 }
 
 GameObject * GameObjectManager::FindObjectId(ObjectId id)
@@ -92,10 +68,12 @@ void GameObjectManager::DestroyObject(const IEvent * event)
 
 void GameObjectManager::RegisterDelegates()
 {
+	EVENTMANAGER->RegisterDelegate(EVENT_CREATE_OBJECT, EventDelegate::FromFunction<GameObjectManager, &GameObjectManager::DestroyObject>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_DESTROY_OBJECT, EventDelegate::FromFunction<GameObjectManager, &GameObjectManager::DestroyObject>(this));
 }
 
 void GameObjectManager::UnRegisterDelegates()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_CREATE_OBJECT, EventDelegate::FromFunction<GameObjectManager, &GameObjectManager::DestroyObject>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_DESTROY_OBJECT, EventDelegate::FromFunction<GameObjectManager, &GameObjectManager::DestroyObject>(this));
 }

@@ -93,8 +93,6 @@ bool EventManager::Update(float deltaTime)
 
 		auto &eventDelegates = _eventDelegatesMap.find(event->GetType());
 
-
-
 		if (eventDelegates != _eventDelegatesMap.end())
 		{
 			const EventDelegates &delegates = eventDelegates->second;
@@ -103,6 +101,8 @@ bool EventManager::Update(float deltaTime)
 				iter->operator()(event);
 			}
 		}
+
+		delete event;
 
 		if (TIMEMANAGER->HasToAdvance())
 		{

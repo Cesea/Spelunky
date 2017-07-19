@@ -22,6 +22,24 @@ void Camera::Release(void)
 
 void Camera::Update(void)
 {
+	if (KEYMANAGER->IsStayKeyDown(VK_LEFT))
+	{
+		_position.AddToTileRelX(-4);
+	}
+	else if (KEYMANAGER->IsStayKeyDown(VK_RIGHT))
+	{
+		_position.AddToTileRelX(4);
+
+	}
+	if (KEYMANAGER->IsStayKeyDown(VK_UP))
+	{
+		_position.AddToTileRelY(-4);
+	}
+	else if (KEYMANAGER->IsStayKeyDown(VK_DOWN))
+	{
+		_position.AddToTileRelY(4);
+	}
+
 	if (_target && _following)
 	{
 		_position = _target->position;

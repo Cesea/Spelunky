@@ -4,7 +4,6 @@
 #include "GameCommonStructs.h"
 
 const char *ConvertEntityStateEnumToString(EntityState state);
-const char *ConvertArcheTypeEnumToString(ArcheType type);
 
 inline Rect operator+ (const Rect &rect, const TilePosition &tilePos)
 {

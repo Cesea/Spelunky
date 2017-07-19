@@ -20,8 +20,6 @@ public:
 
 	HRESULT LoadContent() override;
 
-	void CreateAndPlaceObject(ArcheType type, const TilePosition &position);
-
 private:
 	Camera _camera;
 

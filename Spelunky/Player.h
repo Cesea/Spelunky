@@ -36,7 +36,7 @@ public :
 	Player(ObjectId id);
 	virtual ~Player();
 
-	virtual HRESULT Init(ArcheType type);
+	virtual HRESULT Init(BaseProperty *property);
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
@@ -65,8 +65,8 @@ public :
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 
-	void CollisionCheck();
-	void CheckCurrentTile();
+	//void CollisionCheck();
+	//void CheckCurrentTile();
 
 private :
 	Rect _rect;
@@ -96,7 +96,7 @@ private :
 
 	StateManager<Player> _stateManager;
 
-	PlayScene::ReturnTile _nearTiles;
+	//ReturnTile _nearTiles;
 	int _money{ 0 };
 
 	ObjectId _holdingObjectId{UNVALID_OBJECT_ID};

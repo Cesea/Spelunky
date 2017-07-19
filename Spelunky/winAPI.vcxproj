@@ -115,6 +115,7 @@
     <ClInclude Include="gameNode.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectFactory.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="GamePlayScene.h" />
     <ClInclude Include="Gem.h" />
@@ -138,6 +139,7 @@
     <ClInclude Include="OnLedgeState.h" />
     <ClInclude Include="PassiveItem.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Property.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
     <ClInclude Include="Rock.h" />
@@ -190,6 +192,7 @@
     <ClCompile Include="gameNode.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectFactory.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="GamePlayScene.cpp" />
     <ClCompile Include="Gem.cpp" />
@@ -212,6 +215,7 @@
     <ClCompile Include="OnLedgeState.cpp" />
     <ClCompile Include="PassiveItem.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Property.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -222,6 +226,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TextDataManager.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Trigger.cpp" />

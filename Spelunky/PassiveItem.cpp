@@ -10,7 +10,7 @@ PassiveItem::~PassiveItem()
 {
 }
 
-HRESULT PassiveItem::Init(ArcheType type)
+HRESULT PassiveItem::Init(BaseProperty *property)
 {
 	return S_OK;
 }

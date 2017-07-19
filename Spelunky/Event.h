@@ -4,7 +4,7 @@
 
 enum  EventType
 {
-	EVENT_CREATE_ENTITY = 0xba1a49b3,
+	EVENT_CREATE_OBJECT = 0xba1a49b3,
 	EVENT_NOTIFY_AFTER_CREATE = 0xdb75ade7,
 	EVENT_DESTROY_OBJECT = 0xad72e4fd,
 	EVENT_DESTROY_ALL_OBJECT = 0x9bbb4be2,
@@ -43,17 +43,22 @@ protected:
 	float _timeStamp;
 };
 
-class CreateEntityEvent : public BaseEvent
+class CreateObjectEvent : public BaseEvent
 {
 public:
-	explicit CreateEntityEvent(ArcheType objectType);
-	virtual ~CreateEntityEvent();
+	explicit CreateObjectEvent(const std::wstring &key, BaseProperty *property);
+	virtual ~CreateObjectEvent();
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
 	EventType GetType() const override { return _type; }
+
+	const std::wstring &GetKey() { return _key; }
+	BaseProperty *GetProperty() { return _property; }
 private:
 	static EventType _type;
-	ArcheType _objectType;
+
+	std::wstring _key{};
+	BaseProperty *_property{};
 };
 
 class NotifyAfterCreateEvent : public BaseEvent
