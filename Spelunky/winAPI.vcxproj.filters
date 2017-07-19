@@ -142,6 +142,9 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Attack">
       <UniqueIdentifier>{c9c8989b-37d5-444b-a37f-028f1589f9b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Props">
+      <UniqueIdentifier>{ca989f74-6401-4200-9eaf-c49af440cb69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -374,6 +377,9 @@
     </ClInclude>
     <ClInclude Include="AttackState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Props</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

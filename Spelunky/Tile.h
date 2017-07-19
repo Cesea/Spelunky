@@ -5,8 +5,19 @@
 
 #include "D2DSprite.h"
 
+#include "GameCommonStructs.h"
+
 namespace PlayScene
 {
+	struct Property
+	{
+		int property{0};
+		int type{};
+		float percent{};
+
+		IntVector2 position{};
+	};
+
 	struct MaskInfo
 	{
 		D2DSprite *maskSprite{};
@@ -29,7 +40,6 @@ namespace PlayScene
 			layer = other.layer;
 			return *this;
 		}
-
 		D2DSprite *sprite{};
 		MaskInfo spriteMaskInfo[4]{};
 		IntVector2 sourceIndex{ -1, -1 };

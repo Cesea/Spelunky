@@ -20,9 +20,16 @@ HRESULT PlayScene::Stage::Init()
 
 HRESULT PlayScene::Stage::InitFromRoomTypes(const PlayScene::RandomRoomGenerated &randomTypes)
 {
+	D2DSprite *exitDoors = new D2DFrameSprite;
+	exitDoors->Init(IMAGEMANAGER->GetImage(L"exitdoors"), 256, 256, IntVector2(-96, -96));
+	_usingSprites.insert(std::make_pair(L"exitdoors", exitDoors));
+
 	BuildBorder();
 
-	WCHAR buffer[50]{};
+	_entranceRoomIndex = randomTypes.startRoomIndex;
+	_exitRoomIndex = randomTypes.endRoomIndex;
+
+	std::wstring buffer = L"";
 	Room rooms[16];
 	for (int i = 0; i < 16; ++i)
 	{
@@ -34,9 +41,12 @@ HRESULT PlayScene::Stage::InitFromRoomTypes(const PlayScene::RandomRoomGenerated
 		{
 			Console::Log("Room %d build failed\n", i);
 		}
-		ZeroMemory(buffer, 50);
+		buffer.clear();
 	}
 	CopyTilesFromRooms(rooms);
+
+	BuildProperties();
+	//rooms[GetIndexFromXY(_entranceRoomIndex.x, _entranceRoomIndex.y, 4)].
 	return S_OK;
 }
 
@@ -101,6 +111,21 @@ void PlayScene::Stage::RenderTileLayer(const TilePosition &camPos)
 			}
 		}
 	}
+
+	for (int y = minY; y <= maxY; ++y)
+	{
+		for (int x = minX; x <= maxX; ++x)
+		{
+			int index = x + y * STAGE_TOTAL_COUNTX;
+			if (propertyLayer[index].property == TileProperty::TILE_PROPERTY_EXIT)
+			{
+				_usingSprites.find(L"exitdoors")->second->FrameRender(gRenderTarget, (x - minX) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.x),
+					(y - minY) * TILE_SIZE - ConvertFloatToInt(camPos.tileRel.y), 0, 0);
+			}
+		}
+	}
+
+
 }
 void PlayScene::Stage::RenderMaskLayer(const TilePosition &camPos)
 {
@@ -644,49 +669,82 @@ void PlayScene::Stage::CopyTilesFromRooms(Room * rooms)
 	{
 		for (int x = 0; x < 4; ++x)
 		{
-			int index = x + 4 * y;
+			int index = GetIndexFromXY(x, y, 4);
+
+			
 			Room &currentRoom = rooms[index];
 
-			int xStartIndex = x * ROOM_TILE_COUNTX + 3;
-			int yStartIndex = y * ROOM_TILE_COUNTY + 3;
+			int xTileStartIndex = x * ROOM_TILE_COUNTX + 3;
+			int yTileStartIndex = y * ROOM_TILE_COUNTY + 3;
 
-			for (int j = yStartIndex; j < yStartIndex + ROOM_TILE_COUNTY; ++j)
+			for (int j = yTileStartIndex; j < yTileStartIndex + ROOM_TILE_COUNTY; ++j)
 			{
-				for (int i = xStartIndex; i < xStartIndex + ROOM_TILE_COUNTX; ++i)
+				for (int i = xTileStartIndex; i < xTileStartIndex + ROOM_TILE_COUNTX; ++i)
 				{
-					tileLayer1[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer0[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
-					tileLayer2[i + STAGE_TOTAL_COUNTX * j] = currentRoom.layer1[(i - xStartIndex) + ROOM_TILE_COUNTX * (j - yStartIndex)];
+					tileLayer1[i + STAGE_TOTAL_COUNTX * j] = 
+						currentRoom.layer0[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)];
+
+					tileLayer2[i + STAGE_TOTAL_COUNTX * j] = 
+						currentRoom.layer1[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)];
+
+					//입, 출구 만들기
+					if (currentRoom.properties[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)].property == 
+						TILE_PROPERTY_EXIT)
+					{
+						if (index == GetIndexFromXY(_entranceRoomIndex.x, _entranceRoomIndex.y, 4))
+						{
+							propertyLayer[i + STAGE_TOTAL_COUNTX * j] =
+								currentRoom.properties[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)];
+						}
+						if (index == GetIndexFromXY(_exitRoomIndex.x, _exitRoomIndex.y, 4))
+						{
+							propertyLayer[i + STAGE_TOTAL_COUNTX * j] =
+								currentRoom.properties[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)];
+						}
+					}
+					else
+					{
+						propertyLayer[i + STAGE_TOTAL_COUNTX * j] =
+							currentRoom.properties[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)];
+					}
+
 
 					tileLayer1[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
 					tileLayer2[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
+					propertyLayer[i + STAGE_TOTAL_COUNTX * j].position = IntVector2(i, j);
+
+
 				}
 			}
 		}
 	}
 }
 
-bool PlayScene::Stage::GetRandomFileNameFromRoomType(RoomType types, WCHAR * buffer)
+bool PlayScene::Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
-	switch (types)
-	{
-	case RoomType::ROOM_BLOCK:
-	{
-		wcscpy(buffer, L"block_00.rt");
-	}break;
-	case RoomType::ROOM_AISLE :
-	{
-		wcscpy(buffer, L"aisle_00.rt");
-	}break;
-	case RoomType::ROOM_TOP_OPEN :
-	{
-		wcscpy(buffer, L"topopen_00.rt");
-	}break;
-	case RoomType::ROOM_BOTTOM_OPEN :
-	{
-		wcscpy(buffer, L"bottomopen_00.rt");
-	}break;
-	}
-	//buffer = L"resources\\data\\00.rt";
+	//switch (types)
+	//{
+	//case RoomType::ROOM_BLOCK:
+	//{
+	//	wcscpy(buffer, L"block_00.rt");
+	//}break;
+	//case RoomType::ROOM_AISLE :
+	//{
+	//	wcscpy(buffer, L"aisle_00.rt");
+	//}break;
+	//case RoomType::ROOM_TOP_OPEN :
+	//{
+	//	wcscpy(buffer, L"topopen_00.rt");
+	//}break;
+	//case RoomType::ROOM_BOTTOM_OPEN :
+	//{
+	//	wcscpy(buffer, L"bottomopen_00.rt");
+	//}break;
+	//}
+	
+	str = L"00.rt";
+
+	//buffer = L"00.rt";
 	return true;
 }
 
@@ -716,8 +774,12 @@ void PlayScene::Stage::BuildRoomFromFile(const std::wstring &fileName, Room *roo
 
 		BuildTileLayerFromFile(loadFile, room->layer0, usingSprites);
 		BuildTileLayerFromFile(loadFile, room->layer1, usingSprites);
+
+		CopyTilePropertyFromFile(loadFile, room->properties, usingSprites);
+
+		loadFile.Close();
 	}
-	loadFile.Close();
+
 }
 
 void PlayScene::Stage::BuildTileLayerFromFile(FileUtils::File & file, Tile * tileLayer, std::map<std::wstring, D2DSprite *> &usingSprites)
@@ -750,6 +812,37 @@ void PlayScene::Stage::BuildTileLayerFromFile(FileUtils::File & file, Tile * til
 
 			ZeroMemory(buffer, 40);
 
+		}
+	}
+}
+
+void PlayScene::Stage::CopyTilePropertyFromFile(FileUtils::File & file, Property * propertyLayer, std::map<std::wstring, D2DSprite*>& usingSprites)
+{
+	std::wstring str1 = file.GetLine();
+
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			int index = x + ROOM_TILE_COUNTX * y;
+			Property &currentProperty = propertyLayer[index];
+			file.GetLine();
+			file.GetLine();
+			file.Read(L"Property : %d\n", &currentProperty.property);
+			file.Read(L"Type : %d\n", &currentProperty.type);
+			file.Read(L"Percent : %f\n", &currentProperty.percent);
+		}
+	}
+}
+
+void PlayScene::Stage::BuildProperties()
+{
+	for (int y = 0; y < STAGE_TOTAL_COUNTY; ++y)
+	{
+		for (int x = 0; x < STAGE_TOTAL_COUNTX; ++x)
+		{
+			const Property currentProperty = propertyLayer[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			//OBJECTMANAGER->CreateObject()
 		}
 	}
 }

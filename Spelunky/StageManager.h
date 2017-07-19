@@ -11,9 +11,9 @@ namespace PlayScene
 
 	struct RandomRoomGenerated
 	{
-		IntVector2 startRoomIndex;
-		IntVector2 endRoomIndex;
-		RoomType roomTypes[16];
+		IntVector2 startRoomIndex{};
+		IntVector2 endRoomIndex{};
+		RoomType roomTypes[16] {ROOM_NONE,};
 	};
 
 	class StageManager : public singletonBase<StageManager>

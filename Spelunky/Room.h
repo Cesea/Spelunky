@@ -21,6 +21,8 @@ namespace PlayScene
 		D2DSprite *roomBackgroud;
 		Tile layer0[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
 		Tile layer1[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
+
+		Property properties[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
 	};
 	
 
@@ -54,10 +56,15 @@ namespace PlayScene
 		void CopyBorderTiles(Room *rooms);
 
 		void CopyTilesFromRooms(Room *rooms);
-		bool GetRandomFileNameFromRoomType(RoomType types, WCHAR *buffer);
+		bool GetRandomFileNameFromRoomType(RoomType types, std::wstring &str);
 
 		void BuildRoomFromFile(const std::wstring &fileName, Room *room, std::map<std::wstring, D2DSprite *> &usingSprites);
 		void BuildTileLayerFromFile(FileUtils::File & file, Tile * tileLayer, std::map<std::wstring, D2DSprite *> &usingSprites);
+
+		void CopyTilePropertyFromFile(FileUtils::File & file, Property *propertyLayer, std::map<std::wstring, D2DSprite *> &usingSprites);
+
+		void BuildProperties();
+
 
 		void TileInfoBitmaskCopy(D2DSprite *sourSprite, Tile &sourTile, Tile &maskTile, uint32 offset);
 
@@ -69,10 +76,17 @@ namespace PlayScene
 		Tile tileLayer1[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
 		Tile tileLayer2[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
 
+		Property propertyLayer[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY];
+
 		std::map<std::wstring, D2DSprite *> _usingSprites;
 
-		Tile _entrance{};
-		Tile _exit{};
+		IntVector2 _entranceRoomIndex{};
+		IntVector2 _exitRoomIndex{};
+
+		IntVector2 _entranceTileIndex{};
+		IntVector2 _exitTileIndex{};
+		//Tile _entrance{};
+		//Tile _exit{};
 	};
 }
 

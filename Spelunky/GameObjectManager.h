@@ -4,12 +4,39 @@
 #include "singletonBase.h"
 #include "GameObject.h"
 #include <unordered_map>
+#include "Tile.h"
 
 class IScene;
 
 #define UNVALID_OBJECT_ID 0
 
+class GameObjectBuilder
+{
+public :
+	virtual ~GameObjectBuilder() {}
+	virtual GameObject *Build(ObjectId id, TileProperty property) = 0;
+};
+
+template<typename T>
+class TGameObjectBuilder
+{
+public :
+	virtual ~TGameObjectBuilder() {}
+	T *Build(ObjectId id, TileProperty property) override
+	{
+		T *result = new T(id);
+		result->Init(property);
+		return result;
+	}
+};
+
 typedef std::unordered_map<ObjectId, GameObject *> ObjectMap;
+typedef std::unordered_map<TileProperty, GameObjectBuilder *> ObjectBuilderMap;
+
+namespace PlayScene
+{
+	struct Property;
+}
 
 class GameObjectManager : public singletonBase<GameObjectManager>
 {
@@ -23,7 +50,8 @@ public :
 	void SetCurrentScene(IScene *scene) { _currentScene = scene; }
 	void DetachCurrentScene() { _currentScene = nullptr; }
 
-	GameObject *CreateObject(IScene *scene, ArcheType type);
+	GameObject *CreateObject(ArcheType type);
+	GameObject *CreateObjectFromProperty(PlayScene::Property *property);
 	GameObject *FindObjectId(ObjectId id);
 
 	void DestroyObject(const IEvent *event);
@@ -32,6 +60,7 @@ public :
 
 private :
 	ObjectMap _objects;
+	ObjectBuilderMap _builders;
 
 	IScene *_currentScene{nullptr};
 

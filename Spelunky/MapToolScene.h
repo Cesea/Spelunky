@@ -30,14 +30,12 @@ public:
 	virtual void Render(void) override;
 
 	virtual HRESULT LoadContent() override;
-
 	//private functions
 private :
 	void LoadButtonAction();
 	void PainterAction();
 	void SaveMapButtonAction();
 	void LoadMapButtonAction();
-
 
 	void CheckUsingImageExistence(const std::wstring &key);
 
@@ -55,6 +53,9 @@ private :
 
 	void WriteTileInfoChunkForMap(FileUtils::File &file, const MapTool::TileInfo *infos, int xCount, int yCount);
 	void ReadTileInfoChunkForMap(FileUtils::File &file, MapTool::TileInfo *infos, int xCount, int yCount);
+
+	void WriteTilePropertyInfoChunkForMap(FileUtils::File &file, const MapTool::PropertyInfo *infos, int xCount, int yCount);
+	void ReadTilePropertyInfoChunkForMap(FileUtils::File &file, MapTool::PropertyInfo *infos, int xCount, int yCount);
 
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
@@ -87,7 +88,7 @@ private:
 
 	WCHAR _propertyBuffer[20]{};
 	WCHAR _typeBuffer[20]{};
-	WCHAR _percentBuffer[20{};
+	WCHAR _percentBuffer[20]{};
 
 	bool _applyTimerFlag{false};
 	WCHAR _applySuccessBuffer[16]{};

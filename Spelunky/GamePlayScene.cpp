@@ -90,7 +90,7 @@ HRESULT GamePlayScene::LoadContent()
 
 void GamePlayScene::CreateAndPlaceObject(ArcheType type, const TilePosition & position)
 {
-	GameObject *object = OBJECTMANAGER->CreateObject(this, type);
+	GameObject *object = OBJECTMANAGER->CreateObject(type);
 	object->position = position;
 	object->desiredPosition = position;
 	if (type == ArcheType::Player)
@@ -107,6 +107,8 @@ HRESULT GamePlayScene::Init(void)
 
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
+
+	OBJECTMANAGER->SetCurrentScene(this);
 
 	CreateAndPlaceObject(ArcheType::Player, TilePosition(7, 5));
 	//CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));

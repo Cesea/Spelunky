@@ -101,22 +101,25 @@ void MapToolScene::Update(void)
 	}
 	ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
 
-	if (KEYMANAGER->IsOnceKeyDown('1'))
+	if (!IM::uistate.editorOn)
 	{
-		_editingMode = EditingMode::Tile;
-	}
-	else if (KEYMANAGER->IsOnceKeyDown('2'))
-	{
-		_editingMode = EditingMode::Property;
-	}
+		if (KEYMANAGER->IsOnceKeyDown('1'))
+		{
+			_editingMode = EditingMode::Tile;
+		}
+		else if (KEYMANAGER->IsOnceKeyDown('2'))
+		{
+			_editingMode = EditingMode::Property;
+		}
 
-	if (KEYMANAGER->IsOnceKeyDown('8'))
-	{
-		_drawingMode = DrawingMode::Draw;
-	}
-	else if (KEYMANAGER->IsOnceKeyDown('9'))
-	{
-		_drawingMode = DrawingMode::Erase;
+		if (KEYMANAGER->IsOnceKeyDown('8'))
+		{
+			_drawingMode = DrawingMode::Draw;
+		}
+		else if (KEYMANAGER->IsOnceKeyDown('9'))
+		{
+			_drawingMode = DrawingMode::Erase;
+		}
 	}
 
 }
@@ -344,7 +347,6 @@ void MapToolScene::Render()
 			}
 			else if(_editingMode == EditingMode::Property)
 			{
-
 				WCHAR editorText[20];
 				_stprintf(editorText, L"Property At %d, %d", _selectorRect.x, _selectorRect.y);
 				IM::BeginPropertyWindow(IM::uistate.lastRightMouseX, IM::uistate.lastRightMouseY, 620, 150, editorText);
@@ -353,14 +355,12 @@ void MapToolScene::Render()
 				IM::Label(GEN_ID, 10, 45, 150, L"Type");
 				IM::Label(GEN_ID, 10, 80, 150, L"Percent");
 
-				IM::TextBox(GEN_ID, 170, 10, 130, _propertyBuffer);
-				IM::TextBox(GEN_ID, 170, 45, 130, _typeBuffer);
-				IM::TextBox(GEN_ID, 170, 80, 130, _percentBuffer);
+				IM::TextBox(GEN_ID, 170, 10, 435, _propertyBuffer);
+				IM::TextBox(GEN_ID, 170, 45, 435, _typeBuffer);
+				IM::TextBox(GEN_ID, 170, 80, 435, _percentBuffer);
 
 				IM::EndWindow();
-
 			}
-
 		}
 	}
 	IM::IMGUIFinish();
@@ -503,7 +503,8 @@ void MapToolScene::SaveMapButtonAction()
 		WriteTileInfoChunkForMap(saveFile, _roomInfo.layer0, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 		//Write for second chunk
 		WriteTileInfoChunkForMap(saveFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
-		//Write for third chunk
+
+		WriteTilePropertyInfoChunkForMap(saveFile, _roomInfo.propertyLayer, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 	}
 
 	saveFile.Close();
@@ -524,6 +525,7 @@ void MapToolScene::LoadMapButtonAction()
 
 		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer0, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 		ReadTileInfoChunkForMap(loadFile, _roomInfo.layer1, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
+		ReadTilePropertyInfoChunkForMap(loadFile, _roomInfo.propertyLayer, ROOM_TILE_COUNTX, ROOM_TILE_COUNTY);
 	}
 	loadFile.Close();
 }
@@ -581,7 +583,7 @@ void MapToolScene::SaveCurrentEditingInfoAction()
 		saveFile.Open(filePath, FileUtils::FileAccess::Write);
 
 		saveFile.Write(L"--%s--\n", filePath.c_str());
-		saveFile.Write(L"%s\n", _loadImageNameBuffer);
+		saveFile.Write(L"--%s--\n", _loadImageNameBuffer);
 
 		for (int y = 0; y < 8; ++y)
 		{
@@ -592,7 +594,8 @@ void MapToolScene::SaveCurrentEditingInfoAction()
 				saveFile.Write(L"At X : %d, Y : %d\n", x, y);
 				saveFile.Write(L"Property %d\n", (int)currentPropertyInfo.property);
 				saveFile.Write(L"Type %d\n", (int)currentPropertyInfo.type);
-				saveFile.Write(L"Percennt %f\n", currentPropertyInfo.percent);
+				saveFile.Write(L"Percent %f\n", currentPropertyInfo.percent);
+				saveFile.Write(L"Applied : %d\n", _editingPropertyImageInfo.applied[index]);
 			}
 		}
 		saveFile.Close();
@@ -646,8 +649,6 @@ void MapToolScene::LoadCurrentEditingInfoAction()
 		{
 			loadFile.GetLine();
 			loadFile.GetLine();
-			loadFile.GetLine();
-			loadFile.GetLine();
 
 			for (int y = 0; y < 8; ++y)
 			{
@@ -659,13 +660,13 @@ void MapToolScene::LoadCurrentEditingInfoAction()
 					//loadFile.Read(L"At X : %d, Y : %d\n", x, y);
 					loadFile.Read(L"Property %d\n", &currentPropertyInfo.property);
 					loadFile.Read(L"Type %d\n", &currentPropertyInfo.type);
-					loadFile.Read(L"Percennt %f\n", &currentPropertyInfo.percent);
+					loadFile.Read(L"Percent %f\n", &currentPropertyInfo.percent);
+					loadFile.Read(L"Applied : %d\n", &_editingPropertyImageInfo.applied[index]);
 				}
 			}
 		}
 	}
 }
-
 //비트 마스크 검사...
 //만약에 현재 타일에다가 비트마스크를 적용을 할수 있는지에 대한정보를 확인 한다.
 //만약 현재 타일에 비트마스크를 그릴 수 있다면...
@@ -898,7 +899,21 @@ int MapToolScene::InSyncImageInfo()
 	}
 	else if (_editingMode == EditingMode::Property)
 	{
+		if (_editingPropertyImageInfo.applied[_selectorRect.x + 8 * _selectorRect.y])
+		{
+			PropertyInfo &currentPropertyInfo = _editingPropertyImageInfo.propertyInfos[_selectorRect.x + 8 * _selectorRect.y];
 
+			std::wstring str = L"";
+			str = ConvertTilePropertyToString(currentPropertyInfo.property);
+			wcscpy(_propertyBuffer, str.c_str());
+
+			str = L"";
+			str = ConverTileTypeToStringByProperty(currentPropertyInfo.type, currentPropertyInfo.property);
+			wcscpy(_typeBuffer, str.c_str());
+
+			str = std::to_wstring(currentPropertyInfo.percent);
+			wcscpy(_percentBuffer, str.c_str());
+		}
 	}
 	return 0;
 }
@@ -1024,7 +1039,58 @@ int MapToolScene::OutSyncImageInfo()
 	}
 	else if (_editingMode == EditingMode::Property)
 	{
+		PropertyInfo &currentPropertyInfo = _editingPropertyImageInfo.propertyInfos[_selectorRect.x + 8 * _selectorRect.y];
+		//타일 프로퍼티 체크
+		WCHAR tempBuffer[40]{};
+		TileProperty prop{ TILE_PROPERTY_NONE };
+		if (swscanf(_propertyBuffer, L"%s", &tempBuffer) == 1)
+		{
+			prop = (TileProperty)ConvertStringToTileProperty(tempBuffer);
+			if (prop == TILE_PROPERTY_NONE)
+			{
+				success = false;
+			}
+		}
+		else
+		{
+			success = false;
+		}
 
+		int resultType{0};
+		if (swscanf(_typeBuffer, L"%s", &tempBuffer) == 1)
+		{
+			resultType = ConvertStringToTypeByProperty(prop, tempBuffer);
+			if (resultType == 0)
+			{
+				success = false;
+			}
+		}
+		else
+		{
+			success = false;
+		}
+
+		float percent{};
+		if (swscanf(_percentBuffer, L"%f", &percent) == 1)
+		{
+		}
+		else
+		{
+			success = false;
+		}
+
+		if (success)
+		{
+			_editingPropertyImageInfo.applied[_selectorRect.x + 8 * _selectorRect.y] = true;
+
+			currentPropertyInfo.property = prop;
+			currentPropertyInfo.type = resultType;
+			currentPropertyInfo.percent = percent;
+		}
+
+		_stprintf(_propertyBuffer, L"");
+		_stprintf(_typeBuffer, L"");
+		_stprintf(_percentBuffer, L"");
 	}
 
 	return success;
@@ -1060,7 +1126,6 @@ void MapToolScene::ReadTileInfoChunkForMap(FileUtils::File & file, TileInfo * in
 	{
 		for (int x = 0; x < xCount; ++x)
 		{
-
 			int index = x + xCount * y;
 			TileInfo &currentTileInfo = infos[index];
 
@@ -1084,6 +1149,48 @@ void MapToolScene::ReadTileInfoChunkForMap(FileUtils::File & file, TileInfo * in
 				currentTileInfo.imageKey = buffer;
 				CheckUsingImageExistence(currentTileInfo.imageKey);
 			}
+		}
+	}
+}
+
+void MapToolScene::WriteTilePropertyInfoChunkForMap(FileUtils::File & file, const MapTool::PropertyInfo *infos, int xCount, int yCount)
+{
+	file.Write(L"----Property----\n");
+
+	for (int y = 0; y < yCount; ++y)
+	{
+		for (int x = 0; x < xCount; ++x)
+		{
+			int index = x + xCount * y;
+			const PropertyInfo &currentPropertyInfo = infos[index];
+			file.Write(L"At X : %d, Y : %d\n", x, y);
+			file.Write(L"SourceIndex X : %d, Y : %d\n", currentPropertyInfo.sourceIndex.x, currentPropertyInfo.sourceIndex.y);
+			file.Write(L"Property : %d\n", currentPropertyInfo.property);
+			file.Write(L"Type : %d\n", currentPropertyInfo.type);
+			file.Write(L"Percent : %f\n", currentPropertyInfo.percent);
+		}
+	}
+}
+
+void MapToolScene::ReadTilePropertyInfoChunkForMap(FileUtils::File & file, MapTool::PropertyInfo *infos, int xCount, int yCount)
+{
+	file.GetLine();
+
+	WCHAR buffer[40];
+
+	CheckUsingImageExistence(L"property");
+	for (int y = 0; y < yCount; ++y)
+	{
+		for (int x = 0; x < xCount; ++x)
+		{
+			int index = x + xCount * y;
+			PropertyInfo &currentPropertyInfo = infos[index];
+
+			file.GetLine();
+			file.Read(L"SourceIndex X : %d, Y : %d\n", &currentPropertyInfo.sourceIndex.x, &currentPropertyInfo.sourceIndex.y);
+			file.Read(L"Property : %d\n", &currentPropertyInfo.property);
+			file.Read(L"Type : %d\n", &currentPropertyInfo.type);
+			file.Read(L"Percent : %f\n", &currentPropertyInfo.percent);
 
 		}
 	}

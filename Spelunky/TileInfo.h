@@ -74,7 +74,7 @@ namespace MapTool
 		~PropertyImageInfo() {}
 
 		PropertyInfo propertyInfos[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
-		int applied[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{ false };
+		int applied[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{ false, };
 	};
 
 	struct RoomInfo

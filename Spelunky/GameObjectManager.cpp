@@ -3,6 +3,8 @@
 
 #include "IScene.h"
 
+#include "Tile.h"
+
 #include "Player.h"
 
 #include "Gem.h"
@@ -27,14 +29,14 @@ void GameObjectManager::Relase()
 	UnRegisterDelegates();
 }
 
-GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
+GameObject * GameObjectManager::CreateObject(ArcheType type)
 {
 	GameObject *result = nullptr;
 	switch (type)
 	{
 	case ArcheType::Player:
 	{
-		result = new Player(scene->GetNextId());
+		result = new Player(_currentScene->GetNextId());
 		result->Init(ArcheType::Player);
 	}break;
 	case ArcheType::Tile:
@@ -45,14 +47,14 @@ GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
 	}break;
 	case ArcheType::Gem:
 	{
-		Gem *result = new Gem(scene->GetNextId());
+		Gem *result = new Gem(_currentScene->GetNextId());
 		result->Init(ArcheType::Gem, 10);
 		_objects.insert(std::make_pair(result->GetId(), result));
 		return result;
 	}
 	case ArcheType::Rock :
 	{
-		Rock *result = new Rock	 (scene->GetNextId());
+		Rock *result = new Rock	 (_currentScene->GetNextId());
 		result->Init(ArcheType::Rock);
 		_objects.insert(std::make_pair(result->GetId(), result));
 		return result;
@@ -60,6 +62,11 @@ GameObject * GameObjectManager::CreateObject(IScene *scene, ArcheType type)
 	}
 	_objects.insert(std::make_pair(result->GetId(), result));
 	return result;
+}
+
+GameObject * GameObjectManager::CreateObjectFromProperty(PlayScene::Property * property)
+{
+	return nullptr;
 }
 
 GameObject * GameObjectManager::FindObjectId(ObjectId id)

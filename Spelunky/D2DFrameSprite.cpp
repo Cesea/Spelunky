@@ -21,6 +21,7 @@ HRESULT D2DFrameSprite::Init(D2DImage * sourceImage, float widthPerFrame, float 
 	_xCount = _imageWidth / widthPerFrame;
 	_yCount = _imageHeight / heightPerFrame;
 	
+	_anchor = anchor;
 
 	return S_OK;
 }
@@ -37,7 +38,7 @@ void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, int xInde
 void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
 	int xIndex, int yIndex,  float alpha)
 {
-	_sourceImage->Render(renderTarget, destX, destY, 
+	_sourceImage->Render(renderTarget, destX + _anchor.x, destY + _anchor.y, 
 		xIndex * _widthPerFrame, yIndex * _heightPerFrame, _widthPerFrame, _heightPerFrame, alpha);
 }
 

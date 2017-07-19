@@ -17,7 +17,7 @@ namespace PlayScene
 		RandomRoomGenerated randomTypes = MakeRandomRoomTypes();
 
 		_currentStage->InitFromRoomTypes(randomTypes);
-		_currentStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
+		//_currentStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 		return S_OK;
 	}
 
@@ -56,7 +56,7 @@ namespace PlayScene
 		RandomRoomGenerated result{};
 		result.startRoomIndex = IntVector2(RND->GetFromIntTo(0, 3), 0);
 
-		result.roomTypes[GetIndexFromXY(result.startRoomIndex.x, result.startRoomIndex.y, 4)] = (RoomType)RND->GetFromIntTo(1, 3);
+		result.roomTypes[GetIndexFromXY(result.startRoomIndex.x, result.startRoomIndex.y, 4)] = (RoomType)RND->GetFromIntTo(2, 4);
 		
 		IntVector2 prevPath(-1, -1);
 		IntVector2 currentPath = result.startRoomIndex;
@@ -112,10 +112,17 @@ namespace PlayScene
 				continue;
 			}
 
-			type = (RoomType)RND->GetFromIntTo(1, 3);
+			type = (RoomType)RND->GetFromIntTo(2, 4);
 			result.roomTypes[GetIndexFromXY(currentPath.x, currentPath.y, 4)] = type;
-
 		}
-	return result;
+
+		for (int i = 0; i < 16; ++i)
+		{
+			if (result.roomTypes[i] == RoomType::ROOM_NONE)
+			{
+				result.roomTypes[i] = RoomType::ROOM_BLOCK;
+			}
+		}
+		return result;
 	}
 }

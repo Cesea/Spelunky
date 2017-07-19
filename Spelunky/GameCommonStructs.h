@@ -139,6 +139,7 @@ struct ControlCommand
 //아래만 뚤린 방
 enum RoomType
 {
+	ROOM_NONE,
 	ROOM_BLOCK,
 	ROOM_AISLE,
 	ROOM_TOP_OPEN,
@@ -157,12 +158,14 @@ enum TileProperty
 };
 enum ExitType
 {
+	EXIT_NONE,
 	EXIT_STAGE_ONE,
 	EXIT_STAGE_TWO,
-	EXIT_STAGE_TREE,
+	EXIT_STAGE_THREE,
 };
 enum GemType
 {
+	GEM_NONE,
 	GEM_GOLD_SMALL,
 	GEM_GOLD_BIG,
 	GEM_EMERALD,
@@ -171,11 +174,17 @@ enum GemType
 };
 enum ItemType
 {
+	ITEM_NONE,
 	ITEM_GEM_CRATE,
 	ITEM_ITEM_CRATE,
 	ITEM_ROCK,
 	ITEM_JAR,
 };
+int ConvertStringToTileProperty(const std::wstring &str);
+int ConvertStringToTypeByProperty(TileProperty property, const std::wstring &str);
+
+std::wstring ConvertTilePropertyToString(const TileProperty property);
+std::wstring ConverTileTypeToStringByProperty(const int type, const TileProperty property);
 
 
 enum TileCollisionType
@@ -217,7 +226,6 @@ enum class EntityState
 	Faint,
 	Dead,
 };
-
 
 template<typename T>
 inline TileSet<T>::TileSet(uint32 countX, uint32 countY, const T & clearValue)
