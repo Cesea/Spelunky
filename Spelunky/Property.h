@@ -3,6 +3,11 @@
 
 class D2DSprite;
 
+namespace MapTool
+{
+	struct PropertyInfo;
+}
+
 enum Direction
 {
 	Left, Right, Up, Down, None,
@@ -47,6 +52,7 @@ struct BaseProperty
 
 struct PlayerProperty : public BaseProperty
 {
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo) {}
 };
 
 struct TileProperty : public BaseProperty
@@ -64,18 +70,22 @@ struct TileProperty : public BaseProperty
 	bool32 canBeDestroyedByBomb{ false };
 
 	int layer{};
+
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo) {}
 };
 
 struct GemProperty : public BaseProperty
 {
 	IntVector2 sourceIndex{-1, -1};
 	int value;
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 
 struct TunnelProperty : public BaseProperty
 {
-	IntVector2 sourceIndex;
-	bool32 entrance{false};
+	IntVector2 sourceIndex{-1, -1};
+	bool32 exit{false};
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 
 int ConvertStringToTileProperty(const std::wstring &str);

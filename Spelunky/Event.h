@@ -18,6 +18,7 @@ enum  EventType
 	EVENT_PICK_UP = 0x95460042,
 	EVENT_HOLDING = 0x8bd7ebf8,
 
+	EVENT_STAGE_TRANSITIOIN = 0xce584715,
 };
 
 class IEvent
@@ -226,9 +227,19 @@ private :
 	ObjectId _id;
 	ObjectId _ownerId;
 	static EventType _type;
-private :
-
 };
 
+class StageTransitionEvent : public BaseEvent
+{
+public :
+	explicit StageTransitionEvent();
+	virtual ~StageTransitionEvent();
+	
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+private :
+	static EventType _type;
+};
 
 #endif

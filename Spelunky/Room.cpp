@@ -3,6 +3,8 @@
 
 #include "StageManager.h"
 
+#include "TileInfo.h"
+
 IntVector2 CalculateBorderWorldIndex(int indexX, int indexY, int localX, int localY)
 {
 	IntVector2 result = {};
@@ -68,13 +70,13 @@ IntVector2 CalculateTileWorldIndex(int indexX, int indexY, int localX, int local
 	return result;
 }
 
-
 Stage::Stage()
 {
 }
 
 Stage::~Stage()
 {
+	OBJECTMANAGER->DestroyAllObject();
 }
 
 HRESULT Stage::Init()
@@ -82,19 +84,24 @@ HRESULT Stage::Init()
 	return S_OK;
 }
 
-HRESULT Stage::InitFromRoomTypes(const RandomRoomGenerated &randomTypes)
+HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomGenerated &randomTypes)
 {
+	_backgroundSprite = new D2DSprite;
+	_backgroundSprite->Init(IMAGEMANAGER->GetImage(L"minebg"), 0, 0, 256, 256, IntVector2(0, 0));
+
 	BuildBorder();
 
+	_stageBuildInfo = randomTypes;
+
 	std::wstring buffer = L"";
-	Room rooms[16];
 	for (int y = 0; y < 4; ++y)
 	{
 		for (int x = 0; x < 4; ++x)
 		{
 			if (GetRandomFileNameFromRoomType(randomTypes.roomTypes[GetIndexFromXY(x, y, 4)], buffer))
 			{
-				BuildRoomFromFile(buffer, &rooms[GetIndexFromXY(x, y, 4)],x, y, false, _usingSprites);
+				_rooms[GetIndexFromXY(x, y, 4)].roomType = randomTypes.roomTypes[GetIndexFromXY(x, y, 4)];
+				BuildRoomFromFile(buffer, &_rooms[GetIndexFromXY(x, y, 4)],x, y, false, _usingSprites);
 			}
 			else
 			{
@@ -103,13 +110,15 @@ HRESULT Stage::InitFromRoomTypes(const RandomRoomGenerated &randomTypes)
 		}
 	}
 	buffer.clear();
+
+	BuildEntrance();
+
 	return S_OK;
 }
 
 void Stage::Release()
 {
 }
-
 
 void Stage::ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height)
 {
@@ -287,9 +296,26 @@ void Stage::Render(const TilePosition &camPos)
 
 	Vector2 untileldCamPos = camPos.UnTilelize();
 
-	for (int y = minY; y < maxY; ++y)
+	int backMinX = minX / 4;
+	int backMaxX = maxX / 4;
+	int backMinY = minY / 4;
+	int backMaxY = maxY / 4;
+
+	for (int y = backMinY; y <= backMaxY; ++y)
 	{
-		for (int x = minX; x < maxX; ++x)
+		for (int x = backMinX; x <= backMaxX; ++x)
+		{
+			_backgroundSprite->Render(gRenderTarget, x * BACKGROUND_SIZE - untileldCamPos.x, 
+				y * BACKGROUND_SIZE - untileldCamPos.y);
+		}
+	}
+
+	_tunnels[0]->Render(gRenderTarget, untileldCamPos);
+	_tunnels[1]->Render(gRenderTarget, untileldCamPos);
+
+	for (int y = minY; y <= maxY; ++y)
+	{
+		for (int x = minX; x <= maxX; ++x)
 		{
 			if (tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
 			{
@@ -302,9 +328,9 @@ void Stage::Render(const TilePosition &camPos)
 		}
 	}
 
-	for (int y = minY; y < maxY; ++y)
+	for (int y = minY; y <= maxY; ++y)
 	{
-		for (int x = minX; x < maxX; ++x)
+		for (int x = minX; x <= maxX; ++x)
 		{
 			if (tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
 			{
@@ -339,152 +365,6 @@ void Stage::BuildBorder()
 		BuildRoomFromFile(L"border_right.rt", &borderRooms[13 + i], 4, 1 + i, true, _usingSprites);
 	}
 }
-void Stage::CopyBorderTiles(Room * rooms)
-{
-
-#pragma region Corner borders
-	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	{
-		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-		{
-			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
-			int localIndex = x + ROOM_TILE_COUNTX * y;
-			tileLayer0[worldIndex] = rooms[0].layer0[localIndex];
-			tileLayer2[worldIndex] = rooms[0].layer1[localIndex];
-			CopyTilesPosition(worldIndex, x, y);
-		}
-	}
-
-	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-	{
-		for (int x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX; x < STAGE_TOTAL_COUNTX; ++x)
-		{
-			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
-
-			int localX = x - (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX);
-			int localY = y;
-
-			tileLayer0[worldIndex] = rooms[1].layer0[localX + localY * ROOM_TILE_COUNTX];
-			tileLayer2[worldIndex] = rooms[1].layer1[localX + localY * ROOM_TILE_COUNTX];
-			CopyTilesPosition(worldIndex, x, y);
-
-		}
-	}
-	for (int y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY; y < STAGE_TOTAL_COUNTY; ++y)
-	{
-		for (int x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX; x < STAGE_TOTAL_COUNTX; ++x)
-		{
-			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
-
-			int localX = x - (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX);
-			int localY = y - (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY);;
-
-			tileLayer0[worldIndex] = rooms[2].layer0[localX + ROOM_TILE_COUNTX * localY];
-			tileLayer2[worldIndex] = rooms[2].layer1[localX + ROOM_TILE_COUNTX * localY];
-			CopyTilesPosition(worldIndex, x, y);
-
-		}
-	}
-
-	for (int y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY; y < STAGE_TOTAL_COUNTY; ++y)
-	{
-		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-		{
-			int worldIndex = x + STAGE_TOTAL_COUNTX * y;
-
-			int localX = x;
-			int localY = y - (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY);;
-
-			tileLayer0[worldIndex] = rooms[3].layer0[localX + ROOM_TILE_COUNTX * localY];
-			tileLayer2[worldIndex] = rooms[3].layer1[localX + ROOM_TILE_COUNTX * localY];
-			
-			CopyTilesPosition(worldIndex, x, y);
-		}
-	}
-
-#pragma endregion
-
-#pragma region Side Borders
-	//여기서 상, 하 보더타일 카피
-	for (int i = 0; i < 3; ++i)
-	{
-		//위 보더
-		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-		{
-			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-			{
-				int worldX = 8 + (i)* ROOM_TILE_COUNTX + x;
-				int worldY = y;
-
-				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
-
-				int localIndex = x + ROOM_TILE_COUNTX * y;
-
-				tileLayer0[worldIndex] = rooms[4 + i].layer0[localIndex];
-				tileLayer2[worldIndex] = rooms[4 + i].layer1[localIndex];
-				CopyTilesPosition(worldIndex, worldX, worldY);
-			}
-		}
-		//아래 보더
-		for (int y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY; y < STAGE_TOTAL_COUNTY; ++y)
-		{
-			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-			{
-				int worldX = 8 + (i)* ROOM_TILE_COUNTX + x;
-				int worldY = y;
-
-				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
-
-				int localIndex = x + ROOM_TILE_COUNTX * (y - (STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY));
-				tileLayer0[worldIndex] = rooms[7 + i].layer0[localIndex];
-				tileLayer2[worldIndex] = rooms[7 + i].layer1[localIndex];
-				CopyTilesPosition(worldIndex, worldX, worldY);
-			}
-		}
-	}
-
-	//여기서 좌, 우 보더타일 카피
-	for (int i = 0; i < 3; ++i)
-	{
-		//좌 보더
-		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-		{
-			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
-			{
-				int worldX = x;
-				int worldY = 7 + (i)* ROOM_TILE_COUNTY + y;
-
-				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
-
-				int localIndex = x + ROOM_TILE_COUNTX * y;
-				tileLayer0[worldIndex] = rooms[10 + i].layer0[localIndex];
-				tileLayer2[worldIndex] = rooms[10 + i].layer1[localIndex];
-				CopyTilesPosition(worldIndex, worldX, worldY);
-
-			}
-		}
-
-		//우 보더
-		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
-		{
-			for (int x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX; x < STAGE_TOTAL_COUNTX; ++x)
-			{
-				int worldX = x;
-				int worldY = 7 + (i)* ROOM_TILE_COUNTY + y;
-
-				int worldIndex = worldX + STAGE_TOTAL_COUNTX * worldY;
-
-				int localIndex = (x - (STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX)) + ROOM_TILE_COUNTX * y;
-
-				tileLayer0[worldIndex] = rooms[13 + i].layer0[localIndex];
-				tileLayer2[worldIndex] = rooms[13 + i].layer1[localIndex];
-				CopyTilesPosition(worldIndex, worldX, worldY);
-			}
-		}
-#pragma endregion
-	}
-}
-
 
 bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
@@ -507,13 +387,14 @@ bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 		str = L"bottomopen_00.rt";
 	}break;
 	}
-	 //str = L"00.rt";
+	//str = L"00.rt";
 	return true;
 }
 
 void Stage::BuildRoomFromFile(const std::wstring &fileName, 
 	Room *room, int roomX, int roomY, bool border, std::map<std::wstring, D2DSprite *> &usingSprites)
 {
+
 	FileUtils::File loadFile;
 	std::wstring filePath;
 	filePath += LdataPath;
@@ -526,6 +407,8 @@ void Stage::BuildRoomFromFile(const std::wstring &fileName,
 
 		BuildTileLayerFromFile(loadFile, room->layer0, roomX, roomY, border, 0, usingSprites);
 		BuildTileLayerFromFile(loadFile, room->layer1, roomX, roomY, border, 1, usingSprites);
+
+		CollectRoomPropertyFromFile(loadFile, room);
 
 		loadFile.Close();
 	}
@@ -601,7 +484,6 @@ void Stage::BuildTileLayerFromFile(FileUtils::File & file,
 				{
 					file.GetLine();
 				}
-				//EVENTMANAGER->QueueEvent(new CreateObjectEvent(L"tile", property));
 				ZeroMemory(buffer, 40);
 			}
 		}
@@ -670,15 +552,83 @@ void Stage::CopyTilesFromRooms(Room * rooms)
 void Stage::TileInfoBitmaskCopy(D2DSprite * sourSprite, Tile * sourTile, Tile * maskTile, uint32 offset)
 {
 	sourTile->maskInfo |= (1 << offset);
-	//maskTile->maskInfo |= (1 << offset);
-
-	//maskTile->sprite = sourSprite;
-
 	sourTile->spriteMaskInfo[offset].hasMask = true;
 	sourTile->spriteMaskInfo[offset].maskSprite = sourSprite;
-
-	//maskTile->spriteMaskInfo[offset].hasMask = true;
-	//maskTile->spriteMaskInfo[offset].maskSprite = sourSprite;
 }
+
+void Stage::BuildEntrance()
+{
+	int startXIndex = _stageBuildInfo.startRoomIndex.x;
+	int startYIndex = _stageBuildInfo.startRoomIndex.y;
+	
+	int endXIndex = _stageBuildInfo.exitRoomIndex.x;
+	int endYIndex = _stageBuildInfo.exitRoomIndex.y;
+
+	TunnelProperty *startProperty = (TunnelProperty *)_rooms[GetIndexFromXY(startXIndex, startYIndex, 4)].properties.find(L"tunnel")->second;
+	TunnelProperty *endProperty = (TunnelProperty *)_rooms[GetIndexFromXY(endXIndex, endYIndex, 4)].properties.find(L"tunnel")->second;
+	startProperty->sourceIndex.x += 1;
+
+	IntVector2 startLocalIndex = startProperty->position;
+	IntVector2 endLocalIndex = endProperty->position;
+
+	startProperty->position = CalculateTileWorldIndex(startXIndex, startYIndex, startLocalIndex.x, startLocalIndex.y);
+	endProperty->position = CalculateTileWorldIndex(endXIndex, endYIndex, endLocalIndex.x, endLocalIndex.y);
+
+	_tunnels[0] = (Tunnel *)OBJECTMANAGER->CreateObject(L"tunnel", startProperty);
+	_tunnels[1] = (Tunnel *)OBJECTMANAGER->CreateObject(L"tunnel", endProperty);
+
+	_tunnels[1]->SetExit(true);
+}
+
+void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
+{
+	std::wstring str1 = file.GetLine();
+	std::wstring propertyName{};
+
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			int index = x + ROOM_TILE_COUNTX * y;
+			std::wstring str2 = file.GetLine();
+
+			WCHAR buffer[40]{};
+			file.Read(L"Property Name : %s\n", &buffer);
+			if (wcscmp(buffer, L"none") != 0 && wcslen(buffer) != 0)
+			{
+				MapTool::PropertyInfo propertyInfo{};
+				wcscpy(propertyInfo.name, buffer);
+
+				file.Read(L"SourceIndex X : %d, Y : %d\n",
+					&propertyInfo.sourceIndex.x, &propertyInfo.sourceIndex.y);
+				file.Read(L"Value0 : %s\n", &propertyInfo.value0);
+				if (wcscmp(propertyInfo.value0, L"none") == 0)
+				{
+					_stprintf(propertyInfo.value0, L"");
+				}
+				file.Read(L"Value1 : %s\n", &propertyInfo.value1);
+				if (wcscmp(propertyInfo.value1, L"none") == 0)
+				{
+					_stprintf(propertyInfo.value1, L"");
+				}
+
+				propertyName = buffer;
+				BaseProperty *property = PROPERTYFACTORY->Build(propertyName, propertyInfo);
+				if (property != nullptr)
+				{
+					property->position = IntVector2(x, y);
+					room->properties.insert(std::make_pair(propertyName, property));
+				}
+			}
+			else
+			{
+				file.GetLine();
+				file.GetLine();
+				file.GetLine();
+			}
+		}
+	}
+}
+
 
 

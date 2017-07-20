@@ -1,9 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-
 #include "gameNode.h"
-
 
 class Game : public gameNode
 {

@@ -15,6 +15,8 @@ EventType ObjectDeadEvent::_type = EVENT_OBJECT_DEAD;
 EventType PickupEvent::_type = EVENT_PICK_UP;
 EventType HoldingEvent::_type = EVENT_HOLDING;
 
+EventType StageTransitionEvent::_type = EVENT_STAGE_TRANSITIOIN;
+
 //EventType CollisionEvent::_type = EVENT_COLLISION;
 
 BaseEvent::BaseEvent(float timeStamp)
@@ -244,4 +246,22 @@ IEvent * HoldingEvent::Copy() const
 const WCHAR * HoldingEvent::GetName() const
 {
 	return L"Holding Event";
+}
+
+StageTransitionEvent::StageTransitionEvent()
+{
+}
+
+StageTransitionEvent::~StageTransitionEvent()
+{
+}
+
+IEvent * StageTransitionEvent::Copy() const
+{
+	return new StageTransitionEvent();
+}
+
+const WCHAR * StageTransitionEvent::GetName() const
+{
+	return L"Stage Transition Event";
 }

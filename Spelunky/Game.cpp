@@ -23,6 +23,7 @@ HRESULT Game::Init(void)
 	KEYMANAGER->Init();
 	TIMEMANAGER->Init();
 	OBJECTMANAGER->Init();
+	PROPERTYFACTORY->Init();
 
 	IScene *gamePlayScene = new GamePlayScene;
 	IScene *mapToolScene = new MapToolScene;
@@ -34,7 +35,7 @@ HRESULT Game::Init(void)
 	SCENEMANAGER->AddScene(_T("LoadingScene"), loadingScene);
 
 	//현재 씬 설정
-	SCENEMANAGER->ChangeScene(_T("GamePlayScene"));
+	SCENEMANAGER->ChangeScene(_T("MapToolScene"));
 
 	return S_OK;
 }
@@ -51,6 +52,9 @@ void Game::Release(void)
 	TIMEMANAGER->releaseSingleton();
 	SCENEMANAGER->Release();
 	SCENEMANAGER->releaseSingleton();
+
+	PROPERTYFACTORY->Release();
+	PROPERTYFACTORY->releaseSingleton();
 }
 
 //업데이트...

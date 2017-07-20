@@ -106,6 +106,8 @@
 #define TILE_SIZE 64
 #define TILE_SIZE_HALF 32
 
+#define BACKGROUND_SIZE 256
+
 #define ROOM_TILE_COUNTX 10
 #define ROOM_TILE_COUNTY 8
 
@@ -151,10 +153,11 @@ typedef Vector3 MeterVector3;
 #include "Event.h"
 #include "EventManager.h"
 #include "GameObjectManager.h"
-
+#include "PropertyFactory.h"
 
 #define EVENTMANAGER EventManager::getSingleton()
 #define OBJECTMANAGER GameObjectManager::getSingleton()
+#define PROPERTYFACTORY PropertyFactory::getSingleton()
 
 #include "Win32Input.h"
 #include "Utillities.h"

@@ -102,7 +102,8 @@
     <ClInclude Include="D2DSprite.h" />
     <ClInclude Include="DataSet.h" />
     <ClInclude Include="Delegate.h" />
-    <ClInclude Include="Door.h" />
+    <ClInclude Include="PropertyFactory.h" />
+    <ClInclude Include="Tunnel.h" />
     <ClInclude Include="DWrite.h" />
     <ClInclude Include="EquipItem.h" />
     <ClInclude Include="Event.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="PassiveItem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Property.cpp" />
+    <ClCompile Include="PropertyFactory.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -230,6 +232,7 @@
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="Tunnel.cpp" />
     <ClCompile Include="UpperDeathState.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />

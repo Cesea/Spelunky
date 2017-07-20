@@ -91,7 +91,6 @@ struct TileSet
 	T *infos{};
 };
 
-
 enum class Command
 {
 	None,

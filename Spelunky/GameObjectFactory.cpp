@@ -2,6 +2,7 @@
 #include "GameObjectFactory.h"
 
 #include "Tile.h"
+#include "Tunnel.h"
 
 GameObjectFactory::GameObjectFactory()
 {
@@ -36,16 +37,18 @@ GameObject * GameObjectFactory::Build(const ObjectId id, const std::wstring &key
 void GameObjectFactory::RegisterBuilders()
 {
 	RegisterBuilder(L"tile", new TGameObjectBuilder<Tile>());
+	RegisterBuilder(L"tunnel", new TGameObjectBuilder<Tunnel>());
 }
 
 void GameObjectFactory::UnRegisterBuilders()
 {
 	UnRegisterBuilder(L"tile");
+	UnRegisterBuilder(L"tunnel");
 }
 
 void GameObjectFactory::RegisterBuilder(const std::wstring & key, GameObjectBuilder * builder)
 {
-GameObjectBuilderIter &iter = _builders.find(key);
+	GameObjectBuilderIter &iter = _builders.find(key);
 	if (iter == _builders.end())
 	{
 		_builders.insert(std::make_pair(key, builder));

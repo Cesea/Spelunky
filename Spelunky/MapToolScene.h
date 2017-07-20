@@ -43,7 +43,6 @@ private :
 	void SaveCurrentEditingInfoAction();
 
 	void CalculateBitMask(MapTool::TileInfo *sourceLayer, MapTool::TileInfo *maskLayer);
-	void RenderMasks(int drawXIndex, int drawYIndex, const uint32 maskInfo, D2DSprite *image);
 	void ClearAllTheBits(MapTool::RoomInfo *roomInfo);
 
 	void TileInfoBitmaskCopy(const std::wstring imageKey, MapTool::TileInfo &sourTile, MapTool::TileInfo &maskTile, uint32 offset);
@@ -54,14 +53,15 @@ private :
 	void WriteTileInfoChunkForMap(FileUtils::File &file, const MapTool::TileInfo *infos, int xCount, int yCount);
 	void ReadTileInfoChunkForMap(FileUtils::File &file, MapTool::TileInfo *infos, int xCount, int yCount);
 
-	//void WriteTilePropertyInfoChunkForMap(FileUtils::File &file, const MapTool::PropertyInfo *infos, int xCount, int yCount);
-	//void ReadTilePropertyInfoChunkForMap(FileUtils::File &file, MapTool::PropertyInfo *infos, int xCount, int yCount);
+	void WriteTilePropertyInfoChunkForMap(FileUtils::File &file, const MapTool::PropertyInfo *infos, int xCount, int yCount);
+	void ReadTilePropertyInfoChunkForMap(FileUtils::File &file, MapTool::PropertyInfo *infos, int xCount, int yCount);
 
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};
 	//현재 수정하고 있는 타일 이미지의 정보
 	MapTool::TileImageInfo _editingTileImageInfo{};
 	//현재 수정하고 있는 프로퍼티 이미지 정보
+	MapTool::PropertyImageInfo _editingPropertyImageInfo{};
 
 	MapTool::RoomInfo _roomInfo{};
 	//그리드 셀렉터 이미지
@@ -85,9 +85,10 @@ private:
 	WCHAR _collisionTypeBuffer[16]{};
 	WCHAR _layerBuffer[16]{};
 
-	WCHAR _propertyBuffer[20]{};
 	WCHAR _typeBuffer[20]{};
-	WCHAR _percentBuffer[20]{};
+	WCHAR _sourceIndexBuffer[20]{};
+	WCHAR _value0Buffer[20]{};
+	WCHAR _value1Buffer[20]{};
 
 	bool _applyTimerFlag{false};
 	WCHAR _applySuccessBuffer[16]{};

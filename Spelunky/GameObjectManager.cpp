@@ -66,6 +66,15 @@ void GameObjectManager::DestroyObject(const IEvent * event)
 	}
 }
 
+void GameObjectManager::DestroyAllObject()
+{
+	for (auto &object : _objects)
+	{
+		delete object.second;
+	}
+	_objects.clear();
+}
+
 void GameObjectManager::RegisterDelegates()
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_CREATE_OBJECT, EventDelegate::FromFunction<GameObjectManager, &GameObjectManager::DestroyObject>(this));

@@ -3,8 +3,26 @@
 
 #include "stdafx.h"	
 #include "Tile.h"
+#include "Tunnel.h"
 
-struct RandomRoomGenerated;
+struct RandomRoomGenerated
+{
+	IntVector2 startRoomIndex{};
+	IntVector2 exitRoomIndex{};
+	RoomType roomTypes[16]{ ROOM_NONE, };
+
+	RandomRoomGenerated &operator= (const RandomRoomGenerated &other)
+	{
+		startRoomIndex = other.startRoomIndex;
+		exitRoomIndex = other.exitRoomIndex;
+		for (int i = 0; i < 16; ++i)
+		{
+			roomTypes[i] = other.roomTypes[i];
+		}
+		return *this;
+	}
+};
+
 
 struct ReturnTile
 {
@@ -18,8 +36,8 @@ struct Room
 	D2DSprite *roomBackgroud;
 	Tile *layer0[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
 	Tile *layer1[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
+	std::unordered_map<std::wstring, BaseProperty *> properties;
 };
-
 
 class Stage
 {
@@ -27,7 +45,7 @@ public:
 	Stage();
 	~Stage();
 	HRESULT Init();
-	HRESULT InitFromRoomTypes(const RandomRoomGenerated &randomTypes);
+	HRESULT InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomGenerated &randomTypes);
 	void Release();
 
 	void Render(const TilePosition &camPos);
@@ -52,18 +70,25 @@ private:
 
 	void TileInfoBitmaskCopy(D2DSprite *sourSprite, Tile *sourTile, Tile *maskTile, uint32 offset);
 
+	void BuildEntrance();
+	void CollectRoomPropertyFromFile(FileUtils::File &file, Room *room);
+
+	void BuildProperties();
+
 private:
+	Room _rooms[16]{};
+
 	Tile *tileLayer0[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
 	Tile *tileLayer1[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
 	Tile *tileLayer2[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
 
+	Tunnel *_tunnels[2]{};
+
 	std::map<std::wstring, D2DSprite *> _usingSprites;
 
-	IntVector2 _entranceRoomIndex{};
-	IntVector2 _exitRoomIndex{};
+	D2DSprite *_backgroundSprite{};
 
-	IntVector2 _entranceTileIndex{};
-	IntVector2 _exitTileIndex{};
+	RandomRoomGenerated _stageBuildInfo{};
 };
 
 #endif

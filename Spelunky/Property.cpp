@@ -201,3 +201,14 @@
 //
 //	return std::move(result);
 //}
+
+#include "TileInfo.h"
+
+void GemProperty::Init(const MapTool::PropertyInfo & propertyInfo)
+{
+}
+
+void TunnelProperty::Init(const MapTool::PropertyInfo & propertyInfo)
+{
+	sourceIndex = propertyInfo.sourceIndex;
+}

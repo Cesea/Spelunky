@@ -11,16 +11,17 @@ StageManager::~StageManager()
 
 HRESULT StageManager::Init()
 {
-	_currentStage = new Stage;
-	RandomRoomGenerated randomTypes = MakeRandomRoomTypes();
+	EVENTMANAGER->RegisterDelegate(EVENT_STAGE_TRANSITIOIN,
+		EventDelegate::FromFunction<StageManager, &StageManager::HandleStageTransitionEvent>(STAGEMANAGER));
 
-	_currentStage->InitFromRoomTypes(randomTypes);
-	_currentStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 	return S_OK;
 }
 
 void StageManager::Release()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_STAGE_TRANSITIOIN,
+		EventDelegate::FromFunction<StageManager, &StageManager::HandleStageTransitionEvent>(STAGEMANAGER));
+
 	_currentStage->Release();
 	SAFE_DELETE(_currentStage);
 }
@@ -97,7 +98,7 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 		if (currentPath.y == 4)
 		{
 			ended = true;
-			result.endRoomIndex = prevPath;
+			result.exitRoomIndex = prevPath;
 			continue;
 		}
 
@@ -113,4 +114,43 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 		}
 	}
 	return result;
+}
+
+void StageManager::BuildMiddleStage()
+{
+}
+
+void StageManager::BuildNextStage()
+{
+	Stage *newStage = new Stage;
+	RandomRoomGenerated randomTypes = MakeRandomRoomTypes();
+
+	std::wstring firstKey{};
+	if ((_currentStageCount / 4) == 0)
+	{
+		firstKey = L"mine";
+	}
+	else if ((_currentStageCount / 4) == 1)
+	{
+		firstKey = L"jungle";
+	}
+	else if ((_currentStageCount / 4) == 2)
+	{
+		firstKey = L"temple";
+	}
+	newStage->InitFromRoomTypes(firstKey, randomTypes);
+	newStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
+
+}
+
+void StageManager::HandleStageTransitionEvent(const IEvent * event)
+{
+	if (_inMiddleStage)
+	{
+
+	}
+	else
+	{
+
+	}
 }

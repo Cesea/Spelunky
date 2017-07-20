@@ -381,9 +381,6 @@
     <ClInclude Include="AttackState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Attack</Filter>
     </ClInclude>
-    <ClInclude Include="Door.h">
-      <Filter>Game\Scene\GamePlayScene\Objects\Props</Filter>
-    </ClInclude>
     <ClInclude Include="Property.h">
       <Filter>Game\Properties</Filter>
     </ClInclude>
@@ -392,6 +389,12 @@
     </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Tunnel.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyFactory.h">
+      <Filter>Game\Common\ObjectFactory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -595,6 +598,12 @@
     </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Tunnel.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyFactory.cpp">
+      <Filter>Game\Common\ObjectFactory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

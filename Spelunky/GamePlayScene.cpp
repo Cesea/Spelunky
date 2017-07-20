@@ -16,6 +16,8 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\jungletile.png", L"jungletile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\char_orange.png", L"char_orange");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\minebg.png", L"minebg");
+
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitdoors.png", L"exitdoors");
 
@@ -113,7 +115,6 @@ HRESULT GamePlayScene::Init(void)
 	//CreateAndPlaceObject(ArcheType::Player, TilePosition(7, 5));
 	////CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
 	//CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 9));
-
 
 	_camera.Init();
 	//_camera.SetTarget(OBJECTMANAGER->FindObjectId(_playerId));
