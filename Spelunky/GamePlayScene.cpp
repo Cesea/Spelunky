@@ -151,13 +151,6 @@ void GamePlayScene::Update(void)
 
 	float camSpeed = 200.0f;
 
-	for (auto &object : OBJECTMANAGER->GetObjectMapRef())
-	{
-		object.second->Update(deltaTime);
-	}
-
-	//STAGEMANAGER->
-
 	_camera.Update();
 
 }
@@ -171,10 +164,7 @@ void GamePlayScene::Render(void)
 
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();
 
-	for (auto &object : OBJECTMANAGER->GetObjectMapRef())
-	{
-		object.second->Render(gRenderTarget, unTiledCamPos);
-	}
+	STAGEMANAGER->Render();
 
 	//_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
 	//_moneyHudSprite->Render(gRenderTarget, 0, 140);

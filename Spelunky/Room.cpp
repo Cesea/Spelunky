@@ -3,6 +3,72 @@
 
 #include "StageManager.h"
 
+IntVector2 CalculateBorderWorldIndex(int indexX, int indexY, int localX, int localY)
+{
+	IntVector2 result = {};
+	if (indexX == 0 && indexY == 0)
+	{
+		result.x = localX;
+		result.y = localY;
+	}
+	else if(indexX == 4 && indexY == 0)
+	{
+		result.x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + localX;
+		result.y = localY;
+	}
+	else if (indexX == 4 && indexY == 4)
+	{
+		result.x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + localX;
+		result.y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY + localY;
+	}
+	else if (indexX == 0 && indexY == 4)
+	{
+		result.x = localX;
+		result.y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY + localY;
+	}
+	else
+	{
+		if (indexY == 0 || indexY == 4)
+		{
+			result.x = 8 + (indexX- 1) * ROOM_TILE_COUNTX + localX;
+			if (indexY == 0)
+			{
+				result.y = localY;
+			}
+			else
+			{
+				result.y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTY + localY;
+			}
+		}
+		else if (indexX == 0 || indexX == 4)
+		{
+			result.y = 7 + ((indexY - 1 ) * ROOM_TILE_COUNTY) + localY;
+			if (indexX == 0)
+			{
+				result.x = localX;
+			}
+			else
+			{
+				result.x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + localX;
+			}
+		}
+	}
+	return result;
+}
+IntVector2 CalculateTileWorldIndex(int indexX, int indexY, int localX, int localY)
+{
+	IntVector2 result = {};
+	int index = GetIndexFromXY(indexX, indexY, 4);
+
+	int xTileStartIndex = indexX * ROOM_TILE_COUNTX + 3;
+	int yTileStartIndex = indexY * ROOM_TILE_COUNTY + 3;
+
+	result.x = xTileStartIndex + localX;
+	result.y = yTileStartIndex + localY;
+	return result;
+}
+
+
 Stage::Stage()
 {
 }
@@ -34,11 +100,9 @@ HRESULT Stage::InitFromRoomTypes(const RandomRoomGenerated &randomTypes)
 			{
 				Console::Log("Room %d, %d build failed\n", x, y);
 			}
-
 		}
 	}
 	buffer.clear();
-	CopyTilesFromRooms(rooms);
 	return S_OK;
 }
 
@@ -47,11 +111,207 @@ void Stage::Release()
 }
 
 
+void Stage::ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height)
+{
+	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
+	{
+		if (tileLayer0[i])
+		{
+			tileLayer0[i]->maskInfo = 0;
+			for (int j = 0; j < 4; ++j)
+			{
+				tileLayer0[i]->spriteMaskInfo[j].hasMask = 0;
+				tileLayer0[i]->spriteMaskInfo[j].maskSprite = nullptr;
+			}
+		}
+	}
+
+	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
+	{
+		if (tileLayer1[i])
+		{
+			tileLayer1[i]->maskInfo = 0;
+			for (int j = 0; j < 4; ++j)
+			{
+				tileLayer1[i]->spriteMaskInfo[j].hasMask = 0;
+				tileLayer1[i]->spriteMaskInfo[j].maskSprite = nullptr;
+			}
+		}
+	}
+
+	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
+	{
+		if (tileLayer2[i])
+		{
+			tileLayer2[i]->maskInfo = 0;
+			for (int j = 0; j < 4; ++j)
+			{
+				tileLayer2[i]->spriteMaskInfo[j].hasMask = 0;
+				tileLayer2[i]->spriteMaskInfo[j].maskSprite = nullptr;
+			}
+		}
+	}
+}
+
 void Stage::CalculateAllMask(int xStartIndex, int yStartIndex, int width, int height)
 {
-	//ClearAllTheBits(xStartIndex, yStartIndex, width, height);
-	//CalculateMask(xStartIndex, yStartIndex, width, height, 1);
-	//CalculateMask(xStartIndex, yStartIndex, width, height, 0);
+	ClearAllTheBits(xStartIndex, yStartIndex, width, height);
+	CalculateMask(xStartIndex, yStartIndex, width, height, 1);
+	CalculateMask(xStartIndex, yStartIndex, width, height, 0);
+}
+
+void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int height, int layer)
+{
+	Tile **tileLayer = nullptr;
+	if (layer == 0)
+	{
+		tileLayer = tileLayer0;
+	}
+	else if (layer == 1)
+	{
+		tileLayer = tileLayer1;
+	}
+	for (int y = yStartIndex; y < yStartIndex + height; ++y)
+	{
+		for (int x = xStartIndex; x < xStartIndex + width; ++x)
+		{
+			int index = x + STAGE_TOTAL_COUNTX * y;
+			if (tileLayer[index] &&
+				tileLayer[index]->thisMaskInfo)
+			{
+				D2DSprite *thisTileSprite = tileLayer[index]->sprite;
+				//위에 타일이 있는지 검사
+				int upperY = y - 1;
+				if (upperY >= 0)
+				{
+					//위에 타일이 없고 현재 타일이 위쪽에 마스크를 그리는 걸 허용하면..
+					if ((tileLayer[x + STAGE_TOTAL_COUNTX * upperY] == nullptr))
+					{
+						if ((tileLayer[index]->thisMaskInfo >> 0) & 1)
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 0);
+						}
+					}
+					//위에 타일이 있다. 
+					else
+					{
+						if (((tileLayer[x + STAGE_TOTAL_COUNTX * upperY]->nearMaskInfo >> 3) & 1) &&
+							(tileLayer[index]->thisMaskInfo >> 0) & 1)
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 0);
+						}
+					}
+				}
+				//왼쪽 타일이 있는지 검사
+				int leftX = x - 1;
+				if (leftX >= 0)
+				{
+					//왼쪽 타일이 없고 현재 타일이 왼쪽에 마스크를 그리는 걸 허용하면..
+					if ((tileLayer[leftX + STAGE_TOTAL_COUNTX * y] == nullptr))
+					{
+						if ((tileLayer[index]->thisMaskInfo >> 1) & 1)
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 1);
+						}
+					}
+					//왼쪽 타일이 있다
+					else
+					{
+						if (((tileLayer[leftX + STAGE_TOTAL_COUNTX * y]->nearMaskInfo >> 2) & 1) &&
+							((tileLayer[index]->thisMaskInfo >> 1) & 1))
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 1);
+						}
+					}
+				}
+				//오른 타일이 있는지 검사
+				int rightX = x + 1;
+				if (rightX < STAGE_TOTAL_COUNTX)
+				{
+					//오른쪽 타일이 없고 현재 타일이 오른쪽에 마스크를 그리는 걸 허용하면..
+					if ((tileLayer[rightX + STAGE_TOTAL_COUNTX * y] == nullptr) )
+					{
+						if (((tileLayer[index]->thisMaskInfo >> 2) & 1))
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 2);
+						}
+					}
+					//오른쪽 타일이 있다
+					else
+					{
+						if (((tileLayer[rightX + STAGE_TOTAL_COUNTX * y]->nearMaskInfo >> 1) & 1) &&
+							((tileLayer[index]->thisMaskInfo >> 2) & 1))
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 2);
+						}
+					}
+				}
+				//아래 타일이 있는지 검사
+				int lowerY = y + 1;
+				if (lowerY < STAGE_TOTAL_COUNTY)
+				{
+					//아래쪽 타일이 없고 현재 타일이 아래쪽에 그리는 걸 허용하면..
+					if ((tileLayer[x + STAGE_TOTAL_COUNTX * lowerY] == nullptr))
+					{
+						if (((tileLayer[index]->thisMaskInfo >> 3) & 1))
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 3);
+						}
+					}
+					//아래쪽 타일이 있다
+					else
+					{
+						if (((tileLayer[x + STAGE_TOTAL_COUNTX * lowerY]->nearMaskInfo >> 0) & 1) &&
+							(tileLayer[index]->thisMaskInfo >> 3) & 1)
+						{
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 3);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void Stage::Render(const TilePosition &camPos)
+{
+	int minX = camPos.tileX;
+	//여기서 마스크 레이어의 재대로 된 렌더를 위하여 1을 더 해줌
+	int maxX = camPos.tileX + 21;
+	int minY = camPos.tileY;
+	int maxY = camPos.tileY + 12;
+	if (minX < 0) { minX = 0; }
+	if (minY < 0) { minY = 0; }
+	if (maxX > STAGE_TOTAL_COUNTX - 1) { maxX = STAGE_TOTAL_COUNTX - 1; }
+	if (maxY > STAGE_TOTAL_COUNTY - 1) { maxY = STAGE_TOTAL_COUNTY - 1; }
+
+	Vector2 untileldCamPos = camPos.UnTilelize();
+
+	for (int y = minY; y < maxY; ++y)
+	{
+		for (int x = minX; x < maxX; ++x)
+		{
+			if (tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
+			}
+			if (tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
+			}
+		}
+	}
+
+	for (int y = minY; y < maxY; ++y)
+	{
+		for (int x = minX; x < maxX; ++x)
+		{
+			if (tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
+			}
+		}
+	}
 }
 
 void Stage::BuildBorder()
@@ -62,14 +322,13 @@ void Stage::BuildBorder()
 	BuildRoomFromFile(L"border_top_right.rt", &borderRooms[1], 4, 0, true, _usingSprites);
 	BuildRoomFromFile(L"border_bottom_right.rt", &borderRooms[2], 4, 4, true, _usingSprites);
 	BuildRoomFromFile(L"border_bottom_left.rt", &borderRooms[3], 0, 4, true, _usingSprites);
-
 	for (int i = 0; i < 3; ++i)
 	{
 		BuildRoomFromFile(L"border_top.rt", &borderRooms[4 + i], 1 + i, 0, true,_usingSprites);
 	}
 	for (int i = 0; i < 3; ++i)
 	{
-		BuildRoomFromFile(L"border_bottom.rt", &borderRooms[7 + i], i + i, 4, true, _usingSprites);
+		BuildRoomFromFile(L"border_bottom.rt", &borderRooms[7 + i], 1 + i, 4, true, _usingSprites);
 	}
 	for (int i = 0; i < 3; ++i)
 	{
@@ -79,59 +338,7 @@ void Stage::BuildBorder()
 	{
 		BuildRoomFromFile(L"border_right.rt", &borderRooms[13 + i], 4, 1 + i, true, _usingSprites);
 	}
-	CopyBorderTiles(borderRooms);
 }
-
-IntVector2 CalculateBorderWorldIndex(int indexX, int indexY, int localX, int localY, bool border)
-{
-	IntVector2 result = {};
-	if (indexX == 0 && indexY == 0)
-	{
-		result.x = localX;
-		result.y = localY;
-	}
-	else if(indexX == 4 && indexY == 0)
-	{
-		result.x = STAGE_TOTAL_COUNTX - ROOM_COUNTX + localX;
-		result.y = localY;
-	}
-	else if (indexX == 4 && indexY == 4)
-	{
-		result.x = STAGE_TOTAL_COUNTX - ROOM_COUNTX + localX;
-		result.y = STAGE_TOTAL_COUNTY - ROOM_COUNTY + localY;
-	}
-	else if (indexX == 0 && indexY == 4)
-	{
-		result.x = localX;
-		result.y = STAGE_TOTAL_COUNTY - ROOM_COUNTY + localY;
-	}
-	else
-	{
-		if (indexY == 00 && (indexX >= 1 && indexX <= 3))
-		{
-			result.x = 8 + indexX * ROOM_TILE_COUNTX + localX;
-			result.y = localY;
-		}
-		else if (indexY == 4 && (indexX >= 1 && indexX <= 3))
-		{
-			result.x = 8 + indexX * ROOM_TILE_COUNTX + localX;
-			result.y = STAGE_TOTAL_COUNTY - ROOM_TILE_COUNTX + localY;
-		}
-		else if (indexX == 0 && (indexY >= 1 && indexY <= 3))
-		{
-			result.x = localX;
-			result.y = 7 + (indexY * ROOM_TILE_COUNTY) + indexY;
-		}
-		else if (indexX == 4 && (indexX >= 1 && indexX < 3))
-		{
-			result.x = STAGE_TOTAL_COUNTX - ROOM_TILE_COUNTX + localX;
-			result.y = 7 + (indexY * ROOM_TILE_COUNTY) + indexY;
-		}
-	}
-
-	return result;
-}
-
 void Stage::CopyBorderTiles(Room * rooms)
 {
 
@@ -281,8 +488,26 @@ void Stage::CopyBorderTiles(Room * rooms)
 
 bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
-	str = L"00.rt";
-
+	switch (types)
+	{
+	case RoomType::ROOM_BLOCK:
+	{
+		str = L"block_00.rt";
+	}break;
+	case RoomType::ROOM_AISLE :
+	{
+		str = L"aisle_00.rt";
+	}break;
+	case RoomType::ROOM_TOP_OPEN :
+	{
+		str = L"topopen_00.rt";
+	}break;
+	case RoomType::ROOM_BOTTOM_OPEN :
+	{
+		str = L"bottomopen_00.rt";
+	}break;
+	}
+	 //str = L"00.rt";
 	return true;
 }
 
@@ -299,15 +524,15 @@ void Stage::BuildRoomFromFile(const std::wstring &fileName,
 		loadFile.GetLine();
 		loadFile.GetLine();
 
-		BuildTileLayerFromFile(loadFile, room->layer0, roomX, roomY, border, usingSprites);
-		BuildTileLayerFromFile(loadFile, room->layer1, roomX, roomY, border, usingSprites);
+		BuildTileLayerFromFile(loadFile, room->layer0, roomX, roomY, border, 0, usingSprites);
+		BuildTileLayerFromFile(loadFile, room->layer1, roomX, roomY, border, 1, usingSprites);
 
 		loadFile.Close();
 	}
 }
 
 void Stage::BuildTileLayerFromFile(FileUtils::File & file, 
-	Tile **pTileLayer, int roomX, int roomY, bool border, std::map<std::wstring, D2DSprite *> &usingSprites)
+	Tile **pTileLayer, int roomX, int roomY, bool border, int layerNum, std::map<std::wstring, D2DSprite *> &usingSprites)
 {
 	WCHAR buffer[40]{};
 
@@ -340,18 +565,34 @@ void Stage::BuildTileLayerFromFile(FileUtils::File & file,
 				file.Read(L"Layer : %d\n", &property->layer);
 
 				pTileLayer[index] = (Tile *)OBJECTMANAGER->CreateObject(L"tile", property);
+				IntVector2 worldPositon{};
 				if (border)
 				{
-					IntVector2 worldPositon = CalculateBorderWorldIndex(roomX, roomY, x, y, border);
+					worldPositon = CalculateBorderWorldIndex(roomX, roomY, x, y);
 					pTileLayer[index]->position.tileX = worldPositon.x;
 					pTileLayer[index]->position.tileY = worldPositon.y;
-
+					if (layerNum == 0)
+					{
+						tileLayer0[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+					}
+					else if (layerNum == 1)
+					{
+						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+					}
 				}
 				else
 				{
-					IntVector2 worldPositon = CaluclateInTileWorldIndex(roomX, roomY, x, y, border);
+					worldPositon = CalculateTileWorldIndex(roomX, roomY, x, y);
 					pTileLayer[index]->position.tileX = worldPositon.x;
 					pTileLayer[index]->position.tileY = worldPositon.y;
+					if (layerNum == 0)
+					{
+						tileLayer1[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+					}
+					else if (layerNum == 1)
+					{
+						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+					}
 				}
 			}
 			else
@@ -424,6 +665,20 @@ void Stage::CopyTilesFromRooms(Room * rooms)
 			}
 		}
 	}
+}
+
+void Stage::TileInfoBitmaskCopy(D2DSprite * sourSprite, Tile * sourTile, Tile * maskTile, uint32 offset)
+{
+	sourTile->maskInfo |= (1 << offset);
+	//maskTile->maskInfo |= (1 << offset);
+
+	//maskTile->sprite = sourSprite;
+
+	sourTile->spriteMaskInfo[offset].hasMask = true;
+	sourTile->spriteMaskInfo[offset].maskSprite = sourSprite;
+
+	//maskTile->spriteMaskInfo[offset].hasMask = true;
+	//maskTile->spriteMaskInfo[offset].maskSprite = sourSprite;
 }
 
 

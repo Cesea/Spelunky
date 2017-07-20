@@ -15,7 +15,7 @@ HRESULT StageManager::Init()
 	RandomRoomGenerated randomTypes = MakeRandomRoomTypes();
 
 	_currentStage->InitFromRoomTypes(randomTypes);
-	//_currentStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
+	_currentStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 	return S_OK;
 }
 
@@ -27,6 +27,11 @@ void StageManager::Release()
 
 void StageManager::Update(float deltaTime)
 {
+}
+
+void StageManager::Render()
+{
+	_currentStage->Render(_pCamera->GetPosition());
 }
 
 

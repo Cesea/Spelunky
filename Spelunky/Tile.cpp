@@ -32,6 +32,34 @@ void Tile::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 		//Console::Log("%d, %d\n", position.tileX, position.tileY);
 		sprite->FrameRender(gRenderTarget, position.tileX * TILE_SIZE - camPos.x,
 			position.tileY * TILE_SIZE - camPos.y, tileIndex.x, tileIndex.y);
+
+		for (int i = 0; i < 4; ++i)
+		{
+			if (spriteMaskInfo[i].hasMask)
+			{
+				if (i == 0)
+				{
+					spriteMaskInfo[i].maskSprite->FrameRender(gRenderTarget, position.tileX * TILE_SIZE - camPos.x,
+						position.tileY * TILE_SIZE - TILE_SIZE_HALF - camPos.y, 5, 0);
+				}
+				else if (i == 1)
+				{
+					spriteMaskInfo[i].maskSprite->FrameRender(gRenderTarget, position.tileX * TILE_SIZE - TILE_SIZE_HALF- camPos.x,
+						position.tileY * TILE_SIZE - camPos.y, 7, 2);
+				}
+				else if (i == 2)
+				{
+					spriteMaskInfo[i].maskSprite->FrameRender(gRenderTarget, position.tileX * TILE_SIZE + TILE_SIZE_HALF - camPos.x,
+						position.tileY * TILE_SIZE - camPos.y, 7, 1);
+				}
+				else if (i == 3)
+				{
+					spriteMaskInfo[i].maskSprite->FrameRender(gRenderTarget, position.tileX * TILE_SIZE - camPos.x,
+						position.tileY * TILE_SIZE + TILE_SIZE_HALF - camPos.y, 5, 1);
+				}
+			}
+		}
+
 	}
 }
 
