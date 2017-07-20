@@ -60,7 +60,6 @@ IntVector2 CalculateBorderWorldIndex(int indexX, int indexY, int localX, int loc
 IntVector2 CalculateTileWorldIndex(int indexX, int indexY, int localX, int localY)
 {
 	IntVector2 result = {};
-	int index = GetIndexFromXY(indexX, indexY, 4);
 
 	int xTileStartIndex = indexX * ROOM_TILE_COUNTX + 3;
 	int yTileStartIndex = indexY * ROOM_TILE_COUNTY + 3;
@@ -76,7 +75,23 @@ Stage::Stage()
 
 Stage::~Stage()
 {
-	OBJECTMANAGER->DestroyAllObject();
+	for (int y = 0; y < STAGE_TOTAL_COUNTY; ++y)
+	{
+		for (int x = 0; x < STAGE_TOTAL_COUNTX; ++x)
+		{
+			SAFE_DELETE(tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]);
+			SAFE_DELETE(tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]);
+			SAFE_DELETE(tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]);
+		}
+	}
+	SAFE_DELETE(_tunnels[0]);
+	SAFE_DELETE(_tunnels[1]);
+	for (auto &sprite : _usingSprites)
+	{
+		SAFE_DELETE(sprite.second);
+	}
+	_usingSprites.clear();
+	//SAFE_DELETE(_backgroundSprite);
 }
 
 HRESULT Stage::Init()
@@ -98,6 +113,7 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 	{
 		for (int x = 0; x < 4; ++x)
 		{
+			buffer = firstKey;
 			if (GetRandomFileNameFromRoomType(randomTypes.roomTypes[GetIndexFromXY(x, y, 4)], buffer))
 			{
 				_rooms[GetIndexFromXY(x, y, 4)].roomType = randomTypes.roomTypes[GetIndexFromXY(x, y, 4)];
@@ -107,6 +123,46 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 			{
 				Console::Log("Room %d, %d build failed\n", x, y);
 			}
+		}
+	}
+	buffer.clear();
+
+	BuildEntrance();
+
+	return S_OK;
+}
+
+HRESULT Stage::InitForMiddleStage(const std::wstring firstKey)
+{
+	_backgroundSprite = new D2DSprite;
+	_backgroundSprite->Init(IMAGEMANAGER->GetImage(L"minebg"), 0, 0, 256, 256, IntVector2(0, 0));
+
+	BuildBorder();
+
+	_stageBuildInfo.startRoomIndex = IntVector2(1, 1);
+	_stageBuildInfo.exitRoomIndex = IntVector2(2, 1);
+
+	std::wstring buffer = L"";
+
+	for (int y = 0; y < 4; ++y)
+	{
+		for (int x = 0; x < 4; ++x)
+		{
+			buffer += firstKey;
+			if (x == 1 && y == 1)
+			{
+				buffer += L"_middle_left.rt";
+			}
+			else if (x == 2 && y == 1)
+			{
+				buffer += L"_middle_right.rt";
+			}
+			else
+			{
+				buffer += L"_all.rt";
+			}
+			BuildRoomFromFile(buffer, &_rooms[GetIndexFromXY(x, y, 4)], x, y, false, _usingSprites);
+			buffer.clear();
 		}
 	}
 	buffer.clear();
@@ -372,19 +428,19 @@ bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 	{
 	case RoomType::ROOM_BLOCK:
 	{
-		str = L"block_00.rt";
+		str += L"_block_00.rt";
 	}break;
 	case RoomType::ROOM_AISLE :
 	{
-		str = L"aisle_00.rt";
+		str += L"_aisle_00.rt";
 	}break;
 	case RoomType::ROOM_TOP_OPEN :
 	{
-		str = L"topopen_00.rt";
+		str += L"_topopen_00.rt";
 	}break;
 	case RoomType::ROOM_BOTTOM_OPEN :
 	{
-		str = L"bottomopen_00.rt";
+		str += L"_bottomopen_00.rt";
 	}break;
 	}
 	//str = L"00.rt";
@@ -629,6 +685,64 @@ void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
 		}
 	}
 }
+
+ReturnTile Stage::GetAdjacent9(const IntVector2 & pos)
+{
+	ReturnTile result{};
+	result.tileNum = 9;
+
+	int index = 0;
+
+	for (int y = 1; y >= -1; --y)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			if (x == 0 && y == 0) { continue; }
+
+			IntVector2 absTilePos(pos.x + x, pos.y + y);
+			if (absTilePos.x < 0 || absTilePos.x > STAGE_TOTAL_COUNTX - 1 ||
+				absTilePos.y < 0 || absTilePos.y > STAGE_TOTAL_COUNTY - 1)
+			{
+				result.tiles[index] = nullptr;
+				index++;
+				continue;
+			}
+			result.tiles[index] = tileLayer1[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
+			if (result.tiles[index] == nullptr)
+			{
+				result.tiles[index] = tileLayer0[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
+			}
+			index++;
+		}
+	}
+
+	if (tileLayer1[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)] == nullptr)
+	{
+		result.tiles[8] = tileLayer0[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)];
+	}
+	else
+	{
+		result.tiles[8] = tileLayer1[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)];
+	}
+
+	Tile *temp;
+	temp = result.tiles[0];
+	result.tiles[0] = result.tiles[1];
+	result.tiles[1] = temp;
+
+	temp = result.tiles[1];
+	result.tiles[1] = result.tiles[6];
+	result.tiles[6] = temp;
+
+	temp = result.tiles[2];
+	result.tiles[2] = result.tiles[3];
+	result.tiles[3] = temp;
+
+	temp = result.tiles[3];
+	result.tiles[3] = result.tiles[4];
+	result.tiles[4] = temp;
+
+	return result;}
 
 
 

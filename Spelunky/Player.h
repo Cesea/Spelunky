@@ -65,8 +65,8 @@ public :
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 
-	//void CollisionCheck();
-	//void CheckCurrentTile();
+	void CollisionCheck();
+	void CheckCurrentTile();
 
 private :
 	Rect _rect;
@@ -96,7 +96,7 @@ private :
 
 	StateManager<Player> _stateManager;
 
-	//ReturnTile _nearTiles;
+	ReturnTile _nearTiles;
 	int _money{ 0 };
 
 	ObjectId _holdingObjectId{UNVALID_OBJECT_ID};

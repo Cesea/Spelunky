@@ -32,6 +32,15 @@ struct ReturnTile
 
 struct Room
 {
+	~Room()
+	{
+		//for (auto &prop : properties)
+		//{
+		//	SAFE_DELETE(prop.second);
+		//}
+		properties.clear();
+	}
+
 	RoomType roomType;
 	D2DSprite *roomBackgroud;
 	Tile *layer0[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
@@ -46,18 +55,21 @@ public:
 	~Stage();
 	HRESULT Init();
 	HRESULT InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomGenerated &randomTypes);
+	HRESULT InitForMiddleStage(const std::wstring firstKey);
 	void Release();
 
 	void Render(const TilePosition &camPos);
-	void RenderMask(const TilePosition &camPos);
 
 	void ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height);
 	void CalculateAllMask(int xStartIndex, int yStartIndex, int width, int height);
 	void CalculateMask(int xStartIndex, int yStartIndex, int width, int height, int layer);
 
+	ReturnTile GetAdjacent9(const IntVector2 &pos);
+
+	IntVector2 GetStartPosition() { return IntVector2(_tunnels[0]->position.tileX, _tunnels[0]->position.tileY); }
+
 private:
 	void BuildBorder();
-	void CopyBorderTiles(Room *rooms);
 	bool GetRandomFileNameFromRoomType(RoomType types, std::wstring &str);
 
 	void BuildRoomFromFile(const std::wstring &fileName, Room *room, int roomX, int roomY, bool border, std::map<std::wstring, D2DSprite *> &usingSprites);
@@ -73,7 +85,6 @@ private:
 	void BuildEntrance();
 	void CollectRoomPropertyFromFile(FileUtils::File &file, Room *room);
 
-	void BuildProperties();
 
 private:
 	Room _rooms[16]{};

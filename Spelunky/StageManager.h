@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Room.h"
 
+#include "Player.h" 
 
 class StageManager : public singletonBase<StageManager>
 {
@@ -16,6 +17,7 @@ public:
 	void Release();
 
 	void SetCameraLink(Camera *camera) { _pCamera = camera; }
+	void SetPlayerLink(Player *player) { _pPlayer = player; }
 
 	void Update(float deltaTime);
 	void Render();
@@ -30,15 +32,16 @@ private:
 	void HandleStageTransitionEvent(const IEvent *event);
 
 private:
-	Stage *_currentStage;
+	Stage *_currentStage{};
 
 	Stage *_middleStage{};
 	Camera *_pCamera{ nullptr };
+	Player *_pPlayer{ nullptr };
 
 	float _timeElapsedInStage{0};
 	int _currentStageCount{ 0 };
 
-	bool _inMiddleStage{ false };
+	bool _inMiddleStage{ true };
 
 };
 

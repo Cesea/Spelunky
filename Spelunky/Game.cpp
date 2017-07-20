@@ -35,7 +35,7 @@ HRESULT Game::Init(void)
 	SCENEMANAGER->AddScene(_T("LoadingScene"), loadingScene);
 
 	//ÇöÀç ¾À ¼³Á¤
-	SCENEMANAGER->ChangeScene(_T("MapToolScene"));
+	SCENEMANAGER->ChangeScene(_T("GamePlayScene"));
 
 	return S_OK;
 }

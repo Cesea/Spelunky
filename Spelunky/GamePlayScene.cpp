@@ -90,18 +90,6 @@ HRESULT GamePlayScene::LoadContent()
 	return S_OK;
 }
 
-//void GamePlayScene::CreateAndPlaceObject(ArcheType type, const TilePosition & position)
-//{
-//	GameObject *object = OBJECTMANAGER->CreateObject(type);
-//	object->position = position;
-//	object->desiredPosition = position;
-//	if (type == ArcheType::Player)
-//	{
-//		_playerId = object->GetId();
-//		_pPlayer = (Player *)object;
-//	}
-//}
-
 HRESULT GamePlayScene::Init(void)
 {
 	HRESULT result = LoadContent();
@@ -112,15 +100,15 @@ HRESULT GamePlayScene::Init(void)
 
 	OBJECTMANAGER->SetCurrentScene(this);
 
-	//CreateAndPlaceObject(ArcheType::Player, TilePosition(7, 5));
-	////CreateAndPlaceObject(ArcheType::Gem, TilePosition(6, 9));
-	//CreateAndPlaceObject(ArcheType::Rock, TilePosition(6, 9));
+	PlayerProperty playerProperty{};
+	_pPlayer = (Player *)OBJECTMANAGER->CreateObject(L"player", &playerProperty);
 
 	_camera.Init();
-	//_camera.SetTarget(OBJECTMANAGER->FindObjectId(_playerId));
+	_camera.SetTarget(_pPlayer);
 	STAGEMANAGER->Init();
 
 	STAGEMANAGER->SetCameraLink(&_camera);
+	STAGEMANAGER->SetPlayerLink(_pPlayer);
 
 	_playerHudSprite = new D2DFrameSprite();
 	_playerHudSprite->Init(IMAGEMANAGER->GetImage(L"playerhud"), 360.0f, 90.0f, IntVector2(0, 0));
@@ -150,6 +138,13 @@ void GamePlayScene::Update(void)
 		EVENTMANAGER->QueueEvent(new PlayerInputEvent(_playerId, playerCommand));
 	}
 
+	_pPlayer->Update(deltaTime);
+
+	if (KEYMANAGER->IsOnceKeyDown(VK_RETURN))
+	{
+		EVENTMANAGER->QueueEvent(new StageTransitionEvent());
+	}
+
 	float camSpeed = 200.0f;
 
 	_camera.Update();
@@ -166,6 +161,8 @@ void GamePlayScene::Render(void)
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();
 
 	STAGEMANAGER->Render();
+
+	_pPlayer->Render(gRenderTarget, unTiledCamPos);
 
 	//_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
 	//_moneyHudSprite->Render(gRenderTarget, 0, 140);

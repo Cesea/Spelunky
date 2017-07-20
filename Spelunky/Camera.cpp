@@ -24,20 +24,20 @@ void Camera::Update(void)
 {
 	if (KEYMANAGER->IsStayKeyDown(VK_LEFT))
 	{
-		_position.AddToTileRelX(-4);
+		_position.AddToTileRelX(-7);
 	}
 	else if (KEYMANAGER->IsStayKeyDown(VK_RIGHT))
 	{
-		_position.AddToTileRelX(4);
+		_position.AddToTileRelX(7);
 
 	}
 	if (KEYMANAGER->IsStayKeyDown(VK_UP))
 	{
-		_position.AddToTileRelY(-4);
+		_position.AddToTileRelY(-7);
 	}
 	else if (KEYMANAGER->IsStayKeyDown(VK_DOWN))
 	{
-		_position.AddToTileRelY(4);
+		_position.AddToTileRelY(7);
 	}
 
 	if (_target && _following)

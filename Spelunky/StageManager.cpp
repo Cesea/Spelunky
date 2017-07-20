@@ -32,13 +32,20 @@ void StageManager::Update(float deltaTime)
 
 void StageManager::Render()
 {
-	_currentStage->Render(_pCamera->GetPosition());
+	if (_currentStage)
+	{
+		_currentStage->Render(_pCamera->GetPosition());
+	}
 }
 
 
 Stage * StageManager::GetCurrentStage()
 {
-	return _currentStage;
+	if (_currentStage)
+	{
+		return _currentStage;
+	}
+	return nullptr;
 }
 
 RandomRoomGenerated StageManager::MakeRandomRoomTypes()
@@ -118,10 +125,41 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 
 void StageManager::BuildMiddleStage()
 {
+	SAFE_DELETE(_currentStage);
+
+	_inMiddleStage = true;
+
+	Stage *newStage = new Stage;
+	std::wstring firstKey{};
+	if ((_currentStageCount / 4) == 0)
+	{
+		firstKey = L"mine";
+	}
+	else if ((_currentStageCount / 4) == 1)
+	{
+		firstKey = L"jungle";
+	}
+	else if ((_currentStageCount / 4) == 2)
+	{
+		firstKey = L"temple";
+	}
+	newStage->InitForMiddleStage(firstKey);
+	newStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
+
+	_currentStage = newStage;
+
+	_pPlayer->position.tileX = _currentStage->GetStartPosition().x;
+	_pPlayer->position.tileY = _currentStage->GetStartPosition().y ;
+	_pPlayer->position.AddToTileRelY(-20);
+
+	_pPlayer->desiredPosition = _pPlayer->position;
 }
 
 void StageManager::BuildNextStage()
 {
+	SAFE_DELETE(_currentStage);
+
+	_inMiddleStage = false;
 	Stage *newStage = new Stage;
 	RandomRoomGenerated randomTypes = MakeRandomRoomTypes();
 
@@ -141,16 +179,27 @@ void StageManager::BuildNextStage()
 	newStage->InitFromRoomTypes(firstKey, randomTypes);
 	newStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 
+	_currentStage = newStage;
+
+	_currentStageCount++;
+
+	_pPlayer->position.tileX = _currentStage->GetStartPosition().x;
+	_pPlayer->position.tileY = _currentStage->GetStartPosition().y ;
+	_pPlayer->position.AddToTileRelY(-20);
+
+	_pPlayer->desiredPosition = _pPlayer->position;
+
 }
 
 void StageManager::HandleStageTransitionEvent(const IEvent * event)
 {
 	if (_inMiddleStage)
 	{
-
+		BuildNextStage();
 	}
 	else
 	{
-
+		BuildMiddleStage();
 	}
+	TIMEMANAGER->Tick();
 }

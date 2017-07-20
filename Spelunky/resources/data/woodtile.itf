@@ -282,8 +282,8 @@ Applied : 1
 At X : 7, Y : 3
 Boomb Destroy : 1
 Destroyed Index X : 2, Y : 0
-This Mask Info : 0
-Near Mask Info : 0
+This Mask Info : 4
+Near Mask Info : 11
 Collision Type : 1
 Mask Info : 0
 Layer : 0
@@ -354,8 +354,8 @@ Applied : 1
 At X : 7, Y : 4
 Boomb Destroy : 1
 Destroyed Index X : 0, Y : 0
-This Mask Info : 0
-Near Mask Info : 0
+This Mask Info : 2
+Near Mask Info : 13
 Collision Type : 1
 Mask Info : 0
 Layer : 0

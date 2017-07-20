@@ -79,8 +79,7 @@ void Player::Update(float deltaTime)
 
 	if (!_interpolating)
 	{
-		//CollisionCheck();
-		//CheckCurrentTile();
+		CollisionCheck();
 	}
 	EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset));
 }
@@ -178,186 +177,200 @@ void Player::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 
 	_graphics.AddData(aniKey, sprite);
 }
 
-//void Player::CollisionCheck()
-//{
-//	TilePosition centerTilePos = desiredPosition;
-//	centerTilePos.AddToTileRelY(-32.0f);
-//
-//	//_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacentTiles9(IntVector2(centerTilePos.tileX, centerTilePos.tileY));
-//
-//	for (int i = 0; i < 8; ++i)
-//	{
-//		//if (_nearTiles.tiles[i] == nullptr || 
-//			//_nearTiles.tiles[i]->sourceIndex.x == -1)
-//			continue;
-//
-//		Tile *currentTile = _nearTiles.tiles[i];
-//
-//		Rect absRect = desiredPosition.UnTilelize() + _rect + _rectOffset;
-//		Rect tileRect = RectMake(currentTile->position.tileX * TILE_SIZE, currentTile->position.tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-//
-//		Rect overlapRect;
-//		//아래 타일의 경우 체크를 해 주어야 할 경우가 있다. 사다리, 위에서 떨어지면 죽는 타일 등....
-//		if (i == 0)
-//		{
-//			if (IsRectangleOverlap(absRect, tileRect, overlapRect))
-//			{
-//				if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
-//				{
-//					desiredPosition.AddToTileRel(0, -overlapRect.height);
-//					_velocity.y = 0.0f;
-//					_onGround = true;
-//				}
-//				else if ((currentTile->collisionType == TileCollisionType::TILE_COLLISION_EOF_LADDER) && 
-//							(_velocity.y >= 0.0f) && (desiredPosition.tileRel.y < 10) &&
-//							(!_stateClimbing))
-//				{
-//					desiredPosition.AddToTileRel(0, -overlapRect.height);
-//					_velocity.y = 0.0f;
-//					_canClimb = true;
-//					_onGround = true;
-//				}
-//			}
-//		}
-//		else
-//		{
-//			if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
-//			{
-//				if (IsRectangleOverlap(absRect, tileRect, overlapRect))
-//				{
-//					//위 타일
-//					if (i == 1)
-//					{
-//						desiredPosition.AddToTileRel(0, overlapRect.height);
-//						_velocity.y = 0.0f;
-//						_headHit = true;
-//					}
-//					//왼 타일
-//					else if (i == 2)
-//					{
-//						desiredPosition.AddToTileRel(overlapRect.width, 0);
-//						_velocity.x = 0.0f;
-//						_onWall = true;
-//					}
-//					//오른 타일
-//					else if (i == 3)
-//					{
-//						desiredPosition.AddToTileRel(-overlapRect.width, 0);
-//						_velocity.x = 0.0f;
-//						_onWall = true;
-//					}
-//					//대각선
-//					else
-//					{
-//						//수직으로 충돌이 일어남
-//						if (overlapRect.width > overlapRect.height)
-//						{
-//							_velocity.y = 0.0f;
-//							float pushingHeight;
-//							if (i == 4 || i == 6)
-//							{
-//								pushingHeight = -overlapRect.height;
-//								_onGround = true;
-//							}
-//							else
-//							{
-//								pushingHeight = overlapRect.height;
-//								_headHit = true;
-//							}
-//							desiredPosition.AddToTileRel(0, pushingHeight);
-//						}
-//						//수평으로 충돌이 일어남
-//						else
-//						{
-//							_velocity.x = 0.0f;
-//							_onWall = true;
-//							float pushingWidth;
-//							if (i == 5 || i == 6)
-//							{
-//								pushingWidth = overlapRect.width;
-//							}
-//							else
-//							{
-//								pushingWidth = -overlapRect.width;
-//							}
-//							desiredPosition.AddToTileRel(pushingWidth, 0);
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-//	position = desiredPosition;
-//}
-//
-//void Player::CheckCurrentTile()
-//{
-//	TileCollisionType centerTileCollisionType = _nearTiles.tiles[8]->collisionType;
-//	TileCollisionType upperTileCollisionType = _nearTiles.tiles[1]->collisionType;
-//	TileCollisionType lowerTileCollisionType = _nearTiles.tiles[0]->collisionType;
-//
-//	TileCollisionType lowerLeftTileCollisionType = _nearTiles.tiles[6]->collisionType;
-//	TileCollisionType lowerRightTileCollisionType = _nearTiles.tiles[4]->collisionType;
-//
-//	TileCollisionType leftTileCollisionType = _nearTiles.tiles[2]->collisionType;
-//	TileCollisionType rightTileCollisionType = _nearTiles.tiles[3]->collisionType;
-//
-//	TileCollisionType upperLeftTileCollisionType = _nearTiles.tiles[5]->collisionType;
-//	TileCollisionType upperRightTileCollisionType = _nearTiles.tiles[7]->collisionType;
-//
-//	if (centerTileCollisionType == TILE_COLLISION_UPPER_DEAD && position.tileRel.y < 40)
-//	{
-//		_upperDeath = true;
-//		return;
-//	}
-//
-//	if (centerTileCollisionType == TILE_COLLISION_LADDER || centerTileCollisionType == TILE_COLLISION_EOF_LADDER)
-//	{
-//		if (position.tileRel.x > 20 && position.tileRel.x < 44)
-//		{
-//			_canClimb = true;
-//			_canClimbUp = true;
-//		}
-//		if ((lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
-//			(position.tileRel.y < 4.0f))
-//		{
-//			_canClimbUp = false;
-//		}
-//	}
-//
-//	if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
-//		(lowerLeftTileCollisionType != TILE_COLLISION_BLOCK))
-//	{
-//		if (position.tileRel.x < 8)
-//		{
-//			_onLedge = true;
-//		}
-//	}
-//	if ((lowerTileCollisionType == TILE_COLLISION_BLOCK || lowerTileCollisionType == TILE_COLLISION_EOF_LADDER) &&
-//		(lowerRightTileCollisionType != TILE_COLLISION_BLOCK))
-//	{
-//		if (position.tileRel.x > 56)
-//		{
-//			_onLedge = true;
-//		}
-//	}
-//
-//	if ((!_onGround) &&
-//		(leftTileCollisionType == TILE_COLLISION_BLOCK) &&
-//		(upperLeftTileCollisionType == TILE_COLLISION_NONE) &&
-//		(_seeingDirection == Direction::Left) &&
-//		(position.tileRel.x < 36.0f) &&
-//		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
-//	{
-//		_canGrab = true;
-//	}
-//	else if ((!_onGround) &&
-//		(rightTileCollisionType == TILE_COLLISION_BLOCK) &&
-//		(upperRightTileCollisionType == TILE_COLLISION_NONE) &&
-//		(_seeingDirection == Direction::Right) &&
-//		(position.tileRel.x > 28.0f) &&
-//		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
-//	{
-//		_canGrab = true;
-//	}
-//}
+void Player::CollisionCheck()
+{
+	TilePosition centerTilePos = desiredPosition;
+	centerTilePos.AddToTileRelY(-32.0f);
+
+	Stage *currentStage = STAGEMANAGER->GetCurrentStage();
+	if (currentStage)
+	{
+		_nearTiles = currentStage->GetAdjacent9(IntVector2(centerTilePos.tileX, centerTilePos.tileY));
+
+		for (int i = 0; i < 8; ++i)
+		{
+			if (_nearTiles.tiles[i] == nullptr)
+				continue;
+
+			Tile *currentTile = _nearTiles.tiles[i];
+
+			Rect absRect = desiredPosition.UnTilelize() + _rect + _rectOffset;
+			Rect tileRect = RectMake(currentTile->position.tileX * TILE_SIZE, currentTile->position.tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+
+			Rect overlapRect;
+			//아래 타일의 경우 체크를 해 주어야 할 경우가 있다. 사다리, 위에서 떨어지면 죽는 타일 등....
+			if (i == 0)
+			{
+				if (IsRectangleOverlap(absRect, tileRect, overlapRect))
+				{
+					if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+					{
+						desiredPosition.AddToTileRel(0, -overlapRect.height);
+						_velocity.y = 0.0f;
+						_onGround = true;
+					}
+					else if ((currentTile->collisionType == TileCollisionType::TILE_COLLISION_EOF_LADDER) &&
+						(_velocity.y >= 0.0f) && (desiredPosition.tileRel.y < 10) &&
+						(!_stateClimbing))
+					{
+						desiredPosition.AddToTileRel(0, -overlapRect.height);
+						_velocity.y = 0.0f;
+						_canClimb = true;
+						_onGround = true;
+					}
+				}
+			}
+			else
+			{
+				if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+				{
+					if (IsRectangleOverlap(absRect, tileRect, overlapRect))
+					{
+						//위 타일
+						if (i == 1)
+						{
+							desiredPosition.AddToTileRel(0, overlapRect.height);
+							_velocity.y = 0.0f;
+							_headHit = true;
+						}
+						//왼 타일
+						else if (i == 2)
+						{
+							desiredPosition.AddToTileRel(overlapRect.width, 0);
+							_velocity.x = 0.0f;
+							_onWall = true;
+						}
+						//오른 타일
+						else if (i == 3)
+						{
+							desiredPosition.AddToTileRel(-overlapRect.width, 0);
+							_velocity.x = 0.0f;
+							_onWall = true;
+						}
+						//대각선
+						else
+						{
+							//수직으로 충돌이 일어남
+							if (overlapRect.width > overlapRect.height)
+							{
+								_velocity.y = 0.0f;
+								float pushingHeight;
+								if (i == 4 || i == 6)
+								{
+									pushingHeight = -overlapRect.height;
+									_onGround = true;
+								}
+								else
+								{
+									pushingHeight = overlapRect.height;
+									_headHit = true;
+								}
+								desiredPosition.AddToTileRel(0, pushingHeight);
+							}
+							//수평으로 충돌이 일어남
+							else
+							{
+								_velocity.x = 0.0f;
+								_onWall = true;
+								float pushingWidth;
+								if (i == 5 || i == 6)
+								{
+									pushingWidth = overlapRect.width;
+								}
+								else
+								{
+									pushingWidth = -overlapRect.width;
+								}
+								desiredPosition.AddToTileRel(pushingWidth, 0);
+							}
+						}
+					}
+				}
+			}
+		}
+		position = desiredPosition;
+		CheckCurrentTile();
+	}
+}
+
+void Player::CheckCurrentTile()
+{
+	TileCollisionType centerColType = (_nearTiles.tiles[8]) ? 
+		_nearTiles.tiles[8]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+	TileCollisionType upperColType = (_nearTiles.tiles[1]) ? 
+		_nearTiles.tiles[1]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+	TileCollisionType lowerColType = (_nearTiles.tiles[0]) ? 
+		_nearTiles.tiles[0]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+
+	TileCollisionType leftColType = (_nearTiles.tiles[2]) ? 
+		_nearTiles.tiles[2]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+	TileCollisionType rightColType = (_nearTiles.tiles[3]) ? 
+		_nearTiles.tiles[3]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+
+
+	TileCollisionType lowerLeftColType = (_nearTiles.tiles[6]) ? 
+		_nearTiles.tiles[6]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+	TileCollisionType lowerRightColType = (_nearTiles.tiles[4]) ? 
+		_nearTiles.tiles[4]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+
+	TileCollisionType upperLeftColType = (_nearTiles.tiles[5]) ? 
+		_nearTiles.tiles[5]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+	TileCollisionType upperRightColType = (_nearTiles.tiles[7]) ? 
+		_nearTiles.tiles[7]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+
+	if (centerColType == TILE_COLLISION_UPPER_DEAD && position.tileRel.y < 40)
+	{
+		_upperDeath = true;
+		return;
+	}
+
+	if (centerColType == TILE_COLLISION_LADDER || centerColType == TILE_COLLISION_EOF_LADDER)
+	{
+		if (position.tileRel.x > 20 && position.tileRel.x < 44)
+		{
+			_canClimb = true;
+			_canClimbUp = true;
+		}
+		if ((lowerColType == TILE_COLLISION_EOF_LADDER) &&
+			(position.tileRel.y < 4.0f))
+		{
+			_canClimbUp = false;
+		}
+	}
+
+	if ((lowerColType == TILE_COLLISION_BLOCK || lowerColType == TILE_COLLISION_EOF_LADDER) &&
+		(lowerLeftColType != TILE_COLLISION_BLOCK))
+	{
+		if (position.tileRel.x < 8)
+		{
+			_onLedge = true;
+		}
+	}
+	if ((lowerColType == TILE_COLLISION_BLOCK || lowerColType == TILE_COLLISION_EOF_LADDER) &&
+		(lowerRightColType != TILE_COLLISION_BLOCK))
+	{
+		if (position.tileRel.x > 56)
+		{
+			_onLedge = true;
+		}
+	}
+
+	if ((!_onGround) &&
+		(leftColType == TILE_COLLISION_BLOCK) &&
+		(upperLeftColType == TILE_COLLISION_NONE) &&
+		(_seeingDirection == Direction::Left) &&
+		(position.tileRel.x < 36.0f) &&
+		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
+	{
+		_canGrab = true;
+	}
+	else if ((!_onGround) &&
+		(rightColType == TILE_COLLISION_BLOCK) &&
+		(upperRightColType == TILE_COLLISION_NONE) &&
+		(_seeingDirection == Direction::Right) &&
+		(position.tileRel.x > 28.0f) &&
+		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
+	{
+		_canGrab = true;
+	}
+}

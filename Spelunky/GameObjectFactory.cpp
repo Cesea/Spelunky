@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include "Tunnel.h"
+#include "Player.h"
 
 GameObjectFactory::GameObjectFactory()
 {
@@ -38,12 +39,14 @@ void GameObjectFactory::RegisterBuilders()
 {
 	RegisterBuilder(L"tile", new TGameObjectBuilder<Tile>());
 	RegisterBuilder(L"tunnel", new TGameObjectBuilder<Tunnel>());
+	RegisterBuilder(L"player", new TGameObjectBuilder<Player>());
 }
 
 void GameObjectFactory::UnRegisterBuilders()
 {
 	UnRegisterBuilder(L"tile");
 	UnRegisterBuilder(L"tunnel");
+	UnRegisterBuilder(L"player");
 }
 
 void GameObjectFactory::RegisterBuilder(const std::wstring & key, GameObjectBuilder * builder)
