@@ -151,6 +151,12 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Tile">
       <UniqueIdentifier>{c4aa3a2a-15f3-4fc5-b4f9-421e3bb0c089}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\MenuScene">
+      <UniqueIdentifier>{575d1520-b006-4fc6-bf98-394e9be44d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\MenuScene\Objects">
+      <UniqueIdentifier>{267354f1-2725-4bfb-b8a2-0ceeabd1e3b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -291,9 +297,6 @@
     <ClInclude Include="MovingObject.h">
       <Filter>Game\Common</Filter>
     </ClInclude>
-    <ClInclude Include="IScene.h">
-      <Filter>Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="ImGUI.h">
       <Filter>Game\Scene\MapToolScene\IMGUI</Filter>
     </ClInclude>
@@ -395,6 +398,15 @@
     </ClInclude>
     <ClInclude Include="PropertyFactory.h">
       <Filter>Game\Common\ObjectFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>Game\Scene\MenuScene</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteObject.h">
+      <Filter>Game\Scene\MenuScene\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="IScene.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +616,12 @@
     </ClCompile>
     <ClCompile Include="PropertyFactory.cpp">
       <Filter>Game\Common\ObjectFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>Game\Scene\MenuScene</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteObject.cpp">
+      <Filter>Game\Scene\MenuScene\Objects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

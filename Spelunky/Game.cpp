@@ -4,6 +4,7 @@
 #include "LoadingScene.h"
 #include "MapToolScene.h"
 #include "GamePlayScene.h"
+#include "MenuScene.h"
 
 
 Game::Game()
@@ -28,14 +29,16 @@ HRESULT Game::Init(void)
 	IScene *gamePlayScene = new GamePlayScene;
 	IScene *mapToolScene = new MapToolScene;
 	IScene *loadingScene = new LoadingScene;
+	IScene *menuScene = new MenuScene;
 
 	//¾ÀÃß°¡
 	SCENEMANAGER->AddScene(_T("GamePlayScene"), gamePlayScene);
 	SCENEMANAGER->AddScene(_T("MapToolScene"), mapToolScene);
 	SCENEMANAGER->AddScene(_T("LoadingScene"), loadingScene);
+	SCENEMANAGER->AddScene(_T("MenuScene"), menuScene);
 
 	//ÇöÀç ¾À ¼³Á¤
-	SCENEMANAGER->ChangeScene(_T("GamePlayScene"));
+	SCENEMANAGER->ChangeScene(_T("MenuScene"));
 
 	return S_OK;
 }

@@ -153,6 +153,7 @@ void StageManager::BuildMiddleStage()
 	_pPlayer->position.AddToTileRelY(-20);
 
 	_pPlayer->desiredPosition = _pPlayer->position;
+	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }
 
 void StageManager::BuildNextStage()
@@ -189,6 +190,7 @@ void StageManager::BuildNextStage()
 
 	_pPlayer->desiredPosition = _pPlayer->position;
 
+	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }
 
 void StageManager::HandleStageTransitionEvent(const IEvent * event)

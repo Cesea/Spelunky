@@ -102,7 +102,9 @@
     <ClInclude Include="D2DSprite.h" />
     <ClInclude Include="DataSet.h" />
     <ClInclude Include="Delegate.h" />
+    <ClInclude Include="MenuScene.h" />
     <ClInclude Include="PropertyFactory.h" />
+    <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="Tunnel.h" />
     <ClInclude Include="DWrite.h" />
     <ClInclude Include="EquipItem.h" />
@@ -211,6 +213,7 @@
     <ClCompile Include="LookRevertState.cpp" />
     <ClCompile Include="LookUpState.cpp" />
     <ClCompile Include="MapToolScene.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="OnLedgeState.cpp" />
@@ -221,6 +224,7 @@
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SpriteObject.cpp" />
     <ClCompile Include="StageManager.cpp" />
     <ClCompile Include="StandUpState.cpp" />
     <ClCompile Include="stdafx.cpp">

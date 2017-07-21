@@ -30,6 +30,7 @@ public :
 	GameObject *FindObjectId(ObjectId id);
 
 	void DestroyObject(const IEvent *event);
+	void DestroyObject(const ObjectId id);
 	void DestroyAllObject();
 
 	ObjectMap &GetObjectMapRef() { return _objects; }

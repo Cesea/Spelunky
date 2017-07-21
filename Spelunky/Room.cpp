@@ -79,13 +79,22 @@ Stage::~Stage()
 	{
 		for (int x = 0; x < STAGE_TOTAL_COUNTX; ++x)
 		{
-			SAFE_DELETE(tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]);
-			SAFE_DELETE(tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]);
-			SAFE_DELETE(tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]);
+			if (tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				OBJECTMANAGER->DestroyObject(tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->GetId());
+			}
+			if (tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				OBJECTMANAGER->DestroyObject(tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->GetId());
+			}
+			if (tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				OBJECTMANAGER->DestroyObject(tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->GetId());
+			}
 		}
 	}
-	SAFE_DELETE(_tunnels[0]);
-	SAFE_DELETE(_tunnels[1]);
+	OBJECTMANAGER->DestroyObject(_tunnels[0]->GetId());
+	OBJECTMANAGER->DestroyObject(_tunnels[1]->GetId());
 	for (auto &sprite : _usingSprites)
 	{
 		SAFE_DELETE(sprite.second);
