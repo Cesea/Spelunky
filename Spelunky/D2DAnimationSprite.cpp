@@ -45,6 +45,14 @@ void D2DAnimationSprite::Render(ID2D1HwndRenderTarget * renderTarget, float dest
 
 }
 
+void D2DAnimationSprite::RenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, 
+	const D2D1::Matrix3x2F & mat, float alpha)
+{
+	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x, destY + _anchor.y,
+			_animation->GetFramePos().x, _animation->GetFramePos().y,
+			_animation->GetFrameWidth(), _animation->GetFrameHeight(), mat, alpha);
+}
+
 void D2DAnimationSprite::Release()
 {
 	_sourceImage = nullptr;

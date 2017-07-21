@@ -42,6 +42,13 @@ void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, float des
 		xIndex * _widthPerFrame, yIndex * _heightPerFrame, _widthPerFrame, _heightPerFrame, alpha);
 }
 
+void D2DFrameSprite::FrameRenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
+	int xIndex, int yIndex, const D2D1::Matrix3x2F & mat, float alpha)
+{
+	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x, destY + _anchor.y, 
+		xIndex * _widthPerFrame, yIndex * _heightPerFrame, _widthPerFrame, _heightPerFrame, mat, alpha);
+}
+
 void D2DFrameSprite::Release()
 {
 	_sourceImage = nullptr;

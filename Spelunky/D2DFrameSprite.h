@@ -16,6 +16,9 @@ public:
 	virtual void FrameRender(ID2D1HwndRenderTarget *renderTarget, int xIndex, int yIndex, float alpha = 1.0f);
 	virtual void FrameRender(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, int xIndex, int yIndex, float alpha = 1.0f);
 
+	virtual void FrameRenderMatrix(ID2D1HwndRenderTarget *renderTarget, float destX, float destY,
+		int xIndex, int yIndex, const D2D1::Matrix3x2F &mat, float alpha = 1.0f);
+
 	//virtual void RenderFromCenter(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float alpha = 1.0f);
 	//virtual void RenderFromCenter(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float destWidth, float destHeight, float alpha = 1.0f);
 

@@ -20,6 +20,10 @@ public:
 	void Render(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float destWidth, float destHeight,
 					float sourX, float sourY, float sourWidth, float sourHeight, float alpha = 1.0f);
 
+	//여기서의 Matrix인자는 Rotation, Scale Matrix이다
+	void RenderMatrix(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float sourX, float sourY, 
+		float sourWidth, float sourHeight, const D2D1::Matrix3x2F &mat, float alpha = 1.0f);
+
 	void RenderFlipX(ID2D1HwndRenderTarget *renderTarget, float alpha = 1.0f);
 	void RenderFlipX(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float alpha = 1.0f);
 	void RenderFlipX(ID2D1HwndRenderTarget *renderTarget, float sourX, float sourY, float sourWidth, float sourHeight, float alpha = 1.0f);

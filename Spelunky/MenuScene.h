@@ -22,11 +22,24 @@ struct TitleObjects
 
 	SpriteObject alpha;
 	SpriteObject bat[8];
-
-	~TitleObjects()
-	{
-	}
 };
+
+struct MenuObjects
+{
+	SpriteObject doorBack;
+	SpriteObject arch;
+	SpriteObject leftStatues;
+	SpriteObject rightStatues;
+
+	SpriteObject leftCaveSide;
+	SpriteObject rightCaveSide;
+
+	SpriteObject sandDirt;
+
+	SpriteObject alpha;
+};
+
+
 
 class MenuScene : public IScene
 {
@@ -45,15 +58,14 @@ public:
 private:
 	MenuSceneState _currentState{MenuSceneState::Title};
 
-
 	TitleObjects _titleObjects;
-	//SpriteObject _title;
-	//SpriteObject _titlePlayer;
-	//SpriteObject _titleGround;
-	//SpriteObject _titleBat;
+	MenuObjects _menuObjects;
 
 	Timer _batTimer;
 	int _currentBatTracker{ 0 };
+
+	
+
 };
 
 

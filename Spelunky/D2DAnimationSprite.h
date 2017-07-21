@@ -18,6 +18,8 @@ public:
 	//virtual HRESULT InitCopy(D2DAnimationSprite *sourceSprite);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, float destX, float destY, float alpha = 1.0f);
+	virtual void RenderMatrix(ID2D1HwndRenderTarget *renderTarget, float destX, float destY,
+		const D2D1::Matrix3x2F& mat, float alpha = 1.0f);
 
 	virtual Animation *GetAnimation() { return _animation; }
 

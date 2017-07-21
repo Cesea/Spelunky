@@ -21,7 +21,7 @@ HRESULT DWrite::SetFont(const WCHAR *fontName, float fontSize)
 	//만약 이미 있다면 해제하고 진행한다.
 	SAFE_RELEASE(_textFormat);
 
-	result = _dWriteFactory->CreateTextFormat(L"Terminal", NULL,
+	result = _dWriteFactory->CreateTextFormat(fontName, NULL,
 		DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"en_us", &_textFormat);
 
 

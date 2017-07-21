@@ -18,23 +18,36 @@ public :
 	virtual HRESULT InitFrame(const std::wstring &key,int frameWidth, int frameHeight, const IntVector2 &anchor);
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos, float alpha = 1.0f);
-	virtual void Render(ID2D1HwndRenderTarget *renderTarget, int sourceX, int sourceY, const Vector2 &camPos, float alpha = 1.0f);
+
+	void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos, float alpha = 1.0f);
+	void Render(ID2D1HwndRenderTarget *renderTarget, int sourceX, int sourceY, const Vector2 &camPos, float alpha = 1.0f);
+
+	void RenderScale(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos, float alpha = 1.0f);
+
+
+	HRESULT AlphaInit(const std::wstring &key, int sourceX, int sourceY, int frameWidth, int frameHeight, const IntVector2 &anchor);
+	HRESULT AlphaInitAnimation(const std::wstring &key,Animation *animation, const IntVector2 &anchor);
+	HRESULT AlphaInitFrame(const std::wstring &key,int frameWidth, int frameHeight, const IntVector2 &anchor);
 
 	Vector2 position;
 
 	void MoveTo(const Vector2 &targetPos, float time);
 
+	void SetScale(const float f) { _scale = f; }
+
 protected :
 	bool _interpolating{false};
-	D2DSprite *_sprite;
+	D2DSprite *_sprite{};
+
+	bool _hasAlpha{ false };
+	D2DSprite *_alphaSprite{};
 
 	Timer _timer;
 
 	Vector2 _startPosition;
 	Vector2 _targetPosition;
 
-	int _zOrder{};
+	float _scale{ 1.0f };
 };
 
 #endif
