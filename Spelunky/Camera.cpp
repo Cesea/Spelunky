@@ -20,31 +20,45 @@ void Camera::Release(void)
 {
 }
 
-void Camera::Update(void)
+void Camera::Update(float deltaTime)
 {
-	if (KEYMANAGER->IsStayKeyDown(VK_LEFT))
-	{
-		_position.AddToTileRelX(-7);
-	}
-	else if (KEYMANAGER->IsStayKeyDown(VK_RIGHT))
-	{
-		_position.AddToTileRelX(7);
-
-	}
-	if (KEYMANAGER->IsStayKeyDown(VK_UP))
-	{
-		_position.AddToTileRelY(-7);
-	}
-	else if (KEYMANAGER->IsStayKeyDown(VK_DOWN))
-	{
-		_position.AddToTileRelY(7);
-	}
-
 	if (_target && _following)
 	{
 		_position = _target->position;
 		_position.AddToTile(-10, -6);
 	}
+	if (_shaking)
+	{
+		if (_shakeTimer.Tick(deltaTime))
+		{
+			_shakeCount--;
+			if (_shakeCount == -1)
+			{
+				_shaking = false;
+				_position = _targetPosition;
+			}
+			else if (_shakeCount == 0)
+			{
+				_startPosition = _position;
+				_targetPosition = _anchorPosition;
+			}
+			else
+			{
+				_power -= _powerSubDelta;
+				_startPosition = _position;
+
+				_targetPosition = _anchorPosition;
+				float randRadian = RND->GetFloat(0, M_PI2);
+				_targetPosition.AddToTileRel(cosf(randRadian) * _power, -sinf(randRadian) * _power);
+			}
+		}
+		else
+		{
+			float t = _shakeTimer.GetCurrentSecond() / _shakeTimer.GetTargetSecond();
+			_position = InterpolateTilePosition(_startPosition, _targetPosition, t);
+		}
+	}
+
 	KeepCameraInsideAnchorRect();
 	//_position = _pPlayerCar->GetPosition();
 }
@@ -61,6 +75,17 @@ void Camera::SetPosition(const TilePosition & position)
 void Camera::Move(const Vector2 & v)
 {
 	_position.AddToTileRel(v.x, v.y);
+}
+
+void Camera::Shake(float power, int shakeCount, float t)
+{
+	_shakeTimer.ResetAndChangeTargetSecond(t / float(shakeCount));
+	_power = power;
+	_shaking = true;
+	_shakeCount = shakeCount;
+	_powerSubDelta = (_power / (float)shakeCount);
+
+	_anchorPosition = _position;
 }
 
 void Camera::KeepCameraInsideAnchorRect()

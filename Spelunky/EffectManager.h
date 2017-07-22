@@ -6,12 +6,14 @@
 
 #include "Camera.h"
 
-#define DUST_SPRITE_NUM 30
+#define DUST_SPRITE_NUM 36
+#define DUST_MAX_NUM 10
 
 
 struct DustChunk
 {
-	SpriteObject sprite[25];
+	SpriteObject sprite[DUST_SPRITE_NUM];
+	Timer endTimer;
 };
 
 class EffectManager : public singletonBase<EffectManager>
@@ -28,17 +30,20 @@ public :
 
 	void SetCameraLink(Camera *camera) { _pCamera = camera; }
 
-
 	void PlayDustParticles(const Vector2 &position);
+
+	void ClearUpdateChunks();
 
 private :
 	Vector2 GetRandomVector2(float xMax, float yMax);
 	Vector2 GetRandomVector2(float xMin, float xMax, float yMin, float yMax);
 
+	void DustSpriteEnd();
 
 	int _currentDustChunkTracker{ 0 };
-	DustChunk _dustChunks[10];
+	DustChunk _dustChunks[DUST_MAX_NUM];
 	std::list<int> _dustUpdateChunks;
+	
 
 	Camera *_pCamera{};
 };

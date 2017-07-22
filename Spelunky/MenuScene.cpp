@@ -16,7 +16,6 @@ HRESULT MenuScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlebatalpha.png", L"titlebatalpha");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlelayers.png", L"titlelayers");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlealpha.png", L"titlealpha");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlealpha.png", L"titlealpha");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_doorback.png", L"mainmenu_doorback");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_arch.png", L"mainmenu_arch");
@@ -79,6 +78,8 @@ HRESULT MenuScene::Init(void)
 	_currentState = MenuSceneState::Menu;
 	EFFECTMANAGER->Init();
 
+	_camera.Init();
+
 #pragma region TitleInit
 	_titleObjects.title.Init(L"title", 0, 0, WINSIZEX, WINSIZEY, IntVector2());
 	_titleObjects.player.Init(L"titlelayers", 0, 0, 1024, 512, IntVector2());
@@ -109,6 +110,11 @@ HRESULT MenuScene::Init(void)
 	_dWrite.CreateTextFormat(&_menuNormalText, L"Tekton", 22);
 	_dWrite.CreateTextFormat(&_menuYellowText, L"Tekton", 26);
 
+	_menuFirstTrigger.Init(2.0f, Delegate<void>::FromFunction<MenuScene, &MenuScene::MenuAnimationEndFunction>(this));
+	_menuFirstTrigger.SetValid(true);
+	_menuSecondTrigger.Init(1.0f, Delegate<void>::FromFunction<MenuScene, &MenuScene::MenuAnimationEndFunction>(this));
+	_menuSecondTrigger.SetValid(false);
+
 	_menuObjects.doorBack.Init(L"mainmenu_doorback", 0, 0, 512, 512, IntVector2(-256, -256));
 	_menuObjects.doorBack.position = Vector2(WINSIZEX / 2, WINSIZEY / 2 );
 
@@ -131,7 +137,8 @@ HRESULT MenuScene::Init(void)
 	_menuObjects.sandDirt.position.x = WINSIZEX / 2;
 	_menuObjects.sandDirt.position.y = 550;
 
-	_menuObjects.alpha.Init(L"mainmenu_alpha", 0, 0, WINSIZEX, WINSIZEY, IntVector2(0, 0));
+	_menuObjects.alpha.Init(L"mainmenu_alpha", 0, 0, 1330, 770, IntVector2(0, 0));
+	_menuObjects.alpha.position -= Vector2(25, 25);
 
 	_menuObjects.doors[0].Init(L"mainmenu_doorandrocks", 0, 0, 320, 320, IntVector2(-320, -320));
 	_menuObjects.doors[0].position = Vector2(WINSIZEX / 2 + 64, (WINSIZEY / 2 + 10) + 64);
@@ -150,7 +157,6 @@ HRESULT MenuScene::Init(void)
 	_menuObjects.head.Init(L"mainmenu_doorandrocks", 704, 384, 192, 192, IntVector2(-96, -96));
 	_menuObjects.head.position = Vector2(WINSIZEX / 2, 367);
 	_menuObjects.head.SetRotationEndFunction(Delegate<void>::FromFunction<MenuScene, &MenuScene::MenuAnimationEndFunction>(this));
-	_menuObjects.head.RotateTo(180.0f, 1.8f);
 
 	for (int i = 0; i < 6; ++i)
 	{
@@ -177,7 +183,7 @@ HRESULT MenuScene::Init(void)
 	_menuTexts[4] = L"Help & Options";
 	_menuTexts[5] = L"Exit Game";
 
-	EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2, 367));
+	//EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2, 367));
 	
 
 #pragma endregion
@@ -196,6 +202,8 @@ void MenuScene::Update(void)
 	PullRawInput(&rawInput);
 
 	ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
+
+	_camera.Update(deltaTime);
 
 	switch (_currentState)
 	{
@@ -222,6 +230,10 @@ void MenuScene::Update(void)
 	}break;
 	case Menu:
 	{
+
+		_menuFirstTrigger.Update(deltaTime);
+		_menuSecondTrigger.Update(deltaTime);
+
 		if (_canReceiveInput)
 		{
 			if (KEYMANAGER->IsOnceKeyDown('J'))
@@ -300,7 +312,7 @@ void MenuScene::Render()
 	gRenderTarget->BeginDraw();
 	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
-	Vector2 camPos{};
+	Vector2 camPos = _camera.GetPosition().UnTilelize();
 
 
 	switch (_currentState)
@@ -329,7 +341,7 @@ void MenuScene::Render()
 		for (int i = 0; i < 6; ++i)
 		{
 			_menuObjects.spears[i].Render(gRenderTarget, camPos);
-			_menuObjects.ornaments[i].Render(gRenderTarget, camPos);
+			//_menuObjects.ornaments[i].Render(gRenderTarget, camPos);
 		}
 
 		_menuObjects.body.Render(gRenderTarget, camPos);
@@ -397,6 +409,12 @@ void MenuScene::MenuAnimationEndFunction()
 
 	if (_menuObjects.animationEndTracker == 1)
 	{
+		_menuObjects.head.RotateTo(180.0f, 1.0f);
+		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 - 26, 410));
+		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 + 20, 424));
+	}
+	else if (_menuObjects.animationEndTracker == 2)
+	{
 		for (int i = 0; i < 4; ++i)
 		{
 			Vector2 delta{};
@@ -406,13 +424,22 @@ void MenuScene::MenuAnimationEndFunction()
 			else if (i == 3) { delta.y += 250; }
 			_menuObjects.doors[i].MoveTo(_menuObjects.doors[i].position + delta, 1.8f);
 		}
-	}
-	else if (_menuObjects.animationEndTracker == 2)
-	{
-		_menuObjects.body.MoveBy(Vector2(0, 400), 2.0f);
-		_menuObjects.head.MoveBy(Vector2(0, 400), 2.0f);
+		_camera.Shake(8, 50, 1.8f);
 	}
 	else if (_menuObjects.animationEndTracker == 3)
+	{
+		_menuSecondTrigger.SetValid(true);
+
+	}
+	else if (_menuObjects.animationEndTracker == 4)
+	{
+		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 - 10, 647));
+		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 + 15, 656));
+		_menuObjects.body.MoveBy(Vector2(0, 400), 2.0f);
+		_menuObjects.head.MoveBy(Vector2(0, 400), 2.0f);
+		_camera.Shake(8, 50, 2.0f);
+	}
+	else if (_menuObjects.animationEndTracker == 5)
 	{
 		_menuObjects.spears[0].MoveBy(Vector2(500.0f, 0), SPEAR_TIME);
 		ShowTitleText();

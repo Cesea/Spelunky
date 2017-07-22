@@ -11,22 +11,20 @@ GamePlayScene::~GamePlayScene()
 
 HRESULT GamePlayScene::LoadContent()
 {
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\minetile.png", L"minetile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\woodtile.png", L"woodtile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\jungletile.png", L"jungletile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\minetile.png", L"minetile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\woodtile.png", L"woodtile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\jungletile.png", L"jungletile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\templetile.png", L"templetile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\bordertile.png", L"bordertile");
+
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\char_orange.png", L"char_orange");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\minebg.png", L"minebg");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitdoors.png", L"exitdoors");
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gems.png", L"gems");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\playerhud.png", L"playerhud");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\moneyhud.png", L"moneyhud");
-
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\rock.png", L"rock");
 
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
@@ -152,12 +150,12 @@ void GamePlayScene::Update(void)
 
 	float camSpeed = 200.0f;
 
-	_camera.Update();
+	_camera.Update(deltaTime);
 	STAGEMANAGER->Update(deltaTime);
 
 	Vector2 absMouseVector = _camera.GetPosition().UnTilelize() + currentMouse;
 
-	if (_leftDown)
+	if (KEYMANAGER->IsOnceKeyDown('Q'))
 	{
 		TilePosition mouseTilePos(absMouseVector);
 		STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));

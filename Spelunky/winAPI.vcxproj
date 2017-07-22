@@ -107,6 +107,7 @@
     <ClInclude Include="PropertyFactory.h" />
     <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="TimeTrigger.h" />
     <ClInclude Include="Tunnel.h" />
     <ClInclude Include="DWrite.h" />
     <ClInclude Include="EquipItem.h" />
@@ -162,7 +163,6 @@
     <ClInclude Include="TileInfo.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Timer.h" />
-    <ClInclude Include="Trigger.h" />
     <ClInclude Include="UpperDeathState.h" />
     <ClInclude Include="Utillities.h" />
     <ClInclude Include="Vector2.h" />
@@ -239,7 +239,7 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="TimeTrigger.cpp" />
     <ClCompile Include="Tunnel.cpp" />
     <ClCompile Include="UpperDeathState.cpp" />
     <ClCompile Include="Vector2.cpp" />

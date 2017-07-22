@@ -91,7 +91,7 @@ void SpriteObject::Update(float deltaTime)
 	}
 	if (_scaleInterpolating)
 	{
-		if (_rotationTimer.Tick(deltaTime))
+		if (_scaleTimer.Tick(deltaTime))
 		{
 			_scaleTimer.Reset();
 			_scaleInterpolating = false;

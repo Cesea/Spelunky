@@ -13,15 +13,14 @@ MapToolScene::~MapToolScene()
 
 HRESULT MapToolScene::LoadContent()
 {
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\alltiles.png", L"alltiles");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\minetile.png", L"minetile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\woodtile.png", L"woodtile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\jungletile.png", L"jungletile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\templetile.png", L"templetile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\minetile.png", L"minetile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\woodtile.png", L"woodtile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\jungletile.png", L"jungletile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\templetile.png", L"templetile");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\bordertile.png", L"bordertile");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\property.png", L"property");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\maptool\\property.png", L"property");
 
 	return S_OK;
 }
@@ -1118,6 +1117,7 @@ void MapToolScene::WriteTileInfoChunkForMap(FileUtils::File &file, const TileInf
 			file.Write(L"Collision Type : %d\n", (int)currentTileInfo.collisionType);
 			file.Write(L"Mask Info : %u\n", currentTileInfo.maskInfo);
 			file.Write(L"Layer : %d\n", currentTileInfo.layer);
+			file.Write(L"Can Be Destroyed : %d\n", currentTileInfo.canBeDestroyedByBomb);
 		}
 	}
 }
@@ -1143,6 +1143,7 @@ void MapToolScene::ReadTileInfoChunkForMap(FileUtils::File & file, TileInfo * in
 			file.Read(L"Collision Type : %d\n", &currentTileInfo.collisionType);
 			file.Read(L"Mask Info : %u\n", &currentTileInfo.maskInfo);
 			file.Read(L"Layer : %d\n", &currentTileInfo.layer);
+			file.Read(L"Can Be Destroyed : %d\n", &currentTileInfo.canBeDestroyedByBomb);
 
 			if (wcscmp(buffer, L"e") == 0)
 			{
@@ -1153,6 +1154,8 @@ void MapToolScene::ReadTileInfoChunkForMap(FileUtils::File & file, TileInfo * in
 				currentTileInfo.imageKey = buffer;
 				CheckUsingImageExistence(currentTileInfo.imageKey);
 			}
+
+			ZeroMemory(buffer, 40);
 		}
 	}
 }

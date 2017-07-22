@@ -198,41 +198,51 @@ void Stage::Release()
 
 void Stage::ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height)
 {
-	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
+	for (int y = yStartIndex; y < yStartIndex + height; ++y)
 	{
-		if (tileLayer0[i])
+		for (int x = xStartIndex; x < xStartIndex + width; ++x)
 		{
-			tileLayer0[i]->maskInfo = 0;
-			for (int j = 0; j < 4; ++j)
+			int index = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
+			if (tileLayer0[index])
 			{
-				tileLayer0[i]->spriteMaskInfo[j].hasMask = 0;
-				tileLayer0[i]->spriteMaskInfo[j].maskSprite = nullptr;
+				tileLayer0[index]->maskInfo = 0;
+				for (int i = 0; i < 4; ++i)
+				{
+					tileLayer0[index]->spriteMaskInfo[i].hasMask= 0;
+					tileLayer0[index]->spriteMaskInfo[i].maskSprite= nullptr;
+				}
 			}
 		}
 	}
-
-	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
+	for (int y = yStartIndex; y < yStartIndex + height; ++y)
 	{
-		if (tileLayer1[i])
+		for (int x = xStartIndex; x < xStartIndex + width; ++x)
 		{
-			tileLayer1[i]->maskInfo = 0;
-			for (int j = 0; j < 4; ++j)
+			int index = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
+			if (tileLayer1[index])
 			{
-				tileLayer1[i]->spriteMaskInfo[j].hasMask = 0;
-				tileLayer1[i]->spriteMaskInfo[j].maskSprite = nullptr;
+				tileLayer1[index]->maskInfo = 0;
+				for (int i = 0; i < 4; ++i)
+				{
+					tileLayer1[index]->spriteMaskInfo[i].hasMask= 0;
+					tileLayer1[index]->spriteMaskInfo[i].maskSprite= nullptr;
+				}
 			}
 		}
 	}
-
-	for (int i = 0; i < STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY; ++i)
+	for (int y = yStartIndex; y < yStartIndex + height; ++y)
 	{
-		if (tileLayer2[i])
+		for (int x = xStartIndex; x < xStartIndex + width; ++x)
 		{
-			tileLayer2[i]->maskInfo = 0;
-			for (int j = 0; j < 4; ++j)
+			int index = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
+			if (tileLayer2[index])
 			{
-				tileLayer2[i]->spriteMaskInfo[j].hasMask = 0;
-				tileLayer2[i]->spriteMaskInfo[j].maskSprite = nullptr;
+				tileLayer2[index]->maskInfo = 0;
+				for (int i = 0; i < 4; ++i)
+				{
+					tileLayer2[index]->spriteMaskInfo[i].hasMask= 0;
+					tileLayer2[index]->spriteMaskInfo[i].maskSprite= nullptr;
+				}
 			}
 		}
 	}
@@ -435,21 +445,50 @@ void Stage::Render(const TilePosition &camPos)
 void Stage::DestroyTile(const IntVector2 & tilePos)
 {
 	bool destroyed = false;
-	if (tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] != nullptr)
+
+	Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
+	Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
+	Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
+
+
+	if (pLayer0Tile != nullptr &&
+		pLayer0Tile->canBeDestroyedByBomb)
 	{
-		EVENTMANAGER->QueueEvent(new DestroyObjectEvent(
-			tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)]->GetId()));
-		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+		pLayer0Tile->canBeDestroyedByBomb = false;
+		pLayer0Tile->sourceIndex = pLayer0Tile->destroyedIndex;
+		pLayer0Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
+		pLayer0Tile->thisMaskInfo = 0;
+		pLayer0Tile->nearMaskInfo = 15;
 		destroyed = true;
+
+		pLayer2Tile = pLayer0Tile;
+		pLayer0Tile = nullptr;
 	}
-	else if(tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] != nullptr)
+	else if(pLayer1Tile != nullptr &&
+		pLayer1Tile->canBeDestroyedByBomb)
 	{
-		EVENTMANAGER->QueueEvent(new DestroyObjectEvent(
-			tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)]->GetId()));
-		tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+		pLayer1Tile->canBeDestroyedByBomb = false;
+		pLayer1Tile->sourceIndex = pLayer1Tile->destroyedIndex;
+		pLayer1Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
+		pLayer1Tile->thisMaskInfo = 0;
+		pLayer1Tile->nearMaskInfo = 15;
 		destroyed = true;
+
+		pLayer2Tile = pLayer1Tile;
+		pLayer1Tile = nullptr;
 	}
 
+	if (pLayer2Tile != nullptr &&
+		pLayer2Tile->canBeDestroyedByBomb)
+	{
+		//EVENTMANAGER->QueueEvent(new DestroyTileEvent())
+		pLayer2Tile->canBeDestroyedByBomb = false;
+		pLayer2Tile->sourceIndex = pLayer2Tile->destroyedIndex;
+		pLayer2Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
+		pLayer2Tile->thisMaskInfo = 0;
+		pLayer2Tile->nearMaskInfo = 15;
+		destroyed = true;
+	}
 	if (destroyed)
 	{
 		for (auto &gem : _gems)
@@ -459,6 +498,8 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 				gem->Digged();
 			}
 		}
+
+		ClearAllTheBits(tilePos.x - 1, tilePos.y - 1, 3, 3);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 0);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 1);
 	}
@@ -581,6 +622,7 @@ void Stage::BuildTileLayerFromFile(FileUtils::File & file,
 				file.Read(L"Collision Type : %d\n", &property->collisionType);
 				file.Read(L"Mask Info : %u\n", &property->maskInfo);
 				file.Read(L"Layer : %d\n", &property->layer);
+				file.Read(L"Can Be Destroyed : %d\n", &property->canBeDestroyedByBomb);
 
 				pTileLayer[index] = (Tile *)OBJECTMANAGER->CreateObject(L"tile", property);
 				IntVector2 worldPositon{};
@@ -615,7 +657,7 @@ void Stage::BuildTileLayerFromFile(FileUtils::File & file,
 			}
 			else
 			{
-				for (int i = 0; i < 7; ++i)
+				for (int i = 0; i < 8; ++i)
 				{
 					file.GetLine();
 				}

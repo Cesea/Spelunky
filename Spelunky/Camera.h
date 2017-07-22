@@ -11,7 +11,7 @@ public :
 
 	virtual HRESULT Init();
 	virtual void Release(void);
-	virtual void Update(void);
+	virtual void Update(float deltaTime);
 
 	void SetTarget(GameObject *target);
 	void SetPosition(const TilePosition& position);
@@ -20,12 +20,19 @@ public :
 
 	void Move(const Vector2 &v);
 
+	void Shake(float power, int shakeCount, float t);
 	
 private :
 
 	void KeepCameraInsideAnchorRect();
 
 	TilePosition _position{};
+
+	TilePosition _startPosition{};
+	TilePosition _targetPosition{};
+
+	TilePosition _anchorPosition{};
+
 	Rect _seeingRect{};
 	Rect _anchorRect{};
 	Rect _worldRect{};
@@ -33,6 +40,12 @@ private :
 	GameObject *_target{};
 
 	bool _following{ true };
+
+	bool _shaking{ false };
+	float _power{ 0 };
+	float _powerSubDelta{ 0 };
+	int _shakeCount{ 0 };
+	Timer _shakeTimer;
 
 };
 

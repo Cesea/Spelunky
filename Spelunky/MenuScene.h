@@ -3,7 +3,9 @@
 
 #include "IScene.h"
 
+#include "Camera.h"
 #include "SpriteObject.h"
+#include "TimeTrigger.h"
 
 #define SPEAR_TIME 0.25f
 
@@ -78,6 +80,8 @@ private:
 
 
 private :
+	Camera _camera;
+
 	MenuSceneState _currentState{MenuSceneState::Title};
 
 	TitleObjects _titleObjects;
@@ -98,6 +102,9 @@ private :
 	bool _showText{ false };
 
 	bool _canReceiveInput{ false };
+
+	TimeTrigger _menuFirstTrigger;
+	TimeTrigger _menuSecondTrigger;
 };
 
 

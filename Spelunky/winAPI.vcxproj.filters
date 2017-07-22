@@ -270,9 +270,6 @@
     <ClInclude Include="StateManager.h">
       <Filter>GameFramework2D\Utils\State</Filter>
     </ClInclude>
-    <ClInclude Include="Trigger.h">
-      <Filter>GameFramework2D\Utils\Trigger</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>GameFramework2D\Animation</Filter>
     </ClInclude>
@@ -420,6 +417,9 @@
     <ClInclude Include="EffectManager.h">
       <Filter>Game\Common\EffectManager.</Filter>
     </ClInclude>
+    <ClInclude Include="TimeTrigger.h">
+      <Filter>GameFramework2D\Utils\Trigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -496,9 +496,6 @@
     </ClCompile>
     <ClCompile Include="GamePlayScene.cpp">
       <Filter>Game\Scene\GamePlayScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Trigger.cpp">
-      <Filter>GameFramework2D\Utils\Trigger</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>GameFramework2D\Animation</Filter>
@@ -640,6 +637,9 @@
     </ClCompile>
     <ClCompile Include="EffectManager.cpp">
       <Filter>Game\Common\EffectManager.</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeTrigger.cpp">
+      <Filter>GameFramework2D\Utils\Trigger</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
