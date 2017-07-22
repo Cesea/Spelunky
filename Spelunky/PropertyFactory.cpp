@@ -35,12 +35,14 @@ void PropertyFactory::RegisterBuilders()
 {
 	RegisterBuilder(L"tile", new TPropertyBuilder<TileProperty>());
 	RegisterBuilder(L"tunnel", new TPropertyBuilder<TunnelProperty>());
+	RegisterBuilder(L"gem", new TPropertyBuilder<GemProperty>());
 }
 
 void PropertyFactory::UnRegisterBuilders()
 {
 	UnRegisterBuilder(L"tile");
 	UnRegisterBuilder(L"tunnel");
+	UnRegisterBuilder(L"gem");
 }
 
 void PropertyFactory::RegisterBuilder(const std::wstring & key, PropertyBuilder * builder)

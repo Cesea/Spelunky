@@ -17,7 +17,8 @@ EventType HoldingEvent::_type = EVENT_HOLDING;
 
 EventType StageTransitionEvent::_type = EVENT_STAGE_TRANSITIOIN;
 
-//EventType CollisionEvent::_type = EVENT_COLLISION;
+EventType DestroyTileEvent::_type = EVENT_DESTROY_TILE;
+
 
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
@@ -264,4 +265,23 @@ IEvent * StageTransitionEvent::Copy() const
 const WCHAR * StageTransitionEvent::GetName() const
 {
 	return L"Stage Transition Event";
+}
+
+DestroyTileEvent::DestroyTileEvent(const IntVector2 &position)
+	:_position(position)
+{
+}
+
+DestroyTileEvent::~DestroyTileEvent()
+{
+}
+
+IEvent * DestroyTileEvent::Copy() const
+{
+	return new DestroyTileEvent(_position);
+}
+
+const WCHAR * DestroyTileEvent::GetName() const
+{
+	return L"Destroy Tile Event";
 }

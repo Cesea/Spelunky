@@ -4,6 +4,7 @@
 #include "Tile.h"
 #include "Tunnel.h"
 #include "Player.h"
+#include "Gem.h"
 
 GameObjectFactory::GameObjectFactory()
 {
@@ -40,6 +41,7 @@ void GameObjectFactory::RegisterBuilders()
 	RegisterBuilder(L"tile", new TGameObjectBuilder<Tile>());
 	RegisterBuilder(L"tunnel", new TGameObjectBuilder<Tunnel>());
 	RegisterBuilder(L"player", new TGameObjectBuilder<Player>());
+	RegisterBuilder(L"gem", new TGameObjectBuilder<Gem>());
 }
 
 void GameObjectFactory::UnRegisterBuilders()
@@ -47,6 +49,7 @@ void GameObjectFactory::UnRegisterBuilders()
 	UnRegisterBuilder(L"tile");
 	UnRegisterBuilder(L"tunnel");
 	UnRegisterBuilder(L"player");
+	UnRegisterBuilder(L"gem");
 }
 
 void GameObjectFactory::RegisterBuilder(const std::wstring & key, GameObjectBuilder * builder)

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Item.h"
 
+#include "CollisionComponent.h"
+
 Item::Item(ObjectId id)
 	:MovingObject::MovingObject(id)
 {

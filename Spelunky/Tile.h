@@ -3,6 +3,7 @@
 
 #include "ColiidingObject.h"	
 
+
 class Tile : public CollidingObject
 {
 public :
@@ -34,7 +35,11 @@ public :
 	bool32 canBeDestroyedByBomb{ false };
 
 	int layer{};
-
+};
+struct ReturnTile
+{
+	Tile *tiles[9];
+	int tileNum{};
 };
 
 #endif

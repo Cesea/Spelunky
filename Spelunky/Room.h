@@ -4,6 +4,7 @@
 #include "stdafx.h"	
 #include "Tile.h"
 #include "Tunnel.h"
+#include "Gem.h"
 
 struct RandomRoomGenerated
 {
@@ -24,11 +25,8 @@ struct RandomRoomGenerated
 };
 
 
-struct ReturnTile
-{
-	Tile *tiles[9];
-	int tileNum{};
-};
+
+typedef std::list<BaseProperty *> BasePropertyList;
 
 struct Room
 {
@@ -45,7 +43,7 @@ struct Room
 	D2DSprite *roomBackgroud;
 	Tile *layer0[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
 	Tile *layer1[ROOM_TILE_COUNTX * ROOM_TILE_COUNTY]{};
-	std::unordered_map<std::wstring, BaseProperty *> properties;
+	std::unordered_map<std::wstring, BasePropertyList> properties;
 };
 
 class Stage
@@ -58,6 +56,7 @@ public:
 	HRESULT InitForMiddleStage(const std::wstring firstKey);
 	void Release();
 
+	void Update(float deltaTime);
 	void Render(const TilePosition &camPos);
 
 	void ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height);
@@ -68,7 +67,12 @@ public:
 
 	IntVector2 GetStartPosition() { return IntVector2(_tunnels[0]->position.tileX, _tunnels[0]->position.tileY); }
 
+	void DestroyTile(const IntVector2 &tilePos);
+
 private:
+	void RegisterDelegates();
+	void UnRegisterDelegates();
+
 	void BuildBorder();
 	bool GetRandomFileNameFromRoomType(RoomType types, std::wstring &str);
 
@@ -83,9 +87,11 @@ private:
 	void TileInfoBitmaskCopy(D2DSprite *sourSprite, Tile *sourTile, Tile *maskTile, uint32 offset);
 
 	void BuildEntrance();
+	void BuildGems();
 	void CollectRoomPropertyFromFile(FileUtils::File &file, Room *room);
 
 
+	void HandleCollectMoneyEvent(const IEvent *event);
 private:
 	Room _rooms[16]{};
 
@@ -94,6 +100,9 @@ private:
 	Tile *tileLayer2[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
 
 	Tunnel *_tunnels[2]{};
+
+	std::list<Gem *> _gems{};
+
 
 	std::map<std::wstring, D2DSprite *> _usingSprites;
 

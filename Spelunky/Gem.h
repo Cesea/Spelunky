@@ -5,7 +5,10 @@
 
 class Gem : public PassiveItem
 {
-public :
+public:
+
+	friend class Stage;
+
 	Gem(ObjectId id);
 	virtual ~Gem();
 
@@ -14,14 +17,22 @@ public :
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
-
 	virtual GameObject *Copy(ObjectId id);
 
 	virtual void Apply(ObjectId id);
 
+	void SetIsInTile(bool b) { _isInTile = b; }
+	void Digged(); 
+
 private :
 
+
+	Gem &operator= (const GemProperty *other);
+
 	int _value{};
+	IntVector2 _sourceIndex{};
+
+	bool _isInTile{ false };
 };
 
 

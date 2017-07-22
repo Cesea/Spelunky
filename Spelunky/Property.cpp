@@ -206,6 +206,8 @@
 
 void GemProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 {
+	sourceIndex = propertyInfo.sourceIndex;
+	value = _wtoi( propertyInfo.value0);
 }
 
 void TunnelProperty::Init(const MapTool::PropertyInfo & propertyInfo)

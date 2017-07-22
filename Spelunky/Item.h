@@ -3,6 +3,11 @@
 
 #include "MovingObject.h"
 
+//#include "CollisionComponent.h"
+class CollisionComponent;
+
+#include "Room.h"
+
 class Item : public MovingObject
 {
 public :
@@ -23,11 +28,13 @@ public :
 protected  :
 	D2DSprite *_sprite{};
 
+	ReturnTile _nearTiles{};
+
 	bool32 _actorOn{false};
 	ObjectId _onActorId{ 0 };
 	bool32 _valid{true};
 
-	//ReturnTile _nearTiles{};
+	CollisionComponent *_collisionComp{};
 };
 
 #endif

@@ -21,7 +21,7 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bordertile.png", L"bordertile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitdoors.png", L"exitdoors");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gem.png", L"gem");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gems.png", L"gems");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\playerhud.png", L"playerhud");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\moneyhud.png", L"moneyhud");
@@ -128,6 +128,11 @@ void GamePlayScene::Release(void)
 
 void GamePlayScene::Update(void)
 {
+	if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
+	{
+		SCENEMANAGER->ChangeScene(L"MenuScene");
+	}
+
 	float deltaTime = TIMEMANAGER->GetElapsedTime();
 
 	Win32RawInputState rawInput = {};
@@ -148,7 +153,15 @@ void GamePlayScene::Update(void)
 	float camSpeed = 200.0f;
 
 	_camera.Update();
+	STAGEMANAGER->Update(deltaTime);
 
+	Vector2 absMouseVector = _camera.GetPosition().UnTilelize() + currentMouse;
+
+	if (_leftDown)
+	{
+		TilePosition mouseTilePos(absMouseVector);
+		STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));
+	}
 }
 
 void GamePlayScene::Render(void)
@@ -164,10 +177,10 @@ void GamePlayScene::Render(void)
 
 	_pPlayer->Render(gRenderTarget, unTiledCamPos);
 
-	//_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
-	//_moneyHudSprite->Render(gRenderTarget, 0, 140);
+	_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
+	_moneyHudSprite->Render(gRenderTarget, 0, 140);
 
-	//_dWrite.PrintText(gRenderTarget, 105, 155, 110, 30, std::to_wstring(_pPlayer->GetMoney()).c_str(), D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
+	_dWrite.PrintText(gRenderTarget, 105, 155, 110, 30, std::to_wstring(_pPlayer->GetMoney()).c_str(), D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

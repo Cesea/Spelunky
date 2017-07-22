@@ -122,6 +122,11 @@ void MapToolScene::Update(void)
 		}
 	}
 
+	if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
+	{
+		SCENEMANAGER->ChangeScene(L"MenuScene");
+	}
+
 }
 
 void MapToolScene::Render()
@@ -298,7 +303,7 @@ void MapToolScene::Render()
 				{
 					PropertyInfo &currentProperty = _roomInfo.propertyLayer0[GetIndexFromXY(x, y, 10)];
 					foundSprite->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE,
-						currentProperty.imageSourceIndex.y, currentProperty.imageSourceIndex.y);
+						currentProperty.imageSourceIndex.x, currentProperty.imageSourceIndex.y);
 				}
 			}
 		}
@@ -1195,6 +1200,9 @@ void MapToolScene::WriteTilePropertyInfoChunkForMap(FileUtils::File & file, cons
 			{
 				file.Write(L"Value1 : %s\n", currentPropertyInfo.value1);
 			}
+			
+			file.Write(L"ImageSourceIndex X : %d, Y : %d\n", currentPropertyInfo.imageSourceIndex.x, currentPropertyInfo.imageSourceIndex.y);
+
 		}
 	}
 }
@@ -1232,6 +1240,9 @@ void MapToolScene::ReadTilePropertyInfoChunkForMap(FileUtils::File & file, MapTo
 			{
 				_stprintf(currentPropertyInfo.value1, L"");
 			}
+
+			file.Read(L"ImageSourceIndex X : %d, Y : %d\n", 
+				&currentPropertyInfo.imageSourceIndex.x, &currentPropertyInfo.imageSourceIndex.y);
 		}
 	}
 }

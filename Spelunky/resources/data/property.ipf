@@ -50,76 +50,76 @@ Value1 : none
 Applied : 0
 At X : 0, Y : 1
 Property Name : gem
-SourceIndex X : -1, Y : -1
+SourceIndex X : 0, Y : 0
+Value0 : 0
+Value1 : 0
+Applied : 1
+At X : 1, Y : 1
+Property Name : gem
+SourceIndex X : 1, Y : 0
+Value0 : 0
+Value1 : 0
+Applied : 1
+At X : 2, Y : 1
+Property Name : gem
+SourceIndex X : 2, Y : 0
+Value0 : 800
+Value1 : 0
+Applied : 1
+At X : 3, Y : 1
+Property Name : gem
+SourceIndex X : 3, Y : 0
+Value0 : 1200
+Value1 : 0
+Applied : 1
+At X : 4, Y : 1
+Property Name : gem
+SourceIndex X : 4, Y : 0
+Value0 : 1600
+Value1 : 0
+Applied : 1
+At X : 5, Y : 1
+Property Name : gem
+SourceIndex X : 5, Y : 0
+Value0 : 2000
+Value1 : 0
+Applied : 1
+At X : 6, Y : 1
+Property Name : none
+SourceIndex X : 6, Y : 0
 Value0 : none
 Value1 : none
 Applied : 1
-At X : 1, Y : 1
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
-At X : 2, Y : 1
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
-At X : 3, Y : 1
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
-At X : 4, Y : 1
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
-At X : 5, Y : 1
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
-At X : 6, Y : 1
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
 At X : 7, Y : 1
 Property Name : none
 SourceIndex X : -1, Y : -1
 Value0 : none
 Value1 : none
-Applied : 0
+Applied : 1
 At X : 0, Y : 2
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
+Property Name : gem
+SourceIndex X : 6, Y : 0
+Value0 : 500
+Value1 : 0
+Applied : 1
 At X : 1, Y : 2
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
+Property Name : gem
+SourceIndex X : 7, Y : 0
+Value0 : 1500
+Value1 : 0
+Applied : 1
 At X : 2, Y : 2
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
+Property Name : gem
+SourceIndex X : 8, Y : 0
+Value0 : 100
+Value1 : 0
+Applied : 1
 At X : 3, Y : 2
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
+Property Name : gem
+SourceIndex X : -2, Y : -2
+Value0 : 0
+Value1 : 0
+Applied : 1
 At X : 4, Y : 2
 Property Name : none
 SourceIndex X : -1, Y : -1

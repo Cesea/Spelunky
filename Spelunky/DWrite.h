@@ -20,6 +20,9 @@ public:
 
 	void Release();
 
+	void PrintTextFromFormat(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height,
+		const WCHAR *str, const D2D1_COLOR_F &brushColor, IDWriteTextFormat *format);
+
 	void PrintText(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height,
 		const WCHAR *str, const D2D1_COLOR_F &brushColor);
 
@@ -28,8 +31,9 @@ public:
 		const WCHAR *str, const D2D1_COLOR_F &brushColor);
 
 	void AlignFont(Alignment alignment);
-
 	float CalculateInputTextWidth(const WCHAR *str);
+
+	HRESULT CreateTextFormat(IDWriteTextFormat **format, const WCHAR *fontName, float fontSize);
 
 private:
 	IDWriteFactory *_dWriteFactory{};

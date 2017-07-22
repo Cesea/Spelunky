@@ -61,6 +61,7 @@ namespace MapTool
 			sourceIndex = other.sourceIndex;
 			wcscpy(value0, other.value0);
 			wcscpy(value1, other.value1);
+			imageSourceIndex = other.imageSourceIndex;
 			return *this;
 		}
 

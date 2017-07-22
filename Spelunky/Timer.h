@@ -25,12 +25,9 @@ public :
 	{
 		return _targetSecond;
 	}
-
 private :
 
 	float _currentSecond;
 	float _targetSecond;
 };
-
-
 #endif

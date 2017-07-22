@@ -71,10 +71,13 @@ IntVector2 CalculateTileWorldIndex(int indexX, int indexY, int localX, int local
 
 Stage::Stage()
 {
+	//_gems.reserve(100);
+	RegisterDelegates();
 }
 
 Stage::~Stage()
 {
+	UnRegisterDelegates();
 	for (int y = 0; y < STAGE_TOTAL_COUNTY; ++y)
 	{
 		for (int x = 0; x < STAGE_TOTAL_COUNTX; ++x)
@@ -95,6 +98,13 @@ Stage::~Stage()
 	}
 	OBJECTMANAGER->DestroyObject(_tunnels[0]->GetId());
 	OBJECTMANAGER->DestroyObject(_tunnels[1]->GetId());
+
+	for (auto &gem : _gems)
+	{
+		OBJECTMANAGER->DestroyObject(gem->GetId());
+	}
+
+
 	for (auto &sprite : _usingSprites)
 	{
 		SAFE_DELETE(sprite.second);
@@ -137,6 +147,7 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 	buffer.clear();
 
 	BuildEntrance();
+	BuildGems();
 
 	return S_OK;
 }
@@ -347,6 +358,17 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 	}
 }
 
+void Stage::Update(float deltaTime)
+{
+	for (auto &gem : _gems)
+	{
+		if (gem)
+		{
+			gem->Update(deltaTime);
+		}
+	}
+}
+
 void Stage::Render(const TilePosition &camPos)
 {
 	int minX = camPos.tileX;
@@ -403,6 +425,53 @@ void Stage::Render(const TilePosition &camPos)
 			}
 		}
 	}
+
+	for (auto &gem : _gems)
+	{
+		gem->Render(gRenderTarget, untileldCamPos);
+	}
+}
+
+void Stage::DestroyTile(const IntVector2 & tilePos)
+{
+	bool destroyed = false;
+	if (tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] != nullptr)
+	{
+		EVENTMANAGER->QueueEvent(new DestroyObjectEvent(
+			tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)]->GetId()));
+		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+		destroyed = true;
+	}
+	else if(tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] != nullptr)
+	{
+		EVENTMANAGER->QueueEvent(new DestroyObjectEvent(
+			tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)]->GetId()));
+		tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+		destroyed = true;
+	}
+
+	if (destroyed)
+	{
+		for (auto &gem : _gems)
+		{
+			if (gem->position.tileX == tilePos.x && gem->position.tileY == tilePos.y)
+			{
+				gem->Digged();
+			}
+		}
+		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 0);
+		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 1);
+	}
+}
+
+void Stage::RegisterDelegates()
+{
+	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
+}
+
+void Stage::UnRegisterDelegates()
+{
+	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
 }
 
 void Stage::BuildBorder()
@@ -433,26 +502,27 @@ void Stage::BuildBorder()
 
 bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
-	switch (types)
-	{
-	case RoomType::ROOM_BLOCK:
-	{
-		str += L"_block_00.rt";
-	}break;
-	case RoomType::ROOM_AISLE :
-	{
-		str += L"_aisle_00.rt";
-	}break;
-	case RoomType::ROOM_TOP_OPEN :
-	{
-		str += L"_topopen_00.rt";
-	}break;
-	case RoomType::ROOM_BOTTOM_OPEN :
-	{
-		str += L"_bottomopen_00.rt";
-	}break;
-	}
-	//str = L"00.rt";
+	//switch (types)
+	//{
+	//case RoomType::ROOM_BLOCK:
+	//{
+	//	str += L"_block_00.rt";
+	//}break;
+	//case RoomType::ROOM_AISLE :
+	//{
+	//	str += L"_aisle_00.rt";
+	//}break;
+	//case RoomType::ROOM_TOP_OPEN :
+	//{
+	//	str += L"_topopen_00.rt";
+	//}break;
+	//case RoomType::ROOM_BOTTOM_OPEN :
+	//{
+	//	str += L"_bottomopen_00.rt";
+	//}break;
+	//}
+
+	str = L"00.rt";
 	return true;
 }
 
@@ -629,8 +699,8 @@ void Stage::BuildEntrance()
 	int endXIndex = _stageBuildInfo.exitRoomIndex.x;
 	int endYIndex = _stageBuildInfo.exitRoomIndex.y;
 
-	TunnelProperty *startProperty = (TunnelProperty *)_rooms[GetIndexFromXY(startXIndex, startYIndex, 4)].properties.find(L"tunnel")->second;
-	TunnelProperty *endProperty = (TunnelProperty *)_rooms[GetIndexFromXY(endXIndex, endYIndex, 4)].properties.find(L"tunnel")->second;
+	TunnelProperty *startProperty = (TunnelProperty *)_rooms[GetIndexFromXY(startXIndex, startYIndex, 4)].properties.find(L"tunnel")->second.front();
+	TunnelProperty *endProperty = (TunnelProperty *)_rooms[GetIndexFromXY(endXIndex, endYIndex, 4)].properties.find(L"tunnel")->second.front();
 	startProperty->sourceIndex.x += 1;
 
 	IntVector2 startLocalIndex = startProperty->position;
@@ -643,6 +713,36 @@ void Stage::BuildEntrance()
 	_tunnels[1] = (Tunnel *)OBJECTMANAGER->CreateObject(L"tunnel", endProperty);
 
 	_tunnels[1]->SetExit(true);
+}
+
+void Stage::BuildGems()
+{
+	for (int y = 0; y < 4; ++y)
+	{
+		for (int x = 0; x < 4; ++x)
+		{
+			for (auto &prop : _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"gem")->second)
+			{
+				prop->position = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+				Gem *newGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", prop);
+
+				if (tileLayer0[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+				{
+					newGem->SetIsInTile(true);
+				}
+				else
+				{
+					if (tileLayer1[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+					{
+						newGem->SetIsInTile(true);
+					}
+				}
+
+				if(newGem->position.tileX)
+				_gems.push_back(newGem);
+			}
+		}
+	}
 }
 
 void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
@@ -676,13 +776,27 @@ void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
 				{
 					_stprintf(propertyInfo.value1, L"");
 				}
+				file.GetLine();
 
 				propertyName = buffer;
 				BaseProperty *property = PROPERTYFACTORY->Build(propertyName, propertyInfo);
 				if (property != nullptr)
 				{
 					property->position = IntVector2(x, y);
-					room->properties.insert(std::make_pair(propertyName, property));
+				
+					auto &found = room->properties.find(propertyName);
+					//없으면..
+					if (found == room->properties.end())
+					{
+						BasePropertyList propList;
+						propList.push_back(property);
+						room->properties.insert(std::make_pair(propertyName, propList));
+					}
+					//있으면
+					else
+					{
+						found->second.push_back(property);
+					}
 				}
 			}
 			else
@@ -690,7 +804,27 @@ void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
 				file.GetLine();
 				file.GetLine();
 				file.GetLine();
+				file.GetLine();
 			}
+		}
+	}
+}
+
+void Stage::HandleCollectMoneyEvent(const IEvent * event)
+{
+	CollectMoneyEvent *convertedEvent = (CollectMoneyEvent *)event;
+
+	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+	for (auto &iter = _gems.begin(); iter != _gems.end();)
+	{
+		if ((*iter) == object)
+		{
+			_gems.erase(iter);
+			break;
+		}
+		else
+		{
+			iter++;
 		}
 	}
 }

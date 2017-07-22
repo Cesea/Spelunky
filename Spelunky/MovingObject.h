@@ -3,16 +3,11 @@
 
 #include "GameObject.h"
 
-#include "ColliisonComponent.h"
 #include "MoveComponent.h"
-
 
 class MovingObject : public GameObject
 {
 protected :
-	friend class MovingObject;
-	friend class MoveComponent;
-	friend class SimpleMoveComponent;
 	friend class CollisionComponent;
 public :
 	MovingObject(ObjectId id);
@@ -38,7 +33,7 @@ protected  :
 
 	bool _onGround{ false };
 
-	CollisionComponent *_collisionComp{};
+	//CollisionComponent *_collisionComp{};
 };
 
 

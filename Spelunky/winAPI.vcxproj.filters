@@ -157,6 +157,12 @@
     <Filter Include="Game\Scene\MenuScene\Objects">
       <UniqueIdentifier>{267354f1-2725-4bfb-b8a2-0ceeabd1e3b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\ParticleTestScene">
+      <UniqueIdentifier>{a890e490-8284-4af5-8fb2-5086b536fffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\EffectManager.">
+      <UniqueIdentifier>{1360b238-2733-4eaa-95fe-b9281fa37ae6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -375,9 +381,6 @@
     <ClInclude Include="MoveComponent.h">
       <Filter>Game\Common\Component</Filter>
     </ClInclude>
-    <ClInclude Include="ColliisonComponent.h">
-      <Filter>Game\Common\Component</Filter>
-    </ClInclude>
     <ClInclude Include="UpperDeathState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Damaged</Filter>
     </ClInclude>
@@ -407,6 +410,15 @@
     </ClInclude>
     <ClInclude Include="IScene.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponent.h">
+      <Filter>Game\Common\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>Game\Scene\ParticleTestScene</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>Game\Common\EffectManager.</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -593,9 +605,6 @@
     <ClCompile Include="MoveComponent.cpp">
       <Filter>Game\Common\Component</Filter>
     </ClCompile>
-    <ClCompile Include="ColliisonComponent.cpp">
-      <Filter>Game\Common\Component</Filter>
-    </ClCompile>
     <ClCompile Include="UpperDeathState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Damaged</Filter>
     </ClCompile>
@@ -617,11 +626,20 @@
     <ClCompile Include="PropertyFactory.cpp">
       <Filter>Game\Common\ObjectFactory</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteObject.cpp">
+      <Filter>Game\Scene\MenuScene\Objects</Filter>
+    </ClCompile>
     <ClCompile Include="MenuScene.cpp">
       <Filter>Game\Scene\MenuScene</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteObject.cpp">
-      <Filter>Game\Scene\MenuScene\Objects</Filter>
+    <ClCompile Include="CollisionComponent.cpp">
+      <Filter>Game\Common\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Game\Scene\ParticleTestScene</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
+      <Filter>Game\Common\EffectManager.</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

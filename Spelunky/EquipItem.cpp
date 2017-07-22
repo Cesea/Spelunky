@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "EquipItem.h"
 
+#include "CollisionComponent.h"
+
 EquipItem::EquipItem(ObjectId id)
 	:Item(id)
 {

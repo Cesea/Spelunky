@@ -11,6 +11,7 @@ ScreenVector2	currentMouse = { 0, 0 }; //마우스 위치
 D2D				_d2d;
 DWrite			_dWrite;
 Console			_console;
+bool			_leftDown = false;
 
 
 char dataPath[50] = "resources\\data\\";

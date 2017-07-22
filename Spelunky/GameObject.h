@@ -11,6 +11,12 @@
 
 #include "File.h"
 
+//#include "CollisionComponent.h"
+//#include "MoveComponent.h"
+
+class CollisionComponent;
+class MoveComponent;
+
 class GameObject : public gameNode
 {
 public :

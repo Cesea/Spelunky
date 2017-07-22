@@ -5,13 +5,14 @@
 
 #include "SpriteObject.h"
 
+#define SPEAR_TIME 0.25f
+
 enum MenuSceneState
 {
 	CutScene,
 	Title,
 	Menu,
 	CharSelect
-
 };
 
 struct TitleObjects
@@ -37,8 +38,19 @@ struct MenuObjects
 	SpriteObject sandDirt;
 
 	SpriteObject alpha;
-};
 
+
+	SpriteObject doors[4];
+	SpriteObject body;
+	SpriteObject head;
+
+	SpriteObject spears[6];
+	SpriteObject ornaments[6];
+
+	int animationEndTracker{ 0 };
+
+	int selectingMenuIndex{ 0 };
+};
 
 
 class MenuScene : public IScene
@@ -54,18 +66,38 @@ public:
 
 	virtual HRESULT LoadContent() override;
 
-	//private functions
+	//private jtions
 private:
+
+	void ChangeCurrentSceneState(MenuSceneState state);
+	void MenuAnimationEndFunction();
+
+	void ShowTitleText();
+
+	void HandleSceneChange();
+
+
+private :
 	MenuSceneState _currentState{MenuSceneState::Title};
 
 	TitleObjects _titleObjects;
 	MenuObjects _menuObjects;
 
+	ObjectId _lastId{ 1 };
+	ObjectId GetNextId() { return _lastId++; }
+
 	Timer _batTimer;
 	int _currentBatTracker{ 0 };
 
-	
+	IDWriteTextFormat *_menuNormalText{};
+	IDWriteTextFormat *_menuYellowText{};
 
+	WCHAR *_menuTexts[6];
+
+	float _textAlpha{ false };
+	bool _showText{ false };
+
+	bool _canReceiveInput{ false };
 };
 
 

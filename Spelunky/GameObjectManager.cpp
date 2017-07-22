@@ -62,6 +62,8 @@ void GameObjectManager::DestroyObject(const IEvent * event)
 	auto &found = _objects.find(convertedEvent->GetId());
 	if (found != _objects.end())
 	{
+		delete found->second;
+		found->second = nullptr;
 		_objects.erase(found);
 	}
 }

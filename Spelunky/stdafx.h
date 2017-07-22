@@ -37,6 +37,7 @@
 
 //스탠다드 입출력 헤더 인클루드.. (printf, scanf, puts, gets.. 등등..)
 #include <stdio.h>	
+#include <wchar.h>
 
 //윈도우에서 사용할 문자열 출력 헤더 인클루드 한다...
 //(TextOut, DrawText, wsprintf등등..)
@@ -154,10 +155,12 @@ typedef Vector3 MeterVector3;
 #include "EventManager.h"
 #include "GameObjectManager.h"
 #include "PropertyFactory.h"
+#include "EffectManager.h"
 
 #define EVENTMANAGER EventManager::getSingleton()
 #define OBJECTMANAGER GameObjectManager::getSingleton()
 #define PROPERTYFACTORY PropertyFactory::getSingleton()
+#define EFFECTMANAGER EffectManager::getSingleton()
 
 #include "Win32Input.h"
 #include "Utillities.h"
@@ -179,6 +182,7 @@ typedef Vector3 MeterVector3;
 extern HINSTANCE _hInstance; //프로그램 인스턴스
 extern HWND _hWnd; //윈도우핸들
 extern ScreenVector2 currentMouse; //마우스~~
+extern bool _leftDown;
 extern D2D _d2d;
 extern DWrite _dWrite;
 

@@ -39,6 +39,19 @@ void DWrite::Release()
 
 }
 
+void DWrite::PrintTextFromFormat(ID2D1HwndRenderTarget *renderTarget, float x, float y, float width, float height,
+		const WCHAR *str, const D2D1_COLOR_F &brushColor, IDWriteTextFormat *format)
+{
+	ID2D1SolidColorBrush *brush = nullptr;
+	renderTarget->CreateSolidColorBrush(brushColor, &brush);
+
+	D2D1_RECT_F layoutRect = { x, y, x + width, y + height };
+	renderTarget->DrawTextW(str, wcslen(str), format, layoutRect, brush);
+
+	brush->Release();
+	brush = nullptr;
+}
+
 void DWrite::PrintText(ID2D1HwndRenderTarget *renderTarget, float x, float y,float width, float height,
 	const WCHAR * str, const D2D1_COLOR_F &brushColor)
 {
@@ -92,4 +105,16 @@ float DWrite::CalculateInputTextWidth(const WCHAR * str)
 	_textLayout->GetMetrics(&metrics);
 
 	return metrics.width;
+}
+
+HRESULT DWrite::CreateTextFormat(IDWriteTextFormat **format, const WCHAR *fontName, float fontSize)
+{
+	HRESULT	result = E_FAIL;
+	result = _dWriteFactory->CreateTextFormat(fontName, NULL,
+		DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"en_us", format);
+
+	(*format)->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	(*format)->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+	return result;
 }

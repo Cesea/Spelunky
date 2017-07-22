@@ -13,6 +13,9 @@ HRESULT SpriteObject::Init(const std::wstring &key, int sourceX, int sourceY, in
 {
 	_sprite = new D2DSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(key), sourceX, sourceY, frameWidth, frameHeight, anchor);
+
+	_frameWidth = _sprite->GetWidthPerFrame();
+	_frameHeight = _sprite->GetHeightPerFrame();
 	return S_OK;
 }
 
@@ -20,6 +23,9 @@ HRESULT SpriteObject::InitAnimation(const std::wstring &key,Animation *animation
 {
 	_sprite = new D2DAnimationSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(key), animation, anchor);
+
+	_frameWidth = _sprite->GetWidthPerFrame();
+	_frameHeight = _sprite->GetHeightPerFrame();
 
 	_sprite->GetAnimation()->Start();
 	return S_OK;
@@ -29,6 +35,9 @@ HRESULT SpriteObject::InitFrame(const std::wstring &key,int frameWidth, int fram
 {
 	_sprite = new D2DFrameSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(key), frameWidth, frameHeight, anchor);
+
+	_frameWidth = _sprite->GetWidthPerFrame();
+	_frameHeight = _sprite->GetHeightPerFrame();
 	return S_OK;
 }
 
@@ -44,50 +53,124 @@ void SpriteObject::Release(void)
 
 void SpriteObject::Update(float deltaTime)
 {
-	if (_interpolating)
+	if (_positionInterpolating)
 	{
-		if (_timer.Tick(deltaTime))
+		if (_positionTimer.Tick(deltaTime))
 		{
-			_timer.Reset();
-			_interpolating = false;
+			_positionTimer.Reset();
+			_positionInterpolating = false;
 			position = _targetPosition;
+			if (_hasPositionEndFunction)
+			{
+				_positionEndFunction();
+			}
 		}
-		float t = _timer.GetCurrentSecond() / _timer.GetTargetSecond();
+		else
+		{
+			float t = _positionTimer.GetCurrentSecond() / _positionTimer.GetTargetSecond();
+			position = InterpolateVector(_startPosition, _targetPosition, t);
+		}
+	}
+	if (_rotationInterpolating)
+	{
+		if (_rotationTimer.Tick(deltaTime))
+		{
+			_rotationTimer.Reset();
+			_rotationInterpolating = false;
+			degree = _targetDegree;
+			if (_hasRotationEndFunction)
+			{
+				_rotationEndFunction();
+			}
+		}
+		else
+		{
+			float t = _rotationTimer.GetCurrentSecond() / _rotationTimer.GetTargetSecond();
+			degree = InterpolateFloat(_startDegree, _targetDegree, t);
+		}
+	}
+	if (_scaleInterpolating)
+	{
+		if (_rotationTimer.Tick(deltaTime))
+		{
+			_scaleTimer.Reset();
+			_scaleInterpolating = false;
+			scale = _targetScale;
+			if (_hasScaleEndFunction)
+			{
+				_scaleEndFunction();
+			}
+		}
+		else
+		{
+			float t = _scaleTimer.GetCurrentSecond() / _scaleTimer.GetTargetSecond();
+			scale = InterpolateVector(_startScale, _targetScale, t);
+		}
+	}
 
-		position = InterpolateVector(_startPosition, _targetPosition, t);
+	if (_disappearInterpolating)
+	{
+		if (_disappearTimer.Tick(deltaTime))
+		{
+			_disappearTimer.Reset();
+			_disappearInterpolating = false;
+			alpha = _targetAlpha;
+			if (_hasDisappearEndFunction)
+			{
+				_disappearEndFunction();
+			}
+		}
+		else
+		{
+			float t = _disappearTimer.GetCurrentSecond() / _disappearTimer.GetTargetSecond();
+			alpha = InterpolateFloat(_startAlpha, _targetAlpha, t);
+		}
 	}
 
 	_sprite->Update(deltaTime);
 
 }
 
-void SpriteObject::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos, float alpha)
+void SpriteObject::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
 	Vector2 drawingPos = position - camPos;
 	_sprite->Render(renderTarget, drawingPos.x, drawingPos.y, alpha);
 	if (_hasAlpha)
 	{
-		_alphaSprite->Render(renderTarget, drawingPos.x, drawingPos.y, _scale);
+		_alphaSprite->Render(renderTarget, drawingPos.x, drawingPos.y, scale.x);
 	}
 }
 
-void SpriteObject::Render(ID2D1HwndRenderTarget * renderTarget, int sourceX, int sourceY, const Vector2 & camPos, float alpha)
+void SpriteObject::Render(ID2D1HwndRenderTarget * renderTarget, int sourceX, int sourceY, const Vector2 & camPos)
 {
 	Vector2 drawingPos = position - camPos;
 	_sprite->FrameRender(renderTarget, drawingPos.x, drawingPos.y, sourceX, sourceY, alpha);
 	if (_hasAlpha)
 	{
-		_alphaSprite->FrameRender(renderTarget, drawingPos.x, drawingPos.y, sourceX, sourceY, _scale);
+		_alphaSprite->FrameRender(renderTarget, drawingPos.x, drawingPos.y, sourceX, sourceY, scale.x);
 	}
 }
 
-void SpriteObject::RenderScale(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos, float alpha)
+void SpriteObject::RenderScale(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
 	Vector2 drawingPos = position - camPos;
-	_sprite->RenderMatrix(renderTarget, drawingPos.x, drawingPos.y, D2D1::Matrix3x2F::Scale(_scale, _scale), alpha);
+	_sprite->RenderMatrix(renderTarget, drawingPos.x, drawingPos.y,
+		D2D1::Matrix3x2F::Scale(scale.x, scale.y), alpha);
 	if (_hasAlpha)
 	{
-		_alphaSprite->RenderMatrix(renderTarget, drawingPos.x, drawingPos.y, D2D1::Matrix3x2F::Scale(_scale, _scale), 1.0f - _scale);
+		_alphaSprite->RenderMatrix(renderTarget, drawingPos.x, drawingPos.y,
+			D2D1::Matrix3x2F::Scale(scale.x, scale.y), 1.0f - scale.x);
+	}
+}
+
+void SpriteObject::RenderRotate(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
+{
+	Vector2 drawingPos = position - camPos;
+	D2D1::Matrix3x2F rotMatrix = D2D1::Matrix3x2F::Rotation(degree, D2D1::Point2F(_frameWidth / 2, _frameHeight / 2));
+	_sprite->RenderRotate(renderTarget, drawingPos.x, drawingPos.y, rotMatrix, alpha);
+	if (_hasAlpha)
+	{
+		_alphaSprite->RenderMatrix(renderTarget, drawingPos.x, drawingPos.y, rotMatrix, 1.0f - scale.x);
 	}
 }
 
@@ -117,11 +200,71 @@ HRESULT SpriteObject::AlphaInitFrame(const std::wstring & key, int frameWidth, i
 	return S_OK;
 }
 
+void SpriteObject::SetPositionEndFunction(const Delegate<void> &function)
+{
+	_hasPositionEndFunction = true;
+	_positionEndFunction = function;
+}
+
+void SpriteObject::SetRotationEndFunction(const Delegate<void> &function)
+{
+	_hasRotationEndFunction = true;
+	_rotationEndFunction = function;
+}
+
+void SpriteObject::SetScaleEndFunction(const Delegate<void> &function)
+{
+	_hasScaleEndFunction = true;
+	_scaleEndFunction = function;
+}
+
+void SpriteObject::SetDisappearEndFunction(const Delegate<void>& function)
+{
+	_hasDisappearEndFunction = true;
+	_disappearEndFunction = function;
+}
+
 void SpriteObject::MoveTo(const Vector2 & targetPos, float time)
 {
 	_startPosition = position;
 	_targetPosition = targetPos;
-	_timer.ResetAndChangeTargetSecond(time);
+	_positionTimer.ResetAndChangeTargetSecond(time);
 
-	_interpolating = true;
+	_positionInterpolating = true;
+}
+
+void SpriteObject::MoveBy(const Vector2 & deltaPos, float time)
+{
+	_startPosition = position;
+	_targetPosition = position + deltaPos;
+	_positionTimer.ResetAndChangeTargetSecond(time);
+
+	_positionInterpolating = true;
+}
+
+void SpriteObject::RotateTo(const float targetAngle, float time)
+{
+	_startDegree = degree;
+	_targetDegree = targetAngle;
+	_rotationTimer.ResetAndChangeTargetSecond(time);
+
+	_rotationInterpolating = true;
+}
+
+void SpriteObject::ScaleTo(const float x, const float y, float time)
+{
+	_startScale = scale;
+	_targetScale = Vector2(x, y);
+	_scaleTimer.ResetAndChangeTargetSecond(time);
+
+	_scaleInterpolating = true;
+}
+
+void SpriteObject::DisappearTo(const float a, float time)
+{
+	_startAlpha = alpha;
+	_targetAlpha = a;
+	_disappearTimer.ResetAndChangeTargetSecond(time);
+
+	_disappearInterpolating = true;
 }

@@ -63,7 +63,13 @@ void D2DSprite::Render(ID2D1HwndRenderTarget *renderTarget, float destX, float d
 
 void D2DSprite::RenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, const D2D1::Matrix3x2F & mat, float alpha)
 {
-	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x, destY + _anchor.y, 
+	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x * mat._11, destY + _anchor.y * mat._11, 
+		_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, mat, alpha);
+}
+
+void D2DSprite::RenderRotate(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, const D2D1::Matrix3x2F & mat, float alpha)
+{
+	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x , destY + _anchor.y ,
 		_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, mat, alpha);
 }
 

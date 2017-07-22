@@ -89,7 +89,7 @@
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColiidingObject.h" />
-    <ClInclude Include="ColliisonComponent.h" />
+    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="Console.h" />
@@ -102,9 +102,11 @@
     <ClInclude Include="D2DSprite.h" />
     <ClInclude Include="DataSet.h" />
     <ClInclude Include="Delegate.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="PropertyFactory.h" />
     <ClInclude Include="SpriteObject.h" />
+    <ClInclude Include="TestScene.h" />
     <ClInclude Include="Tunnel.h" />
     <ClInclude Include="DWrite.h" />
     <ClInclude Include="EquipItem.h" />
@@ -173,7 +175,7 @@
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColiidingObject.cpp" />
-    <ClCompile Include="ColliisonComponent.cpp" />
+    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CrawlMoveState.cpp" />
@@ -184,6 +186,7 @@
     <ClCompile Include="D2DImage.cpp" />
     <ClCompile Include="D2DSprite.cpp" />
     <ClCompile Include="DWrite.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventManager.cpp" />
@@ -231,6 +234,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TextDataManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TimeManager.cpp" />

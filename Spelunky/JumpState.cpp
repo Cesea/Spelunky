@@ -79,7 +79,6 @@ State<Player>* JumpState::HandleCommand(Player * object, const ControlCommand & 
 			object->_velocity.x = 40.0f;
 		}
 		object->_accel.x = object->_speed.x;
-		Console::Log("right\n");
 	}
 
 	if (command.jump == Command::JumpOff)

@@ -19,6 +19,7 @@ enum  EventType
 	EVENT_HOLDING = 0x8bd7ebf8,
 
 	EVENT_STAGE_TRANSITIOIN = 0xce584715,
+	EVENT_DESTROY_TILE = 0xa0535762,
 };
 
 class IEvent
@@ -240,6 +241,22 @@ public :
 	EventType GetType() const override { return _type; }
 private :
 	static EventType _type;
+};
+
+class DestroyTileEvent : public BaseEvent
+{
+public :
+	explicit DestroyTileEvent(const IntVector2 &position);
+	virtual ~DestroyTileEvent();
+	
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const IntVector2 &GetPosition() { return _position; }
+private :
+	static EventType _type;
+	IntVector2 _position;
 };
 
 #endif

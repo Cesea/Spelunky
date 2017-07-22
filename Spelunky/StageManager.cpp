@@ -28,6 +28,10 @@ void StageManager::Release()
 
 void StageManager::Update(float deltaTime)
 {
+	if (_currentStage)
+	{
+		_currentStage->Update(deltaTime);
+	}
 }
 
 void StageManager::Render()
@@ -35,6 +39,14 @@ void StageManager::Render()
 	if (_currentStage)
 	{
 		_currentStage->Render(_pCamera->GetPosition());
+	}
+}
+
+void StageManager::DestroyTile(const IntVector2 & tilePos)
+{
+	if (_currentStage)
+	{
+		_currentStage->DestroyTile(tilePos);
 	}
 }
 

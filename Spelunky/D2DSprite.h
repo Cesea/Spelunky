@@ -26,6 +26,8 @@ public:
 
 	virtual void RenderMatrix(ID2D1HwndRenderTarget *renderTarget, float destX, float destY,
 		const D2D1::Matrix3x2F& mat, float alpha = 1.0f);
+	virtual void RenderRotate(ID2D1HwndRenderTarget *renderTarget, float destX, float destY,
+		const D2D1::Matrix3x2F& mat, float alpha = 1.0f);
 	virtual void FrameRenderMatrix(ID2D1HwndRenderTarget *renderTarget, float destX, float destY,
 		int xIndex, int yIndex, const D2D1::Matrix3x2F &mat, float alpha = 1.0f);
 

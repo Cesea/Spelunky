@@ -22,6 +22,8 @@ public:
 	void Update(float deltaTime);
 	void Render();
 
+	void DestroyTile(const IntVector2 &tilePos);
+
 	Stage *GetCurrentStage();
 private:
 	RandomRoomGenerated MakeRandomRoomTypes();

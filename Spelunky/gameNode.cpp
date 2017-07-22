@@ -54,15 +54,27 @@ LRESULT gameNode::MainProc(HWND hWnd, UINT iMessage,
 			currentMouse.x = static_cast<float>(LOWORD(lParam));
 			currentMouse.y = static_cast<float>(HIWORD(lParam));
 		} break;
+
+		case WM_LBUTTONDOWN :
+		{
+			currentMouse.x = static_cast<float>(LOWORD(lParam));
+			currentMouse.y = static_cast<float>(HIWORD(lParam));
+			_leftDown = true;
+		}break;
+
+		case WM_LBUTTONUP :
+		{
+			_leftDown = false;
+		}break;
 		case WM_KEYDOWN:
 		{
 			IM::uistate.keyEntered = wParam;
 
 			switch (wParam)
 			{
-			case VK_ESCAPE:
-				PostMessage(hWnd, WM_DESTROY, 0, 0);
-				break;
+			//case VK_ESCAPE:
+			//	PostMessage(hWnd, WM_DESTROY, 0, 0);
+			//	break;
 			}
 		} break;
 
