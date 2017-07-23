@@ -118,6 +118,24 @@ void LedgeGrabState::OnEnter(Player * object)
 		_endPosition.AddToTileRel(+28, 52);
 	}
 
+	if (object->_holding)
+	{
+		ObjectId putDownId = UNVALID_OBJECT_ID;
+		if (object->_holdingObjectId[1] == UNVALID_OBJECT_ID)
+		{
+			putDownId = object->_holdingObjectId[0];
+			object->_holdingObjectId[0] = UNVALID_OBJECT_ID;
+		}
+		else
+		{
+			putDownId = object->_holdingObjectId[1];
+			object->_holdingObjectId[1] = UNVALID_OBJECT_ID;
+		}
+		EVENTMANAGER->QueueEvent(new PutDownEvent(putDownId, (object->_seeingDirection == Direction::Right) ? Direction::Left : Direction::Right));
+		object->_holding = false;
+	}
+
+
 	_timer.Init(0.4f);
 }
 

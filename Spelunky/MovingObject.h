@@ -21,6 +21,9 @@ public :
 	virtual GameObject *Copy(ObjectId id)  = 0;
 
 	Direction GetDirection() { return _seeingDirection; }
+	inline bool GetCrawling() { return _crawling; }
+	inline bool GetHolding() { return _holding; }
+	inline void SetHolding(bool b) { _holding = b; }
 
 protected  :
 
@@ -32,6 +35,8 @@ protected  :
 	Direction _seeingDirection{};
 
 	bool _onGround{ false };
+	bool _crawling{ false };
+	bool _holding{ false };
 
 	//CollisionComponent *_collisionComp{};
 };

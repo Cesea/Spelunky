@@ -12,7 +12,7 @@ public :
 	virtual ~CollisionComponent() {}
 
 	virtual void Init(const Rect &rect, const Vector2 &offset);
-	virtual void Update(MovingObject *object, float deltaTime, const ReturnTile *nearTiles);
+	virtual bool Update(MovingObject *object, float deltaTime, const ReturnTile *nearTiles);
 
 	const Rect &GetRect() { return _rect; }
 	const Vector2 &GetOffset() { return _rectOffset; }
@@ -20,8 +20,8 @@ public :
 	void SetRepulse(bool b) { _repulse = b; }
 
 private :
-	void CollideRepulse(MovingObject *object, float deltaTime, const ReturnTile *nearTiles);
-	void CollideStop(MovingObject *object, float deltaTime, const ReturnTile *nearTiles);
+	bool CollideRepulse(MovingObject *object, float deltaTime, const ReturnTile *nearTiles);
+	bool CollideStop(MovingObject *object, float deltaTime, const ReturnTile *nearTiles);
 
 	Rect _rect;
 	Vector2 _rectOffset;

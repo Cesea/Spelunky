@@ -26,6 +26,9 @@ private:
 
 	IntVector2 _sourceIndex{};
 	bool32 _breakable{};
+	bool32 _throwed{false};
+
+
 
 };
 

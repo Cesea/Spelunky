@@ -119,11 +119,26 @@ struct ControlCommand
 	Command dash{};
 };
 
+enum BreakType
+{
+	Jar,
+	Bone,
+	Rock,
+	live,
+};
+
 enum ObjectLayer
 {
 	LAYER_TILE,
 	LAYER_OBJECT,
 	LAYER_MASK,
+};
+
+enum class EquipSlot
+{
+	None,
+	Weapon,
+	Jump
 };
 
 enum class EntityState

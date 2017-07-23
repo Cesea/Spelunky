@@ -1902,17 +1902,17 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 0, Y : 5
+Property Name : throws
+SourceIndex X : 1, Y : 0
+Value0 : 1
+Value1 : 1
+ImageSourceIndex X : 1, Y : 5
+At X : 1, Y : 5
 Property Name : none
 SourceIndex X : -1, Y : -1
 Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
-At X : 1, Y : 5
-Property Name : throws
-SourceIndex X : 0, Y : 0
-Value0 : 0
-Value1 : 1
-ImageSourceIndex X : 0, Y : 5
 At X : 2, Y : 5
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1957,10 +1957,10 @@ Value1 : 0
 ImageSourceIndex X : 0, Y : 0
 At X : 9, Y : 5
 Property Name : throws
-SourceIndex X : 0, Y : 0
-Value0 : 0
+SourceIndex X : 1, Y : 0
+Value0 : 1
 Value1 : 1
-ImageSourceIndex X : 0, Y : 5
+ImageSourceIndex X : 1, Y : 5
 At X : 0, Y : 6
 Property Name : gem
 SourceIndex X : 0, Y : 0

@@ -89,8 +89,8 @@ private :
 
 	bool _interpolating{ false };
 
-	bool _holding{ false };
 	bool _climbing{ false };
+
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
@@ -102,7 +102,7 @@ private :
 	uint32 _bomb{ 4 };
 	uint32 _rope{ 4 };
 
-	ObjectId _holdingObjectId{UNVALID_OBJECT_ID};
+	ObjectId _holdingObjectId[2]{UNVALID_OBJECT_ID, };
 };
 
 #endif

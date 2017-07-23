@@ -125,6 +125,7 @@ bool EventManager::Update(float deltaTime)
 		}
 	}
 
+
 	bool transfered = false;
 	while (!_eventQueue[processingQueue].empty())
 	{

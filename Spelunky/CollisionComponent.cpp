@@ -9,21 +9,24 @@ void CollisionComponent::Init(const Rect & rect, const Vector2 & offset)
 	_rectOffset = offset;
 }
 
-void CollisionComponent::Update(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
+bool CollisionComponent::Update(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
 {
+	bool result = false;
 	if (_repulse)
 	{
-		CollideRepulse(object, deltaTime, nearTiles);
+		result = CollideRepulse(object, deltaTime, nearTiles);
 	}
 	else
 	{
-		CollideStop(object, deltaTime, nearTiles);
+		result = CollideStop(object, deltaTime, nearTiles);
 	}
-	
+	return result;
 }
 
-void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
+bool CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
 {
+	bool result = false;
+
 	for (int i = 0; i < 8; ++i)
 	{
 		if (nearTiles->tiles[i] == nullptr ||
@@ -47,6 +50,7 @@ void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 					object->_velocity.y *= -0.3f;
 					object->_velocity.x *= 0.6;
 					object->_onGround = true;
+					result = true;
 				}
 			}
 		}
@@ -61,18 +65,21 @@ void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 					{
 						object->desiredPosition.AddToTileRel(0, overlapRect.height);
 						object->_velocity.y = 0.0f;
+						result = true;
 					}
 					//왼 타일
 					else if (i == 2)
 					{
 						object->desiredPosition.AddToTileRel(overlapRect.width, 0);
 						object->_velocity.x *= -0.6f;
+						result = true;
 					}
 					//오른 타일
 					else if (i == 3)
 					{
 						object->desiredPosition.AddToTileRel(-overlapRect.width, 0);
 						object->_velocity.x *= -0.6f;
+						result = true;
 					}
 					//대각선
 					else
@@ -92,6 +99,7 @@ void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 								pushingHeight = overlapRect.height;
 							}
 							object->desiredPosition.AddToTileRel(0, pushingHeight);
+							result = true;
 						}
 						//수평으로 충돌이 일어남
 						else
@@ -107,6 +115,7 @@ void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 								pushingWidth = -overlapRect.width;
 							}
 							object->desiredPosition.AddToTileRel(pushingWidth, 0);
+							result = true;
 						}
 					}
 				}
@@ -114,10 +123,12 @@ void CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 		}
 	}
 	object->position = object->desiredPosition;
+	return result;
 }
 
-void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
+bool CollisionComponent::CollideStop(MovingObject * object, float deltaTime, const ReturnTile * nearTiles)
 {
+	bool result = false;
 	for (int i = 0; i < 8; ++i)
 	{
 		if (nearTiles->tiles[i] == nullptr ||
@@ -140,6 +151,7 @@ void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, con
 					object->desiredPosition.AddToTileRel(0, -overlapRect.height);
 					object->_velocity.y = 0.0f;
 					object->_onGround = true;
+					result = true;
 				}
 			}
 		}
@@ -154,18 +166,21 @@ void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, con
 					{
 						object->desiredPosition.AddToTileRel(0, overlapRect.height);
 						object->_velocity.y = 0.0f;
+						result = true;
 					}
 					//왼 타일
 					else if (i == 2)
 					{
 						object->desiredPosition.AddToTileRel(overlapRect.width, 0);
 						object->_velocity.x = 0.0f;
+						result = true;
 					}
 					//오른 타일
 					else if (i == 3)
 					{
 						object->desiredPosition.AddToTileRel(-overlapRect.width, 0);
 						object->_velocity.x = 0.0f;
+						result = true;
 					}
 					//대각선
 					else
@@ -184,6 +199,7 @@ void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, con
 							{
 								pushingHeight = overlapRect.height;
 							}
+							result = true;
 							object->desiredPosition.AddToTileRel(0, pushingHeight);
 						}
 						//수평으로 충돌이 일어남
@@ -200,6 +216,7 @@ void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, con
 								pushingWidth = -overlapRect.width;
 							}
 							object->desiredPosition.AddToTileRel(pushingWidth, 0);
+							result = true;
 						}
 					}
 				}
@@ -207,4 +224,5 @@ void CollisionComponent::CollideStop(MovingObject * object, float deltaTime, con
 		}
 	}
 	object->position = object->desiredPosition;
+	return result;
 }

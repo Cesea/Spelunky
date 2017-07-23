@@ -60,7 +60,6 @@ void Tunnel::HandlePlayerPositionEvent(const IEvent * event)
 {
 	if (_exit)
 	{
-
 		PlayerPositionEvent *convertedEvent = (PlayerPositionEvent *)(event);
 		const Rect &playerRect = convertedEvent->GetRect();
 		const Vector2 &playerUntiledPosition = convertedEvent->GetPosition().UnTilelize();

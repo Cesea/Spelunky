@@ -115,7 +115,7 @@ void Player::HandlePlayerInputEvent(const IEvent * event)
 	}
 	else if (controlCommand.dash == Command::DashOff)
 	{
-		_maxVelocity.x -= 150;
+		_maxVelocity.x = 340;
 		_speed.x -= 50;
 	}
 	//if (controlCommand.action == Command::Attack && _holding)
@@ -143,7 +143,15 @@ void Player::HandleHoldingEvent(const IEvent * event)
 {
 	HoldingEvent *convertedEvent = (HoldingEvent *)(event);
 	_holding = true;
-	_holdingObjectId = convertedEvent->GetId();
+	EquipSlot slotType = convertedEvent->GetSlot();
+	if (slotType == EquipSlot::Weapon)
+	{
+		_holdingObjectId[0] = convertedEvent->GetId();
+	}
+	else if (slotType == EquipSlot::Jump)
+	{
+		_holdingObjectId[1] = convertedEvent->GetId();
+	}
 }
 
 void Player::HandleMessage(const IEvent * event)

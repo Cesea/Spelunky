@@ -496,7 +496,6 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 	if (pLayer2Tile != nullptr &&
 		pLayer2Tile->canBeDestroyedByBomb)
 	{
-		//EVENTMANAGER->QueueEvent(new DestroyTileEvent())
 		pLayer2Tile->canBeDestroyedByBomb = false;
 		pLayer2Tile->sourceIndex = pLayer2Tile->destroyedIndex;
 		pLayer2Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
@@ -523,11 +522,13 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 void Stage::RegisterDelegates()
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
 }
 
 void Stage::UnRegisterDelegates()
 {
 	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
 }
 
 void Stage::BuildBorder()
@@ -916,6 +917,27 @@ void Stage::HandleCollectMoneyEvent(const IEvent * event)
 		else
 		{
 			iter++;
+		}
+	}
+}
+
+void Stage::HandleItemBreakEvent(const IEvent * event)
+{
+	ItemBreakEvent *convertedEvent = (ItemBreakEvent *)event;
+	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+	if (convertedEvent->GetBreakType() == BreakType::Jar)
+	{
+		for (auto &iter = _throws.begin(); iter != _throws.end();)
+		{
+			if ((*iter) == object)
+			{
+				_throws.erase(iter);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
 		}
 	}
 }

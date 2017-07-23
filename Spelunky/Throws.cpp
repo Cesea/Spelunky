@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Throws.h"
 
+#include "CollisionComponent.h"
+
 Throws::Throws(ObjectId id)
 	:EquipItem(id)
 {
@@ -22,6 +24,9 @@ HRESULT Throws::Init(BaseProperty *property)
 	ThrowProperty *convertedProperty = (ThrowProperty *)(property);
 	*this = convertedProperty;
 
+	_equipSlot = EquipSlot::Weapon;
+
+
 	return S_OK;
 }
 
@@ -33,13 +38,49 @@ void Throws::Release(void)
 
 void Throws::Update(float deltaTime)
 {
-	EquipItem::Update(deltaTime);
+	if (_equiped)
+	{
+		desiredPosition = _pOwner->desiredPosition;
+		desiredPosition.AddToTileRelY(-32);
+		position = desiredPosition;
+	}
+	else
+	{
+		_accel.y += GRAVITY;
+		_velocity += _accel * deltaTime;
+
+		_accel = Vector2();
+		desiredPosition.AddToTileRel(_velocity * deltaTime);
+
+		TilePosition centerPos = desiredPosition;
+		centerPos.AddToTileRelY(-32.0f);
+		_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
+
+		bool collisionResult = _collisionComp->Update(this, deltaTime, &_nearTiles);
+		if (_throwed)
+		{
+			if (_breakable && collisionResult)
+			{
+				if (_sourceIndex.x == 1)
+				{
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::Jar));
+				}
+			}
+		}
+	}
 }
 
 void Throws::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
 	Vector2 drawPos = position.UnTilelize() - camPos;
 	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
+
+	const Vector2 itemUntiledPosition = position.UnTilelize();
+	Rect itemAbsRect =
+			RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
+
+	DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
 }
 
 void Throws::Use(const ControlCommand &commands)
@@ -85,6 +126,7 @@ void Throws::Use(const ControlCommand &commands)
 	_velocity.Normalize();
 	_velocity *= 1000.0f;
 
+	_throwed = true;
 
 	_pOwner = nullptr;
 }
@@ -104,4 +146,10 @@ void Throws::operator=(const ThrowProperty * property)
 	position.tileY = property->position.y;
 	_sourceIndex = property->sourceIndex;
 	_breakable = property->breakable;
+
+	_breakable = property->breakable;
+	if (!_breakable)
+	{
+		_collisionComp->SetRepulse(true);
+	}
 }

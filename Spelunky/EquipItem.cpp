@@ -17,6 +17,7 @@ HRESULT EquipItem::Init(BaseProperty *property)
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePlayerInputEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PICK_UP, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePickupEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PUT_DOWN, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePutDownEvent>(this));
 	_collisionComp = new CollisionComponent();
 	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -20));
 
@@ -27,6 +28,7 @@ void EquipItem::Release(void)
 {
 	SAFE_DELETE(_collisionComp);
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePlayerInputEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PUT_DOWN, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePutDownEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PICK_UP, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePickupEvent>(this));
 }
 
@@ -35,7 +37,7 @@ void EquipItem::Update(float deltaTime)
 	if (_equiped)
 	{
 		desiredPosition = _pOwner->desiredPosition;
-		desiredPosition.AddToTileRelY(-4);
+		desiredPosition.AddToTileRelY(-32);
 		position = desiredPosition;
 	}
 	else
@@ -65,6 +67,20 @@ void EquipItem::Use(const ControlCommand &commands)
 	_pOwner = nullptr;
 }
 
+void EquipItem::PutDown(Direction direction)
+{
+	_pOwner = nullptr;
+	_equiped = false;
+	if (direction == Direction::Left)
+	{
+		_velocity.x = -140;
+	}
+	else if (direction == Direction::Right)
+	{
+		_velocity.x = 140;
+	}
+}
+
 GameObject * EquipItem::Copy(ObjectId id)
 {
 	return nullptr;
@@ -77,7 +93,7 @@ void EquipItem::HandlePlayerInputEvent(const IEvent * event)
 		PlayerInputEvent *convertedEvent = (PlayerInputEvent *)(event);
 		const ControlCommand &commands = convertedEvent->GetControlCommand();
 
-		if (commands.action == Command::Attack)
+		if (commands.action == Command::Attack && !_pOwner->GetCrawling())
 		{
 			_collisionComp->SetRepulse(true);
 			Use(commands);
@@ -91,8 +107,26 @@ void EquipItem::HandlePickupEvent(const IEvent * event)
 	if (_onActorId == convertedEvent->GetId())
 	{
 		_pOwner = (MovingObject *)OBJECTMANAGER->FindObjectId(_onActorId);
-		_equiped = true;
-		EVENTMANAGER->QueueEvent(new HoldingEvent(_id, _onActorId));
+		if (!_pOwner->GetHolding())
+		{
+			_equiped = true;
+			_pOwner->SetHolding(true);
+			EVENTMANAGER->QueueEvent(new HoldingEvent(_id, _onActorId, _equipSlot));
+		}
+		else
+		{
+			_pOwner = nullptr;
+		}
+	}
+}
+
+void EquipItem::HandlePutDownEvent(const IEvent * event)
+{
+	PutDownEvent *convertedEvent = (PutDownEvent *)(event);
+	if (_id == convertedEvent->GetId())
+	{
+		_collisionComp->SetRepulse(true);
+		PutDown(convertedEvent->GetDirection());
 	}
 }
 

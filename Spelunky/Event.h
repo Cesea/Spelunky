@@ -1,7 +1,6 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-
 enum  EventType
 {
 	EVENT_CREATE_OBJECT = 0xba1a49b3,
@@ -23,7 +22,10 @@ enum  EventType
 
 	EVENT_ON_TUNNEL = 0xf69ed5c1,
 
+	EVENT_ITEM_BREAK = 0x60740c30,
+	EVENT_PUT_DOWN = 0xdc7c30a9,
 };
+
 
 class IEvent
 {
@@ -219,7 +221,7 @@ private :
 class HoldingEvent : public BaseEvent
 {
 public :
-	explicit HoldingEvent(ObjectId id, ObjectId ownerId);
+	explicit HoldingEvent(ObjectId id, ObjectId ownerId, EquipSlot slot);
 	virtual ~HoldingEvent();
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
@@ -227,9 +229,11 @@ public :
 
 	ObjectId GetId() { return _id; }
 	ObjectId GetOwnerId() { return _ownerId; }
+	EquipSlot GetSlot() { return _slot; }
 private :
 	ObjectId _id;
 	ObjectId _ownerId;
+	EquipSlot _slot;
 	static EventType _type;
 };
 
@@ -275,6 +279,42 @@ public :
 private :
 	static EventType _type;
 	IntVector2 _position;
+};
+
+class ItemBreakEvent : public BaseEvent
+{
+public :
+	ItemBreakEvent(const ObjectId id, BreakType type);
+	virtual ~ItemBreakEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+	BreakType GetBreakType() { return _breakType; }
+private :
+	static EventType _type;
+	ObjectId _id{0};
+	BreakType _breakType{};
+};
+
+class PutDownEvent : public BaseEvent
+{
+public:
+	PutDownEvent(const ObjectId id, Direction direction);
+	virtual ~PutDownEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+	ObjectId GetId() { return _id; }
+	Direction GetDirection() { return _direction; }
+
+private:
+	ObjectId _id;
+	Direction _direction;
+	static EventType _type;
 };
 
 #endif

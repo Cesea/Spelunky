@@ -94,6 +94,7 @@ private:
 
 
 	void HandleCollectMoneyEvent(const IEvent *event);
+	void HandleItemBreakEvent(const IEvent *event);
 private:
 	Room _rooms[16]{};
 

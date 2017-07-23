@@ -13,12 +13,15 @@ EventType CollectMoneyEvent::_type = EVENT_COLLECT_MONEY;
 EventType ObjectDeadEvent::_type = EVENT_OBJECT_DEAD;
 
 EventType PickupEvent::_type = EVENT_PICK_UP;
+EventType PutDownEvent::_type = EVENT_PUT_DOWN;
 EventType HoldingEvent::_type = EVENT_HOLDING;
 
 EventType StageTransitionEvent::_type = EVENT_STAGE_TRANSITIOIN;
 
 EventType DestroyTileEvent::_type = EVENT_DESTROY_TILE;
 EventType OnTunnelEvent::_type = EVENT_ON_TUNNEL;
+
+EventType ItemBreakEvent::_type = EVENT_ITEM_BREAK;
 
 
 BaseEvent::BaseEvent(float timeStamp)
@@ -231,8 +234,8 @@ const WCHAR * PickupEvent::GetName() const
 	return L"Pickup Event";
 }
 
-HoldingEvent::HoldingEvent(ObjectId id, ObjectId ownerId)
-	:_id(id), _ownerId(ownerId)
+HoldingEvent::HoldingEvent(ObjectId id, ObjectId ownerId, EquipSlot slot)
+	:_id(id), _ownerId(ownerId), _slot(slot)
 {
 }
 
@@ -242,7 +245,7 @@ HoldingEvent::~HoldingEvent()
 
 IEvent * HoldingEvent::Copy() const
 {
-	return new HoldingEvent(_id, _ownerId);
+	return new HoldingEvent(_id, _ownerId, _slot);
 }
 
 const WCHAR * HoldingEvent::GetName() const
@@ -300,4 +303,34 @@ IEvent * OnTunnelEvent::Copy() const
 const WCHAR * OnTunnelEvent::GetName() const
 {
 	return L"On Tunnel Event";
+}
+
+ItemBreakEvent::ItemBreakEvent(const ObjectId id, BreakType type)
+	:_id(id), _breakType(type)
+{
+}
+
+IEvent * ItemBreakEvent::Copy() const
+{
+	return new ItemBreakEvent(_id,_breakType);
+}
+
+const WCHAR * ItemBreakEvent::GetName() const
+{
+	return L"Item Break Event";
+}
+
+PutDownEvent::PutDownEvent(const ObjectId id, Direction direction)
+	:_id(id), _direction(direction)
+{
+}
+
+IEvent * PutDownEvent::Copy() const
+{
+	return new PutDownEvent(_id, _direction);
+}
+
+const WCHAR * PutDownEvent::GetName() const
+{
+	return L"Put Down Event";
 }

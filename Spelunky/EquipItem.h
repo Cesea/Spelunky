@@ -3,12 +3,6 @@
 
 #include "Item.h"
 
-enum class EquipSlot
-{
-	None,
-	Weapon,
-	Jump
-};
 
 class EquipItem : public Item
 {
@@ -22,11 +16,13 @@ public :
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
 	virtual void Use(const ControlCommand &commands);
+	void PutDown(Direction direction);
 
 	virtual GameObject *Copy(ObjectId id);
 
 	void HandlePlayerInputEvent(const IEvent *event);
 	void HandlePickupEvent(const IEvent *event);
+	void HandlePutDownEvent(const IEvent *event);
 
 	virtual void Apply(ObjectId id);
 

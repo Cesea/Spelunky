@@ -10,6 +10,7 @@
 void CrawlState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"crawl");
+	object->_crawling = true;
 }
 
 State<Player>* CrawlState::Update(Player * object, float deltaTime)
@@ -82,7 +83,26 @@ State<Player>* CrawlIdleState::HandleCommand(Player * object, const ControlComma
 	}
 	if (command.action == Command::Attack)
 	{
-		EVENTMANAGER->QueueEvent(new PickupEvent(object->_id));
+		if (object->_holding)
+		{
+			ObjectId putDownId = UNVALID_OBJECT_ID;
+			if (object->_holdingObjectId[1] == UNVALID_OBJECT_ID)
+			{
+				putDownId = object->_holdingObjectId[0];
+				object->_holdingObjectId[0] = UNVALID_OBJECT_ID;
+			}
+			else
+			{
+				putDownId = object->_holdingObjectId[1];
+				object->_holdingObjectId[1] = UNVALID_OBJECT_ID;
+			}
+			EVENTMANAGER->QueueEvent(new PutDownEvent(putDownId, object->_seeingDirection));
+			object->_holding = false;
+		}
+		else
+		{
+			EVENTMANAGER->QueueEvent(new PickupEvent(object->_id));
+		}
 	}
 	return newState;
 }

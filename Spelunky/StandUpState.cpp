@@ -35,4 +35,5 @@ State<Player> * StandUpState::HandleFrameEndEvent(Player * actor)
 
 void StandUpState::OnExit(Player * object)
 {
+	object->_crawling = false;
 }
