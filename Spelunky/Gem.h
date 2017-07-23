@@ -25,12 +25,9 @@ public:
 	void Digged(); 
 
 private :
-
-
 	Gem &operator= (const GemProperty *other);
 
 	int _value{};
-	IntVector2 _sourceIndex{};
 
 	bool _isInTile{ false };
 };

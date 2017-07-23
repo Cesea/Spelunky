@@ -245,6 +245,11 @@ void Animation::FrameUpdate(float elapsedTime)
 					_nowPlayIdx--;
 					_isPlay = false;
 
+					if (_hasEndFunction)
+					{
+						_endFunction();
+					}
+
 					if (_pOwner)
 					{
 						EVENTMANAGER->QueueEvent(new FrameEndedEvent(_pOwner->GetId()));
@@ -275,4 +280,10 @@ void Animation::Pause(void)
 void Animation::Resume(void)
 {
 	_isPlay = true;
+}
+
+void Animation::SetEndFunction(const Delegate<void>& function)
+{
+	_hasEndFunction = true;
+	_endFunction = function;
 }

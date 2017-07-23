@@ -163,6 +163,9 @@
     <Filter Include="Game\Common\EffectManager.">
       <UniqueIdentifier>{1360b238-2733-4eaa-95fe-b9281fa37ae6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\UIS">
+      <UniqueIdentifier>{f6cb0841-5d54-44c9-b4fb-222e6ed960d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -294,9 +297,6 @@
     <ClInclude Include="Win32Input.h">
       <Filter>GameFramework2D\WinAPI</Filter>
     </ClInclude>
-    <ClInclude Include="ColiidingObject.h">
-      <Filter>Game\Common</Filter>
-    </ClInclude>
     <ClInclude Include="MovingObject.h">
       <Filter>Game\Common</Filter>
     </ClInclude>
@@ -372,9 +372,6 @@
     <ClInclude Include="EquipItem.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
     </ClInclude>
-    <ClInclude Include="Rock.h">
-      <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
-    </ClInclude>
     <ClInclude Include="MoveComponent.h">
       <Filter>Game\Common\Component</Filter>
     </ClInclude>
@@ -419,6 +416,18 @@
     </ClInclude>
     <ClInclude Include="TimeTrigger.h">
       <Filter>GameFramework2D\Utils\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\UIS</Filter>
+    </ClInclude>
+    <ClInclude Include="CollidingObject.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Throws.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -524,9 +533,6 @@
     <ClCompile Include="GameObjectManager.cpp">
       <Filter>Game\Common\ObjectFactory</Filter>
     </ClCompile>
-    <ClCompile Include="ColiidingObject.cpp">
-      <Filter>Game\Common</Filter>
-    </ClCompile>
     <ClCompile Include="MovingObject.cpp">
       <Filter>Game\Common</Filter>
     </ClCompile>
@@ -596,9 +602,6 @@
     <ClCompile Include="EquipItem.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
     </ClCompile>
-    <ClCompile Include="Rock.cpp">
-      <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
-    </ClCompile>
     <ClCompile Include="MoveComponent.cpp">
       <Filter>Game\Common\Component</Filter>
     </ClCompile>
@@ -640,6 +643,18 @@
     </ClCompile>
     <ClCompile Include="TimeTrigger.cpp">
       <Filter>GameFramework2D\Utils\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\UIS</Filter>
+    </ClCompile>
+    <ClCompile Include="CollidingObject.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Throws.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

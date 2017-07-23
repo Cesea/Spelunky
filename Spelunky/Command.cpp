@@ -84,6 +84,11 @@ ControlCommand InputMapper::InterpretRawInput(Win32RawInputState * rawInput)
 		result.action = Command::Pickup;
 		result.fire = true;
 	}
+	else if (rawInput->keyboard.space.pressed)
+	{
+		result.action = Command::GoExit;
+		result.fire = true;
+	}
 
 	return result;
 }

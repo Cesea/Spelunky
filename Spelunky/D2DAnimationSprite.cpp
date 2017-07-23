@@ -32,15 +32,15 @@ void D2DAnimationSprite::Render(ID2D1HwndRenderTarget * renderTarget, float dest
 {
 	if (!_flipedX)
 	{
-		_sourceImage->Render(renderTarget, destX + _anchor.x, destY + _anchor.y,
-			_animation->GetFramePos().x, _animation->GetFramePos().y,
-			_animation->GetFrameWidth(), _animation->GetFrameHeight(), alpha);
+		_sourceImage->Render(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y),
+			ConvertFloatToInt(_animation->GetFramePos().x), ConvertFloatToInt(_animation->GetFramePos().y),
+			ConvertFloatToInt(_animation->GetFrameWidth()), ConvertFloatToInt(_animation->GetFrameHeight()), alpha);
 	}
 	else
 	{
-		_sourceImage->RenderFlipX(renderTarget, destX + _anchor.x, destY + _anchor.y,
-			_animation->GetFramePos().x, _animation->GetFramePos().y,
-			_animation->GetFrameWidth(), _animation->GetFrameHeight(), alpha);
+		_sourceImage->RenderFlipX(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y),
+			ConvertFloatToInt(_animation->GetFramePos().x), ConvertFloatToInt(_animation->GetFramePos().y),
+			ConvertFloatToInt(_animation->GetFrameWidth()), ConvertFloatToInt(_animation->GetFrameHeight()), alpha);
 	}
 
 }
@@ -48,9 +48,9 @@ void D2DAnimationSprite::Render(ID2D1HwndRenderTarget * renderTarget, float dest
 void D2DAnimationSprite::RenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, 
 	const D2D1::Matrix3x2F & mat, float alpha)
 {
-	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x, destY + _anchor.y,
-			_animation->GetFramePos().x, _animation->GetFramePos().y,
-			_animation->GetFrameWidth(), _animation->GetFrameHeight(), mat, alpha);
+	_sourceImage->RenderMatrix(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y),
+			ConvertFloatToInt(_animation->GetFramePos().x), ConvertFloatToInt(_animation->GetFramePos().y),
+			ConvertFloatToInt(_animation->GetFrameWidth()), ConvertFloatToInt(_animation->GetFrameHeight()), mat, alpha);
 }
 
 void D2DAnimationSprite::Release()

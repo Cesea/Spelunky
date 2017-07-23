@@ -80,6 +80,8 @@ private:
 
 
 private :
+	bool _firstEntered{ true };
+
 	Camera _camera;
 
 	MenuSceneState _currentState{MenuSceneState::Title};

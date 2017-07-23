@@ -88,6 +88,20 @@ struct TunnelProperty : public BaseProperty
 	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 
+struct BombProperty : public BaseProperty
+{
+	IntVector2 sourceIndex{ -1, -1 };
+	bool32 sticky{ false };
+	virtual void Init(const MapTool::PropertyInfo &porpertyInfo);
+};
+
+struct ThrowProperty : public BaseProperty
+{
+	IntVector2 sourceIndex{ -1, -1 };
+	bool32 breakable;
+	virtual void Init(const MapTool::PropertyInfo &porpertyInfo);
+};
+
 int ConvertStringToTileProperty(const std::wstring &str);
 int ConvertStringToTypeByProperty(TileProperty property, const std::wstring &str);
 

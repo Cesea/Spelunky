@@ -18,6 +18,7 @@ EventType HoldingEvent::_type = EVENT_HOLDING;
 EventType StageTransitionEvent::_type = EVENT_STAGE_TRANSITIOIN;
 
 EventType DestroyTileEvent::_type = EVENT_DESTROY_TILE;
+EventType OnTunnelEvent::_type = EVENT_ON_TUNNEL;
 
 
 BaseEvent::BaseEvent(float timeStamp)
@@ -284,4 +285,19 @@ IEvent * DestroyTileEvent::Copy() const
 const WCHAR * DestroyTileEvent::GetName() const
 {
 	return L"Destroy Tile Event";
+}
+
+OnTunnelEvent::OnTunnelEvent(const IntVector2 & position)
+	:_position(position)
+{
+}
+
+IEvent * OnTunnelEvent::Copy() const
+{
+	return new OnTunnelEvent(_position);
+}
+
+const WCHAR * OnTunnelEvent::GetName() const
+{
+	return L"On Tunnel Event";
 }

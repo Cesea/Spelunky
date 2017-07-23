@@ -35,6 +35,7 @@ protected  :
 	bool32 _valid{true};
 
 	CollisionComponent *_collisionComp{};
+	IntVector2 _sourceIndex;
 };
 
 #endif

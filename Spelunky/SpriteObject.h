@@ -36,6 +36,8 @@ public :
 	void SetScaleEndFunction(const Delegate<void> &function);
 	void SetDisappearEndFunction(const Delegate<void> &function);
 
+	D2DSprite *GetSprite() { return _sprite; }
+
 	Vector2 position;
 	Vector2 scale{1, 1};
 	float degree{};

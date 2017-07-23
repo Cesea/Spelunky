@@ -156,11 +156,13 @@ typedef Vector3 MeterVector3;
 #include "GameObjectManager.h"
 #include "PropertyFactory.h"
 #include "EffectManager.h"
+#include "UIManager.h"
 
 #define EVENTMANAGER EventManager::getSingleton()
 #define OBJECTMANAGER GameObjectManager::getSingleton()
 #define PROPERTYFACTORY PropertyFactory::getSingleton()
 #define EFFECTMANAGER EffectManager::getSingleton()
+#define UIMANAGER UIManager::getSingleton()
 
 #include "Win32Input.h"
 #include "Utillities.h"

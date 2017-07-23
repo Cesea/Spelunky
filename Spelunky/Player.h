@@ -12,7 +12,8 @@ enum class StateType
 
 class Player : public MovingObject
 {
-	friend class StateManager<Player>;
+	friend class UIManager;
+
 	friend class PlayerStateManager;
 	friend class IdleState;
 	friend class WalkState;
@@ -98,6 +99,8 @@ private :
 
 	ReturnTile _nearTiles;
 	int _money{ 0 };
+	uint32 _bomb{ 4 };
+	uint32 _rope{ 4 };
 
 	ObjectId _holdingObjectId{UNVALID_OBJECT_ID};
 };

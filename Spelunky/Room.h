@@ -5,6 +5,7 @@
 #include "Tile.h"
 #include "Tunnel.h"
 #include "Gem.h"
+#include "Throws.h"
 
 struct RandomRoomGenerated
 {
@@ -88,6 +89,7 @@ private:
 
 	void BuildEntrance();
 	void BuildGems();
+	void BuildThrows();
 	void CollectRoomPropertyFromFile(FileUtils::File &file, Room *room);
 
 
@@ -102,7 +104,7 @@ private:
 	Tunnel *_tunnels[2]{};
 
 	std::list<Gem *> _gems{};
-
+	std::list<Throws *> _throws{};
 
 	std::map<std::wstring, D2DSprite *> _usingSprites;
 

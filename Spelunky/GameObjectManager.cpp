@@ -7,8 +7,6 @@
 
 #include "Player.h"
 
-#include "Gem.h"
-#include "Rock.h"
 
 GameObjectManager::GameObjectManager()
 {

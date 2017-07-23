@@ -32,21 +32,24 @@ void D2DFrameSprite::Update(float deltaTime)
 
 void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, int xIndex, int yIndex, float alpha)
 {
-	_sourceImage->Render(renderTarget, 0, 0, xIndex * _widthPerFrame, yIndex * _heightPerFrame, alpha);
+	_sourceImage->Render(renderTarget, 0, 0, ConvertFloatToInt(xIndex * _widthPerFrame), 
+		ConvertFloatToInt(yIndex * _heightPerFrame), alpha);
 }
 
 void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
 	int xIndex, int yIndex,  float alpha)
 {
-	_sourceImage->Render(renderTarget, destX + _anchor.x, destY + _anchor.y, 
-		xIndex * _widthPerFrame, yIndex * _heightPerFrame, _widthPerFrame, _heightPerFrame, alpha);
+	_sourceImage->Render(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y), 
+		ConvertFloatToInt(xIndex * _widthPerFrame), ConvertFloatToInt(yIndex * _heightPerFrame),
+		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), alpha);
 }
 
 void D2DFrameSprite::FrameRenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
 	int xIndex, int yIndex, const D2D1::Matrix3x2F & mat, float alpha)
 {
-	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x, destY + _anchor.y, 
-		xIndex * _widthPerFrame, yIndex * _heightPerFrame, _widthPerFrame, _heightPerFrame, mat, alpha);
+	_sourceImage->RenderMatrix(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y), 
+		ConvertFloatToInt(xIndex * _widthPerFrame), ConvertFloatToInt(yIndex * _heightPerFrame), 
+		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), mat, alpha);
 }
 
 void D2DFrameSprite::Release()

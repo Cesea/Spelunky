@@ -10,6 +10,7 @@ EquipItem::EquipItem(ObjectId id)
 
 EquipItem::~EquipItem()
 {
+	Item::~Item();
 }
 
 HRESULT EquipItem::Init(BaseProperty *property)
@@ -17,7 +18,7 @@ HRESULT EquipItem::Init(BaseProperty *property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePlayerInputEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PICK_UP, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePickupEvent>(this));
 	_collisionComp = new CollisionComponent();
-	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -40));
+	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -20));
 
 	return S_OK;
 }
@@ -39,19 +40,16 @@ void EquipItem::Update(float deltaTime)
 	}
 	else
 	{
-		if (_velocity.DistanceSquare() > 1.0f)
-		{
-			_accel.y += GRAVITY;
-			_velocity += _accel * deltaTime;
+		_accel.y += GRAVITY;
+		_velocity += _accel * deltaTime;
 
-			_accel = Vector2();
-			desiredPosition.AddToTileRel(_velocity * deltaTime);
+		_accel = Vector2();
+		desiredPosition.AddToTileRel(_velocity * deltaTime);
 
-			TilePosition centerPos = desiredPosition;
-			centerPos.AddToTileRelY(-32.0f);
-			//_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacentTiles9(IntVector2(centerPos.tileX, centerPos.tileY));
-			//_collisionComp->Update(this, deltaTime, &_nearTiles);
-		}
+		TilePosition centerPos = desiredPosition;
+		centerPos.AddToTileRelY(-32.0f);
+		_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
+		_collisionComp->Update(this, deltaTime, &_nearTiles);
 	}
 }
 

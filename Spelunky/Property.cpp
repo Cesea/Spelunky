@@ -214,3 +214,13 @@ void TunnelProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 {
 	sourceIndex = propertyInfo.sourceIndex;
 }
+
+void BombProperty::Init(const MapTool::PropertyInfo & porpertyInfo)
+{
+}
+
+void ThrowProperty::Init(const MapTool::PropertyInfo & porpertyInfo)
+{
+	sourceIndex = porpertyInfo.sourceIndex;
+	breakable = _wtoi(porpertyInfo.value0);
+}

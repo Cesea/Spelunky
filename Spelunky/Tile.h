@@ -1,7 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "ColiidingObject.h"	
+#include "CollidingObject.h"	
 
 
 class Tile : public CollidingObject

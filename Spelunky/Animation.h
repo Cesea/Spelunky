@@ -56,6 +56,8 @@ public:
 
 	bool GetCopyed() { return _copyed; }
 
+	void SetEndFunction(const Delegate<void> &function);
+
 private:
 	vFrameList _frameList;
 	vPlayList _playList;
@@ -73,8 +75,8 @@ private:
 	bool _isPlay{};			//Àç»ýÁß?
 
 
-	//bool _hasEndFunction{ false };
-	//Delegate<void> _endFunction{};
+	bool _hasEndFunction{ false };
+	Delegate<void> _endFunction{};
 	//bool _hasUpdateFunction{ false };
 	//Delegate<void> _frameUpdateFunction{};
 

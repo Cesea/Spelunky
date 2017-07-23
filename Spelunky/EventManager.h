@@ -26,6 +26,8 @@ public:
 
 	bool FireEvent(const IEvent *event);
 	bool QueueEvent(const IEvent *event);
+
+	void DiscardAllEvents();
 	//void RemoveEvent(IEvent *event);
 
 	bool Update(float deltaTime);

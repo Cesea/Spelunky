@@ -41,6 +41,7 @@ protected :
 	bool _wasControlled{ false };
 
 	EquipSlot _equipSlot{ EquipSlot::None };
+
 };
 
 #endif

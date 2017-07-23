@@ -105,7 +105,8 @@ enum class Command
 	Attack,
 	Pickup,
 	Jump,
-	JumpOff
+	JumpOff,
+	GoExit,
 };
 
 struct ControlCommand

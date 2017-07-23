@@ -96,6 +96,8 @@ Stage::~Stage()
 			}
 		}
 	}
+	_tunnels[0]->Release();
+	_tunnels[1]->Release();
 	OBJECTMANAGER->DestroyObject(_tunnels[0]->GetId());
 	OBJECTMANAGER->DestroyObject(_tunnels[1]->GetId());
 
@@ -103,7 +105,6 @@ Stage::~Stage()
 	{
 		OBJECTMANAGER->DestroyObject(gem->GetId());
 	}
-
 
 	for (auto &sprite : _usingSprites)
 	{
@@ -148,6 +149,7 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 
 	BuildEntrance();
 	BuildGems();
+	BuildThrows();
 
 	return S_OK;
 }
@@ -377,6 +379,14 @@ void Stage::Update(float deltaTime)
 			gem->Update(deltaTime);
 		}
 	}
+	//Console::Log("x : %d, y : %d\n", _throws.front()->position.tileX, _throws.front()->position.tileY);
+	for (auto &throws : _throws)
+	{
+		if (throws)
+		{
+			throws->Update(deltaTime);
+		}
+	}
 }
 
 void Stage::Render(const TilePosition &camPos)
@@ -434,6 +444,11 @@ void Stage::Render(const TilePosition &camPos)
 				tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
 			}
 		}
+	}
+
+	for (auto &throws : _throws)
+	{
+		throws->Render(gRenderTarget, untileldCamPos);
 	}
 
 	for (auto &gem : _gems)
@@ -782,6 +797,40 @@ void Stage::BuildGems()
 
 				if(newGem->position.tileX)
 				_gems.push_back(newGem);
+			}
+		}
+	}
+}
+
+void Stage::BuildThrows()
+{
+	for (int y = 0; y < 4; ++y)
+	{
+		for (int x = 0; x < 4; ++x)
+		{
+			for (auto &prop : _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"throws")->second)
+			{
+				prop->position = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+				Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+				newThrows->position.tileX = prop->position.x;
+				newThrows->position.tileY = prop->position.y;
+
+				newThrows->desiredPosition = newThrows->position;
+
+				//if (tileLayer0[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+				//{
+				//	newGem->SetIsInTile(true);
+				//}
+				//else
+				//{
+				//	if (tileLayer1[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+				//	{
+				//		newGem->SetIsInTile(true);
+				//	}
+				//}
+
+				if (newThrows->position.tileX)
+					_throws.push_back(newThrows);
 			}
 		}
 	}

@@ -76,6 +76,20 @@ bool EventManager::QueueEvent(const IEvent * event)
 	return result;
 }
 
+void EventManager::DiscardAllEvents()
+{
+	int processingQueue = _activeQueue;
+	_activeQueue = (++_activeQueue) % 2;
+	_eventQueue[_activeQueue].clear();
+
+	while (!_eventQueue[processingQueue].empty())
+	{
+		const IEvent *event = _eventQueue[processingQueue].front();
+		_eventQueue[processingQueue].pop_front();	
+		delete event;
+	}
+}
+
 bool EventManager::Update(float deltaTime)
 {
 	bool flushed = false;

@@ -1,44 +1,48 @@
 #include "stdafx.h"
-#include "Rock.h"
+#include "Throws.h"
 
-Rock::Rock(ObjectId id)
+Throws::Throws(ObjectId id)
 	:EquipItem(id)
 {
 }
 
-Rock::~Rock()
+Throws::~Throws()
 {
 }
 
-HRESULT Rock::Init(BaseProperty *property)
+HRESULT Throws::Init(BaseProperty *property)
 {
 	EquipItem::Init(property);
-	_sprite = new D2DSprite;
-	_sprite->Init(IMAGEMANAGER->GetImage(L"rock"), 0, 0, 80, 80, IntVector2(-40, -50));
+	_sprite = new D2DFrameSprite;
+	_sprite->Init(IMAGEMANAGER->GetImage(L"throws"), 80, 80, IntVector2(-40, -40));
 
 	_speed = Vector2(400, 300);
 	_maxVelocity = Vector2(300, 550);
 
+	ThrowProperty *convertedProperty = (ThrowProperty *)(property);
+	*this = convertedProperty;
+
 	return S_OK;
 }
 
-void Rock::Release(void)
+void Throws::Release(void)
 {
 	EquipItem::Release();
 	SAFE_RELEASE_AND_DELETE(_sprite);
 }
 
-void Rock::Update(float deltaTime)
+void Throws::Update(float deltaTime)
 {
 	EquipItem::Update(deltaTime);
 }
 
-void Rock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
+void Throws::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
-	EquipItem::Render(renderTarget, camPos);
+	Vector2 drawPos = position.UnTilelize() - camPos;
+	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
 }
 
-void Rock::Use(const ControlCommand &commands)
+void Throws::Use(const ControlCommand &commands)
 {
 	_equiped = false;
 
@@ -85,11 +89,19 @@ void Rock::Use(const ControlCommand &commands)
 	_pOwner = nullptr;
 }
 
-GameObject * Rock::Copy(ObjectId id)
+GameObject * Throws::Copy(ObjectId id)
 {
-	return nullptr;
+	return new Throws(id);
 }
 
-void Rock::Apply(ObjectId id)
+void Throws::Apply(ObjectId id)
 {
+}
+
+void Throws::operator=(const ThrowProperty * property)
+{
+	position.tileX = property->position.x;
+	position.tileY = property->position.y;
+	_sourceIndex = property->sourceIndex;
+	_breakable = property->breakable;
 }

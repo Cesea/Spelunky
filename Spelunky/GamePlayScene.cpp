@@ -22,9 +22,13 @@ HRESULT GamePlayScene::LoadContent()
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitdoors.png", L"exitdoors");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gems.png", L"gems");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\throws.png", L"throws");
+
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\playerhud.png", L"playerhud");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\moneyhud.png", L"moneyhud");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitText.png", L"exitSprite");
 
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
@@ -108,12 +112,10 @@ HRESULT GamePlayScene::Init(void)
 	STAGEMANAGER->SetCameraLink(&_camera);
 	STAGEMANAGER->SetPlayerLink(_pPlayer);
 
-	_playerHudSprite = new D2DFrameSprite();
-	_playerHudSprite->Init(IMAGEMANAGER->GetImage(L"playerhud"), 360.0f, 90.0f, IntVector2(0, 0));
+	UIMANAGER->Init();
+	UIMANAGER->SetPlayerLink(_pPlayer);
 
-	_moneyHudSprite = new D2DSprite();
-	_moneyHudSprite->Init(IMAGEMANAGER->GetImage(L"moneyhud"), 0, 0, 320.0f, 80.0f, IntVector2(0, 0));
-
+	EVENTMANAGER->QueueEvent(new StageTransitionEvent());
 
 	return S_OK;
 }
@@ -121,15 +123,12 @@ HRESULT GamePlayScene::Init(void)
 void GamePlayScene::Release(void)
 {
 	STAGEMANAGER->Release();
+
 	//SAFE_RELEASE_AND_DELETE(_obstacle);
 }
 
 void GamePlayScene::Update(void)
 {
-	if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
-	{
-		SCENEMANAGER->ChangeScene(L"MenuScene");
-	}
 
 	float deltaTime = TIMEMANAGER->GetElapsedTime();
 
@@ -141,12 +140,8 @@ void GamePlayScene::Update(void)
 		EVENTMANAGER->QueueEvent(new PlayerInputEvent(_playerId, playerCommand));
 	}
 
-	_pPlayer->Update(deltaTime);
 
-	if (KEYMANAGER->IsOnceKeyDown(VK_RETURN))
-	{
-		EVENTMANAGER->QueueEvent(new StageTransitionEvent());
-	}
+	_pPlayer->Update(deltaTime);
 
 	float camSpeed = 200.0f;
 
@@ -159,6 +154,21 @@ void GamePlayScene::Update(void)
 	{
 		TilePosition mouseTilePos(absMouseVector);
 		STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));
+	}
+
+	UIMANAGER->Update(deltaTime);
+
+
+	if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
+	{
+		EVENTMANAGER->DiscardAllEvents();
+		SCENEMANAGER->ChangeScene(L"MenuScene");
+	}
+	if (KEYMANAGER->IsOnceKeyDown('Y'))
+	{
+		EVENTMANAGER->DiscardAllEvents();
+		EVENTMANAGER->QueueEvent(new StageTransitionEvent());
+		return;
 	}
 }
 
@@ -175,10 +185,8 @@ void GamePlayScene::Render(void)
 
 	_pPlayer->Render(gRenderTarget, unTiledCamPos);
 
-	_playerHudSprite->FrameRender(gRenderTarget, 70, 40, 0, 0);
-	_moneyHudSprite->Render(gRenderTarget, 0, 140);
 
-	_dWrite.PrintText(gRenderTarget, 105, 155, 110, 30, std::to_wstring(_pPlayer->GetMoney()).c_str(), D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
+	UIMANAGER->Render(unTiledCamPos);
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

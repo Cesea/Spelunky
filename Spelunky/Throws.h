@@ -1,13 +1,13 @@
-#ifndef ROCK_H
-#define ROCK_H
+#ifndef THROWS_H
+#define THROWS_H
 
 #include "EquipItem.h"
 
-class Rock : public EquipItem
+class Throws : public EquipItem
 {
 public:
-	Rock(ObjectId id);
-	virtual ~Rock();
+	Throws(ObjectId id);
+	virtual ~Throws();
 
 	virtual HRESULT Init(BaseProperty *property);
 	virtual void Release(void);
@@ -21,6 +21,11 @@ public:
 	virtual void Apply(ObjectId id);
 
 private:
+
+	void operator= (const ThrowProperty *property);
+
+	IntVector2 _sourceIndex{};
+	bool32 _breakable{};
 
 };
 

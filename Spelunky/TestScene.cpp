@@ -12,7 +12,16 @@ TestScene::~TestScene()
 HRESULT TestScene::LoadContent()
 {
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\dustring.png", L"dustring");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\smokering.png", L"smokering");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\explosion.png", L"explosion");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bomb.png", L"bomb");
 
+	KEYANIMANAGER->AddDefPlayFrameAnimation(L"explosion", L"explosion", 128, 128, 20, false, false);
+	int normalBombArray[] = { 0, 1, 2 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"bomb", L"bomb", 80, 80, normalBombArray, 3, 12, true);
+
+	int stickyBombArray[] = {3, 4, 5};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"bomb", L"bomb", 80, 80, stickyBombArray, 3, 12, true);
 
 	return S_OK;
 }
@@ -27,24 +36,6 @@ Vector2 TestScene::GetRandomVector2(float xMin, float xMax, float yMin, float yM
 	return Vector2(RND->GetFloat(xMin, xMax), RND->GetFloat(yMin, yMax));
 }
 
-void TestScene::MakeParticles(const Vector2 & mousePos)
-{
-	for (int i = 0; i < 20; ++i)
-	{
-		_particles[i].position = mousePos;
-		_particles[i].position += GetRandomVector2(-20, 20, -10, 0);
-
-		_particles[i].alpha = 1.0f;
-
-		float randomScale = RND->GetFloat(0.1, 0.3);
-		_particles[i].scale = Vector2(randomScale, randomScale);
-
-		_particles[i].MoveBy(GetRandomVector2(-50, 50, -60, -150), RND->GetFloat(2.0f, 4.0f));
-		_particles[i].DisappearTo(0, RND->GetFloat(2.0f, 4.0f));
-	}
-}
-
-
 HRESULT TestScene::Init(void)
 {
 	HRESULT result = LoadContent();
@@ -53,21 +44,25 @@ HRESULT TestScene::Init(void)
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
-	_particle.Init(L"dustring", 0, 0, 512, 512, IntVector2(-256, -256));
+	OBJECTMANAGER->SetCurrentScene(this);
 
-	_particle.position = Vector2(200, 200);
+	EFFECTMANAGER->Init();
+	EFFECTMANAGER->SetCameraLink(&cameraTemp);
 
-	for (int i = 0; i < 20; ++i)
-	{
-		_particles[i].Init(L"dustring", 0, 0, 512, 512, IntVector2(-256, -256));
-	}
+	//BaseProperty prop;
+	//_bomb.Init(&prop);
+	//_bomb.position = TilePosition(5, 5);
+
+	BombProperty property;
+	property.position = IntVector2(5, 5);
+	//property.position
+	_bomb = (Bomb *)OBJECTMANAGER->CreateObject(L"bomb", &property);
 
 	return S_OK;
 }
 
 void TestScene::Release(void)
 {
-	_particle.Release();
 }
 
 void TestScene::Update(void)
@@ -79,29 +74,21 @@ void TestScene::Update(void)
 
 	ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
 
-	if (playerCommand.action == Command::Attack)
-	{
-		MakeParticles(currentMouse);
-	}
-
-	for (int i = 0; i < 20; ++i)
-	{
-		_particles[i].Update(deltaTime);
-	}
+	_bomb->Update(deltaTime);
+	EFFECTMANAGER->Update(deltaTime);
 }
 
 void TestScene::Render()
 {
 	//그리기 전에는 항상 BeginDraw()
 	gRenderTarget->BeginDraw();
-	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
+	gRenderTarget->Clear(D2D1::ColorF(0.1f, 0.4f, 0.7f, 1.0f));
 
 	Vector2 camPos{};
 
-	for (int i = 0; i < 20; ++i)
-	{
-		_particles[i].RenderScale(gRenderTarget, camPos);
-	}
+
+	_bomb->Render(gRenderTarget, camPos);
+	EFFECTMANAGER->Render();
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

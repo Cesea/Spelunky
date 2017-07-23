@@ -27,7 +27,6 @@ HRESULT SpriteObject::InitAnimation(const std::wstring &key,Animation *animation
 	_frameWidth = _sprite->GetWidthPerFrame();
 	_frameHeight = _sprite->GetHeightPerFrame();
 
-	_sprite->GetAnimation()->Start();
 	return S_OK;
 }
 

@@ -34,8 +34,6 @@ private:
 	ObjectId _lastId{1};
 	ObjectId GetNextId() { return _lastId++; }
 
-	D2DSprite *_playerHudSprite{};
-	D2DSprite *_moneyHudSprite{};
 
 };
 #endif

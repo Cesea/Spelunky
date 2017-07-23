@@ -25,6 +25,9 @@ public:
 	void DestroyTile(const IntVector2 &tilePos);
 
 	Stage *GetCurrentStage();
+
+	void SetCurrentStage(int i) { _currentStageCount = i; }
+
 private:
 	RandomRoomGenerated MakeRandomRoomTypes();
 

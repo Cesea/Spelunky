@@ -87,8 +87,9 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="ArcheType.h" />
     <ClInclude Include="AttackState.h" />
+    <ClInclude Include="Bomb.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="ColiidingObject.h" />
+    <ClInclude Include="CollidingObject.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="commonMacroFunction.h" />
@@ -148,7 +149,7 @@
     <ClInclude Include="Property.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="IScene.h" />
-    <ClInclude Include="Rock.h" />
+    <ClInclude Include="Throws.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="singletonBase.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="TileInfo.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="UpperDeathState.h" />
     <ClInclude Include="Utillities.h" />
     <ClInclude Include="Vector2.h" />
@@ -173,8 +175,9 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="ColiidingObject.cpp" />
+    <ClCompile Include="CollidingObject.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -224,7 +227,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="PropertyFactory.cpp" />
-    <ClCompile Include="Rock.cpp" />
+    <ClCompile Include="Throws.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SpriteObject.cpp" />
@@ -241,6 +244,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimeTrigger.cpp" />
     <ClCompile Include="Tunnel.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UpperDeathState.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />

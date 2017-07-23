@@ -20,6 +20,9 @@ enum  EventType
 
 	EVENT_STAGE_TRANSITIOIN = 0xce584715,
 	EVENT_DESTROY_TILE = 0xa0535762,
+
+	EVENT_ON_TUNNEL = 0xf69ed5c1,
+
 };
 
 class IEvent
@@ -253,6 +256,21 @@ public :
 	const WCHAR *GetName() const;
 	EventType GetType() const override { return _type; }
 
+	const IntVector2 &GetPosition() { return _position; }
+private :
+	static EventType _type;
+	IntVector2 _position;
+};
+
+class OnTunnelEvent : public BaseEvent
+{
+public :
+	OnTunnelEvent(const IntVector2 &position);
+	virtual ~OnTunnelEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
 	const IntVector2 &GetPosition() { return _position; }
 private :
 	static EventType _type;

@@ -41,7 +41,8 @@ void D2DSprite::Render(ID2D1HwndRenderTarget *renderTarget, float alpha)
 {
 	if (!_flipedX)
 	{
-		_sourceImage->Render(renderTarget, _sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
+		_sourceImage->Render(renderTarget, ConvertFloatToInt(_sourceX), ConvertFloatToInt(_sourceY),
+			ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), alpha);
 	}
 	else
 	{
@@ -53,24 +54,30 @@ void D2DSprite::Render(ID2D1HwndRenderTarget *renderTarget, float destX, float d
 {
 	if (!_flipedX)
 	{
-		_sourceImage->Render(renderTarget, destX + _anchor.x, destY + _anchor.y, _sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
+		_sourceImage->Render(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y), 
+			ConvertFloatToInt(_sourceX), ConvertFloatToInt(_sourceY), 
+			ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), alpha);
 	}
 	else
 	{
-		_sourceImage->RenderFlipX(renderTarget, destX + _anchor.x, destY + _anchor.y, _sourceX, _sourceY, _widthPerFrame, _heightPerFrame, alpha);
+		_sourceImage->RenderFlipX(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y),
+			ConvertFloatToInt(_sourceX), ConvertFloatToInt(_sourceY),
+			ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), alpha);
 	}
 }
 
 void D2DSprite::RenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, const D2D1::Matrix3x2F & mat, float alpha)
 {
-	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x * mat._11, destY + _anchor.y * mat._11, 
-		_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, mat, alpha);
+	_sourceImage->RenderMatrix(renderTarget, ConvertFloatToInt(destX + _anchor.x * mat._11), ConvertFloatToInt(destY + _anchor.y * mat._11), 
+		ConvertFloatToInt(_sourceX), ConvertFloatToInt(_sourceY),
+		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), mat, alpha);
 }
 
 void D2DSprite::RenderRotate(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, const D2D1::Matrix3x2F & mat, float alpha)
 {
-	_sourceImage->RenderMatrix(renderTarget, destX + _anchor.x , destY + _anchor.y ,
-		_sourceX, _sourceY, _widthPerFrame, _heightPerFrame, mat, alpha);
+	_sourceImage->RenderMatrix(renderTarget, ConvertFloatToInt(destX + _anchor.x) , ConvertFloatToInt(destY + _anchor.y ),
+		ConvertFloatToInt(_sourceX), ConvertFloatToInt(_sourceY), 
+		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), mat, alpha);
 }
 
 void D2DSprite::FrameRenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, int xIndex, int yIndex, const D2D1::Matrix3x2F & mat, float alpha)
