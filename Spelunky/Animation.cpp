@@ -221,8 +221,9 @@ void Animation::SetFPS(int framePerSec)
 	_frameUpdateSec = 1.0f / framePerSec;
 }
 
-void Animation::FrameUpdate(float elapsedTime)
+bool Animation::FrameUpdate(float elapsedTime)
 {
+	bool result = false;
 	if (_isPlay)
 	{
 		_elapsedSec += elapsedTime;
@@ -230,6 +231,8 @@ void Animation::FrameUpdate(float elapsedTime)
 		//프레임 업데이트 시간이 되었으면....
 		if (_elapsedSec >= _frameUpdateSec)
 		{
+			result = true;
+
 			_elapsedSec -= _frameUpdateSec;
 			_nowPlayIdx++;
 
@@ -258,6 +261,7 @@ void Animation::FrameUpdate(float elapsedTime)
 			}
 		}
 	}
+	return result;
 }
 
 void Animation::Start(void)

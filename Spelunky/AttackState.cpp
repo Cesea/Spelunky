@@ -11,6 +11,9 @@
 void AttackState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"attack");
+	object->SetWeaponGraphics(L"whip");
+	object->_offsetCount = 0;
+	object->_weaponOffset = Vector2();
 }
 
 State<Player>* AttackState::Update(Player * object, float deltaTime)
@@ -18,6 +21,16 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 	State<Player> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
+
+	Animation *currentWeapon = object->GetCurrentWeaponGraphics()->GetAnimation();
+	if (currentWeapon->FrameUpdate(deltaTime))
+	{
+		object->_offsetCount++;
+	}
+	if (object->_offsetCount == 5)
+	{
+		object->_weaponOffset = Vector2((object->GetDirection() == Direction::Right) ? 50 : -50, 23);
+	}
 
 	if (object->_stateClimbing)
 	{
@@ -139,6 +152,7 @@ State<Player>* AttackState::HandleFrameEndEvent(Player * object)
 
 void AttackState::OnExit(Player * object)
 {
+	object->_currentWeaponSprite = nullptr;
 }
 
 void ThrowState::OnEnter(Player * object)

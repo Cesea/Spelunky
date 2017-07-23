@@ -56,6 +56,7 @@ public :
 	Rect GetRect() { return _rect; }
 
 	D2DSprite *GetCurrentGraphics() { return _currentSprite; }
+	D2DSprite *GetCurrentWeaponGraphics() { return _currentWeaponSprite; }
 
 	void SetGraphics(const std::wstring &key);
 	void SetDirection(Direction direction) { _seeingDirection = direction; }
@@ -63,8 +64,12 @@ public :
 
 	int GetMoney() { return _money; }
 
+	void SetWeaponGraphics(const std::wstring &key);
+	void EndWeaponGraphics();
+
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
+	void BuildWeaponAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 
 	void CollisionCheck();
 	void CheckCurrentTile();
@@ -95,6 +100,10 @@ private :
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
 
+	DataSet<D2DSprite *> _weaponGraphics;
+	D2DSprite *_currentWeaponSprite{};
+
+
 	StateManager<Player> _stateManager;
 
 	ReturnTile _nearTiles;
@@ -103,6 +112,9 @@ private :
 	uint32 _rope{ 4 };
 
 	ObjectId _holdingObjectId[2]{UNVALID_OBJECT_ID, };
+
+	Vector2 _weaponOffset{};
+	int _offsetCount{ 0 };
 };
 
 #endif

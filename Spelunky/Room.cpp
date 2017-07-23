@@ -811,27 +811,39 @@ void Stage::BuildThrows()
 		{
 			for (auto &prop : _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"throws")->second)
 			{
-				prop->position = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
-				Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
-				newThrows->position.tileX = prop->position.x;
-				newThrows->position.tileY = prop->position.y;
+				ThrowProperty *convertedProperty = (ThrowProperty *)(prop);
+				if (convertedProperty->sourceIndex.x == 2)
+				{
+					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+					Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
 
-				newThrows->desiredPosition = newThrows->position;
+					newThrows->position.tileX = worldPosition.x;
+					newThrows->position.tileY = worldPosition.y;
+					newThrows->desiredPosition = newThrows->position;
 
-				//if (tileLayer0[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
-				//{
-				//	newGem->SetIsInTile(true);
-				//}
-				//else
-				//{
-				//	if (tileLayer1[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
-				//	{
-				//		newGem->SetIsInTile(true);
-				//	}
-				//}
+					convertedProperty->sourceIndex.x += 1;
+					Throws *newThrowsSecond = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
 
-				if (newThrows->position.tileX)
+					newThrowsSecond->position.tileX = worldPosition.x;
+					newThrowsSecond->position.tileY = worldPosition.y;
+					newThrowsSecond->desiredPosition = newThrows->position;
+
 					_throws.push_back(newThrows);
+					_throws.push_back(newThrowsSecond);
+				}
+				else
+				{
+					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+
+					Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+
+					newThrows->position.tileX = worldPosition.x;
+					newThrows->position.tileY = worldPosition.y;
+					newThrows->desiredPosition = newThrows->position;
+
+					if (newThrows->position.tileX)
+						_throws.push_back(newThrows);
+				}
 			}
 		}
 	}
@@ -925,7 +937,9 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 {
 	ItemBreakEvent *convertedEvent = (ItemBreakEvent *)event;
 	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
-	if (convertedEvent->GetBreakType() == BreakType::Jar)
+	if (convertedEvent->GetBreakType() == BreakType::Jar || 
+		convertedEvent->GetBreakType() == BreakType::Bone  
+		)
 	{
 		for (auto &iter = _throws.begin(); iter != _throws.end();)
 		{

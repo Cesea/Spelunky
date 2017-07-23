@@ -35,7 +35,7 @@ public:
 	void SetFPS(int framePerSec);
 
 	//프레임 업데이트...
-	void FrameUpdate(float elapsedTime);
+	bool FrameUpdate(float elapsedTime);
 
 	void Start(void);		//애니 시작
 	void Stop(void);		//애니 정지

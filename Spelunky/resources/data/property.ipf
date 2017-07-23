@@ -155,7 +155,7 @@ Property Name : none
 SourceIndex X : -1, Y : -1
 Value0 : none
 Value1 : none
-Applied : 0
+Applied : 1
 At X : 2, Y : 3
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -241,25 +241,25 @@ Value0 : none
 Value1 : none
 Applied : 0
 At X : 0, Y : 5
-Property Name : throw
+Property Name : throws
 SourceIndex X : 0, Y : 0
 Value0 : 0
 Value1 : 1
 Applied : 1
 At X : 1, Y : 5
-Property Name : throw
+Property Name : throws
 SourceIndex X : 1, Y : 0
 Value0 : 1
 Value1 : 1
 Applied : 1
 At X : 2, Y : 5
-Property Name : throw
+Property Name : throws
 SourceIndex X : 2, Y : 0
 Value0 : 1
 Value1 : 1
 Applied : 1
 At X : 3, Y : 5
-Property Name : throw
+Property Name : throws
 SourceIndex X : -2, Y : -2
 Value0 : 0
 Value1 : 0

@@ -50,7 +50,12 @@ HRESULT Player::Init(BaseProperty *property)
 	BuildAnimationSprite(L"attack", IntVector2(-40, -72));
 	BuildAnimationSprite(L"throw", IntVector2(-40, -72));
 
+	BuildWeaponAnimationSprite(L"whip", IntVector2(-40, -90));
+	BuildWeaponAnimationSprite(L"mattock", IntVector2(-40, -90));
+	BuildWeaponAnimationSprite(L"machete", IntVector2(-40, -90));
+
 	SetGraphics(L"idle");
+
 
 	_stateManager.Init(this, new IdleState);
 
@@ -87,6 +92,11 @@ void Player::Update(float deltaTime)
 void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
 	Vector2 drawingPos = position.UnTilelize() -camPos;
+
+	if (_currentWeaponSprite)
+	{
+		_currentWeaponSprite->Render(renderTarget, drawingPos.x + _weaponOffset.x, drawingPos.y + _weaponOffset.y);
+	}
 	_currentSprite->Render(renderTarget, drawingPos.x, drawingPos.y);
 }
 
@@ -173,6 +183,26 @@ void Player::SetGraphics(const std::wstring & key)
 	}
 }
 
+void Player::SetWeaponGraphics(const std::wstring & key)
+{
+	D2DSprite *found = _weaponGraphics.FindData(key);
+	if (found != nullptr)
+	{
+		if (_currentWeaponSprite)
+		{
+			_currentWeaponSprite->GetAnimation()->Stop();
+		}
+		_currentWeaponSprite = found;
+		_currentWeaponSprite->GetAnimation()->Start();
+		_currentWeaponSprite->SyncFlip(_seeingDirection);
+	}
+}
+
+void Player::EndWeaponGraphics()
+{
+	_currentWeaponSprite = nullptr;
+}
+
 void Player::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 & anchor)
 {
 	std::wstring imageKey = L"char_orange";
@@ -183,6 +213,19 @@ void Player::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 
 	sprite->Init(IMAGEMANAGER->GetImage(imageKey), animation, anchor);
 
 	_graphics.AddData(aniKey, sprite);
+}
+
+void Player::BuildWeaponAnimationSprite(const std::wstring & aniKey, const IntVector2 & anchor)
+{
+	std::wstring imageKey = L"weapon_";
+	Animation *animation = new Animation;
+	animation->InitCopy(KEYANIMANAGER->FindAnimation(imageKey + aniKey));
+	animation->SetOwner(this);
+	animation->SetEndFunction(Delegate<void>::FromFunction<Player, &Player::EndWeaponGraphics>(this));
+	D2DSprite *sprite = new D2DAnimationSprite;
+	sprite->Init(IMAGEMANAGER->GetImage(L"weaponanimation"), animation, anchor);
+
+	_weaponGraphics.AddData(aniKey, sprite);
 }
 
 void Player::CollisionCheck()

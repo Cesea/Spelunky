@@ -24,11 +24,12 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gems.png", L"gems");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\throws.png", L"throws");
 
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\playerhud.png", L"playerhud");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\moneyhud.png", L"moneyhud");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitText.png", L"exitSprite");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\weaponanimation.png", L"weaponanimation");
 
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
@@ -88,6 +89,15 @@ HRESULT GamePlayScene::LoadContent()
 	int throwArray[] = {54, 55, 56, 57, 58};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_throw", L"char_orange", 80, 80, throwArray, 5, 10, false);
 
+
+	int whipArray[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_whip", L"weaponanimation", 80, 80, whipArray, 11, 20, false);
+
+	int mattockArray[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_mattock", L"weaponanimation", 80, 80, mattockArray, 11, 20, false);
+
+	int macheteArray[] = {22, 23, 24, 25, 26 , 27, 28, 29, 30, 31, 32};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_machete", L"weaponanimation", 80, 80, macheteArray, 11, 20, false);
 
 	return S_OK;
 }
