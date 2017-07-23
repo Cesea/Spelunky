@@ -65,6 +65,7 @@ bool CollisionComponent::CollideRepulse(MovingObject * object, float deltaTime, 
 					{
 						object->desiredPosition.AddToTileRel(0, overlapRect.height);
 						object->_velocity.y = 0.0f;
+						object->_velocity.x *= 0.6;
 						result = true;
 					}
 					//øﬁ ≈∏¿œ

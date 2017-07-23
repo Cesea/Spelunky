@@ -53,7 +53,7 @@ void Throws::Update(float deltaTime)
 		desiredPosition.AddToTileRel(_velocity * deltaTime);
 
 		TilePosition centerPos = desiredPosition;
-		centerPos.AddToTileRelY(-32.0f);
+		centerPos.AddToTileRelY(-8.0f);
 		_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
 
 		bool collisionResult = _collisionComp->Update(this, deltaTime, &_nearTiles);
@@ -79,12 +79,12 @@ void Throws::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos
 	Vector2 drawPos = position.UnTilelize() - camPos;
 	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
 
-	//const Vector2 itemUntiledPosition = position.UnTilelize();
-	//Rect itemAbsRect =
-	//		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	//itemAbsRect += _collisionComp->GetOffset();
+	const Vector2 itemUntiledPosition = position.UnTilelize();
+	Rect itemAbsRect =
+			RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
 
-	//DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
+	DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
 }
 
 void Throws::Use(const ControlCommand &commands)

@@ -49,8 +49,12 @@ void EquipItem::Update(float deltaTime)
 		desiredPosition.AddToTileRel(_velocity * deltaTime);
 
 		TilePosition centerPos = desiredPosition;
-		centerPos.AddToTileRelY(-32.0f);
+		centerPos.AddToTileRelY(5.0f);
 		_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
+		if (_nearTiles.tiles[1]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+		{
+			int a = 0;
+		}
 		_collisionComp->Update(this, deltaTime, &_nearTiles);
 	}
 }

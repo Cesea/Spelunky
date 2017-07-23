@@ -258,14 +258,26 @@ void MapToolScene::Render()
 			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
 			{
 				int index = x + y * ROOM_TILE_COUNTX;
-				if ((_roomInfo.layer1[index].sourceIndex.x != -1) || 
-					(_roomInfo.layer1[index].maskInfo != 0))
+				if ((_roomInfo.layer1[index].sourceIndex.x != -1)  
+					/*(_roomInfo.layer1[index].maskInfo != 0)*/)
 				{
 					const IntVector2 &tileIndex = _roomInfo.layer1[index].sourceIndex;
 					const std::wstring &tileString = _roomInfo.layer1[index].imageKey;
 					auto &found = _usingImages.find(tileString);
 					found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE, tileIndex.x, tileIndex.y);
 
+					
+				}
+			}
+		}
+
+		for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+		{
+			for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+			{
+				int index = x + y * ROOM_TILE_COUNTX;
+				if (_roomInfo.layer1[index].maskInfo != 0)
+				{
 					for (int i = 0; i < 4; ++i)
 					{
 						if (_roomInfo.layer1[index].imageMaskInfo[i].hasMask)
@@ -839,6 +851,7 @@ void MapToolScene::ClearAllTheBits(RoomInfo * roomInfo)
 		roomInfo->layer1[i].maskInfo = 0;
 		for (int j = 0; j < 4; ++j)
 		{
+			roomInfo->layer1[i].imageKey.clear();
 			roomInfo->layer1[i].imageMaskInfo[j].hasMask = false;
 			roomInfo->layer1[i].imageMaskInfo[j].maskImageKey.clear();
 		}
@@ -850,7 +863,6 @@ void MapToolScene::TileInfoBitmaskCopy(const std::wstring imageKey, TileInfo &so
 	sourTile.maskInfo |= (1 << offset);
 
 	maskTile.maskInfo |= (1 << offset);
-	maskTile.imageKey = imageKey;
 
 	sourTile.imageMaskInfo[offset].hasMask = true;
 	sourTile.imageMaskInfo[offset].maskImageKey = imageKey;

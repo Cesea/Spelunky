@@ -36,7 +36,7 @@ State<Player>* FallingState::Update(Player * object, float deltaTime)
 	{
 		newState = new GrabState;
 	}
-	if (object->_upperDeath)
+	if (object->_upperDeath && !object->_onGround)
 	{
 		newState = new UpperDeathState;
 	}

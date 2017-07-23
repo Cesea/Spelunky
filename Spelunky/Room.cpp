@@ -260,13 +260,16 @@ void Stage::CalculateAllMask(int xStartIndex, int yStartIndex, int width, int he
 void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int height, int layer)
 {
 	Tile **tileLayer = nullptr;
+	Tile **otherLayer = nullptr;
 	if (layer == 0)
 	{
 		tileLayer = tileLayer0;
+		otherLayer = tileLayer1;
 	}
 	else if (layer == 1)
 	{
 		tileLayer = tileLayer1;
+		otherLayer = tileLayer0;
 	}
 	for (int y = yStartIndex; y < yStartIndex + height; ++y)
 	{
@@ -420,6 +423,7 @@ void Stage::Render(const TilePosition &camPos)
 	_tunnels[0]->Render(gRenderTarget, untileldCamPos);
 	_tunnels[1]->Render(gRenderTarget, untileldCamPos);
 
+
 	for (int y = minY; y <= maxY; ++y)
 	{
 		for (int x = minX; x <= maxX; ++x)
@@ -427,10 +431,6 @@ void Stage::Render(const TilePosition &camPos)
 			if (tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
 			{
 				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
-			}
-			if (tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
-			{
-				tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
 			}
 		}
 	}
@@ -443,8 +443,13 @@ void Stage::Render(const TilePosition &camPos)
 			{
 				tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
 			}
+			if (tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
+			}
 		}
 	}
+
 
 	for (auto &throws : _throws)
 	{
@@ -597,8 +602,8 @@ void Stage::BuildRoomFromFile(const std::wstring &fileName,
 		loadFile.GetLine();
 		loadFile.GetLine();
 
-		BuildTileLayerFromFile(loadFile, room->layer0, roomX, roomY, border, 0, usingSprites);
-		BuildTileLayerFromFile(loadFile, room->layer1, roomX, roomY, border, 1, usingSprites);
+		BuildTileLayerFromFile(loadFile, roomX, roomY, border, usingSprites);
+		BuildOrnamentsFromFile(loadFile, roomX, roomY, border, usingSprites);
 
 		CollectRoomPropertyFromFile(loadFile, room);
 
@@ -607,7 +612,7 @@ void Stage::BuildRoomFromFile(const std::wstring &fileName,
 }
 
 void Stage::BuildTileLayerFromFile(FileUtils::File & file, 
-	Tile **pTileLayer, int roomX, int roomY, bool border, int layerNum, std::map<std::wstring, D2DSprite *> &usingSprites)
+	int roomX, int roomY, bool border, std::map<std::wstring, D2DSprite *> &usingSprites)
 {
 	WCHAR buffer[40]{};
 
@@ -640,34 +645,118 @@ void Stage::BuildTileLayerFromFile(FileUtils::File & file,
 				file.Read(L"Layer : %d\n", &property->layer);
 				file.Read(L"Can Be Destroyed : %d\n", &property->canBeDestroyedByBomb);
 
-				pTileLayer[index] = (Tile *)OBJECTMANAGER->CreateObject(L"tile", property);
+				if (wcscmp(buffer, L"woodtile") == 0)
+				{
+					int a = 0;
+				}
+
 				IntVector2 worldPositon{};
+				Tile *newTile = (Tile *)OBJECTMANAGER->CreateObject(L"tile", property);
+
 				if (border)
 				{
 					worldPositon = CalculateBorderWorldIndex(roomX, roomY, x, y);
-					pTileLayer[index]->position.tileX = worldPositon.x;
-					pTileLayer[index]->position.tileY = worldPositon.y;
-					if (layerNum == 0)
+					newTile->position.tileX = worldPositon.x;
+					newTile->position.tileY = worldPositon.y;
+					newTile->desiredPosition = newTile->position;
+					if (property->layer == 0)
 					{
-						tileLayer0[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+						tileLayer0[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
 					}
-					else if (layerNum == 1)
+					else if (property->layer == 2)
 					{
-						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
 					}
 				}
 				else
 				{
 					worldPositon = CalculateTileWorldIndex(roomX, roomY, x, y);
-					pTileLayer[index]->position.tileX = worldPositon.x;
-					pTileLayer[index]->position.tileY = worldPositon.y;
-					if (layerNum == 0)
+					newTile->position.tileX = worldPositon.x;
+					newTile->position.tileY = worldPositon.y;
+					newTile->desiredPosition = newTile->position;
+					if (property->layer == 0)
 					{
-						tileLayer1[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+						tileLayer0[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
 					}
-					else if (layerNum == 1)
+					else if (property->layer == 1)
 					{
-						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = pTileLayer[index];
+						tileLayer1[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < 8; ++i)
+				{
+					file.GetLine();
+				}
+				ZeroMemory(buffer, 40);
+			}
+		}
+	}
+}
+
+void Stage::BuildOrnamentsFromFile(FileUtils::File & file, int roomX, int roomY, bool border, std::map<std::wstring, D2DSprite*>& usingSprites)
+{
+	WCHAR buffer[40]{};
+
+	TileProperty *property = new TileProperty;
+
+	for (int y = 0; y < ROOM_TILE_COUNTY; ++y)
+	{
+		for (int x = 0; x < ROOM_TILE_COUNTX; ++x)
+		{
+			int index = x + ROOM_TILE_COUNTX * y;
+			file.GetLine();
+
+			file.Read(L"Image Key : %s\n", &buffer);
+
+			if (wcscmp(buffer, L"e") != 0)
+			{
+				CheckUsingSpriteExistence(buffer);
+				property->sprite = usingSprites.find(buffer)->second;
+
+				property->position.x = x;
+				property->position.y = y;
+
+				file.Read(L"SourceIndex X : %d, Y : %d\n", &property->sourceIndex.x, &property->sourceIndex.y);
+				file.Read(L"Destroyed Index X : %d, Y : %d\n",
+					&property->destroyedIndex.x, &property->destroyedIndex.y);
+				file.Read(L"This Mask Info : %u\n", &property->thisMaskInfo);
+				file.Read(L"Near Mask Info : %u\n", &property->nearMaskInfo);
+				file.Read(L"Collision Type : %d\n", &property->collisionType);
+				file.Read(L"Mask Info : %u\n", &property->maskInfo);
+				file.Read(L"Layer : %d\n", &property->layer);
+				file.Read(L"Can Be Destroyed : %d\n", &property->canBeDestroyedByBomb);
+
+				if (wcscmp(buffer, L"woodtile") == 0)
+				{
+					int a = 0;
+				}
+
+				IntVector2 worldPositon{};
+				Tile *newTile = (Tile *)OBJECTMANAGER->CreateObject(L"tile", property);
+				
+				if (border)
+				{
+					worldPositon = CalculateBorderWorldIndex(roomX, roomY, x, y);
+					newTile->position.tileX = worldPositon.x;
+					newTile->position.tileY = worldPositon.y;
+					newTile->desiredPosition = newTile->position;
+					if (property->layer == 2)
+					{
+						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
+					}
+				}
+				else
+				{
+					worldPositon = CalculateTileWorldIndex(roomX, roomY, x, y);
+					newTile->position.tileX = worldPositon.x;
+					newTile->position.tileY = worldPositon.y;
+					newTile->desiredPosition = newTile->position;
+					if (property->layer == 2)
+					{
+						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
 					}
 				}
 			}
@@ -694,53 +783,7 @@ void Stage::CheckUsingSpriteExistence(const std::wstring & key)
 	}
 }
 
-void Stage::CopyTilesPosition(int worldIndex, int x, int y)
-{
-	if (tileLayer0[worldIndex] != nullptr)
-	{
-		tileLayer0[worldIndex]->position.tileX = x;
-		tileLayer0[worldIndex]->position.tileY = y;
-	}
-	if (tileLayer2[worldIndex] != nullptr)
-	{
-		tileLayer2[worldIndex]->position.tileX = x;
-		tileLayer2[worldIndex]->position.tileY = y;
-	}
-}
 
-void Stage::CopyTilesFromRooms(Room * rooms)
-{
-	for (int y = 0; y < 4; ++y)
-	{
-		for (int x = 0; x < 4; ++x)
-		{
-			int index = GetIndexFromXY(x, y, 4);
-
-			Room &currentRoom = rooms[index];
-
-			int xTileStartIndex = x * ROOM_TILE_COUNTX + 3;
-			int yTileStartIndex = y * ROOM_TILE_COUNTY + 3;
-
-			for (int j = yTileStartIndex; j < yTileStartIndex + ROOM_TILE_COUNTY; ++j)
-			{
-				for (int i = xTileStartIndex; i < xTileStartIndex + ROOM_TILE_COUNTX; ++i)
-				{
-					tileLayer1[i + STAGE_TOTAL_COUNTX * j] =
-						currentRoom.layer0[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)];
-
-					tileLayer2[i + STAGE_TOTAL_COUNTX * j] =
-						currentRoom.layer1[(i - xTileStartIndex) + ROOM_TILE_COUNTX * (j - yTileStartIndex)];
-
-					if (tileLayer1[i + STAGE_TOTAL_COUNTX * j] != nullptr)
-					{
-						tileLayer1[i + STAGE_TOTAL_COUNTX * j]->position.tileX = i;
-						tileLayer1[i + STAGE_TOTAL_COUNTX * j]->position.tileY = j;
-					}
-				}
-			}
-		}
-	}
-}
 
 void Stage::TileInfoBitmaskCopy(D2DSprite * sourSprite, Tile * sourTile, Tile * maskTile, uint32 offset)
 {
@@ -779,25 +822,67 @@ void Stage::BuildGems()
 	{
 		for (int x = 0; x < 4; ++x)
 		{
-			for (auto &prop : _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"gem")->second)
+			auto &found = _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"gem");
+			if (found != _rooms[GetIndexFromXY(x, y, 4)].properties.end())
 			{
-				prop->position = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
-				Gem *newGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", prop);
+				for (auto &prop : found->second)
+				{
+					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
 
-				if (tileLayer0[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
-				{
-					newGem->SetIsInTile(true);
-				}
-				else
-				{
-					if (tileLayer1[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+					GemProperty *convertedProperty = (GemProperty *)(prop);
+					if (convertedProperty->sourceIndex.x == -2)
 					{
-						newGem->SetIsInTile(true);
+						GemProperty randomGemProperty{};
+						randomGemProperty.sourceIndex.y = 0;
+						int randSourceX = RND->GetFromIntTo(2, 5);
+						randomGemProperty.sourceIndex.x = randSourceX;
+						if (randSourceX == 2) { randomGemProperty.value = 800; }
+						else if (randSourceX == 3) { randomGemProperty.value = 1200; }
+						else if (randSourceX == 4) { randomGemProperty.value = 1600; }
+						else if (randSourceX == 5) { randomGemProperty.value = 2000; }
+						Gem *randomGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", &randomGemProperty);
+						randomGem->position.tileX = worldPosition.x;
+						randomGem->position.tileY = worldPosition.y;
+						randomGem->desiredPosition = randomGem->position;
+						if (tileLayer0[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+						{
+							randomGem->SetIsInTile(true);
+						}
+						else
+						{
+							if (tileLayer1[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+							{
+								randomGem->SetIsInTile(true);
+							}
+						}
+
+						if (randomGem->position.tileX)
+							_gems.push_back(randomGem);
+					}
+					else
+					{
+						Gem *newGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", prop);
+
+						newGem->position.tileX = worldPosition.x;
+						newGem->position.tileY = worldPosition.y;
+						newGem->desiredPosition = newGem->position;
+
+						if (tileLayer0[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+						{
+							newGem->SetIsInTile(true);
+						}
+						else
+						{
+							if (tileLayer1[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+							{
+								newGem->SetIsInTile(true);
+							}
+						}
+
+						if (newGem->position.tileX)
+							_gems.push_back(newGem);
 					}
 				}
-
-				if(newGem->position.tileX)
-				_gems.push_back(newGem);
 			}
 		}
 	}
@@ -809,40 +894,95 @@ void Stage::BuildThrows()
 	{
 		for (int x = 0; x < 4; ++x)
 		{
-			for (auto &prop : _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"throws")->second)
+			auto &found = _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"throws");
+			if (found != _rooms[GetIndexFromXY(x, y, 4)].properties.end())
 			{
-				ThrowProperty *convertedProperty = (ThrowProperty *)(prop);
-				if (convertedProperty->sourceIndex.x == 2)
+				for (auto &prop : found->second)
 				{
+					ThrowProperty *convertedProperty = (ThrowProperty *)(prop);
 					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
-					Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+					if (convertedProperty->sourceIndex.x == -2)
+					{
+						ThrowProperty randomProperty{};
+						int randSourceX = RND->GetFromIntTo(0, 2);
+						randomProperty.sourceIndex.x = randSourceX;
+						randomProperty.sourceIndex.y = 0;
+						if (randSourceX == 0)
+						{
+							randomProperty.breakable = false;
+						}
+						else if (randSourceX == 1)
+						{
+							randomProperty.breakable = true;
+						}
+						else if (randSourceX == 2)
+						{
+							randomProperty.breakable = true;
+						}
 
-					newThrows->position.tileX = worldPosition.x;
-					newThrows->position.tileY = worldPosition.y;
-					newThrows->desiredPosition = newThrows->position;
+						if (randSourceX == 2)
+						{
+							Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
 
-					convertedProperty->sourceIndex.x += 1;
-					Throws *newThrowsSecond = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+							newThrows->position.tileX = worldPosition.x;
+							newThrows->position.tileY = worldPosition.y;
+							newThrows->desiredPosition = newThrows->position;
 
-					newThrowsSecond->position.tileX = worldPosition.x;
-					newThrowsSecond->position.tileY = worldPosition.y;
-					newThrowsSecond->desiredPosition = newThrows->position;
+							convertedProperty->sourceIndex.x += 1;
+							Throws *newThrowsSecond = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
 
-					_throws.push_back(newThrows);
-					_throws.push_back(newThrowsSecond);
-				}
-				else
-				{
-					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+							newThrowsSecond->position.tileX = worldPosition.x;
+							newThrowsSecond->position.tileY = worldPosition.y;
+							newThrowsSecond->desiredPosition = newThrows->position;
 
-					Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+							_throws.push_back(newThrows);
+							_throws.push_back(newThrowsSecond);
+						}
+						else
+						{
+							Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
 
-					newThrows->position.tileX = worldPosition.x;
-					newThrows->position.tileY = worldPosition.y;
-					newThrows->desiredPosition = newThrows->position;
+							newThrows->position.tileX = worldPosition.x;
+							newThrows->position.tileY = worldPosition.y;
+							newThrows->desiredPosition = newThrows->position;
 
-					if (newThrows->position.tileX)
-						_throws.push_back(newThrows);
+							if (newThrows->position.tileX)
+								_throws.push_back(newThrows);
+						}
+					}
+					else
+					{
+						if (convertedProperty->sourceIndex.x == 2)
+						{
+							Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+
+							newThrows->position.tileX = worldPosition.x;
+							newThrows->position.tileY = worldPosition.y;
+							newThrows->desiredPosition = newThrows->position;
+
+							convertedProperty->sourceIndex.x += 1;
+							Throws *newThrowsSecond = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+
+							newThrowsSecond->position.tileX = worldPosition.x;
+							newThrowsSecond->position.tileY = worldPosition.y;
+							newThrowsSecond->desiredPosition = newThrows->position;
+
+							_throws.push_back(newThrows);
+							_throws.push_back(newThrowsSecond);
+						}
+						else
+						{
+
+							Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
+
+							newThrows->position.tileX = worldPosition.x;
+							newThrows->position.tileY = worldPosition.y;
+							newThrows->desiredPosition = newThrows->position;
+
+							if (newThrows->position.tileX)
+								_throws.push_back(newThrows);
+						}
+					}
 				}
 			}
 		}
