@@ -86,20 +86,10 @@ inline BOOL DataSet<T>::DeleteData(std::wstring strKey)
 template<typename T>
 inline BOOL DataSet<T>::DeleteAll(void)
 {
-	auto iter = _mDataList.begin();
-
-	for (; iter != _mDataList.end();)
+	for (auto &data : _mDataList)
 	{
-		if (iter->second != NULL)
-		{
-			iter->second->Release();
-			delete iter->second;
-			iter = _mDataList.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
+		data.second->Release();
+		delete data.second;
 	}
 
 	_mDataList.clear();

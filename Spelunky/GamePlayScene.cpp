@@ -31,6 +31,9 @@ HRESULT GamePlayScene::LoadContent()
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\weaponanimation.png", L"weaponanimation");
 
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\monsters.png", L"monsters");
+
+#pragma region Animation For Player
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
 
@@ -92,8 +95,10 @@ HRESULT GamePlayScene::LoadContent()
 	int exitArray[] = {60, 61, 62, 63, 64, 65};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_exit", L"char_orange", 80, 80, exitArray, 6, 10, true);
 
+#pragma endregion
 
-#pragma region Weapons
+
+#pragma region Animation Weapons
 	int whipArray[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_whip", L"weaponanimation", 80, 80, whipArray, 11, 20, false);
 
@@ -104,7 +109,7 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_machete", L"weaponanimation", 80, 80, macheteArray, 11, 20, false);
 #pragma endregion
 
-#pragma region Bomb
+#pragma region Animation Bomb
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\dustring.png", L"dustring");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\smokering.png", L"smokering");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\explosion.png", L"explosion");
@@ -116,6 +121,41 @@ HRESULT GamePlayScene::LoadContent()
 
 	int stickyBombArray[] = {3, 4, 5};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"sticky_bomb", L"bomb", 80, 80, stickyBombArray, 3, 12, true);
+#pragma endregion
+
+#pragma region Animations for Monsters
+
+	int snakeWalkArary[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"snake_walk", L"monsters", 80, 80, snakeWalkArary, 11, 12, true);
+	int snakeAttackArray[] = {12, 13, 14, 15, 16, 17, 18};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"snake_attack", L"monsters", 80, 80, snakeAttackArray, 7, 12, false);
+
+	int spiderFlipArray[] = { 24, 25, 26, 27, 28, 29 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_flip", L"monsters", 80, 80, spiderFlipArray, 6, 12, false);
+	int spiderOnGroundArray[] = {30, 31, 32, 33};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_ground", L"monsters", 80, 80, spiderOnGroundArray, 4, 12, true);
+	int spiderJumpArray[] = { 19, 20, 21, 22 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_jump", L"monsters", 80, 80, spiderJumpArray, 4, 12, false);
+
+	int primitiveWalkArray[] = {36, 37, 38, 39, 40, 41, 42, 43, 44};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"primitive_walk", L"monsters", 80, 80, primitiveWalkArray, 9, 12, true);
+	int primitiveDeadArray[] = {45, 46, 47, 48, 49};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"primitive_dead", L"monsters", 80, 80, primitiveWalkArray, 5, 12, false);
+
+	int batOnTopArray[] = { 60, 61, 62, 63, 64, 65, 66, 67 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"bat_on_top", L"monsters", 80, 80, batOnTopArray, 8, 10, true);
+	int batFlyArray[] = {72, 73, 74, 75, 76, 77, 78};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"bat_fly", L"monsters", 80, 80, batFlyArray, 7, 10, true);
+
+	int strongSnakeWalkArray[] = {84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"strong_snake_walk", L"monsters", 80, 80, strongSnakeWalkArray, 12, 12, true);
+	int strongSnakeAttackArray[] = { 96, 97, 98, 99, 100};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"strong_snake_attack", L"monsters", 80, 80, strongSnakeAttackArray, 5, 12, false);
+	int strongSnakeSpitArray[] = {101, 102, 103, 104, 105, 106, 107};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"strong_snake_spit", L"monsters", 80, 80, strongSnakeSpitArray, 7, 12, false);
+
+
+
 #pragma endregion
 
 	return S_OK;

@@ -196,6 +196,9 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\AIEngine">
       <UniqueIdentifier>{ba7068e7-e0d5-40e2-b872-af2182502124}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Snake\States">
+      <UniqueIdentifier>{02b4033c-6c1a-46c9-b441-5d9edcd290cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -468,6 +471,18 @@
     <ClInclude Include="Enemy.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Snake</Filter>
+    </ClInclude>
+    <ClInclude Include="SnakeWalkState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Snake\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SnakeAttackState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Snake\States</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyFactory.h">
+      <Filter>Game\Common\ObjectFactory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -700,6 +715,18 @@
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Snake</Filter>
+    </ClCompile>
+    <ClCompile Include="SnakeAttackState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Snake\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SnakeWalkState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Snake\States</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyFactory.cpp">
+      <Filter>Game\Common\ObjectFactory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

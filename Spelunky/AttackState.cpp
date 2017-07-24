@@ -37,6 +37,10 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 		object->_weaponOffset = Vector2((object->GetDirection() == Direction::Right) ? 50 : -50, 23);
 		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
 	}
+	else if (object->_offsetCount == 9)
+	{
+		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
+	}
 
 	if (object->_stateClimbing)
 	{
@@ -106,7 +110,7 @@ State<Player>* AttackState::HandleCommand(Player * object, const ControlCommand 
 			_wasControlled = true;
 			if (object->GetDirection() != Direction::Left)
 			{
-				object->SetDirection(Direction::Left);
+				//object->SetDirection(Direction::Left);
 				object->_velocity.x = -40.0f;
 			}
 			else
@@ -119,7 +123,7 @@ State<Player>* AttackState::HandleCommand(Player * object, const ControlCommand 
 			_wasControlled = true;
 			if (object->GetDirection() != Direction::Right)
 			{
-				object->SetDirection(Direction::Right);
+				//object->SetDirection(Direction::Right);
 				object->_velocity.x = 40.0f;
 			}
 			else

@@ -27,6 +27,9 @@ EventType PlayerAttackEvent::_type = EVENT_PLAYER_ATTACK;
 EventType PlayerGoExitEvent::_type = EVENT_PLAYER_GO_EXIT;
 
 EventType ThrowBombEvent::_type = EVENT_THROW_BOMB;
+EventType EnemyInputEvent::_type = EVENT_ENEMY_INPUT;
+
+EventType EnemyDeadEvent::_type = EVENT_ENEMY_DEAD;
 
 
 BaseEvent::BaseEvent(float timeStamp)
@@ -410,4 +413,19 @@ IEvent * EnemyInputEvent::Copy() const
 const WCHAR * EnemyInputEvent::GetName() const
 {
 	return L"Enemy Input Event";
+}
+
+EnemyDeadEvent::EnemyDeadEvent(const ObjectId id)
+	:_id(id)
+{
+}
+
+IEvent * EnemyDeadEvent::Copy() const
+{
+	return new EnemyDeadEvent(_id);
+}
+
+const WCHAR * EnemyDeadEvent::GetName() const
+{
+	return L"Enemy Dead Event";
 }

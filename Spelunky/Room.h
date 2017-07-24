@@ -8,6 +8,7 @@
 #include "Throws.h"
 
 #include "Bomb.h"
+#include "Enemy.h"
 
 struct RandomRoomGenerated
 {
@@ -93,11 +94,13 @@ private:
 	void BuildEntrance();
 	void BuildGems();
 	void BuildThrows();
+	void BuildEnemies();
 	void CollectRoomPropertyFromFile(FileUtils::File &file, Room *room);
 
 
 	void HandleCollectMoneyEvent(const IEvent *event);
 	void HandleItemBreakEvent(const IEvent *event);
+	void HandleEnemyDeadEvent(const IEvent *event);
 	void HandleThrowBombEvent(const IEvent *event);
 private:
 	Room _rooms[16]{};
@@ -111,6 +114,7 @@ private:
 	std::list<Bomb *> _bombs{};
 	std::list<Gem *> _gems{};
 	std::list<Throws *> _throws{};
+	std::list<Enemy *> _enemies{};
 
 
 	std::map<std::wstring, D2DSprite *> _usingSprites;

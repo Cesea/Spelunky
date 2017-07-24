@@ -21,6 +21,16 @@ struct MaskInfo
 	bool32 hasMask{};
 };
 
+enum EnemyType
+{
+	ENEMY_NONE,
+	ENEMY_Snake,
+	ENEMY_Spider,
+	ENEMY_Primitive,
+	ENEMY_Bat,
+	ENEMY_StrongSnake,
+};
+
 //다 막힌 방
 //복도 방,
 //위만 뚤린 방
@@ -93,14 +103,20 @@ struct BombProperty : public BaseProperty
 	IntVector2 sourceIndex{ -1, -1 };
 	bool32 sticky{ false };
 	Vector2 initialVelocity{};
-	virtual void Init(const MapTool::PropertyInfo &porpertyInfo);
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 
 struct ThrowProperty : public BaseProperty
 {
 	IntVector2 sourceIndex{ -1, -1 };
 	bool32 breakable;
-	virtual void Init(const MapTool::PropertyInfo &porpertyInfo);
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
+};
+
+struct EnemyProperty : public BaseProperty
+{
+	EnemyType type;
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 
 int ConvertStringToTileProperty(const std::wstring &str);

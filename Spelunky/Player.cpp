@@ -62,7 +62,6 @@ HRESULT Player::Init(BaseProperty *property)
 
 	SetGraphics(L"idle");
 
-
 	_stateManager.Init(this, new IdleState);
 
 	_exitTimer.Init(1.3f);
@@ -79,7 +78,6 @@ void Player::Update(float deltaTime)
 {
 	if (_canControl)
 	{
-
 		_accel.y += GRAVITY;
 		_stateManager.Update(deltaTime);
 		_accel = Vector2();
@@ -280,11 +278,6 @@ void Player::EndWeaponGraphics()
 {
 	_currentWeaponSprite = nullptr;
 }
-
-//void Player::ResetForMiddleStage()
-//{
-//	EVENTMANAGER->FireEvent(new PlayerGoExitEvent());
-//}
 
 void Player::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 & anchor)
 {

@@ -9,6 +9,7 @@ enum class StateType
 };
 
 #include "MovingObject.h"
+#include "EquipItem.h"
 
 class Player : public MovingObject
 {
@@ -125,6 +126,8 @@ private :
 	Vector2 _weaponOffset{};
 	int _offsetCount{ 0 };
 
+	EquipItem *_weaponHoldingItem{};
+	EquipItem *_jumpHoldingItem{};
 
 	TilePosition _exitStartPosition{};
 	TilePosition _exitPosition{};

@@ -25,20 +25,10 @@ Enemy::Enemy(ObjectId id)
 
 Enemy::~Enemy()
 {
-	_graphics.Release();
 }
 
 HRESULT Enemy::Init(BaseProperty * property)
 {
-	_collisionComp = new CollisionComponent;
-	_collisionComp->Init(RectMake(0, 0, 38, 44), Vector2(-19, -44));
-
-	_speed = Vector2(460, 300);
-	_maxVelocity = Vector2(340, 630);
-
-	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Enemy, &Enemy::HandlePlayerAttackEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Enemy, &Enemy::HandlePlayerAttackEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Enemy, &Enemy::HandlePlayerAttackEvent>(this));
 
 	return S_OK;
 }
@@ -60,14 +50,69 @@ GameObject * Enemy::Copy(ObjectId id)
 	return nullptr;
 }
 
-void Enemy::HandleEnemyInputEvent(const IEvent * event)
-{
-}
-
-void Enemy::HandlePalyerInputEvent(const IEvent * event)
+void Enemy::HandlePlayerPositionEvent(const IEvent * event)
 {
 }
 
 void Enemy::HandlePlayerAttackEvent(const IEvent * event)
 {
+	PlayerAttackEvent *convertedEvent = (PlayerAttackEvent *)event;
+
+	const TilePosition &playerTilePosition =  convertedEvent->GetTilePosition();
+	int tileXDiff = playerTilePosition.tileX - position.tileX;
+	int tileYDiff = playerTilePosition.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 3 || abs(tileYDiff) >= 3)
+	{
+		return;
+	}
+	
+	const Vector2 &playerUntiled = playerTilePosition.UnTilelize();
+	const Vector2 untiled = position.UnTilelize();
+
+	Direction seeingDirection = convertedEvent->GetDirection();
+
+	Vector2 positionUntiled = position.UnTilelize();
+	Vector2 playerPositionUntiled = playerTilePosition.UnTilelize();
+
+	bool hitted = false;
+	if (seeingDirection == Direction::Left)
+	{
+		if (positionUntiled.x <= playerPositionUntiled.x + 15 &&
+			positionUntiled.x >= playerPositionUntiled.x - 75 &&
+			position.tileY == playerTilePosition.tileY)
+		{
+			hitted = true;
+		}
+	}
+	else if (seeingDirection == Direction::Right)
+	{
+		if (positionUntiled.x >= playerPositionUntiled.x - 15 &&
+			positionUntiled.x <= playerPositionUntiled.x + 75 &&
+			position.tileY == playerTilePosition.tileY)
+		{
+
+			hitted = true;
+		}
+	}
+	if (hitted)
+	{
+		_hp -= 1;
+		if (_hp <= 0)
+		{
+			EVENTMANAGER->QueueEvent(new EnemyDeadEvent(_id));
+		}
+		else
+		{
+			if (seeingDirection == Direction::Left)
+			{
+				_velocity.x = -140;
+			}
+			else if (seeingDirection == Direction::Right)
+			{
+				_velocity.x = 140;
+			}
+			_velocity.y -= 80;
+		}
+	}
 }

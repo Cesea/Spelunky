@@ -16,8 +16,7 @@ public :
 
 	virtual GameObject *Copy(ObjectId id);
 
-	virtual void HandleEnemyInputEvent(const IEvent *event);
-	virtual void HandlePalyerInputEvent(const IEvent *event);
+	void HandlePlayerPositionEvent(const IEvent *event);
 	void HandlePlayerAttackEvent(const IEvent *event);
 
 	D2DSprite *GetCurrentGraphics() { return _currentSprite; }
@@ -30,6 +29,8 @@ protected :
 	D2DSprite *_currentSprite{};
 
 	ReturnTile _nearTiles;
+
+	int _hp{ 0 };
 
 };
 

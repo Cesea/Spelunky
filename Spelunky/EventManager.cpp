@@ -100,6 +100,8 @@ bool EventManager::Update(float deltaTime)
 
 	int count = 0;
 
+	Console::Log("queue size : %d\n", _eventQueue[processingQueue].size());
+
 	while (!_eventQueue[processingQueue].empty())
 	{
 		const IEvent *event = _eventQueue[processingQueue].front();

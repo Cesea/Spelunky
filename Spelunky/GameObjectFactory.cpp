@@ -7,6 +7,7 @@
 #include "Gem.h"
 #include "Bomb.h"
 #include "Throws.h"
+#include "Enemy.h"
 
 GameObjectFactory::GameObjectFactory()
 {
@@ -19,12 +20,14 @@ GameObjectFactory::~GameObjectFactory()
 HRESULT GameObjectFactory::Init()
 {
 	RegisterBuilders();
+	_enemyFactory.Init();
 	return S_OK;
 }
 
 void GameObjectFactory::Release()
 {
 	UnRegisterBuilders();
+	_enemyFactory.Release();
 }
 
 GameObject * GameObjectFactory::Build(const ObjectId id, const std::wstring &key, BaseProperty *property)
@@ -33,7 +36,15 @@ GameObject * GameObjectFactory::Build(const ObjectId id, const std::wstring &key
 	GameObjectBuilderIter &iter = _builders.find(key);
 	if (iter != _builders.end())
 	{
-		result = iter->second->Build(id, property);
+		if (iter->first.compare(L"enemy") == 0)
+		{
+			EnemyProperty *convertedProperty = (EnemyProperty *)(property);
+			result = _enemyFactory.Build(id, convertedProperty->type, convertedProperty);
+		}
+		else
+		{
+			result = iter->second->Build(id, property);
+		}
 	}
 	return result;
 }
@@ -46,6 +57,7 @@ void GameObjectFactory::RegisterBuilders()
 	RegisterBuilder(L"gem", new TGameObjectBuilder<Gem>());
 	RegisterBuilder(L"bomb", new TGameObjectBuilder<Bomb>());
 	RegisterBuilder(L"throws", new TGameObjectBuilder<Throws>());
+	RegisterBuilder(L"enemy", new TGameObjectBuilder<Enemy>());
 }
 
 void GameObjectFactory::UnRegisterBuilders()
@@ -56,6 +68,7 @@ void GameObjectFactory::UnRegisterBuilders()
 	UnRegisterBuilder(L"gem");
 	UnRegisterBuilder(L"bomb");
 	UnRegisterBuilder(L"throws");
+	UnRegisterBuilder(L"enemy");
 }
 
 void GameObjectFactory::RegisterBuilder(const std::wstring & key, GameObjectBuilder * builder)

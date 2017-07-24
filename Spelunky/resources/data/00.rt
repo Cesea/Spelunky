@@ -201,15 +201,15 @@ Mask Info : 0
 Layer : 0
 Can Be Destroyed : 1
 At X : 0, Y : 2
-Image Key : minetile
-SourceIndex X : 0, Y : 1
-Destroyed Index X : 4, Y : 3
-This Mask Info : 15
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
-Layer : 1
-Can Be Destroyed : 1
+Layer : 0
+Can Be Destroyed : 0
 At X : 1, Y : 2
 Image Key : e
 SourceIndex X : -1, Y : -1
@@ -301,25 +301,25 @@ Mask Info : 0
 Layer : 0
 Can Be Destroyed : 1
 At X : 0, Y : 3
-Image Key : minetile
-SourceIndex X : 0, Y : 2
-Destroyed Index X : 4, Y : 4
-This Mask Info : 15
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
-Layer : 1
-Can Be Destroyed : 1
+Layer : 0
+Can Be Destroyed : 0
 At X : 1, Y : 3
-Image Key : minetile
-SourceIndex X : 1, Y : 2
-Destroyed Index X : 5, Y : 4
-This Mask Info : 15
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
+This Mask Info : 0
 Near Mask Info : 0
-Collision Type : 1
+Collision Type : 0
 Mask Info : 0
-Layer : 1
-Can Be Destroyed : 1
+Layer : 0
+Can Be Destroyed : 0
 At X : 2, Y : 3
 Image Key : e
 SourceIndex X : -1, Y : -1
@@ -1728,11 +1728,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 1, Y : 2
-Property Name : throws
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 5
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 2
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1788,11 +1788,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 1, Y : 3
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : enemy
+SourceIndex X : 0, Y : 0
+Value0 : snake
+Value1 : 0
+ImageSourceIndex X : 4, Y : 2
 At X : 2, Y : 3
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1854,11 +1854,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 4
-Property Name : gem
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 2
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 3, Y : 4
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1902,11 +1902,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 0, Y : 5
-Property Name : gem
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 2
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 1, Y : 5
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1944,11 +1944,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 7, Y : 5
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : enemy
+SourceIndex X : 0, Y : 0
+Value0 : snake
+Value1 : 0
+ImageSourceIndex X : 4, Y : 2
 At X : 8, Y : 5
 Property Name : tunnel
 SourceIndex X : 0, Y : 0
@@ -2034,11 +2034,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 7
-Property Name : gem
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 2
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 3, Y : 7
 Property Name : none
 SourceIndex X : -1, Y : -1

@@ -31,6 +31,8 @@ enum  EventType
 
 	EVENT_THROW_BOMB = 0x49500922,
 	EVENT_ENEMY_INPUT = 0x17246236,
+	
+	EVENT_ENEMY_DEAD = 0xaa04c0a1,
 
 };
 
@@ -399,5 +401,23 @@ private:
 	ObjectId _id;
 	static EventType _type;
 };
+
+class EnemyDeadEvent : public BaseEvent
+{
+public :
+	EnemyDeadEvent(const ObjectId id);
+	virtual ~EnemyDeadEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+private:
+	static EventType _type;
+	ObjectId _id{ 0 };
+};
+
+
 
 #endif

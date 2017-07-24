@@ -106,6 +106,16 @@ Stage::~Stage()
 		OBJECTMANAGER->DestroyObject(gem->GetId());
 	}
 
+	for (auto &throws : _throws)
+	{
+		OBJECTMANAGER->DestroyObject(throws->GetId());
+	}
+
+	for (auto &enemy : _enemies)
+	{
+		OBJECTMANAGER->DestroyObject(enemy->GetId());
+	}
+
 	for (auto &sprite : _usingSprites)
 	{
 		SAFE_DELETE(sprite.second);
@@ -150,6 +160,7 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 	BuildEntrance();
 	BuildGems();
 	BuildThrows();
+	BuildEnemies();
 
 	return S_OK;
 }
@@ -394,6 +405,11 @@ void Stage::Update(float deltaTime)
 	{
 		bomb->Update(deltaTime);
 	}
+
+	for (auto &enemy : _enemies)
+	{
+		enemy->Update(deltaTime);
+	}
 }
 
 void Stage::Render(const TilePosition &camPos)
@@ -467,6 +483,10 @@ void Stage::Render(const TilePosition &camPos)
 	for (auto &bomb : _bombs)
 	{
 		bomb->Render(gRenderTarget, untileldCamPos);
+	}
+	for (auto &enemy : _enemies)
+	{
+		enemy->Render(gRenderTarget, untileldCamPos);
 	}
 }
 
@@ -631,6 +651,7 @@ void Stage::RegisterDelegates()
 	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_ENEMY_DEAD, EventDelegate::FromFunction<Stage, &Stage::HandleEnemyDeadEvent>(this));
 }
 
 void Stage::UnRegisterDelegates()
@@ -638,6 +659,7 @@ void Stage::UnRegisterDelegates()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_ENEMY_DEAD, EventDelegate::FromFunction<Stage, &Stage::HandleEnemyDeadEvent>(this));
 }
 
 void Stage::BuildBorder()
@@ -1099,6 +1121,36 @@ void Stage::BuildThrows()
 	}
 }
 
+void Stage::BuildEnemies()
+{
+	for (int y = 0; y < 4; ++y)
+	{
+		for (int x = 0; x < 4; ++x)
+		{
+			auto &found = _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"enemy");
+			if (found != _rooms[GetIndexFromXY(x, y, 4)].properties.end())
+			{
+				for (auto &prop : found->second)
+				{
+					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+
+					EnemyProperty *convertedProperty = (EnemyProperty *)(prop);
+					convertedProperty->position.x = worldPosition.x;
+					convertedProperty->position.y = worldPosition.y;
+
+					Enemy *newEnemy = (Enemy *)OBJECTMANAGER->CreateObject(L"enemy", convertedProperty);
+
+					if (newEnemy)
+					{
+						_enemies.push_back(newEnemy);
+					}
+
+				}
+			}
+		}
+	}
+}
+
 void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
 {
 	std::wstring str1 = file.GetLine();
@@ -1187,8 +1239,8 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 {
 	ItemBreakEvent *convertedEvent = (ItemBreakEvent *)event;
 	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
-	if (convertedEvent->GetBreakType() == BreakType::BREAK_Jar || 
-		convertedEvent->GetBreakType() == BreakType::BREAK_Bone  )
+	if (convertedEvent->GetBreakType() == BreakType::BREAK_Jar ||
+		convertedEvent->GetBreakType() == BreakType::BREAK_Bone)
 	{
 		for (auto &iter = _throws.begin(); iter != _throws.end();)
 		{
@@ -1216,6 +1268,24 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			{
 				iter++;
 			}
+		}
+	}
+}
+
+void Stage::HandleEnemyDeadEvent(const IEvent * event)
+{
+	EnemyDeadEvent *convertedEvent = (EnemyDeadEvent *)event;
+	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+	for (auto &iter = _enemies.begin(); iter != _enemies.end();)
+	{
+		if ((*iter) == object)
+		{
+			_enemies.erase(iter);
+			break;
+		}
+		else
+		{
+			iter++;
 		}
 	}
 }

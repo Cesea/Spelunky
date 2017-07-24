@@ -265,8 +265,6 @@ void MapToolScene::Render()
 					const std::wstring &tileString = _roomInfo.layer1[index].imageKey;
 					auto &found = _usingImages.find(tileString);
 					found->second->FrameRender(gRenderTarget, 600 + x * TILE_SIZE, 70 + y * TILE_SIZE, tileIndex.x, tileIndex.y);
-
-					
 				}
 			}
 		}

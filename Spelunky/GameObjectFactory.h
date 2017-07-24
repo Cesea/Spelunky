@@ -4,6 +4,7 @@
 #include "Property.h"
 
 #include "singletonBase.h"
+#include "EnemyFactory.h"
 
 class GameObjectBuilder
 {
@@ -47,6 +48,8 @@ private:
 	void UnRegisterBuilder(const std::wstring &key);
 
 	GameObjecetBuilder _builders;
+
+	EnemyFactory _enemyFactory;
 };
 
 #endif
