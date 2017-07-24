@@ -105,6 +105,7 @@
     <ClInclude Include="DataSet.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="ExitState.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="PropertyFactory.h" />

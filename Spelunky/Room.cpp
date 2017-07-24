@@ -832,32 +832,35 @@ void Stage::BuildGems()
 					GemProperty *convertedProperty = (GemProperty *)(prop);
 					if (convertedProperty->sourceIndex.x == -2)
 					{
-						GemProperty randomGemProperty{};
-						randomGemProperty.sourceIndex.y = 0;
-						int randSourceX = RND->GetFromIntTo(2, 5);
-						randomGemProperty.sourceIndex.x = randSourceX;
-						if (randSourceX == 2) { randomGemProperty.value = 800; }
-						else if (randSourceX == 3) { randomGemProperty.value = 1200; }
-						else if (randSourceX == 4) { randomGemProperty.value = 1600; }
-						else if (randSourceX == 5) { randomGemProperty.value = 2000; }
-						Gem *randomGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", &randomGemProperty);
-						randomGem->position.tileX = worldPosition.x;
-						randomGem->position.tileY = worldPosition.y;
-						randomGem->desiredPosition = randomGem->position;
-						if (tileLayer0[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+						if (RND->GetFloat() > 0.4)
 						{
-							randomGem->SetIsInTile(true);
-						}
-						else
-						{
-							if (tileLayer1[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+							GemProperty randomGemProperty{};
+							randomGemProperty.sourceIndex.y = 0;
+							int randSourceX = RND->GetFromIntTo(2, 5);
+							randomGemProperty.sourceIndex.x = randSourceX;
+							if (randSourceX == 2) { randomGemProperty.value = 800; }
+							else if (randSourceX == 3) { randomGemProperty.value = 1200; }
+							else if (randSourceX == 4) { randomGemProperty.value = 1600; }
+							else if (randSourceX == 5) { randomGemProperty.value = 2000; }
+							Gem *randomGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", &randomGemProperty);
+							randomGem->position.tileX = worldPosition.x;
+							randomGem->position.tileY = worldPosition.y;
+							randomGem->desiredPosition = randomGem->position;
+							if (tileLayer0[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
 							{
 								randomGem->SetIsInTile(true);
 							}
-						}
+							else
+							{
+								if (tileLayer1[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+								{
+									randomGem->SetIsInTile(true);
+								}
+							}
 
-						if (randomGem->position.tileX)
-							_gems.push_back(randomGem);
+							if (randomGem->position.tileX)
+								_gems.push_back(randomGem);
+						}
 					}
 					else
 					{
@@ -903,51 +906,54 @@ void Stage::BuildThrows()
 					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
 					if (convertedProperty->sourceIndex.x == -2)
 					{
-						ThrowProperty randomProperty{};
-						int randSourceX = RND->GetFromIntTo(0, 2);
-						randomProperty.sourceIndex.x = randSourceX;
-						randomProperty.sourceIndex.y = 0;
-						if (randSourceX == 0)
+						if (RND->GetFloat() > 0.4)
 						{
-							randomProperty.breakable = false;
-						}
-						else if (randSourceX == 1)
-						{
-							randomProperty.breakable = true;
-						}
-						else if (randSourceX == 2)
-						{
-							randomProperty.breakable = true;
-						}
+							ThrowProperty randomProperty{};
+							int randSourceX = RND->GetFromIntTo(0, 2);
+							randomProperty.sourceIndex.x = randSourceX;
+							randomProperty.sourceIndex.y = 0;
+							if (randSourceX == 0)
+							{
+								randomProperty.breakable = false;
+							}
+							else if (randSourceX == 1)
+							{
+								randomProperty.breakable = true;
+							}
+							else if (randSourceX == 2)
+							{
+								randomProperty.breakable = true;
+							}
 
-						if (randSourceX == 2)
-						{
-							Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
+							if (randSourceX == 2)
+							{
+								Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
 
-							newThrows->position.tileX = worldPosition.x;
-							newThrows->position.tileY = worldPosition.y;
-							newThrows->desiredPosition = newThrows->position;
+								newThrows->position.tileX = worldPosition.x;
+								newThrows->position.tileY = worldPosition.y;
+								newThrows->desiredPosition = newThrows->position;
 
-							randomProperty.sourceIndex.x += 1;
-							Throws *newThrowsSecond = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
+								randomProperty.sourceIndex.x += 1;
+								Throws *newThrowsSecond = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
 
-							newThrowsSecond->position.tileX = worldPosition.x;
-							newThrowsSecond->position.tileY = worldPosition.y;
-							newThrowsSecond->desiredPosition = newThrows->position;
+								newThrowsSecond->position.tileX = worldPosition.x;
+								newThrowsSecond->position.tileY = worldPosition.y;
+								newThrowsSecond->desiredPosition = newThrows->position;
 
-							_throws.push_back(newThrows);
-							_throws.push_back(newThrowsSecond);
-						}
-						else
-						{
-							Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
-
-							newThrows->position.tileX = worldPosition.x;
-							newThrows->position.tileY = worldPosition.y;
-							newThrows->desiredPosition = newThrows->position;
-
-							if (newThrows->position.tileX)
 								_throws.push_back(newThrows);
+								_throws.push_back(newThrowsSecond);
+							}
+							else
+							{
+								Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
+
+								newThrows->position.tileX = worldPosition.x;
+								newThrows->position.tileY = worldPosition.y;
+								newThrows->desiredPosition = newThrows->position;
+
+								if (newThrows->position.tileX)
+									_throws.push_back(newThrows);
+							}
 						}
 					}
 					else

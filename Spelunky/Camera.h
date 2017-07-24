@@ -21,6 +21,9 @@ public :
 	void Move(const Vector2 &v);
 
 	void Shake(float power, int shakeCount, float t);
+
+	void ResetForMiddleStage();
+	void ResetForNormalStage();
 	
 private :
 

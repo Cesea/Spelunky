@@ -172,6 +172,9 @@
     <Filter Include="GameFramework2D\Action">
       <UniqueIdentifier>{1ac5a8a3-4fb3-4fbc-ab09-6d45b36d9ffc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy">
+      <UniqueIdentifier>{ad4cd6e6-edd7-4006-8fd6-bcf116e6598c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -440,6 +443,9 @@
     </ClInclude>
     <ClInclude Include="Action.h">
       <Filter>GameFramework2D\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

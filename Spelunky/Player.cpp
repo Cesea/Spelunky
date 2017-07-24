@@ -109,6 +109,7 @@ void Player::Update(float deltaTime)
 			{
 				_moveToExitInterpolating = false;
 				position = _exitPosition;
+				_exitTimer.ResetAndChangeTargetSecond(1.3f);
 				SetGraphics(L"exit");
 			}
 			else
