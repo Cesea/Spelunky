@@ -117,6 +117,8 @@
     <ClInclude Include="SnakeAttackState.h" />
     <ClInclude Include="SnakeWalkState.h" />
     <ClInclude Include="Spider.h" />
+    <ClInclude Include="SpiderJumpState.h" />
+    <ClInclude Include="SpiderOnGroundState.h" />
     <ClInclude Include="SpiderOnTopState.h" />
     <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="TestScene.h" />
@@ -248,6 +250,10 @@
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SnakeAttackState.cpp" />
     <ClCompile Include="SnakeWalkState.cpp" />
+    <ClCompile Include="Spider.cpp" />
+    <ClCompile Include="SpiderJumpState.cpp" />
+    <ClCompile Include="SpiderOnGroundState.cpp" />
+    <ClCompile Include="SpiderOnTopState.cpp" />
     <ClCompile Include="Throws.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />

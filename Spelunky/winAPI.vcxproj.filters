@@ -504,6 +504,12 @@
     <ClInclude Include="SpiderOnTopState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
     </ClInclude>
+    <ClInclude Include="SpiderOnGroundState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SpiderJumpState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -757,6 +763,18 @@
     </ClCompile>
     <ClCompile Include="BatFlyingState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Bat\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SpiderOnTopState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SpiderOnGroundState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SpiderJumpState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Spider.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

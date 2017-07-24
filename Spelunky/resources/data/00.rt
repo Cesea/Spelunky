@@ -2060,9 +2060,9 @@ ImageSourceIndex X : 0, Y : 0
 At X : 6, Y : 7
 Property Name : enemy
 SourceIndex X : 0, Y : 0
-Value0 : bat
+Value0 : spider
 Value1 : 0
-ImageSourceIndex X : 4, Y : 3
+ImageSourceIndex X : 5, Y : 2
 At X : 7, Y : 7
 Property Name : none
 SourceIndex X : -1, Y : -1

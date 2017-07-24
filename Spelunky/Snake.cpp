@@ -39,7 +39,7 @@ HRESULT Snake::Init(BaseProperty * property)
 	_stateManager.Init(this, new SnakeWalkState);
 
 	_speed = Vector2(30, 300);
-	_maxVelocity = Vector2(40, 630);
+	_maxVelocity = Vector2(40, 500);
 
 	return S_OK;
 }

@@ -7,8 +7,9 @@ class Spider : public Enemy
 {
 public :
 
-	friend class SnakeWalkState;
-	friend class SnakeAttackState;
+	friend class SpiderJumpState;
+	friend class SpiderOnGroundState;
+	friend class SpiderOnTopState;
 
 	Spider(ObjectId id);
 	virtual ~Spider();
@@ -28,8 +29,8 @@ private :
 
 	StateManager<Spider> _stateManager;
 
-	bool _onTop{ true };
-	bool _jumping{ false };
+	bool32 _onTop{ true };
+	bool32 _jumping{ false };
 };
 
 #endif

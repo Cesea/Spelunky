@@ -131,11 +131,11 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"snake_attack", L"monsters", 80, 80, snakeAttackArray, 7, 12, false);
 
 	int spiderFlipArray[] = { 24, 25, 26, 27, 28, 29 };
-	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_flip", L"monsters", 80, 80, spiderFlipArray, 6, 12, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_flip", L"monsters", 80, 80, spiderFlipArray, 6, 10, false);
 	int spiderOnGroundArray[] = {30, 31, 32, 33};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_ground", L"monsters", 80, 80, spiderOnGroundArray, 4, 12, true);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_ground", L"monsters", 80, 80, spiderOnGroundArray, 4, 8, true);
 	int spiderJumpArray[] = { 19, 20, 21, 22 };
-	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_jump", L"monsters", 80, 80, spiderJumpArray, 4, 12, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"spider_jump", L"monsters", 80, 80, spiderJumpArray, 4, 10, false);
 
 	int primitiveWalkArray[] = {36, 37, 38, 39, 40, 41, 42, 43, 44};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"primitive_walk", L"monsters", 80, 80, primitiveWalkArray, 9, 12, true);
