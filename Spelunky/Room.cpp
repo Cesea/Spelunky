@@ -1270,6 +1270,7 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			}
 		}
 	}
+	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
 void Stage::HandleEnemyDeadEvent(const IEvent * event)
@@ -1288,6 +1289,7 @@ void Stage::HandleEnemyDeadEvent(const IEvent * event)
 			iter++;
 		}
 	}
+	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
 void Stage::HandleThrowBombEvent(const IEvent * event)

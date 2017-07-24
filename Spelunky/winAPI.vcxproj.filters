@@ -199,6 +199,12 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Snake\States">
       <UniqueIdentifier>{02b4033c-6c1a-46c9-b441-5d9edcd290cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Bat\States">
+      <UniqueIdentifier>{97d92490-6440-41ca-94f9-7d1297cff57d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Spider\States">
+      <UniqueIdentifier>{68ea4df6-f095-43a1-9326-6e03b8d05225}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -254,9 +260,6 @@
     </ClInclude>
     <ClInclude Include="D2DAnimationSprite.h">
       <Filter>GameFramework2D\D2D\Images</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="TimeManager.h">
       <Filter>GameFramework2D\Manager</Filter>
@@ -482,6 +485,24 @@
     </ClInclude>
     <ClInclude Include="EnemyFactory.h">
       <Filter>Game\Common\ObjectFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Bat.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Bat</Filter>
+    </ClInclude>
+    <ClInclude Include="BatOnTopState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Bat\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="BatFlyingState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Bat\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Spider.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider</Filter>
+    </ClInclude>
+    <ClInclude Include="SpiderOnTopState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -727,6 +748,15 @@
     </ClCompile>
     <ClCompile Include="EnemyFactory.cpp">
       <Filter>Game\Common\ObjectFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Bat.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Bat</Filter>
+    </ClCompile>
+    <ClCompile Include="BatOnTopState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Bat\States</Filter>
+    </ClCompile>
+    <ClCompile Include="BatFlyingState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Bat\States</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

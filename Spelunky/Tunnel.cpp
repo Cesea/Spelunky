@@ -47,10 +47,10 @@ void Tunnel::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos
 	_sprite->FrameRender(gRenderTarget,  drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
 
 
-	const Vector2 itemUntiledPosition = position.UnTilelize();
-	Rect itemAbsRect =
-		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	itemAbsRect += _collisionComp->GetOffset();
+	//const Vector2 itemUntiledPosition = position.UnTilelize();
+	//Rect itemAbsRect =
+	//	RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	//itemAbsRect += _collisionComp->GetOffset();
 
 	//DrawBox(gRenderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 1.0f, 0.0f));
 

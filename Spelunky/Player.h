@@ -54,6 +54,8 @@ public :
 	void HandleHoldingEvent(const IEvent *event);
 	void HandleOnTunnelEvent(const IEvent *event);
 	void HandlePlayerGoExitEvent(const IEvent *event);
+	void HandlePlayerUpperJumpEvent(const IEvent *event);
+
 	virtual void HandleMessage(const IEvent *event);
 
 	Rect GetRect() { return _rect; }
@@ -108,6 +110,8 @@ private :
 
 	bool _stickyBomb{ false };
 
+	bool32 _isFalling{ false };
+
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
 
@@ -133,6 +137,8 @@ private :
 	TilePosition _exitPosition{};
 
 	Timer _exitTimer;
+
+	float _jumpPower{530};
 };
 
 #endif

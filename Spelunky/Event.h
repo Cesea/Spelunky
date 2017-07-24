@@ -33,6 +33,7 @@ enum  EventType
 	EVENT_ENEMY_INPUT = 0x17246236,
 	
 	EVENT_ENEMY_DEAD = 0xaa04c0a1,
+	EVENT_PLAYER_UPPER_JUMP = 0x4fdb83af,
 
 };
 
@@ -155,7 +156,8 @@ private:
 class PlayerPositionEvent : public BaseEvent
 {
 public :
-	explicit PlayerPositionEvent(ObjectId id, const TilePosition &position, const Rect &rect, const Vector2 &rectOffset);
+	explicit PlayerPositionEvent(ObjectId id, const TilePosition &position, 
+		const Rect &rect, const Vector2 &rectOffset, const bool32 isFalling);
 	virtual ~PlayerPositionEvent();
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
@@ -166,6 +168,7 @@ public :
 	const TilePosition &GetPosition() { return _position; }
 	const Rect &GetRect() { return _rect; }
 	const Vector2 &GetRectOffset() { return _rectOffset; }
+	const bool32  &GetFalling() { return _isFalling; }
 
 private:
 	ObjectId _id;
@@ -173,6 +176,7 @@ private:
 	TilePosition _position;
 	Rect _rect;
 	Vector2 _rectOffset;
+	bool32  _isFalling;
 
 	static EventType _type;
 };
@@ -416,6 +420,22 @@ public :
 private:
 	static EventType _type;
 	ObjectId _id{ 0 };
+};
+
+class PlayerUpperJumpEvent : public BaseEvent
+{
+public :
+	PlayerUpperJumpEvent(const Vector2 &otherVelocity);
+	virtual ~PlayerUpperJumpEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const Vector2 &GetOtherVelocity() { return _otherVelocity; }
+private:
+	static EventType _type;
+	Vector2 _otherVelocity;
 };
 
 

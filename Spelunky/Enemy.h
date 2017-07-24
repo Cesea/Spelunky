@@ -23,6 +23,9 @@ public :
 	void SetGraphics(const std::wstring &key);
 
 protected :
+	void Damaged(int damage, Direction hitDirection);
+
+protected :
 
 	CollisionComponent *_collisionComp{};
 	DataSet<D2DSprite *> _graphics;

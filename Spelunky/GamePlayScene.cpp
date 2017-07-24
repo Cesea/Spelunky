@@ -145,7 +145,7 @@ HRESULT GamePlayScene::LoadContent()
 	int batOnTopArray[] = { 60, 61, 62, 63, 64, 65, 66, 67 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"bat_on_top", L"monsters", 80, 80, batOnTopArray, 8, 10, true);
 	int batFlyArray[] = {72, 73, 74, 75, 76, 77, 78};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"bat_fly", L"monsters", 80, 80, batFlyArray, 7, 10, true);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"bat_fly", L"monsters", 80, 80, batFlyArray, 7, 16, true);
 
 	int strongSnakeWalkArray[] = {84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"strong_snake_walk", L"monsters", 80, 80, strongSnakeWalkArray, 12, 12, true);

@@ -10,7 +10,7 @@
 void JumpState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"jump");
-	object->_velocity.y -= 540.0f;
+	object->_velocity.y -= object->_jumpPower;
 
 	object->_onGround = false;
 }

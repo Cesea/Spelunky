@@ -2,6 +2,7 @@
 #include "EnemyFactory.h"
 
 #include "Snake.h"
+#include "Bat.h"
 
 EnemyFactory::EnemyFactory()
 {
@@ -36,11 +37,13 @@ GameObject * EnemyFactory::Build(const ObjectId id, EnemyType type, BaseProperty
 void EnemyFactory::RegisterBuilders()
 {
 	RegisterBuilder(EnemyType::ENEMY_Snake, new TEnemyBuilder<Snake>());
+	RegisterBuilder(EnemyType::ENEMY_Bat, new TEnemyBuilder<Bat>());
 }
 
 void EnemyFactory::UnRegisterBuilders()
 {
 	UnRegisterBuilder(EnemyType::ENEMY_Snake);
+	UnRegisterBuilder(EnemyType::ENEMY_Bat);
 }
 
 void EnemyFactory::RegisterBuilder(EnemyType type, EnemyBuilder *builder)

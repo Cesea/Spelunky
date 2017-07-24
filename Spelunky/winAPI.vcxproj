@@ -88,6 +88,9 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="ArcheType.h" />
     <ClInclude Include="AttackState.h" />
+    <ClInclude Include="Bat.h" />
+    <ClInclude Include="BatFlyingState.h" />
+    <ClInclude Include="BatOnTopState.h" />
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollidingObject.h" />
@@ -113,6 +116,8 @@
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeAttackState.h" />
     <ClInclude Include="SnakeWalkState.h" />
+    <ClInclude Include="Spider.h" />
+    <ClInclude Include="SpiderOnTopState.h" />
     <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TimeTrigger.h" />
@@ -182,6 +187,9 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="Bat.cpp" />
+    <ClCompile Include="BatFlyingState.cpp" />
+    <ClCompile Include="BatOnTopState.cpp" />
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollidingObject.cpp" />

@@ -14,6 +14,11 @@ void AttackState::OnEnter(Player * object)
 	object->SetWeaponGraphics(L"whip");
 	object->_offsetCount = 0;
 	object->_weaponOffset = Vector2();
+
+	if (!object->_onGround && !object->_climbing && object->_velocity.y >= 0)
+	{
+		object->_isFalling = true;
+	}
 }
 
 State<Player>* AttackState::Update(Player * object, float deltaTime)
@@ -21,6 +26,14 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 	State<Player> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
+
+	if (!object->_isFalling)
+	{
+		if (!object->_onGround && !object->_climbing && object->_velocity.y >= 0)
+		{
+			object->_isFalling = true;
+		}
+	}
 
 	Animation *currentWeapon = object->GetCurrentWeaponGraphics()->GetAnimation();
 	if (currentWeapon->FrameUpdate(deltaTime))

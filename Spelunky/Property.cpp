@@ -231,19 +231,19 @@ void EnemyProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 	{
 		type = EnemyType::ENEMY_Snake;
 	}
-	else if (wcscmp(propertyInfo.value0, L"spider") == 1)
+	else if (wcscmp(propertyInfo.value0, L"spider") == 0)
 	{
 		type = EnemyType::ENEMY_Spider;
 	}
-	else if (wcscmp(propertyInfo.value0, L"primitive") == 1)
+	else if (wcscmp(propertyInfo.value0, L"primitive") == 0)
 	{
 		type = EnemyType::ENEMY_Primitive;
 	}
-	else if (wcscmp(propertyInfo.value0, L"bat") == 1)
+	else if (wcscmp(propertyInfo.value0, L"bat") == 0)
 	{
 		type = EnemyType::ENEMY_Bat;
 	}
-	else if (wcscmp(propertyInfo.value0, L"strongSnake") == 1)
+	else if (wcscmp(propertyInfo.value0, L"strongSnake") == 0)
 	{
 		type = EnemyType::ENEMY_StrongSnake;
 	}

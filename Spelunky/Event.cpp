@@ -30,6 +30,7 @@ EventType ThrowBombEvent::_type = EVENT_THROW_BOMB;
 EventType EnemyInputEvent::_type = EVENT_ENEMY_INPUT;
 
 EventType EnemyDeadEvent::_type = EVENT_ENEMY_DEAD;
+EventType PlayerUpperJumpEvent::_type = EVENT_PLAYER_UPPER_JUMP;
 
 
 BaseEvent::BaseEvent(float timeStamp)
@@ -165,8 +166,9 @@ const WCHAR * FrameEndedEvent::GetName() const
 	return L"Frame Ended Event";
 }
 
-PlayerPositionEvent::PlayerPositionEvent(ObjectId id, const TilePosition & position, const Rect & rect, const Vector2 & rectOffset)
-	:_id(id), _position(position), _rect(rect), _rectOffset(rectOffset)
+PlayerPositionEvent::PlayerPositionEvent(ObjectId id, const TilePosition &position, 
+		const Rect &rect, const Vector2 &rectOffset, const bool32 isFalling)
+	:_id(id), _position(position), _rect(rect), _rectOffset(rectOffset), _isFalling(isFalling)
 {
 
 }
@@ -177,7 +179,7 @@ PlayerPositionEvent::~PlayerPositionEvent()
 
 IEvent * PlayerPositionEvent::Copy() const
 {
-	return new PlayerPositionEvent(_id, _position, _rect, _rectOffset);
+	return new PlayerPositionEvent(_id, _position, _rect, _rectOffset, _isFalling);
 }
 
 const WCHAR * PlayerPositionEvent::GetName() const
@@ -428,4 +430,19 @@ IEvent * EnemyDeadEvent::Copy() const
 const WCHAR * EnemyDeadEvent::GetName() const
 {
 	return L"Enemy Dead Event";
+}
+
+PlayerUpperJumpEvent::PlayerUpperJumpEvent(const Vector2 & otherVelocity)
+	:_otherVelocity(otherVelocity)
+{
+}
+
+IEvent * PlayerUpperJumpEvent::Copy() const
+{
+	return new PlayerUpperJumpEvent(_otherVelocity);
+}
+
+const WCHAR * PlayerUpperJumpEvent::GetName() const
+{
+	return L"Player Upper Jump Event";
 }

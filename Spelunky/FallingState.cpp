@@ -16,6 +16,7 @@ void FallingState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"falling");
 	_canGrabAgainTimer.Init(0.15f);
+	object->_isFalling = true;
 }
 
 State<Player>* FallingState::Update(Player * object, float deltaTime)
@@ -142,4 +143,5 @@ State<Player>* FallingState::HandleCommand(Player * object, const ControlCommand
 void FallingState::OnExit(Player * object)
 {
 	object->_velocity.y = 0;
+	object->_isFalling = false;
 }

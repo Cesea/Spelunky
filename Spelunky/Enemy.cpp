@@ -18,6 +18,27 @@ void Enemy::SetGraphics(const std::wstring & key)
 	}
 }
 
+void Enemy::Damaged(int damage, Direction hitDirection)
+{
+	_hp -= 1;
+	if (_hp <= 0)
+	{
+		EVENTMANAGER->QueueEvent(new EnemyDeadEvent(_id));
+	}
+	else
+	{
+		if (hitDirection == Direction::Right)
+		{
+			_velocity.x = -140;
+		}
+		else if (hitDirection == Direction::Left)
+		{
+			_velocity.x = 140;
+		}
+		_velocity.y -= 80;
+	}
+}
+
 Enemy::Enemy(ObjectId id)
 	:MovingObject::MovingObject(id)
 {
@@ -75,6 +96,8 @@ void Enemy::HandlePlayerAttackEvent(const IEvent * event)
 	Vector2 positionUntiled = position.UnTilelize();
 	Vector2 playerPositionUntiled = playerTilePosition.UnTilelize();
 
+	float xDiff = positionUntiled.x - playerPositionUntiled.x;
+
 	bool hitted = false;
 	if (seeingDirection == Direction::Left)
 	{
@@ -97,22 +120,6 @@ void Enemy::HandlePlayerAttackEvent(const IEvent * event)
 	}
 	if (hitted)
 	{
-		_hp -= 1;
-		if (_hp <= 0)
-		{
-			EVENTMANAGER->QueueEvent(new EnemyDeadEvent(_id));
-		}
-		else
-		{
-			if (seeingDirection == Direction::Left)
-			{
-				_velocity.x = -140;
-			}
-			else if (seeingDirection == Direction::Right)
-			{
-				_velocity.x = 140;
-			}
-			_velocity.y -= 80;
-		}
+		Damaged(1, (xDiff < 0) ? Direction::Right : Direction::Left);
 	}
 }

@@ -2,6 +2,7 @@
 #include "Player.h"
 
 #include "IdleState.h"
+#include "JumpState.h"
 
 Player::Player(ObjectId id)
 	:MovingObject::MovingObject(id)
@@ -14,6 +15,7 @@ Player::Player(ObjectId id)
 	EVENTMANAGER->RegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_GO_EXIT, EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_UPPER_JUMP, EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
 
 	_rect = RectMake(0, 0, 38, 44);
 	_rectOffset = Vector2(-19, -44);
@@ -30,6 +32,7 @@ Player::~Player()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_GO_EXIT, EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_UPPER_JUMP, EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
 }
 
 HRESULT Player::Init(BaseProperty *property)
@@ -82,6 +85,11 @@ void Player::Update(float deltaTime)
 		_stateManager.Update(deltaTime);
 		_accel = Vector2();
 
+		if (_onGround)
+		{
+			_isFalling = false;
+		}
+
 		_onGround = false;
 		_headHit = false;
 		_onWall = false;
@@ -97,7 +105,10 @@ void Player::Update(float deltaTime)
 		{
 			CollisionCheck();
 		}
-		EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset));
+
+		//Console::Log("fallig : %d\n", _isFalling);
+		EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset, _isFalling));
+
 	}
 	else
 	{
@@ -240,6 +251,14 @@ void Player::HandlePlayerGoExitEvent(const IEvent * event)
 
 }
 
+void Player::HandlePlayerUpperJumpEvent(const IEvent * event)
+{
+	PlayerUpperJumpEvent *convertedEvent = (PlayerUpperJumpEvent *)(event);
+	_jumpPower -= 100;
+	_stateManager.ChangeState(new JumpState);
+	_jumpPower += 100;
+}
+
 void Player::HandleMessage(const IEvent * event)
 {
 }
@@ -335,6 +354,7 @@ void Player::CollisionCheck()
 						desiredPosition.AddToTileRel(0, -overlapRect.height);
 						_velocity.y = 0.0f;
 						_onGround = true;
+						_isFalling = false;
 					}
 					else if ((currentTile->collisionType == TileCollisionType::TILE_COLLISION_EOF_LADDER) &&
 						(_velocity.y >= 0.0f) && (desiredPosition.tileRel.y < 10) &&
@@ -344,6 +364,7 @@ void Player::CollisionCheck()
 						_velocity.y = 0.0f;
 						_canClimb = true;
 						_onGround = true;
+						_isFalling = false;
 					}
 				}
 			}
