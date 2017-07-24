@@ -71,6 +71,11 @@ ControlCommand InputMapper::InterpretRawInput(Win32RawInputState * rawInput)
 
 	if (rawInput->keyboard.s.pressed)
 	{
+		result.action = Command::UseBomb;
+		result.fire = true;
+	}
+	else if (rawInput->keyboard.a.pressed)
+	{
 		result.action = Command::UseRope;
 		result.fire = true;
 	}

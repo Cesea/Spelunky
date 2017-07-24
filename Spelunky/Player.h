@@ -61,8 +61,6 @@ public :
 	D2DSprite *GetCurrentWeaponGraphics() { return _currentWeaponSprite; }
 
 	void SetGraphics(const std::wstring &key);
-	void SetDirection(Direction direction) { _seeingDirection = direction; }
-	Direction GetDirection() { return _seeingDirection; }
 
 	int GetMoney() { return _money; }
 
@@ -106,6 +104,8 @@ private :
 
 	bool _onTunnel{ false };
 	bool _moveToExitInterpolating{ false };
+
+	bool _stickyBomb{ false };
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};

@@ -23,6 +23,7 @@ public:
 	void Render();
 
 	void DestroyTile(const IntVector2 &tilePos);
+	void DestroyTile(const int xStartIndex, const int yStartIndex, const int width, const int height);
 
 	Stage *GetCurrentStage();
 

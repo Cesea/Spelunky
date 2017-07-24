@@ -97,7 +97,7 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 			return newState;
 		}
 	}
-	//Attac이나 Throw 상태로의 이전 처리
+	//Attack이나 Throw 상태로의 이전 처리
 	if (command.action == Command::Attack)
 	{
 		if (object->_holding)
@@ -111,7 +111,26 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 			return newState;
 		}
 	}
+	else if (command.action == Command::UseBomb)
+	{
+		TilePosition bombThrowPosition = object->position;
+		bombThrowPosition.AddToTileRelY(-32);
 
+		Vector2 direction;
+		if (object->GetDirection() == Direction::Left)
+		{
+			direction.x = -900;
+			direction.y = -600;
+		}
+		else if (object->GetDirection() == Direction::Right)
+		{
+			direction.x = 900;
+			direction.y = -600;
+		}
+		direction.Normalize();
+		direction *= 600.0f;
+		EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
+	}
 
 	return nullptr;
 }

@@ -104,6 +104,26 @@ State<Player>* CrawlIdleState::HandleCommand(Player * object, const ControlComma
 			EVENTMANAGER->QueueEvent(new PickupEvent(object->_id));
 		}
 	}
+	else if (command.action == Command::UseBomb)
+	{
+		TilePosition bombThrowPosition = object->position;
+		bombThrowPosition.AddToTileRelY(-16);
+
+		Vector2 direction;
+		if (object->GetDirection() == Direction::Left)
+		{
+			direction.x = -200;
+			direction.y = -30;
+		}
+		else if (object->GetDirection() == Direction::Right)
+		{
+			direction.x = 200;
+			direction.y = -30;
+		}
+		direction.Normalize();
+		direction *= 150.0f;
+		EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
+	}
 	return newState;
 }
 

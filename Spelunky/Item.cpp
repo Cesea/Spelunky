@@ -23,6 +23,8 @@ HRESULT Item::Init(BaseProperty *property)
 
 void Item::Release(void)
 {
+	SAFE_RELEASE_AND_DELETE(_sprite);
+	SAFE_DELETE(_collisionComp);
 }
 
 void Item::Update(float deltaTime)

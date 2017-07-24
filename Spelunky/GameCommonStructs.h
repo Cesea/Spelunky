@@ -121,10 +121,12 @@ struct ControlCommand
 
 enum BreakType
 {
-	Jar,
-	Bone,
-	Rock,
-	live,
+	BREAK_Jar,
+	BREAK_Bone,
+	BREAK_Rock,
+	BREAK_Live,
+	BREAK_Bomb,
+
 };
 
 enum ObjectLayer

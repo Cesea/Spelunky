@@ -441,7 +441,7 @@ void MenuScene::MenuAnimationEndFunction()
 			else if (i == 3) { delta.y += 250; }
 			_menuObjects.doors[i].MoveTo(_menuObjects.doors[i].position + delta, 1.8f);
 		}
-		_camera.Shake(8, 50, 1.8f);
+		_camera.Shake(30, 50, 1.8f);
 	}
 	else if (_menuObjects.animationEndTracker == 3)
 	{

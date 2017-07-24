@@ -21,12 +21,12 @@ public :
 	virtual GameObject *Copy(ObjectId id)  = 0;
 
 	Direction GetDirection() { return _seeingDirection; }
+	void SetDirection(Direction direction) { _seeingDirection = direction; }
 	inline bool GetCrawling() { return _crawling; }
 	inline bool GetHolding() { return _holding; }
 	inline void SetHolding(bool b) { _holding = b; }
 
 protected  :
-
 	Vector2 _speed{};
 	Vector2 _accel{};
 	Vector2 _velocity{};
@@ -37,8 +37,6 @@ protected  :
 	bool _onGround{ false };
 	bool _crawling{ false };
 	bool _holding{ false };
-
-	//CollisionComponent *_collisionComp{};
 };
 
 

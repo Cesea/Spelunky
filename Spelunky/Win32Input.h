@@ -35,11 +35,12 @@ struct Win32KeyboardState
 			DigitalButton shift;
 			DigitalButton z;
 			DigitalButton x;
+			DigitalButton a;
 			DigitalButton s;
 			DigitalButton space;
 			DigitalButton escape;
 		};
-		DigitalButton buttons[10];
+		DigitalButton buttons[11];
 	};
 };
 

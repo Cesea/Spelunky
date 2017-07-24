@@ -11,38 +11,43 @@ EffectManager::~EffectManager()
 
 HRESULT EffectManager::Init()
 {
-	for (int i = 0; i < 10; ++i)
+	if (!_wasInitialized)
 	{
-		for (int j = 0; j < DUST_SPRITE_NUM; ++j)
+		_wasInitialized = true;
+		for (int i = 0; i < 10; ++i)
 		{
-			if (j == 0)
+			for (int j = 0; j < DUST_SPRITE_NUM; ++j)
 			{
-				//_dustChunks[i].sprite[j].
-				//	SetDisappearEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::DustSpriteEnd>(this));
+				if (j == 0)
+				{
+					//_dustChunks[i].sprite[j].
+					//	SetDisappearEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::DustSpriteEnd>(this));
+				}
+				_dustChunks[i].sprite[j].Init(L"dustring", 0, 0, 512, 512, IntVector2(-256, -256));
 			}
-			_dustChunks[i].sprite[j].Init(L"dustring", 0, 0, 512, 512, IntVector2(-256, -256));
 		}
-	}
 
-	for (int i = 0; i < SMOKE_MAX_NUM; ++i)
-	{
-		for (int j = 0; j < SMOKE_SPRITE_NUM; ++j)
+		for (int i = 0; i < SMOKE_MAX_NUM; ++i)
 		{
-			if (j == 0)
+			for (int j = 0; j < SMOKE_SPRITE_NUM; ++j)
 			{
-				//_dustChunks[i].sprite[j].
-				//	SetDisappearEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::DustSpriteEnd>(this));
+				if (j == 0)
+				{
+					//_dustChunks[i].sprite[j].
+					//	SetDisappearEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::DustSpriteEnd>(this));
+				}
+				_smokeChunk[i].sprite[j].Init(L"smokering", 0, 0, 512, 512, IntVector2(-256, -256));
 			}
-			_smokeChunk[i].sprite[j].Init(L"smokering", 0, 0, 512, 512, IntVector2(-256, -256));
 		}
-	}
 
-	for (int i = 0; i < 6; ++i)
-	{
-		Animation *animation = new Animation;
-		animation->InitCopy(KEYANIMANAGER->FindAnimation(L"explosion"));
-		animation->SetEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::ExplosionEffectEndFunction>(this));
-		_explosionSprites[i].InitAnimation(L"explosion", animation, IntVector2(-64, -128));
+		for (int i = 0; i < 6; ++i)
+		{
+			Animation *animation = new Animation;
+			animation->InitCopy(KEYANIMANAGER->FindAnimation(L"explosion"));
+			animation->SetEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::ExplosionEffectEndFunction>(this));
+			_explosionSprites[i].InitAnimation(L"explosion", animation, IntVector2(-64, -128));
+			_explosionSprites[i].scale = Vector2(1.8, 1.8);
+		}
 	}
 	return S_OK;
 }
@@ -95,7 +100,7 @@ void EffectManager::Render()
 
 	for (auto &index : _explosionUpdateChunks)
 	{
-		_explosionSprites[index].Render(gRenderTarget, camPosUntTiled);
+		_explosionSprites[index].RenderScale(gRenderTarget, camPosUntTiled);
 	}
 
 	for (auto &index : _smokeUpdateChunks)
@@ -158,6 +163,7 @@ void EffectManager::PlayDustParticles(const Vector2 & position)
 void EffectManager::PlayExplosionEffect(const Vector2 & position)
 {
 	_explosionSprites[_currentExplosionChunkTracker].position = position;
+	_explosionSprites[_currentExplosionChunkTracker].position.y += 30 ;
 	_explosionSprites[_currentExplosionChunkTracker].GetSprite()->GetAnimation()->Start();
 
 	if (_explosionUpdateChunks.size() == 0)

@@ -26,6 +26,8 @@ EventType PlayerAttackEvent::_type = EVENT_PLAYER_ATTACK;
 
 EventType PlayerGoExitEvent::_type = EVENT_PLAYER_GO_EXIT;
 
+EventType ThrowBombEvent::_type = EVENT_THROW_BOMB;
+
 
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
@@ -370,4 +372,42 @@ IEvent * PlayerGoExitEvent::Copy() const
 const WCHAR * PlayerGoExitEvent::GetName() const
 {
 	return L"Player Go Exit Event";
+}
+
+ThrowBombEvent::ThrowBombEvent(const TilePosition & throwPosition, const Vector2 initialVelocity, bool isSticky)
+	:_throwPosition(throwPosition), _initVel(initialVelocity), _isSticky(isSticky)
+{
+}
+
+ThrowBombEvent::~ThrowBombEvent()
+{
+}
+
+IEvent * ThrowBombEvent::Copy() const
+{
+	return new ThrowBombEvent(_throwPosition, _initVel, _isSticky);
+}
+
+const WCHAR * ThrowBombEvent::GetName() const
+{
+	return L"Throw Bomb Event";
+}
+
+EnemyInputEvent::EnemyInputEvent(ObjectId id, const ControlCommand & controlCommand)
+	:_id(id), _controlCommand(controlCommand)
+{
+}
+
+EnemyInputEvent::~EnemyInputEvent()
+{
+}
+
+IEvent * EnemyInputEvent::Copy() const
+{
+	return new EnemyInputEvent(_id, _controlCommand);
+}
+
+const WCHAR * EnemyInputEvent::GetName() const
+{
+	return L"Enemy Input Event";
 }

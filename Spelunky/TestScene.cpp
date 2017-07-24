@@ -55,8 +55,7 @@ HRESULT TestScene::Init(void)
 
 	BombProperty property;
 	property.position = IntVector2(5, 5);
-	//property.position
-	_bomb = (Bomb *)OBJECTMANAGER->CreateObject(L"bomb", &property);
+	//_bomb = (Bomb *)OBJECTMANAGER->CreateObject(L"bomb", &property);
 
 	return S_OK;
 }
@@ -74,7 +73,7 @@ void TestScene::Update(void)
 
 	ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
 
-	_bomb->Update(deltaTime);
+	//_bomb->Update(deltaTime);
 	EFFECTMANAGER->Update(deltaTime);
 }
 
@@ -87,7 +86,7 @@ void TestScene::Render()
 	Vector2 camPos{};
 
 
-	_bomb->Render(gRenderTarget, camPos);
+	//_bomb->Render(gRenderTarget, camPos);
 	EFFECTMANAGER->Render();
 
 	//그린 후에는 항상 EndDraw()

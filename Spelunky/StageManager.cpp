@@ -50,6 +50,14 @@ void StageManager::DestroyTile(const IntVector2 & tilePos)
 	}
 }
 
+void StageManager::DestroyTile(const int xStartIndex, const int yStartIndex, const int width, const int height)
+{
+	if (_currentStage)
+	{
+		_currentStage->DestroyTile(xStartIndex, yStartIndex, width, height);
+	}
+}
+
 
 Stage * StageManager::GetCurrentStage()
 {

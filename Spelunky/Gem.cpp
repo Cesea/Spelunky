@@ -32,6 +32,7 @@ HRESULT Gem::Init(BaseProperty *property)
 void Gem::Release(void)
 {
 	SAFE_RELEASE_AND_DELETE(_sprite);
+	SAFE_DELETE(_collisionComp);
 }
 
 void Gem::Update(float deltaTime)

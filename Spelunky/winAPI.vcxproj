@@ -193,6 +193,7 @@
     <ClCompile Include="D2DSprite.cpp" />
     <ClCompile Include="DWrite.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventManager.cpp" />

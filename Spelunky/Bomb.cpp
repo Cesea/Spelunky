@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Bomb.h"
 
+#include "CollisionComponent.h"
+
 Bomb::Bomb(ObjectId id)
 	:MovingObject(id)
 {
@@ -8,13 +10,30 @@ Bomb::Bomb(ObjectId id)
 
 Bomb::~Bomb()
 {
+	SAFE_RELEASE_AND_DELETE(_sprite);
+	SAFE_DELETE(_collisionComp);
 }
 
 HRESULT Bomb::Init(BaseProperty * property)
 {
+	BombProperty *convertedProperty = (BombProperty *)property;
+
+	position.tileX = property->position.x;
+	position.tileY = property->position.y;
+
+	_isSticky = convertedProperty->sticky;
+	_velocity = convertedProperty->initialVelocity;
+
 	_sprite = new D2DAnimationSprite();
 	Animation *animation = new Animation(); 
-	animation->InitCopy(KEYANIMANAGER->FindAnimation(L"bomb"));
+	if (_isSticky)
+	{
+		animation->InitCopy(KEYANIMANAGER->FindAnimation(L"sticky_bomb"));
+	}
+	else
+	{
+		animation->InitCopy(KEYANIMANAGER->FindAnimation(L"normal_bomb"));
+	}
 	_sprite->Init(IMAGEMANAGER->GetImage(L"bomb"), animation, IntVector2(-40, -40));
 
 	_bombTimer.Init(1.4f);
@@ -22,14 +41,14 @@ HRESULT Bomb::Init(BaseProperty * property)
 	_scaleTimer.Init(0.2f);
 	mat = D2D1::Matrix3x2F::Identity();
 
-	BombProperty *convertedProperty = (BombProperty *)property;
+	_velocity = convertedProperty->initialVelocity;
+	_maxVelocity = Vector2(300, 550);
 
-	position.tileX = property->position.x;
-	position.tileY = property->position.y;
+	_collisionComp = new CollisionComponent;
+	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -20));
 
+	_collisionComp->SetRepulse(true);
 
-
-	//property->position = position
 	return S_OK;
 }
 
@@ -41,6 +60,18 @@ void Bomb::Release(void)
 
 void Bomb::Update(float deltaTime)
 {
+	
+	_accel.y += GRAVITY;
+	_velocity += _accel * deltaTime;
+
+	_accel = Vector2();
+	desiredPosition.AddToTileRel(_velocity * deltaTime);
+
+	TilePosition centerPos = desiredPosition;
+	centerPos.AddToTileRelY(-8.0f);
+	_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
+	_collisionComp->Update(this, deltaTime, &_nearTiles);
+
 	if (_bombTimer.Tick(deltaTime))
 	{
 		_bombStage++;
@@ -59,7 +90,8 @@ void Bomb::Update(float deltaTime)
 		}
 		else if (_bombStage == 3)
 		{
-			EVENTMANAGER->QueueEvent(new DestroyObjectEvent(_id));
+			STAGEMANAGER->DestroyTile(position.tileX - 1, position.tileY - 1, 2, 2);
+			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bomb));
 			EFFECTMANAGER->PlayExplosionEffect(position.UnTilelize());
 			EFFECTMANAGER->PlaySmokeEffect(position.UnTilelize());
 		}

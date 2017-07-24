@@ -10,6 +10,7 @@
 #include "GrabState.h"
 
 #include "UpperDeathState.h"
+#include "AttackState.h"
 
 void FallingState::OnEnter(Player * object)
 {
@@ -98,6 +99,41 @@ State<Player>* FallingState::HandleCommand(Player * object, const ControlCommand
 	{
 		newState = new LadderClimbState;
 		return newState;
+	}
+
+//Attack이나 Throw 상태로의 이전 처리
+	if (command.action == Command::Attack)
+	{
+		if (object->_holding)
+		{
+			newState = new ThrowState;
+			return newState;
+		}
+		else
+		{
+			newState = new AttackState;
+			return newState;
+		}
+	}
+	else if (command.action == Command::UseBomb)
+	{
+		TilePosition bombThrowPosition = object->position;
+		bombThrowPosition.AddToTileRelY(-32);
+
+		Vector2 direction;
+		if (object->GetDirection() == Direction::Left)
+		{
+			direction.x = -900;
+			direction.y = -600;
+		}
+		else if (object->GetDirection() == Direction::Right)
+		{
+			direction.x = 900;
+			direction.y = -600;
+		}
+		direction.Normalize();
+		direction *= 700.0f;
+		EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
 	}
 
 	return newState;

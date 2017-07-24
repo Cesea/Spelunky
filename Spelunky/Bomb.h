@@ -30,7 +30,10 @@ private :
 
 	bool _yScaling{false};
 	D2D1::Matrix3x2F mat;
+
+	bool _isSticky{ false };
+	ReturnTile _nearTiles;
+
+	CollisionComponent *_collisionComp{};
 };
-
-
 #endif

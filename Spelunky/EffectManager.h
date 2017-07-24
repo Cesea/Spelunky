@@ -67,6 +67,8 @@ private :
 	std::list<int> _smokeUpdateChunks;
 
 	Camera *_pCamera{};
+
+	bool _wasInitialized{ false };
 };
 
 #endif

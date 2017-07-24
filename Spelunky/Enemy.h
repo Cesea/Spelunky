@@ -16,14 +16,21 @@ public :
 
 	virtual GameObject *Copy(ObjectId id);
 
-	void HandlePlayerPositionEvent(const IEvent *event);
-	virtual void HandlePlayerAttackEvent(const IEvent *event) {}
+	virtual void HandleEnemyInputEvent(const IEvent *event);
+	virtual void HandlePalyerInputEvent(const IEvent *event);
+	void HandlePlayerAttackEvent(const IEvent *event);
+
+	D2DSprite *GetCurrentGraphics() { return _currentSprite; }
+	void SetGraphics(const std::wstring &key);
 
 protected :
 
+	CollisionComponent *_collisionComp{};
+	DataSet<D2DSprite *> _graphics;
+	D2DSprite *_currentSprite{};
+
+	ReturnTile _nearTiles;
 
 };
-	 
-
 
 #endif

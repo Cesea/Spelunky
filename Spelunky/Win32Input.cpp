@@ -19,6 +19,7 @@ void PullRawInput(Win32RawInputState * rawInput)
 
 
 	PullDigitalButton(&rawInput->keyboard.shift, VK_SHIFT);
+	PullDigitalButton(&rawInput->keyboard.a, 'A');
 	PullDigitalButton(&rawInput->keyboard.s, 'S');
 	PullDigitalButton(&rawInput->keyboard.z, 'Z');
 	PullDigitalButton(&rawInput->keyboard.x, 'X');

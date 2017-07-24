@@ -22,6 +22,8 @@ public:
 
 	virtual void HandlePlayerAttackEvent(const IEvent *event);
 
+	inline BreakType GetBreakType() { return _breakType; }
+
 private:
 
 	void operator= (const ThrowProperty *property);
@@ -30,8 +32,7 @@ private:
 	bool32 _breakable{};
 	bool32 _throwed{false};
 
-
-
+	BreakType _breakType;
 };
 
 #endif

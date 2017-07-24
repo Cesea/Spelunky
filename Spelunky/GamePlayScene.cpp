@@ -93,6 +93,7 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_exit", L"char_orange", 80, 80, exitArray, 6, 10, true);
 
 
+#pragma region Weapons
 	int whipArray[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_whip", L"weaponanimation", 80, 80, whipArray, 11, 20, false);
 
@@ -101,6 +102,21 @@ HRESULT GamePlayScene::LoadContent()
 
 	int macheteArray[] = {22, 23, 24, 25, 26 , 27, 28, 29, 30, 31, 32};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_machete", L"weaponanimation", 80, 80, macheteArray, 11, 20, false);
+#pragma endregion
+
+#pragma region Bomb
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\dustring.png", L"dustring");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\smokering.png", L"smokering");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\explosion.png", L"explosion");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bomb.png", L"bomb");
+
+	KEYANIMANAGER->AddDefPlayFrameAnimation(L"explosion", L"explosion", 128, 128, 26, false, false);
+	int normalBombArray[] = { 0, 1, 2 };
+	KEYANIMANAGER->AddArrayFrameAnimation(L"normal_bomb", L"bomb", 80, 80, normalBombArray, 3, 12, true);
+
+	int stickyBombArray[] = {3, 4, 5};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"sticky_bomb", L"bomb", 80, 80, stickyBombArray, 3, 12, true);
+#pragma endregion
 
 	return S_OK;
 }
@@ -124,6 +140,9 @@ HRESULT GamePlayScene::Init(void)
 
 	STAGEMANAGER->SetCameraLink(&_camera);
 	STAGEMANAGER->SetPlayerLink(_pPlayer);
+
+	EFFECTMANAGER->Init();
+	EFFECTMANAGER->SetCameraLink(&_camera);
 
 	UIMANAGER->Init();
 	UIMANAGER->SetPlayerLink(_pPlayer);
@@ -169,6 +188,8 @@ void GamePlayScene::Update(void)
 		STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));
 	}
 
+	EFFECTMANAGER->Update(deltaTime);
+
 	UIMANAGER->Update(deltaTime);
 
 
@@ -192,6 +213,7 @@ void GamePlayScene::Render(void)
 
 	_pPlayer->Render(gRenderTarget, unTiledCamPos);
 
+	EFFECTMANAGER->Render();
 
 	UIMANAGER->Render(unTiledCamPos);
 

@@ -92,6 +92,7 @@ struct BombProperty : public BaseProperty
 {
 	IntVector2 sourceIndex{ -1, -1 };
 	bool32 sticky{ false };
+	Vector2 initialVelocity{};
 	virtual void Init(const MapTool::PropertyInfo &porpertyInfo);
 };
 

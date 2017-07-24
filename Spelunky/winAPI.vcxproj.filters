@@ -175,6 +175,27 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy">
       <UniqueIdentifier>{ad4cd6e6-edd7-4006-8fd6-bcf116e6598c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Snake">
+      <UniqueIdentifier>{5bba763f-a1f2-4288-8d14-89a27a3b18d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Bat">
+      <UniqueIdentifier>{20e9819e-2e59-4df6-a5bf-542028708ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Spider">
+      <UniqueIdentifier>{a14f4d7d-e9a3-4aa0-aefc-60922cfd0563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\StronSnake">
+      <UniqueIdentifier>{b648e967-162e-4eb8-b0db-2c2e320cd40b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Scorpion">
+      <UniqueIdentifier>{49a05d30-a4dc-4fc4-92c2-a63b6e3bcd72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Primitive">
+      <UniqueIdentifier>{0d2b49bd-74a8-4115-b538-288a2b70a4b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\AIEngine">
+      <UniqueIdentifier>{ba7068e7-e0d5-40e2-b872-af2182502124}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -676,6 +697,9 @@
     </ClCompile>
     <ClCompile Include="ExitState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Exit</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

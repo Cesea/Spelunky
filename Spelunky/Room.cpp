@@ -5,6 +5,7 @@
 
 #include "TileInfo.h"
 
+
 IntVector2 CalculateBorderWorldIndex(int indexX, int indexY, int localX, int localY)
 {
 	IntVector2 result = {};
@@ -71,7 +72,6 @@ IntVector2 CalculateTileWorldIndex(int indexX, int indexY, int localX, int local
 
 Stage::Stage()
 {
-	//_gems.reserve(100);
 	RegisterDelegates();
 }
 
@@ -390,6 +390,10 @@ void Stage::Update(float deltaTime)
 			throws->Update(deltaTime);
 		}
 	}
+	for (auto &bomb : _bombs)
+	{
+		bomb->Update(deltaTime);
+	}
 }
 
 void Stage::Render(const TilePosition &camPos)
@@ -460,6 +464,10 @@ void Stage::Render(const TilePosition &camPos)
 	{
 		gem->Render(gRenderTarget, untileldCamPos);
 	}
+	for (auto &bomb : _bombs)
+	{
+		bomb->Render(gRenderTarget, untileldCamPos);
+	}
 }
 
 void Stage::DestroyTile(const IntVector2 & tilePos)
@@ -518,9 +526,103 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 			}
 		}
 
+		for (auto &throws : _throws)
+		{
+			if ((throws->position.tileX == tilePos.x)
+				&& (throws->position.tileY == tilePos.y))
+			{
+				EVENTMANAGER->QueueEvent(new ItemBreakEvent(throws->GetId(), throws->GetBreakType()));
+			}
+		}
+
 		ClearAllTheBits(tilePos.x - 1, tilePos.y - 1, 3, 3);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 0);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 1);
+	}
+}
+
+void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
+{
+	bool destroyed = false;
+
+	for (int y = yStartIndex; y <= yStartIndex + height; ++y)
+	{
+		for (int x = xStartIndex; x <= xStartIndex + width; ++x)
+		{
+			if ((x == xStartIndex  && y == yStartIndex) || (x == xStartIndex && y == yStartIndex + height) ||
+				(x == xStartIndex + width && y == yStartIndex) || (x == xStartIndex + width && y == yStartIndex + height))
+			{
+				continue;
+			}
+			//int currentIndex = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
+			Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+
+			if (pLayer0Tile != nullptr &&
+				pLayer0Tile->canBeDestroyedByBomb)
+			{
+				pLayer0Tile->canBeDestroyedByBomb = false;
+				pLayer0Tile->sourceIndex = pLayer0Tile->destroyedIndex;
+				pLayer0Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
+				pLayer0Tile->thisMaskInfo = 0;
+				pLayer0Tile->nearMaskInfo = 15;
+				destroyed = true;
+
+				pLayer2Tile = pLayer0Tile;
+				pLayer0Tile = nullptr;
+			}
+			else if (pLayer1Tile != nullptr &&
+				pLayer1Tile->canBeDestroyedByBomb)
+			{
+				pLayer1Tile->canBeDestroyedByBomb = false;
+				pLayer1Tile->sourceIndex = pLayer1Tile->destroyedIndex;
+				pLayer1Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
+				pLayer1Tile->thisMaskInfo = 0;
+				pLayer1Tile->nearMaskInfo = 15;
+				destroyed = true;
+
+				pLayer2Tile = pLayer1Tile;
+				pLayer1Tile = nullptr;
+			}
+
+			if (pLayer2Tile != nullptr &&
+				pLayer2Tile->canBeDestroyedByBomb)
+			{
+				pLayer2Tile->canBeDestroyedByBomb = false;
+				pLayer2Tile->sourceIndex = pLayer2Tile->destroyedIndex;
+				pLayer2Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
+				pLayer2Tile->thisMaskInfo = 0;
+				pLayer2Tile->nearMaskInfo = 15;
+				destroyed = true;
+			}
+
+			if (destroyed)
+			{
+				for (auto &gem : _gems)
+				{
+					if ((gem->position.tileX == x) && 
+						(gem->position.tileY == y))
+					{
+						gem->Digged();
+					}
+				}
+				for (auto &throws : _throws)
+				{
+					if ((throws->position.tileX == x) && 
+						(throws->position.tileY == y))
+					{
+						EVENTMANAGER->QueueEvent(new ItemBreakEvent(throws->GetId(), throws->GetBreakType()));
+					}
+				}
+			}
+		}
+	}
+	if (destroyed)
+	{
+		ClearAllTheBits(xStartIndex -2 , yStartIndex - 2 , width + 4 , height + 4 );
+		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 4, height + 4, 0);
+		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 4, height + 4, 1);
 	}
 }
 
@@ -528,12 +630,14 @@ void Stage::RegisterDelegates()
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
 }
 
 void Stage::UnRegisterDelegates()
 {
 	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Stage, &Stage::HandleCollectMoneyEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
 }
 
 void Stage::BuildBorder()
@@ -1083,9 +1187,8 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 {
 	ItemBreakEvent *convertedEvent = (ItemBreakEvent *)event;
 	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
-	if (convertedEvent->GetBreakType() == BreakType::Jar || 
-		convertedEvent->GetBreakType() == BreakType::Bone  
-		)
+	if (convertedEvent->GetBreakType() == BreakType::BREAK_Jar || 
+		convertedEvent->GetBreakType() == BreakType::BREAK_Bone  )
 	{
 		for (auto &iter = _throws.begin(); iter != _throws.end();)
 		{
@@ -1100,6 +1203,36 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			}
 		}
 	}
+	else if (convertedEvent->GetBreakType() == BreakType::BREAK_Bomb)
+	{
+		for (auto &iter = _bombs.begin(); iter != _bombs.end();)
+		{
+			if ((*iter) == object)
+			{
+				_bombs.erase(iter);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+}
+
+void Stage::HandleThrowBombEvent(const IEvent * event)
+{
+	ThrowBombEvent *convertedEvent = (ThrowBombEvent *)event;
+	BombProperty property;
+	property.sticky = convertedEvent->GetIsSticky();
+	property.initialVelocity = convertedEvent->GetInitialVelocity();
+
+	Bomb *newBomb = (Bomb *)OBJECTMANAGER->CreateObject(L"bomb", &property);
+	const TilePosition &throwPosition = convertedEvent->GetThrowPosition();
+	newBomb->position = throwPosition;
+	newBomb->desiredPosition = newBomb->position;
+
+	_bombs.push_back(newBomb);
 }
 
 ReturnTile Stage::GetAdjacent9(const IntVector2 & pos)

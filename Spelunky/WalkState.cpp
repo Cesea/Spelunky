@@ -111,6 +111,26 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 			return newState;
 		}
 	}
+	else if (command.action == Command::UseBomb)
+	{
+		TilePosition bombThrowPosition = object->position;
+		bombThrowPosition.AddToTileRelY(-32);
+
+		Vector2 direction;
+		if (object->GetDirection() == Direction::Left)
+		{
+			direction.x = -900;
+			direction.y = -600;
+		}
+		else if (object->GetDirection() == Direction::Right)
+		{
+			direction.x = 900;
+			direction.y = -600;
+		}
+		direction.Normalize();
+		direction *= 800.0f;
+		EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
+	}
 
 	return newState;
 }

@@ -26,6 +26,10 @@ HRESULT Throws::Init(BaseProperty *property)
 
 	_equipSlot = EquipSlot::Weapon;
 
+	if (_sourceIndex.x == 0) { _breakType = BreakType::BREAK_Rock; }
+	else if(_sourceIndex.x == 1) { _breakType = BreakType::BREAK_Jar; }
+	else if(_sourceIndex.x == 2) { _breakType = BreakType::BREAK_Bone; }
+	else if(_sourceIndex.x == 3) { _breakType = BreakType::BREAK_Bone; }
 
 	return S_OK;
 }
@@ -63,11 +67,11 @@ void Throws::Update(float deltaTime)
 			{
 				if (_sourceIndex.x == 1)
 				{
-					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::Jar));
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Jar));
 				}
 				else if (_sourceIndex.x == 2 || _sourceIndex.x == 3)
 				{
-					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::Bone));
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bone));
 				}
 			}
 		}
@@ -181,11 +185,11 @@ void Throws::HandlePlayerAttackEvent(const IEvent * event)
 			{
 				if (_sourceIndex.x == 1)
 				{
-					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::Jar));
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Jar));
 				}
 				else if (_sourceIndex.x == 2 || _sourceIndex.x == 3)
 				{
-					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::Bone));
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bone));
 				}
 			}
 			else

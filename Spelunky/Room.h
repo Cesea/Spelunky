@@ -7,6 +7,8 @@
 #include "Gem.h"
 #include "Throws.h"
 
+#include "Bomb.h"
+
 struct RandomRoomGenerated
 {
 	IntVector2 startRoomIndex{};
@@ -69,6 +71,7 @@ public:
 	IntVector2 GetStartPosition() { return IntVector2(_tunnels[0]->position.tileX, _tunnels[0]->position.tileY); }
 
 	void DestroyTile(const IntVector2 &tilePos);
+	void DestroyTile(int xStartIndex, int yStartIndex, int width, int height);
 
 	const TilePosition &GetCurrentExitPosition() { return _tunnels[1]->position; }
 
@@ -95,6 +98,7 @@ private:
 
 	void HandleCollectMoneyEvent(const IEvent *event);
 	void HandleItemBreakEvent(const IEvent *event);
+	void HandleThrowBombEvent(const IEvent *event);
 private:
 	Room _rooms[16]{};
 
@@ -104,8 +108,10 @@ private:
 
 	Tunnel *_tunnels[2]{};
 
+	std::list<Bomb *> _bombs{};
 	std::list<Gem *> _gems{};
 	std::list<Throws *> _throws{};
+
 
 	std::map<std::wstring, D2DSprite *> _usingSprites;
 

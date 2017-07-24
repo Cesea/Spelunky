@@ -1,6 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+
 enum  EventType
 {
 	EVENT_CREATE_OBJECT = 0xba1a49b3,
@@ -27,6 +28,10 @@ enum  EventType
 
 	EVENT_PLAYER_ATTACK = 0x1586e71c,
 	EVENT_PLAYER_GO_EXIT = 0x97d481c8,
+
+	EVENT_THROW_BOMB = 0x49500922,
+	EVENT_ENEMY_INPUT = 0x17246236,
+
 };
 
 
@@ -355,6 +360,44 @@ public :
 private :
 	static EventType _type;
 	bool _isMiddle{ false };
+};
+
+class ThrowBombEvent : public BaseEvent
+{
+public :
+	ThrowBombEvent(const TilePosition & throwPosition, const Vector2 initialVelocity, bool isSticky);
+	virtual ~ThrowBombEvent();
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const TilePosition &GetThrowPosition() { return _throwPosition; }
+	const Vector2 &GetInitialVelocity() { return _initVel; }
+	const bool32 GetIsSticky() { return _isSticky; }
+
+private :
+	static EventType _type;
+	TilePosition _throwPosition;
+	Vector2 _initVel;
+	bool32 _isSticky;
+};
+
+class EnemyInputEvent : public BaseEvent
+{
+public:
+	explicit EnemyInputEvent(ObjectId id, const ControlCommand &controlCommand);
+	virtual ~EnemyInputEvent();
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+	const ControlCommand &GetControlCommand() { return _controlCommand; }
+private:
+	ControlCommand _controlCommand;
+	ObjectId _id;
+	static EventType _type;
 };
 
 #endif

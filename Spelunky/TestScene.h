@@ -5,7 +5,7 @@
 
 #include "SpriteObject.h"
 
-#include "Bomb.h"
+//#include "Bomb.h"
 
 #define SPEAR_TIME 0.25f
 
@@ -31,7 +31,7 @@ private:
 	ObjectId _lastId{ 1 };
 	ObjectId GetNextId() { return _lastId++; }
 
-	Bomb* _bomb{};
+	//Bomb* _bomb{};
 
 	Camera cameraTemp;
 
