@@ -166,6 +166,12 @@
     <Filter Include="Game\Common\EffectManager">
       <UniqueIdentifier>{1360b238-2733-4eaa-95fe-b9281fa37ae6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Exit">
+      <UniqueIdentifier>{c11b833e-d30c-4c18-a62f-88b7dae80cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework2D\Action">
+      <UniqueIdentifier>{1ac5a8a3-4fb3-4fbc-ab09-6d45b36d9ffc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -429,6 +435,12 @@
     <ClInclude Include="Throws.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
     </ClInclude>
+    <ClInclude Include="ExitState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Exit</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>GameFramework2D\Action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -655,6 +667,9 @@
     </ClCompile>
     <ClCompile Include="Throws.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
+    </ClCompile>
+    <ClCompile Include="ExitState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Exit</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

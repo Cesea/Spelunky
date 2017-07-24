@@ -928,7 +928,7 @@ void Stage::BuildThrows()
 							newThrows->position.tileY = worldPosition.y;
 							newThrows->desiredPosition = newThrows->position;
 
-							convertedProperty->sourceIndex.x += 1;
+							randomProperty.sourceIndex.x += 1;
 							Throws *newThrowsSecond = (Throws *)OBJECTMANAGER->CreateObject(L"throws", &randomProperty);
 
 							newThrowsSecond->position.tileX = worldPosition.x;

@@ -7,11 +7,13 @@ Item::Item(ObjectId id)
 	:MovingObject::MovingObject(id)
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Item, &Item::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Item, &Item::HandlePlayerAttackEvent>(this));
 }
 
 Item::~Item()
 {
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Item, &Item::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Item, &Item::HandlePlayerAttackEvent>(this));
 }
 
 HRESULT Item::Init(BaseProperty *property)

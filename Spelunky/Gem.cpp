@@ -98,6 +98,54 @@ void Gem::Digged()
 	_isInTile = false;
 }
 
+void Gem::HandlePlayerAttackEvent(const IEvent * event)
+{
+	if (!_isInTile)
+	{
+		PlayerAttackEvent *convertedEvent = (PlayerAttackEvent *)event;
+		Direction seeingDirection = convertedEvent->GetDirection();
+
+		Vector2 positionUntiled = position.UnTilelize();
+		const TilePosition & playerPosition = convertedEvent->GetTilePosition();
+		Vector2 playerPositionUntiled = playerPosition.UnTilelize();
+
+		bool hitted = false;
+		if (seeingDirection == Direction::Left)
+		{
+			if (positionUntiled.x <= playerPositionUntiled.x + 10 &&
+				positionUntiled.x >= playerPositionUntiled.x - 70 &&
+				position.tileY == playerPosition.tileY)
+			{
+				hitted = true;
+			}
+		}
+		else if (seeingDirection == Direction::Right)
+		{
+			if (positionUntiled.x >= playerPositionUntiled.x - 10 &&
+				positionUntiled.x <= playerPositionUntiled.x + 84 &&
+				position.tileY == playerPosition.tileY)
+			{
+
+				hitted = true;
+			}
+		}
+		if (hitted)
+		{
+			Console::Log("Gem hitted\n");
+			_collisionComp->SetRepulse(true);
+			if (seeingDirection == Direction::Left)
+			{
+				_velocity.x = -140;
+			}
+			else if (seeingDirection == Direction::Right)
+			{
+				_velocity.x = 140;
+			}
+			_velocity.y -= 84;
+		}
+	}
+}
+
 Gem & Gem::operator=(const GemProperty * other)
 {
 	position.tileX = other->position.x;

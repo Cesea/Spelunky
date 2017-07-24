@@ -30,6 +30,7 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 	if (object->_offsetCount == 5)
 	{
 		object->_weaponOffset = Vector2((object->GetDirection() == Direction::Right) ? 50 : -50, 23);
+		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
 	}
 
 	if (object->_stateClimbing)
@@ -159,6 +160,7 @@ void ThrowState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"throw");
 	object->_holding = false;
+	object->_holdingObjectId[0] = UNVALID_OBJECT_ID;
 }
 
 State<Player>* ThrowState::Update(Player * object, float deltaTime)

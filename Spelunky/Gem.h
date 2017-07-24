@@ -24,6 +24,8 @@ public:
 	void SetIsInTile(bool b) { _isInTile = b; }
 	void Digged(); 
 
+	virtual void HandlePlayerAttackEvent(const IEvent *event);
+
 private :
 	Gem &operator= (const GemProperty *other);
 

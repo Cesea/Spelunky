@@ -12,6 +12,8 @@ Player::Player(ObjectId id)
 	EVENTMANAGER->RegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_GO_EXIT, EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
 
 	_rect = RectMake(0, 0, 38, 44);
 	_rectOffset = Vector2(-19, -44);
@@ -26,6 +28,8 @@ Player::~Player()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_GO_EXIT, EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
 }
 
 HRESULT Player::Init(BaseProperty *property)
@@ -50,6 +54,8 @@ HRESULT Player::Init(BaseProperty *property)
 	BuildAnimationSprite(L"attack", IntVector2(-40, -72));
 	BuildAnimationSprite(L"throw", IntVector2(-40, -72));
 
+	BuildAnimationSprite(L"exit", IntVector2(-40, -72));
+
 	BuildWeaponAnimationSprite(L"whip", IntVector2(-40, -90));
 	BuildWeaponAnimationSprite(L"mattock", IntVector2(-40, -90));
 	BuildWeaponAnimationSprite(L"machete", IntVector2(-40, -90));
@@ -58,6 +64,8 @@ HRESULT Player::Init(BaseProperty *property)
 
 
 	_stateManager.Init(this, new IdleState);
+
+	_exitTimer.Init(1.3f);
 
 	return S_OK;
 }
@@ -69,24 +77,59 @@ void Player::Release(void)
 
 void Player::Update(float deltaTime)
 {
-	_accel.y += GRAVITY;
-	_stateManager.Update(deltaTime);
-	_accel = Vector2();
-
-	_onGround = false;
-	_headHit = false;
-	_onWall = false;
-	_canGrab = false;
-	_onLedge = false;
-	_canClimb = false;
-	_canClimbUp = false;
-	_upperDeath = false;
-
-	if (!_interpolating)
+	if (_canControl)
 	{
-		CollisionCheck();
+
+		_accel.y += GRAVITY;
+		_stateManager.Update(deltaTime);
+		_accel = Vector2();
+
+		_onGround = false;
+		_headHit = false;
+		_onWall = false;
+		_canGrab = false;
+		_onLedge = false;
+		_canClimb = false;
+		_canClimbUp = false;
+		_upperDeath = false;
+
+		_onTunnel = false;
+
+		if (!_interpolating)
+		{
+			CollisionCheck();
+		}
+		EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset));
 	}
-	EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset));
+	else
+	{
+		if (_moveToExitInterpolating)
+		{
+			if (_exitTimer.Tick(deltaTime))
+			{
+				_moveToExitInterpolating = false;
+				position = _exitPosition;
+				SetGraphics(L"exit");
+			}
+			else
+			{
+				float t = _exitTimer.GetCurrentSecond() / _exitTimer.GetTargetSecond();
+				position = InterpolateTilePosition(_exitStartPosition, _exitPosition, t);
+			}
+			_currentSprite->Update(deltaTime);
+		}
+		else
+		{
+			if (_exitTimer.Tick(deltaTime))
+			{
+				Reset();
+				EVENTMANAGER->DiscardAllEvents();
+				EVENTMANAGER->FireEvent(new StageTransitionEvent());
+				return;
+			}
+			_currentSprite->Update(deltaTime);
+		}
+	}
 }
 
 void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -128,10 +171,10 @@ void Player::HandlePlayerInputEvent(const IEvent * event)
 		_maxVelocity.x = 340;
 		_speed.x -= 50;
 	}
-	//if (controlCommand.action == Command::Attack && _holding)
-	//{
-	//	EVENTMANAGER->QueueEvent(new UseItemEvent())
-	//}
+	if (controlCommand.action == Command::GoExit && _onTunnel)
+	{
+		EVENTMANAGER->QueueEvent(new PlayerGoExitEvent(false));
+	}
 	_stateManager.HandleCommand(controlCommand);
 }
 
@@ -162,6 +205,40 @@ void Player::HandleHoldingEvent(const IEvent * event)
 	{
 		_holdingObjectId[1] = convertedEvent->GetId();
 	}
+}
+
+void Player::HandleOnTunnelEvent(const IEvent * event)
+{
+	_onTunnel = true;
+}
+
+void Player::HandlePlayerGoExitEvent(const IEvent * event)
+{
+	PlayerGoExitEvent *convertedEvent = (PlayerGoExitEvent *)event;
+	if (convertedEvent->GetIsMiddle())
+	{
+		_exitTimer.ResetAndChangeTargetSecond(4.0f);
+	}
+	else
+	{
+		_exitTimer.ResetAndChangeTargetSecond(1.3f);
+	}
+
+	_canControl = false;
+	_exitStartPosition = position;
+	_moveToExitInterpolating = true;
+
+	if (_exitPosition.UnTilelize().x > position.UnTilelize().x)
+	{
+		_seeingDirection = Direction::Right;
+	}
+	else
+	{
+		_seeingDirection = Direction::Left;
+	}
+	
+	SetGraphics(L"walk");
+
 }
 
 void Player::HandleMessage(const IEvent * event)
@@ -202,6 +279,11 @@ void Player::EndWeaponGraphics()
 {
 	_currentWeaponSprite = nullptr;
 }
+
+//void Player::ResetForMiddleStage()
+//{
+//	EVENTMANAGER->FireEvent(new PlayerGoExitEvent());
+//}
 
 void Player::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 & anchor)
 {
@@ -424,4 +506,9 @@ void Player::CheckCurrentTile()
 	{
 		_canGrab = true;
 	}
+}
+
+void Player::Reset()
+{
+	_canControl = true;
 }

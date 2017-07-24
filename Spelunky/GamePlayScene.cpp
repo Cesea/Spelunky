@@ -89,6 +89,9 @@ HRESULT GamePlayScene::LoadContent()
 	int throwArray[] = {54, 55, 56, 57, 58};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_throw", L"char_orange", 80, 80, throwArray, 5, 10, false);
 
+	int exitArray[] = {60, 61, 62, 63, 64, 65};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_exit", L"char_orange", 80, 80, exitArray, 6, 10, true);
+
 
 	int whipArray[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_whip", L"weaponanimation", 80, 80, whipArray, 11, 20, false);
@@ -173,12 +176,6 @@ void GamePlayScene::Update(void)
 	{
 		EVENTMANAGER->DiscardAllEvents();
 		SCENEMANAGER->ChangeScene(L"MenuScene");
-	}
-	if (KEYMANAGER->IsOnceKeyDown('Y'))
-	{
-		EVENTMANAGER->DiscardAllEvents();
-		EVENTMANAGER->QueueEvent(new StageTransitionEvent());
-		return;
 	}
 }
 

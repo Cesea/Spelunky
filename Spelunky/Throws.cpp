@@ -144,6 +144,66 @@ void Throws::Apply(ObjectId id)
 {
 }
 
+void Throws::HandlePlayerAttackEvent(const IEvent * event)
+{
+	if (!_equiped)
+	{
+		PlayerAttackEvent *convertedEvent = (PlayerAttackEvent *)event;
+		Direction seeingDirection = convertedEvent->GetDirection();
+
+		Vector2 positionUntiled = position.UnTilelize();
+		const TilePosition & playerPosition = convertedEvent->GetTilePosition();
+		Vector2 playerPositionUntiled = playerPosition.UnTilelize();
+
+		bool hitted = false;
+		if (seeingDirection == Direction::Left)
+		{
+			if (positionUntiled.x <= playerPositionUntiled.x  + 10&&
+				positionUntiled.x >= playerPositionUntiled.x - 70 && 
+				position.tileY == playerPosition.tileY)
+			{
+				hitted = true;
+			}
+		}
+		else if (seeingDirection == Direction::Right)
+		{
+			if (positionUntiled.x >= playerPositionUntiled.x - 10 &&
+				positionUntiled.x <= playerPositionUntiled.x + 70 && 
+				position.tileY == playerPosition.tileY)
+			{
+
+				hitted = true;
+			}
+		}
+		if (hitted)
+		{
+			if (_breakable)
+			{
+				if (_sourceIndex.x == 1)
+				{
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::Jar));
+				}
+				else if (_sourceIndex.x == 2 || _sourceIndex.x == 3)
+				{
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::Bone));
+				}
+			}
+			else
+			{
+				if (seeingDirection == Direction::Left)
+				{
+					_velocity.x = -140;
+				}
+				else if (seeingDirection == Direction::Right)
+				{
+					_velocity.x = 140;
+				}
+				_velocity.y -= 80;
+			}
+		}
+	}
+}
+
 void Throws::operator=(const ThrowProperty * property)
 {
 	position.tileX = property->position.x;

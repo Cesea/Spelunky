@@ -22,6 +22,9 @@ EventType DestroyTileEvent::_type = EVENT_DESTROY_TILE;
 EventType OnTunnelEvent::_type = EVENT_ON_TUNNEL;
 
 EventType ItemBreakEvent::_type = EVENT_ITEM_BREAK;
+EventType PlayerAttackEvent::_type = EVENT_PLAYER_ATTACK;
+
+EventType PlayerGoExitEvent::_type = EVENT_PLAYER_GO_EXIT;
 
 
 BaseEvent::BaseEvent(float timeStamp)
@@ -333,4 +336,38 @@ IEvent * PutDownEvent::Copy() const
 const WCHAR * PutDownEvent::GetName() const
 {
 	return L"Put Down Event";
+}
+
+PlayerAttackEvent::PlayerAttackEvent(Direction direction, TilePosition position)
+	:_position(position), _direction(direction)
+{
+}
+
+IEvent * PlayerAttackEvent::Copy() const
+{
+	return new PlayerAttackEvent(_direction, _position);
+}
+
+const WCHAR * PlayerAttackEvent::GetName() const
+{
+	return L"Player Attack Event";
+}
+
+PlayerGoExitEvent::PlayerGoExitEvent(bool isMiddle)
+	:_isMiddle(isMiddle)
+{
+}
+
+PlayerGoExitEvent::~PlayerGoExitEvent()
+{
+}
+
+IEvent * PlayerGoExitEvent::Copy() const
+{
+	return new PlayerGoExitEvent(_isMiddle);
+}
+
+const WCHAR * PlayerGoExitEvent::GetName() const
+{
+	return L"Player Go Exit Event";
 }

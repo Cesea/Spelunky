@@ -24,6 +24,7 @@ public :
 	virtual void Apply(ObjectId id) = 0;
 
 	void HandlePlayerPositionEvent(const IEvent *event);
+	virtual void HandlePlayerAttackEvent(const IEvent *event) {}
 
 protected  :
 	D2DSprite *_sprite{};

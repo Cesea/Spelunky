@@ -20,6 +20,8 @@ public:
 
 	virtual void Apply(ObjectId id);
 
+	virtual void HandlePlayerAttackEvent(const IEvent *event);
+
 private:
 
 	void operator= (const ThrowProperty *property);

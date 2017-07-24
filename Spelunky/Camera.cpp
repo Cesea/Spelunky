@@ -88,6 +88,14 @@ void Camera::Shake(float power, int shakeCount, float t)
 	_anchorPosition = _position;
 }
 
+void Camera::ResetForMiddleStage()
+{
+}
+
+void Camera::ResetForNormalStage()
+{
+}
+
 void Camera::KeepCameraInsideAnchorRect()
 {
 	if (_position.tileX < 0)

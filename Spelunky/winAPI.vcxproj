@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="ArcheType.h" />
     <ClInclude Include="AttackState.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="DataSet.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="ExitState.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="PropertyFactory.h" />
     <ClInclude Include="SpriteObject.h" />
@@ -193,6 +195,7 @@
     <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="ExitState.cpp" />
     <ClCompile Include="FallingState.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileManager.cpp" />

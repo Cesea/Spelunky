@@ -51,6 +51,8 @@ public :
 	void HandleFrameEndEvent(const IEvent *event);
 	void HandleCollectedMoneyEvent(const IEvent *event);
 	void HandleHoldingEvent(const IEvent *event);
+	void HandleOnTunnelEvent(const IEvent *event);
+	void HandlePlayerGoExitEvent(const IEvent *event);
 	virtual void HandleMessage(const IEvent *event);
 
 	Rect GetRect() { return _rect; }
@@ -67,6 +69,7 @@ public :
 	void SetWeaponGraphics(const std::wstring &key);
 	void EndWeaponGraphics();
 
+	void SetExitPosition(const TilePosition &exitPosition) { _exitPosition = exitPosition; }
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 	void BuildWeaponAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
@@ -74,12 +77,17 @@ private :
 	void CollisionCheck();
 	void CheckCurrentTile();
 
+
+	void Reset();
+
 private :
 	Rect _rect;
 	Vector2 _rectOffset;
 
 	float _dashSpeed{200};
 	float _climbSpeed{ 120.0f };
+
+	bool _canControl{ true };
 
 	bool _canGrab{false};
 	bool _wasGrab{ false };
@@ -96,13 +104,14 @@ private :
 
 	bool _climbing{ false };
 
+	bool _onTunnel{ false };
+	bool _moveToExitInterpolating{ false };
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
 
 	DataSet<D2DSprite *> _weaponGraphics;
 	D2DSprite *_currentWeaponSprite{};
-
 
 	StateManager<Player> _stateManager;
 
@@ -115,6 +124,12 @@ private :
 
 	Vector2 _weaponOffset{};
 	int _offsetCount{ 0 };
+
+
+	TilePosition _exitStartPosition{};
+	TilePosition _exitPosition{};
+
+	Timer _exitTimer;
 };
 
 #endif

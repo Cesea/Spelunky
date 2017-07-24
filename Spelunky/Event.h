@@ -24,6 +24,9 @@ enum  EventType
 
 	EVENT_ITEM_BREAK = 0x60740c30,
 	EVENT_PUT_DOWN = 0xdc7c30a9,
+
+	EVENT_PLAYER_ATTACK = 0x1586e71c,
+	EVENT_PLAYER_GO_EXIT = 0x97d481c8,
 };
 
 
@@ -315,6 +318,43 @@ private:
 	ObjectId _id;
 	Direction _direction;
 	static EventType _type;
+};
+
+class PlayerAttackEvent : public BaseEvent
+{
+public :
+	PlayerAttackEvent(Direction direction, TilePosition position);
+	virtual ~PlayerAttackEvent() { }
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const TilePosition &GetTilePosition() { return _position; }
+	const Direction &GetDirection() { return _direction; }
+
+private :
+	TilePosition _position;
+	Direction _direction;
+
+	static EventType _type;
+};
+
+class PlayerGoExitEvent : public BaseEvent
+{
+public :
+	PlayerGoExitEvent(bool isMiddle);
+	virtual ~PlayerGoExitEvent();
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	bool GetIsMiddle() { return _isMiddle; }
+
+private :
+	static EventType _type;
+	bool _isMiddle{ false };
 };
 
 #endif

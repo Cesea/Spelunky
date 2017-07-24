@@ -161,10 +161,15 @@ void StageManager::BuildMiddleStage()
 	_currentStage = newStage;
 
 	_pPlayer->position.tileX = _currentStage->GetStartPosition().x;
-	_pPlayer->position.tileY = _currentStage->GetStartPosition().y ;
-	_pPlayer->position.AddToTileRelY(-20);
-
+	_pPlayer->position.tileY = _currentStage->GetStartPosition().y + 1 ;
 	_pPlayer->desiredPosition = _pPlayer->position;
+
+	TilePosition exitPositionToPlayer = _currentStage->GetCurrentExitPosition();
+	exitPositionToPlayer.AddToTileRelY(64);
+	_pPlayer->SetExitPosition(exitPositionToPlayer);
+
+	EVENTMANAGER->FireEvent(new PlayerGoExitEvent(true));
+
 	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }
 
@@ -201,6 +206,11 @@ void StageManager::BuildNextStage()
 	_pPlayer->position.AddToTileRelY(-20);
 
 	_pPlayer->desiredPosition = _pPlayer->position;
+
+
+	TilePosition exitPositionToPlayer = _currentStage->GetCurrentExitPosition();
+	exitPositionToPlayer.AddToTileRelY(64);
+	_pPlayer->SetExitPosition(exitPositionToPlayer);
 
 	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }

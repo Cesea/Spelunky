@@ -70,6 +70,8 @@ public:
 
 	void DestroyTile(const IntVector2 &tilePos);
 
+	const TilePosition &GetCurrentExitPosition() { return _tunnels[1]->position; }
+
 private:
 	void RegisterDelegates();
 	void UnRegisterDelegates();
