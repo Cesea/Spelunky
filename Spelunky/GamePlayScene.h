@@ -6,6 +6,12 @@
 
 #include "Player.h"
 
+enum class PlaySceneState
+{
+	OnDungeon,
+	PlayerDead
+};
+
 class GamePlayScene : public IScene
 {
 	friend class GameObjectManager;
@@ -24,6 +30,9 @@ private:
 	Camera _camera;
 
 private:
+
+	IDWriteTextFormat *_smallText{};
+	IDWriteTextFormat *_bigText{};
 	//ObjectMap _objects;
 
 	InputMapper _inputMapper;

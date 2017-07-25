@@ -110,8 +110,11 @@
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyFactory.h" />
+    <ClInclude Include="EventCollector.h" />
     <ClInclude Include="ExitState.h" />
+    <ClInclude Include="FaintState.h" />
     <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="PropertyFactory.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeAttackState.h" />
@@ -121,7 +124,12 @@
     <ClInclude Include="SpiderOnGroundState.h" />
     <ClInclude Include="SpiderOnTopState.h" />
     <ClInclude Include="SpriteObject.h" />
+    <ClInclude Include="StrongSnake.h" />
+    <ClInclude Include="StrongSnakeAttackState.h" />
+    <ClInclude Include="StrongSnakeSpitState.h" />
+    <ClInclude Include="StrongSnakeWalkState.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="TextSpriteObject.h" />
     <ClInclude Include="TimeTrigger.h" />
     <ClInclude Include="Tunnel.h" />
     <ClInclude Include="DWrite.h" />
@@ -211,8 +219,10 @@
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="EventCollector.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="ExitState.cpp" />
+    <ClCompile Include="FaintState.cpp" />
     <ClCompile Include="FallingState.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileManager.cpp" />
@@ -243,6 +253,7 @@
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="OnLedgeState.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="PassiveItem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Property.cpp" />
@@ -254,6 +265,10 @@
     <ClCompile Include="SpiderJumpState.cpp" />
     <ClCompile Include="SpiderOnGroundState.cpp" />
     <ClCompile Include="SpiderOnTopState.cpp" />
+    <ClCompile Include="StrongSnake.cpp" />
+    <ClCompile Include="StrongSnakeAttackState.cpp" />
+    <ClCompile Include="StrongSnakeSpitState.cpp" />
+    <ClCompile Include="StrongSnakeWalkState.cpp" />
     <ClCompile Include="Throws.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SceneManager.cpp" />

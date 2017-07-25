@@ -39,6 +39,8 @@ HRESULT MenuScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\explosion.png", L"explosion");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bomb.png", L"bomb");
 
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\particles.png", L"particles");
+
 	KEYANIMANAGER->AddDefPlayFrameAnimation(L"explosion", L"explosion", 128, 128, 20, false, false);
 	int normalBombArray[] = { 0, 1, 2 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"bomb", L"bomb", 80, 80, normalBombArray, 3, 12, true);

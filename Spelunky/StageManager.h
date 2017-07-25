@@ -28,6 +28,14 @@ public:
 	Stage *GetCurrentStage();
 
 	void SetCurrentStage(int i) { _currentStageCount = i; }
+	int GetCurrentStageCount() { return _currentStageCount; }
+
+	bool GetIsInMiddleStage() { return _inMiddleStage; }
+
+	float GetCurrentStageElapsedTime() { return _currentStageElapsedTime; }
+	float GetTotalStageElapsedTime() { return _totalStageElapsedTime; }
+
+	int GetNormalStageMoneyCollected() { return _normalStageMoneyCollected; }
 
 private:
 	RandomRoomGenerated MakeRandomRoomTypes();
@@ -48,6 +56,11 @@ private:
 	int _currentStageCount{ 0 };
 
 	bool _inMiddleStage{ true };
+
+	float _currentStageElapsedTime{ 0 };
+	float _totalStageElapsedTime{ 0 };
+
+	int _normalStageMoneyCollected{ 0 };
 
 };
 

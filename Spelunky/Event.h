@@ -35,6 +35,12 @@ enum  EventType
 	EVENT_ENEMY_DEAD = 0xaa04c0a1,
 	EVENT_PLAYER_UPPER_JUMP = 0x4fdb83af,
 
+	EVENT_DAMAGE = 0x1739229c,
+
+	EVENT_ON_MIDDLE_STAGE = 0xd4ed69c2,
+	EVENT_EXIT_MIDDLE_STAGE = 0xc68b0567,
+
+	EVENT_PLAYER_DAMAGED = 0x8b6aca10,
 };
 
 
@@ -54,6 +60,7 @@ public:
 	virtual ~BaseEvent();
 
 	virtual EventType GetType() const = 0;
+	virtual IEvent *Copy() const = 0;
 
 	float GetTimeStamp() const { return _timeStamp; }
 
@@ -184,7 +191,7 @@ private:
 class CollectMoneyEvent : public BaseEvent
 {
 public :
-	explicit CollectMoneyEvent(ObjectId id, ObjectId targetId, int value);
+	explicit CollectMoneyEvent(ObjectId id, ObjectId targetId, int value, GemType type);
 	virtual ~CollectMoneyEvent();
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
@@ -193,11 +200,13 @@ public :
 	ObjectId GetId() { return _id; }
 	ObjectId GetTargetid() { return _targetId; }
 	int GetValue() { return _value; }
+	GemType GetGemType() { return _gemType; }
 private :
 	ObjectId _id;
 	ObjectId _targetId;
 	int _value;
 	static EventType _type;
+	GemType _gemType;
 };
 
 class ObjectDeadEvent : public BaseEvent
@@ -409,17 +418,19 @@ private:
 class EnemyDeadEvent : public BaseEvent
 {
 public :
-	EnemyDeadEvent(const ObjectId id);
+	EnemyDeadEvent(const ObjectId id, EnemyType enemytype);
 	virtual ~EnemyDeadEvent() {}
 
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
 	EventType GetType() const override { return _type; }
 
+	EnemyType GetEnemyType() { return _enemyType; }
 	ObjectId GetId() { return _id; }
 private:
 	static EventType _type;
 	ObjectId _id{ 0 };
+	EnemyType _enemyType;
 };
 
 class PlayerUpperJumpEvent : public BaseEvent
@@ -438,6 +449,92 @@ private:
 	Vector2 _otherVelocity;
 };
 
+class DamageEvent : public BaseEvent
+{
+public :
+	DamageEvent(ObjectId id, int damage, const TilePosition &position, const Rect &rect, const Vector2 &rectOffset);
+	virtual ~DamageEvent();
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const Vector2 &GetOtherVelocity() { return _otherVelocity; }
+	int GetDamage() { return _damage; }
+	const TilePosition &GetTilePosition() { return _position; }
+	const Rect &GetRect() { return _rect; }
+	const Vector2 &GetRectOffset() { return _rectOffset; }
+private:
+	static EventType _type;
+	Vector2 _otherVelocity;
+
+	int _id;
+	int _damage;
+	TilePosition _position;
+	Rect _rect;
+	Vector2 _rectOffset;
+};
+
+class OnMiddleStageEvent : public BaseEvent
+{
+public:
+	OnMiddleStageEvent() {}
+	virtual ~OnMiddleStageEvent() {}
+
+	IEvent *Copy() const override
+	{
+		return new OnMiddleStageEvent();
+	}
+	const WCHAR *GetName() const
+	{
+		return L"On Middle Stage Event";
+	}
+	EventType GetType() const override { return _type; }
+
+private :
+	static EventType _type;
+};
+
+class ExitMiddleStageEvent : public BaseEvent
+{
+public:
+	ExitMiddleStageEvent() {}
+	virtual ~ExitMiddleStageEvent() {}
+
+	IEvent *Copy() const override
+	{
+		return new ExitMiddleStageEvent();
+	}
+	const WCHAR *GetName() const
+	{
+		return L"Exit Middle Stage Event";
+	}
+	EventType GetType() const override { return _type; }
+
+private :
+	static EventType _type;
+};
+
+class PlayerDamagedEvent : public BaseEvent
+{
+public :
+	PlayerDamagedEvent(ObjectId attackerId, int damage, const Vector2 &posDiff);
+	virtual ~PlayerDamagedEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetAttackerId() { return _attackerId; }
+	int GetDamage() { return _damage; }
+	const Vector2 &GetPosDiff() { return _posDiff; }
+
+private:
+	static EventType _type;
+	ObjectId _attackerId;
+	int _damage;
+	Vector2 _posDiff;
+};
 
 
 #endif

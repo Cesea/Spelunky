@@ -47,9 +47,9 @@ void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, float des
 void D2DFrameSprite::FrameRenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
 	int xIndex, int yIndex, const D2D1::Matrix3x2F & mat, float alpha)
 {
-	_sourceImage->RenderMatrix(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y), 
+	_sourceImage->RenderMatrix(renderTarget, ConvertFloatToInt(destX ), ConvertFloatToInt(destY ), 
 		ConvertFloatToInt(xIndex * _widthPerFrame), ConvertFloatToInt(yIndex * _heightPerFrame), 
-		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), mat, alpha);
+		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), mat * D2D1::Matrix3x2F::Translation(_anchor.x, _anchor.y), alpha);
 }
 
 void D2DFrameSprite::Release()

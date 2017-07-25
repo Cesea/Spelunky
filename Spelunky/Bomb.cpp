@@ -54,8 +54,8 @@ HRESULT Bomb::Init(BaseProperty * property)
 
 void Bomb::Release(void)
 {
-	_sprite->Release();
-	delete _sprite;
+	//_sprite->Release();
+	//delete _sprite;
 }
 
 void Bomb::Update(float deltaTime)
@@ -90,7 +90,7 @@ void Bomb::Update(float deltaTime)
 		}
 		else if (_bombStage == 3)
 		{
-			STAGEMANAGER->DestroyTile(position.tileX - 1, position.tileY - 1, 2, 2);
+			STAGEMANAGER->DestroyTile(position.tileX - 2, position.tileY - 2, 4, 4);
 			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bomb));
 			EFFECTMANAGER->PlayExplosionEffect(position.UnTilelize());
 			EFFECTMANAGER->PlaySmokeEffect(position.UnTilelize());

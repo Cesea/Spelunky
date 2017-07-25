@@ -41,6 +41,9 @@ HRESULT Bat::Init(BaseProperty * property)
 
 	_speed = Vector2(30, 30);
 	_maxVelocity = Vector2(40, 40);
+
+	_enemyType = EnemyType::ENEMY_Bat;
+
 	return S_OK;
 }
 
@@ -136,6 +139,10 @@ void Bat::HandlePlayerPositionEvent(const IEvent * event)
 			Damaged(1, (relXDiff < 0) ? Direction::Right : Direction::Left);
 			EVENTMANAGER->QueueEvent(new PlayerUpperJumpEvent(_velocity));
 			return;
+		}
+		else
+		{
+			EVENTMANAGER->QueueEvent(new PlayerDamagedEvent(_id, 1, Vector2(relXDiff, relYDiff)));
 		}
 	}
 }

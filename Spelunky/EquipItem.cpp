@@ -21,6 +21,8 @@ HRESULT EquipItem::Init(BaseProperty *property)
 	_collisionComp = new CollisionComponent();
 	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -20));
 
+	_equiped = 0;
+
 	return S_OK;
 }
 
@@ -93,10 +95,13 @@ void EquipItem::HandlePlayerInputEvent(const IEvent * event)
 		PlayerInputEvent *convertedEvent = (PlayerInputEvent *)(event);
 		const ControlCommand &commands = convertedEvent->GetControlCommand();
 
-		if (commands.action == Command::Attack && !_pOwner->GetCrawling())
+		if (_pOwner)
 		{
-			_collisionComp->SetRepulse(true);
-			Use(commands);
+			if (commands.action == Command::Attack && !_pOwner->GetCrawling())
+			{
+				_collisionComp->SetRepulse(true);
+				Use(commands);
+			}
 		}
 	}
 }

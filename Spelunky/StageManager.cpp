@@ -31,6 +31,12 @@ void StageManager::Update(float deltaTime)
 	if (_currentStage)
 	{
 		_currentStage->Update(deltaTime);
+
+		if (!_inMiddleStage)
+		{
+			_currentStageElapsedTime += deltaTime;
+			_totalStageElapsedTime += deltaTime;
+		}
 	}
 }
 
@@ -145,9 +151,11 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 
 void StageManager::BuildMiddleStage()
 {
+	_normalStageMoneyCollected = _currentStage->GetMoneyCollected();
 	SAFE_DELETE(_currentStage);
 
 	_inMiddleStage = true;
+	
 
 	Stage *newStage = new Stage;
 	std::wstring firstKey{};
@@ -177,6 +185,8 @@ void StageManager::BuildMiddleStage()
 	_pPlayer->SetExitPosition(exitPositionToPlayer);
 
 	EVENTMANAGER->FireEvent(new PlayerGoExitEvent(true));
+	EVENTMANAGER->FireEvent(new OnMiddleStageEvent);
+	_pCamera->ResetForMiddleStage();
 
 	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }
@@ -184,6 +194,7 @@ void StageManager::BuildMiddleStage()
 void StageManager::BuildNextStage()
 {
 	SAFE_DELETE(_currentStage);
+	_currentStageElapsedTime = 0;
 
 	_inMiddleStage = false;
 	Stage *newStage = new Stage;
@@ -219,6 +230,7 @@ void StageManager::BuildNextStage()
 	TilePosition exitPositionToPlayer = _currentStage->GetCurrentExitPosition();
 	exitPositionToPlayer.AddToTileRelY(64);
 	_pPlayer->SetExitPosition(exitPositionToPlayer);
+	_pCamera->ResetForNormalStage();
 
 	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }

@@ -41,6 +41,8 @@ HRESULT Snake::Init(BaseProperty * property)
 	_speed = Vector2(30, 300);
 	_maxVelocity = Vector2(40, 500);
 
+	_enemyType = EnemyType::ENEMY_Snake;
+
 	return S_OK;
 }
 
@@ -108,19 +110,19 @@ void Snake::HandlePlayerPositionEvent(const IEvent * event)
 	{
 		if (overlapRect.width > overlapRect.height && convertedEvent->GetFalling())
 		{
-
-			Console::Log("upper Jump\n");
 			Damaged(1, (relXDiff < 0) ? Direction::Right : Direction::Left);
 			EVENTMANAGER->QueueEvent(new PlayerUpperJumpEvent(_velocity));
 			return;
 		}
+		else
+		{
+			EVENTMANAGER->QueueEvent(new PlayerDamagedEvent(_id, 1, Vector2(relXDiff, relYDiff)));
+		}
 	}
-
 	if (abs(relXDiff) <= 40 && abs(relYDiff) < 25 && !_attacking)
 	{
 		_stateManager.ChangeState(new SnakeAttackState());
 	}
-
 }
 
 void Snake::BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 & anchor)

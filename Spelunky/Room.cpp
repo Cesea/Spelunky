@@ -82,17 +82,24 @@ Stage::~Stage()
 	{
 		for (int x = 0; x < STAGE_TOTAL_COUNTX; ++x)
 		{
-			if (tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			Tile *pLayer1Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			Tile *pLayer2Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+
+			if (pLayer0Tile)
 			{
-				OBJECTMANAGER->DestroyObject(tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->GetId());
+				pLayer0Tile->Release();
+				OBJECTMANAGER->DestroyObject(pLayer0Tile->GetId());
 			}
-			if (tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			if (pLayer1Tile)
 			{
-				OBJECTMANAGER->DestroyObject(tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->GetId());
+				pLayer1Tile->Release();
+				OBJECTMANAGER->DestroyObject(pLayer1Tile->GetId());
 			}
-			if (tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			if (pLayer2Tile)
 			{
-				OBJECTMANAGER->DestroyObject(tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->GetId());
+				pLayer2Tile->Release();
+				OBJECTMANAGER->DestroyObject(pLayer2Tile->GetId());
 			}
 		}
 	}
@@ -103,16 +110,19 @@ Stage::~Stage()
 
 	for (auto &gem : _gems)
 	{
+		gem->Release();
 		OBJECTMANAGER->DestroyObject(gem->GetId());
 	}
 
 	for (auto &throws : _throws)
 	{
+		throws->Release();
 		OBJECTMANAGER->DestroyObject(throws->GetId());
 	}
 
 	for (auto &enemy : _enemies)
 	{
+		enemy->Release();
 		OBJECTMANAGER->DestroyObject(enemy->GetId());
 	}
 
@@ -498,10 +508,13 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 	Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
 	Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
 
+	TileCollisionType breakTileCollType{ TILE_COLLISION_NONE };
 
 	if (pLayer0Tile != nullptr &&
 		pLayer0Tile->canBeDestroyedByBomb)
 	{
+		breakTileCollType = pLayer0Tile->collisionType;
+
 		pLayer0Tile->canBeDestroyedByBomb = false;
 		pLayer0Tile->sourceIndex = pLayer0Tile->destroyedIndex;
 		pLayer0Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
@@ -515,6 +528,8 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 	else if(pLayer1Tile != nullptr &&
 		pLayer1Tile->canBeDestroyedByBomb)
 	{
+		breakTileCollType = pLayer1Tile->collisionType;
+
 		pLayer1Tile->canBeDestroyedByBomb = false;
 		pLayer1Tile->sourceIndex = pLayer1Tile->destroyedIndex;
 		pLayer1Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
@@ -558,6 +573,16 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		ClearAllTheBits(tilePos.x - 1, tilePos.y - 1, 3, 3);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 0);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 1);
+
+		if (breakTileCollType == TileCollisionType::TILE_COLLISION_BLOCK)
+		{
+			EFFECTMANAGER->PlayTileParticle(TilePosition(tilePos.x, tilePos.y, 32, 32).UnTilelize());
+		}
+		else if (breakTileCollType == TileCollisionType::TILE_COLLISION_LADDER ||
+			breakTileCollType == TileCollisionType::TILE_COLLISION_EOF_LADDER)
+		{
+			EFFECTMANAGER->PlayWoodParticle(TilePosition(tilePos.x, tilePos.y, 32, 32).UnTilelize());
+		}
 	}
 }
 
@@ -579,9 +604,13 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 			Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
 			Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
 
+			TileCollisionType breakTileCollType{TILE_COLLISION_NONE};
+
 			if (pLayer0Tile != nullptr &&
 				pLayer0Tile->canBeDestroyedByBomb)
 			{
+				breakTileCollType = pLayer0Tile->collisionType;
+
 				pLayer0Tile->canBeDestroyedByBomb = false;
 				pLayer0Tile->sourceIndex = pLayer0Tile->destroyedIndex;
 				pLayer0Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
@@ -595,6 +624,8 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 			else if (pLayer1Tile != nullptr &&
 				pLayer1Tile->canBeDestroyedByBomb)
 			{
+				breakTileCollType = pLayer1Tile->collisionType;
+
 				pLayer1Tile->canBeDestroyedByBomb = false;
 				pLayer1Tile->sourceIndex = pLayer1Tile->destroyedIndex;
 				pLayer1Tile->collisionType = TileCollisionType::TILE_COLLISION_NONE;
@@ -635,14 +666,23 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 						EVENTMANAGER->QueueEvent(new ItemBreakEvent(throws->GetId(), throws->GetBreakType()));
 					}
 				}
+				if (breakTileCollType == TileCollisionType::TILE_COLLISION_BLOCK)
+				{
+					EFFECTMANAGER->PlayTileParticle(TilePosition(x, y, 32, 32).UnTilelize());
+				}
+				else if (breakTileCollType == TileCollisionType::TILE_COLLISION_LADDER ||
+					breakTileCollType == TileCollisionType::TILE_COLLISION_EOF_LADDER)
+				{
+					EFFECTMANAGER->PlayWoodParticle(TilePosition(x, y, 32, 32).UnTilelize());
+				}
 			}
 		}
 	}
 	if (destroyed)
 	{
-		ClearAllTheBits(xStartIndex -2 , yStartIndex - 2 , width + 4 , height + 4 );
-		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 4, height + 4, 0);
-		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 4, height + 4, 1);
+		ClearAllTheBits(xStartIndex -2 , yStartIndex - 2 , width + 6 , height + 6 );
+		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 6, height + 6, 0);
+		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 6, height + 6, 1);
 	}
 }
 
@@ -964,10 +1004,10 @@ void Stage::BuildGems()
 							randomGemProperty.sourceIndex.y = 0;
 							int randSourceX = RND->GetFromIntTo(2, 5);
 							randomGemProperty.sourceIndex.x = randSourceX;
-							if (randSourceX == 2) { randomGemProperty.value = 800; }
-							else if (randSourceX == 3) { randomGemProperty.value = 1200; }
-							else if (randSourceX == 4) { randomGemProperty.value = 1600; }
-							else if (randSourceX == 5) { randomGemProperty.value = 2000; }
+							if (randSourceX == 2) { randomGemProperty.value = 800; randomGemProperty.type = GEM_Emerald; }
+							else if (randSourceX == 3) { randomGemProperty.value = 1200; randomGemProperty.type = GEM_Saphire; }
+							else if (randSourceX == 4) { randomGemProperty.value = 1600; randomGemProperty.type = GEM_Ruby; }
+							else if (randSourceX == 5) { randomGemProperty.value = 2000; randomGemProperty.type = GEM_Diamond; }
 							Gem *randomGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", &randomGemProperty);
 							randomGem->position.tileX = worldPosition.x;
 							randomGem->position.tileY = worldPosition.y;
@@ -1219,12 +1259,14 @@ void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
 void Stage::HandleCollectMoneyEvent(const IEvent * event)
 {
 	CollectMoneyEvent *convertedEvent = (CollectMoneyEvent *)event;
+	_moneyCollected += convertedEvent->GetValue();
 
 	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 	for (auto &iter = _gems.begin(); iter != _gems.end();)
 	{
 		if ((*iter) == object)
 		{
+			(*iter)->Release();
 			_gems.erase(iter);
 			break;
 		}
@@ -1233,19 +1275,49 @@ void Stage::HandleCollectMoneyEvent(const IEvent * event)
 			iter++;
 		}
 	}
+	TilePosition objectPosition = object->position;
+	objectPosition.AddToTileRelY(-20);
+	EFFECTMANAGER->PlayBlingParticle(objectPosition.UnTilelize());
+	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
 void Stage::HandleItemBreakEvent(const IEvent * event)
 {
 	ItemBreakEvent *convertedEvent = (ItemBreakEvent *)event;
 	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
-	if (convertedEvent->GetBreakType() == BreakType::BREAK_Jar ||
-		convertedEvent->GetBreakType() == BreakType::BREAK_Bone)
+	Vector2 objectPosition = object->position.UnTilelize();
+	objectPosition.y -= 16;
+
+	BreakType breakType = convertedEvent->GetBreakType();
+	switch (breakType)
+	{
+	case BREAK_Jar:
+	{
+		EFFECTMANAGER->PlayJarParticle(objectPosition, 0.3f);
+	}break;
+	case BREAK_Bone:
+	{
+		EFFECTMANAGER->PlayBoneParticle(objectPosition, 0.3f);
+	}break;
+	case BREAK_Rock:
+	{
+		EFFECTMANAGER->PlayRockParticle(objectPosition, 0.3f);
+	}break;
+	case BREAK_Live :
+	{
+
+	}break;
+	}
+
+	if (breakType == BreakType::BREAK_Jar ||
+		breakType == BreakType::BREAK_Bone ||
+		breakType == BreakType::BREAK_Rock)
 	{
 		for (auto &iter = _throws.begin(); iter != _throws.end();)
 		{
 			if ((*iter) == object)
 			{
+				(*iter)->Release();
 				_throws.erase(iter);
 				break;
 			}
@@ -1255,12 +1327,13 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			}
 		}
 	}
-	else if (convertedEvent->GetBreakType() == BreakType::BREAK_Bomb)
+	else if (breakType == BreakType::BREAK_Bomb)
 	{
 		for (auto &iter = _bombs.begin(); iter != _bombs.end();)
 		{
 			if ((*iter) == object)
 			{
+				(*iter)->Release();
 				_bombs.erase(iter);
 				break;
 			}
@@ -1277,6 +1350,10 @@ void Stage::HandleEnemyDeadEvent(const IEvent * event)
 {
 	EnemyDeadEvent *convertedEvent = (EnemyDeadEvent *)event;
 	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+
+	Vector2 effectPosition = object->position.UnTilelize();
+	effectPosition.y -= 32;
+	EFFECTMANAGER->PlayBloodParticle(effectPosition, 0.3f);
 	for (auto &iter = _enemies.begin(); iter != _enemies.end();)
 	{
 		if ((*iter) == object)

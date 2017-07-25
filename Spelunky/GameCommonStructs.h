@@ -123,8 +123,10 @@ enum BreakType
 {
 	BREAK_Jar,
 	BREAK_Bone,
+	BREAK_BackBone,
 	BREAK_Rock,
 	BREAK_Live,
+	BREAK_Crate,
 	BREAK_Bomb,
 
 };

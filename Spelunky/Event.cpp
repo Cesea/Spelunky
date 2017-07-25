@@ -32,6 +32,12 @@ EventType EnemyInputEvent::_type = EVENT_ENEMY_INPUT;
 EventType EnemyDeadEvent::_type = EVENT_ENEMY_DEAD;
 EventType PlayerUpperJumpEvent::_type = EVENT_PLAYER_UPPER_JUMP;
 
+EventType DamageEvent::_type = EVENT_DAMAGE;
+
+EventType OnMiddleStageEvent::_type = EVENT_ON_MIDDLE_STAGE;
+EventType ExitMiddleStageEvent::_type = EVENT_EXIT_MIDDLE_STAGE;
+
+EventType PlayerDamagedEvent::_type = EVENT_PLAYER_DAMAGED;
 
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
@@ -187,8 +193,8 @@ const WCHAR * PlayerPositionEvent::GetName() const
 	return L"Player Position";
 }
 
-CollectMoneyEvent::CollectMoneyEvent(ObjectId id, ObjectId targetId, int value)
-	:_id(id), _targetId(targetId), _value(value)
+CollectMoneyEvent::CollectMoneyEvent(ObjectId id, ObjectId targetId, int value, GemType type)
+	:_id(id), _targetId(targetId), _value(value), _gemType(type)
 {
 }
 
@@ -198,7 +204,7 @@ CollectMoneyEvent::~CollectMoneyEvent()
 
 IEvent * CollectMoneyEvent::Copy() const
 {
-	return new CollectMoneyEvent(_id, _targetId, _value);
+	return new CollectMoneyEvent(_id, _targetId, _value, _gemType);
 }
 
 const WCHAR * CollectMoneyEvent::GetName() const
@@ -417,14 +423,14 @@ const WCHAR * EnemyInputEvent::GetName() const
 	return L"Enemy Input Event";
 }
 
-EnemyDeadEvent::EnemyDeadEvent(const ObjectId id)
-	:_id(id)
+EnemyDeadEvent::EnemyDeadEvent(const ObjectId id, EnemyType enemyType)
+	:_id(id), _enemyType(enemyType)
 {
 }
 
 IEvent * EnemyDeadEvent::Copy() const
 {
-	return new EnemyDeadEvent(_id);
+	return new EnemyDeadEvent(_id, _enemyType);
 }
 
 const WCHAR * EnemyDeadEvent::GetName() const
@@ -445,4 +451,38 @@ IEvent * PlayerUpperJumpEvent::Copy() const
 const WCHAR * PlayerUpperJumpEvent::GetName() const
 {
 	return L"Player Upper Jump Event";
+}
+
+DamageEvent::DamageEvent(ObjectId id, int damage, const TilePosition &position, const Rect &rect, const Vector2 &rectOffset)
+	:_id(id), _damage(damage), _position(position), _rect(rect), _rectOffset(rectOffset)
+{
+}
+
+DamageEvent::~DamageEvent()
+{
+}
+
+IEvent * DamageEvent::Copy() const
+{
+	return new DamageEvent(_id, _damage, _position, _rect, _rectOffset);
+}
+
+const WCHAR * DamageEvent::GetName() const
+{
+	return L"Damage Event";
+}
+
+PlayerDamagedEvent::PlayerDamagedEvent(ObjectId attackerId, int damage, const Vector2 & posDiff)
+	:_attackerId(attackerId), _damage(damage), _posDiff(posDiff)
+{
+}
+
+IEvent * PlayerDamagedEvent::Copy() const
+{
+	return new PlayerDamagedEvent(_attackerId, _damage, _posDiff);
+}
+
+const WCHAR * PlayerDamagedEvent::GetName() const
+{
+	return L"Player Damaged Event";
 }

@@ -27,6 +27,7 @@ HRESULT Game::Init(void)
 	TIMEMANAGER->Init();
 	OBJECTMANAGER->Init();
 	PROPERTYFACTORY->Init();
+	EVENTCOLLECTOR->Init();
 
 	IScene *gamePlayScene = new GamePlayScene;
 	IScene *mapToolScene = new MapToolScene;
@@ -59,6 +60,8 @@ void Game::Release(void)
 	TIMEMANAGER->releaseSingleton();
 	SCENEMANAGER->Release();
 	SCENEMANAGER->releaseSingleton();
+	EVENTCOLLECTOR->Release();
+	EVENTCOLLECTOR->releaseSingleton();
 
 	PROPERTYFACTORY->Release();
 	PROPERTYFACTORY->releaseSingleton();

@@ -33,6 +33,7 @@ class Player : public MovingObject
 	friend class UpperDeathState;
 	friend class AttackState;
 	friend class ThrowState;
+	friend class FaintState;
 
 public :
 	Player(ObjectId id);
@@ -55,6 +56,7 @@ public :
 	void HandleOnTunnelEvent(const IEvent *event);
 	void HandlePlayerGoExitEvent(const IEvent *event);
 	void HandlePlayerUpperJumpEvent(const IEvent *event);
+	void HandlePlayerDamagedEvent(const IEvent *event);
 
 	virtual void HandleMessage(const IEvent *event);
 
@@ -66,6 +68,9 @@ public :
 	void SetGraphics(const std::wstring &key);
 
 	int GetMoney() { return _money; }
+	int GetHp() { return _hp; }
+	int GetRopeCount() { return _rope; }
+	int GetBombCount() { return _bomb; }
 
 	void SetWeaponGraphics(const std::wstring &key);
 	void EndWeaponGraphics();
@@ -80,6 +85,7 @@ private :
 
 
 	void Reset();
+	void Damaged();
 
 private :
 	Rect _rect;
@@ -111,6 +117,11 @@ private :
 	bool _stickyBomb{ false };
 
 	bool32 _isFalling{ false };
+	bool32 _collisionRepulse{ false };
+	bool32 _isFaint{ false };
+	bool32 _vulnerable{ true };
+	Timer _vulnerableTimer;
+
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
@@ -122,6 +133,7 @@ private :
 
 	ReturnTile _nearTiles;
 	int _money{ 0 };
+	int _hp{ 5 };
 	uint32 _bomb{ 4 };
 	uint32 _rope{ 4 };
 
@@ -137,8 +149,11 @@ private :
 	TilePosition _exitPosition{};
 
 	Timer _exitTimer;
+	bool32 _exitOnMiddleStage{ false };
 
 	float _jumpPower{530};
+
+
 };
 
 #endif

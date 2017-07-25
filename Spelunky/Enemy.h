@@ -32,6 +32,7 @@ protected :
 	D2DSprite *_currentSprite{};
 
 	ReturnTile _nearTiles;
+	EnemyType _enemyType;
 
 	int _hp{ 0 };
 

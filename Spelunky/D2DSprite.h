@@ -53,6 +53,7 @@ public:
 	virtual inline bool IsEnd() { return false; }
 
 	virtual IntVector2 GetCurrentAnchor() { return _anchor; }
+	void SetCurrentAnchor(const IntVector2 &v) { _anchor = v; }
 
 	virtual Animation *GetAnimation() { return nullptr; }
 

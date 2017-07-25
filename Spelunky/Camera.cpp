@@ -27,6 +27,7 @@ void Camera::Update(float deltaTime)
 		_position = _target->position;
 		_position.AddToTile(-10, -6);
 	}
+
 	if (_shaking)
 	{
 		if (_shakeTimer.Tick(deltaTime))
@@ -90,10 +91,13 @@ void Camera::Shake(float power, int shakeCount, float t)
 
 void Camera::ResetForMiddleStage()
 {
+	_following = false;
+	_position = TilePosition(13, 8);
 }
 
 void Camera::ResetForNormalStage()
 {
+	_following = true;
 }
 
 void Camera::KeepCameraInsideAnchorRect()

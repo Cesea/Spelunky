@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "SnakeWalkState.h"
+#include "StrongSnakeWalkState.h"
 
-#include "Snake.h"
+#include "StrongSnake.h"
 
-void SnakeWalkState::OnEnter(Snake * object)
+void StrongSnakeWalkState::OnEnter(StrongSnake * object)
 {
 	object->SetGraphics(L"walk");
 }
 
-State<Snake>* SnakeWalkState::Update(Snake * object, float deltaTime)
+State<StrongSnake>* StrongSnakeWalkState::Update(StrongSnake * object, float deltaTime)
 {
 	if (object->GetDirection() == Direction::Left)
 	{
@@ -21,7 +21,7 @@ State<Snake>* SnakeWalkState::Update(Snake * object, float deltaTime)
 		object->_accel.x = object->_speed.x;
 	}
 
-	State<Snake> *newState = nullptr;
+	State<StrongSnake> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
@@ -48,49 +48,39 @@ State<Snake>* SnakeWalkState::Update(Snake * object, float deltaTime)
 
 	if (object->GetDirection() == Direction::Left)
 	{
-		if ((lowerLeftColType != TILE_COLLISION_BLOCK && lowerRightColType != TILE_COLLISION_BLOCK) ||
-			(leftColType == TILE_COLLISION_BLOCK && rightColType == TILE_COLLISION_BLOCK))
-		{
-			object->_velocity.x = 0;
-		}
-		else if (((leftColType == TILE_COLLISION_BLOCK) && (object->position.tileRel.x > 24 && object->position.tileRel.x < 40)) ||
-			(lowerLeftColType != TILE_COLLISION_BLOCK) && (object->position.tileRel.x > 24 && object->position.tileRel.x < 40))
+		if ((lowerLeftColType != TILE_COLLISION_BLOCK) || 
+			((leftColType == TILE_COLLISION_BLOCK)  &&
+			object->desiredPosition.tileRel.x < 32.0f))
 		{
 			object->SetDirection(Direction::Right);
 			object->GetCurrentGraphics()->SyncFlip(Direction::Right);
-			object->_velocity.x = 20.0f;
+			object->_velocity.x = 40.0f;
 		}
 	}
 	else if(object->GetDirection() == Direction::Right)
 	{
-		if ((lowerLeftColType != TILE_COLLISION_BLOCK && lowerRightColType != TILE_COLLISION_BLOCK) ||
-			(leftColType == TILE_COLLISION_BLOCK && rightColType == TILE_COLLISION_BLOCK) )
-		{
-			object->_velocity.x = 0;
-		}
-		else if (((rightColType == TILE_COLLISION_BLOCK) && (object->position.tileRel.x > 24 && object->position.tileRel.x < 40))  ||
-			((lowerRightColType != TILE_COLLISION_BLOCK) && (object->position.tileRel.x > 24 && object->position.tileRel.x < 40)))
+		if ((lowerRightColType != TILE_COLLISION_BLOCK) ||
+			((rightColType == TILE_COLLISION_BLOCK) &&
+			(object->desiredPosition.tileRel.x > 32)))
 		{
 			object->SetDirection(Direction::Left);
 			object->GetCurrentGraphics()->SyncFlip(Direction::Left);
-			object->_velocity.x = -20.0f;
+			object->_velocity.x = -40.0f;
 		}
 	}
 	return newState;
 }
 
-
-
-State<Snake>* SnakeWalkState::HandleCommand(Snake * object, const ControlCommand & command)
+State<StrongSnake>* StrongSnakeWalkState::HandleCommand(StrongSnake * object, const ControlCommand & command)
 {
 	return nullptr;
 }
 
-State<Snake>* SnakeWalkState::HandleFrameEndEvent(Snake * actor)
+State<StrongSnake>* StrongSnakeWalkState::HandleFrameEndEvent(StrongSnake * actor)
 {
 	return nullptr;
 }
 
-void SnakeWalkState::OnExit(Snake * object)
+void StrongSnakeWalkState::OnExit(StrongSnake * object)
 {
 }

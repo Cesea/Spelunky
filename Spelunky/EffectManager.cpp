@@ -13,6 +13,18 @@ HRESULT EffectManager::Init()
 {
 	if (!_wasInitialized)
 	{
+		_tileParticles.Init();
+		_rockParticles.Init();
+		_jarParticles.Init();
+		_boneParticles.Init();
+		_backBoneParticles.Init();
+		_thornParticles.Init();
+		_woodParticles.Init();
+		_ladderParticles.Init();
+		_bloodParticles.Init();
+		_blingParticles.Init();
+
+		_dustStopTimer.Init(2.0f);
 		_wasInitialized = true;
 		for (int i = 0; i < 10; ++i)
 		{
@@ -20,8 +32,8 @@ HRESULT EffectManager::Init()
 			{
 				if (j == 0)
 				{
-					//_dustChunks[i].sprite[j].
-					//	SetDisappearEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::DustSpriteEnd>(this));
+					_dustChunks[i].sprite[j].
+						SetDisappearEndFunction(Delegate<void>::FromFunction<EffectManager, &EffectManager::DustSpriteEnd>(this));
 				}
 				_dustChunks[i].sprite[j].Init(L"dustring", 0, 0, 512, 512, IntVector2(-256, -256));
 			}
@@ -85,6 +97,29 @@ void EffectManager::Update(float deltaTime)
 		}
 	}
 
+	if (_dustTimerShouldGoOn && _dustTimerCount)
+	{
+		if (_dustStopTimer.Tick(deltaTime))
+		{
+			_dustTimerCount--;
+			if (_dustTimerCount <= 0)
+			{
+				_dustTimerShouldGoOn = false;
+			}
+			_dustUpdateChunks.pop_front();
+		}
+	}
+
+	_tileParticles.Update(deltaTime);
+	_rockParticles.Update(deltaTime);
+	_jarParticles.Update(deltaTime);
+	_boneParticles.Update(deltaTime);
+	_backBoneParticles.Update(deltaTime);
+	_thornParticles.Update(deltaTime);
+	_woodParticles.Update(deltaTime);
+	_ladderParticles.Update(deltaTime);
+	_bloodParticles.Update(deltaTime);
+	_blingParticles.Update(deltaTime);
 }
 
 void EffectManager::Render()
@@ -110,6 +145,17 @@ void EffectManager::Render()
 			_smokeChunk[index].sprite[i].RenderScale(gRenderTarget, camPosUntTiled);
 		}
 	}
+
+	_tileParticles.Render(camPosUntTiled);
+	_rockParticles.Render(camPosUntTiled);
+	_jarParticles.Render(camPosUntTiled);
+	_boneParticles.Render(camPosUntTiled);
+	_backBoneParticles.Render(camPosUntTiled);
+	_thornParticles.Render(camPosUntTiled);
+	_woodParticles.Render(camPosUntTiled);
+	_ladderParticles.Render(camPosUntTiled);
+	_bloodParticles.Render(camPosUntTiled);
+	_blingParticles.Render(camPosUntTiled);
 }
 
 void EffectManager::PlayDustParticles(const Vector2 & position)
@@ -245,6 +291,56 @@ void EffectManager::ClearUpdateChunks()
 	_dustUpdateChunks.clear();
 }
 
+void EffectManager::PlayTileParticle(const Vector2 & position, float scale)
+{
+	_tileParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayRockParticle(const Vector2 & position, float scale)
+{
+	_rockParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayJarParticle(const Vector2 & position, float scale)
+{
+	_jarParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayBoneParticle(const Vector2 & position, float scale)
+{
+	_boneParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayBackBoneParticle(const Vector2 & position, float scale)
+{
+	_backBoneParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayThornParticle(const Vector2 & position, float scale)
+{
+	_thornParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayWoodParticle(const Vector2 & position, float scale)
+{
+	_woodParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayLadderParticle(const Vector2 & position, float scale)
+{
+	_ladderParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayBloodParticle(const Vector2 & position, float scale)
+{
+	_bloodParticles.PlayParticle(position, scale);
+}
+
+void EffectManager::PlayBlingParticle(const Vector2 & position, float scale)
+{
+	_blingParticles.PlayParticle(position, scale);
+}
+
 Vector2 EffectManager::GetRandomVector2(float xMax, float yMax)
 {
 	return Vector2(RND->GetFloat(-xMax, xMax), RND->GetFloat(-yMax, yMax));
@@ -257,9 +353,822 @@ Vector2 EffectManager::GetRandomVector2(float xMin, float xMax, float yMin, floa
 
 void EffectManager::DustSpriteEnd()
 {
+	_dustTimerShouldGoOn = true;
+	_dustTimerCount++;
 }
 
 void EffectManager::ExplosionEffectEndFunction()
 {
 	_explosionShouldPop = true;
+}
+
+void TileParticleCollection::Init()
+{
+	for (int i = 0; i < TILE_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < TILE_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(0, 0), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void TileParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < TILE_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void TileParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < TILE_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void TileParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < TILE_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= TILE_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void RockParticleCollection::Init()
+{
+	for (int i = 0; i < ROCK_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < ROCK_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(1, 0), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void RockParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < ROCK_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void RockParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < ROCK_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void RockParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < ROCK_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= ROCK_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void JarParticleCollection::Init()
+{
+	for (int i = 0; i < JAR_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < JAR_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(2, 0), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void JarParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < ROCK_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void JarParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < JAR_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void JarParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < JAR_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= JAR_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void BoneParticleCollection::Init()
+{
+	for (int i = 0; i < BONE_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < BONE_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(4, 0), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void BoneParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BONE_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void BoneParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BONE_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void BoneParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < BONE_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= BONE_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void BackBoneParticleCollection::Init()
+{
+	for (int i = 0; i < BACKBONE_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < BACKBONE_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(3, 0), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void BackBoneParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BACKBONE_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void BackBoneParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BACKBONE_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void BackBoneParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < BACKBONE_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= BACKBONE_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void ThornParticleCollection::Init()
+{
+	for (int i = 0; i < THORN_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < THORN_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(5, 0), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void ThornParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < THORN_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void ThornParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < THORN_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void ThornParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < THORN_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= THORN_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void WoodParticleCollection::Init()
+{
+	for (int i = 0; i < WOOD_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < WOOD_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(6, 0), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void WoodParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < WOOD_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void WoodParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < WOOD_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void WoodParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < WOOD_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= WOOD_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void LadderParticleCollection::Init()
+{
+	for (int i = 0; i < WOOD_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < WOOD_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(2, 1), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void LadderParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < WOOD_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void LadderParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < WOOD_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void LadderParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < WOOD_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= WOOD_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void BloodParticleCollection::Init()
+{
+	for (int i = 0; i < BLOOD_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < BLOOD_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(0, 1), ParticleType::RigidParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void BloodParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BLOOD_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void BloodParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BLOOD_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void BloodParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < WOOD_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= WOOD_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
+}
+
+void BlingParticleCollection::Init()
+{
+	for (int i = 0; i < BLING_PARTICLE_MAX_NUM; ++i)
+	{
+		for (int j = 0; j < BLING_PARTICLE_SPRITE_NUM; ++j)
+		{
+			particles[i].particles[j].Init(IntVector2(0, 3), ParticleType::BlingParticle);
+		}
+	}
+	particleStopTimer.Init(2.0);
+}
+
+void BlingParticleCollection::Update(float deltaTime)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BLING_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Update(deltaTime);
+		}
+	}
+	if (timerShouldGoOn && timerCount)
+	{
+		if (particleStopTimer.Tick(deltaTime))
+		{
+			timerCount--;
+			if (timerCount <= 0)
+			{
+				timerShouldGoOn = false;
+			}
+			particleUpdateChunks.pop_front();
+		}
+	}
+}
+
+void BlingParticleCollection::Render(const Vector2 & camPos)
+{
+	for (auto &index : particleUpdateChunks)
+	{
+		for (int i = 0; i < BLING_PARTICLE_SPRITE_NUM; ++i)
+		{
+			particles[index].particles[i].Render(gRenderTarget, camPos);
+		}
+	}
+}
+
+void BlingParticleCollection::PlayParticle(const Vector2 & position, float scale)
+{
+	for (int i = 0; i < BLING_PARTICLE_SPRITE_NUM; ++i)
+	{
+		particles[currentParticleChunkTracker].particles[i].PlayAt(TilePosition(position));
+	}
+	if (particleUpdateChunks.size() == 0)
+	{
+		particleUpdateChunks.push_back(currentParticleChunkTracker);
+	}
+	else
+	{
+		for (auto &iter = particleUpdateChunks.begin(); iter != particleUpdateChunks.end();)
+		{
+			if (*iter != currentParticleChunkTracker)
+			{
+				particleUpdateChunks.push_back(currentParticleChunkTracker);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+	currentParticleChunkTracker++;
+	if (currentParticleChunkTracker >= BLING_PARTICLE_MAX_NUM)
+	{
+		currentParticleChunkTracker = 0;
+	}
+	timerShouldGoOn = true;
+	timerCount++;
 }

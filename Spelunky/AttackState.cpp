@@ -50,7 +50,7 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 		object->_weaponOffset = Vector2((object->GetDirection() == Direction::Right) ? 50 : -50, 23);
 		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
 	}
-	else if (object->_offsetCount == 9)
+	else if (object->_offsetCount == 9 || object->_offsetCount == 10)
 	{
 		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
 	}

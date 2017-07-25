@@ -37,13 +37,15 @@ HRESULT Spider::Init(BaseProperty * property)
 	position.tileX = property->position.x;
 	position.tileY = property->position.y;
 	position.AddToTileRelX(32);
-	position.AddToTileRelY(64);
+	position.AddToTileRelY(60);
 	desiredPosition = position;
 
 	_stateManager.Init(this, new SpiderOnTopState);
 
 	_speed = Vector2(300, 600);
 	_maxVelocity = Vector2(300, 500);
+
+	_enemyType = EnemyType::ENEMY_Spider;
 
 	return S_OK;
 }
@@ -154,6 +156,10 @@ void Spider::HandlePlayerPositionEvent(const IEvent * event)
 			Damaged(1, (relXDiff < 0) ? Direction::Right : Direction::Left);
 			EVENTMANAGER->QueueEvent(new PlayerUpperJumpEvent(_velocity));
 			return;
+		}
+		else
+		{
+			EVENTMANAGER->QueueEvent(new PlayerDamagedEvent(_id, 1, Vector2(relXDiff, relYDiff)));
 		}
 	}
 }

@@ -205,6 +205,12 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Spider\States">
       <UniqueIdentifier>{68ea4df6-f095-43a1-9326-6e03b8d05225}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\StronSnake\States">
+      <UniqueIdentifier>{f9983904-385a-47ed-8ba3-40535c4d0251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Faint">
+      <UniqueIdentifier>{e78646e8-e823-49ff-ab65-118d992a645d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -510,6 +516,30 @@
     <ClInclude Include="SpiderJumpState.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider\States</Filter>
     </ClInclude>
+    <ClInclude Include="StrongSnake.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake</Filter>
+    </ClInclude>
+    <ClInclude Include="StrongSnakeWalkState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake\States</Filter>
+    </ClInclude>
+    <ClInclude Include="StrongSnakeAttackState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake\States</Filter>
+    </ClInclude>
+    <ClInclude Include="StrongSnakeSpitState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="EventCollector.h">
+      <Filter>Game\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="FaintState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Faint</Filter>
+    </ClInclude>
+    <ClInclude Include="TextSpriteObject.h">
+      <Filter>Game\Scene\MenuScene\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -775,6 +805,27 @@
     </ClCompile>
     <ClCompile Include="Spider.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Enemy\Spider</Filter>
+    </ClCompile>
+    <ClCompile Include="StrongSnake.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake</Filter>
+    </ClCompile>
+    <ClCompile Include="StrongSnakeAttackState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake\States</Filter>
+    </ClCompile>
+    <ClCompile Include="StrongSnakeSpitState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake\States</Filter>
+    </ClCompile>
+    <ClCompile Include="StrongSnakeWalkState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Enemy\StronSnake\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="EventCollector.cpp">
+      <Filter>Game\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="FaintState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Faint</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

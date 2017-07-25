@@ -3,19 +3,29 @@
 
 #include "IdleState.h"
 #include "JumpState.h"
+#include "FaintState.h"
 
 Player::Player(ObjectId id)
 	:MovingObject::MovingObject(id)
 {
 	_seeingDirection = Direction::Left;
 
-	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_GO_EXIT, EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_UPPER_JUMP, EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_INPUT, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_FRAME_ENDED, 
+		EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_MONEY, 
+		EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_HOLDING, 
+		EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_ON_TUNNEL, 
+		EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_GO_EXIT, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_UPPER_JUMP, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_DAMAGED, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerDamagedEvent>(this));
 
 	_rect = RectMake(0, 0, 38, 44);
 	_rectOffset = Vector2(-19, -44);
@@ -26,13 +36,22 @@ Player::Player(ObjectId id)
 
 Player::~Player()
 {
-	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_INPUT, EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
-	EVENTMANAGER->UnRegisterDelegate(EVENT_FRAME_ENDED, EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
-	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
-	EVENTMANAGER->UnRegisterDelegate(EVENT_HOLDING, EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
-	EVENTMANAGER->UnRegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
-	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_GO_EXIT, EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
-	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_UPPER_JUMP, EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_INPUT, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerInputEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_FRAME_ENDED, 
+		EventDelegate::FromFunction<Player, &Player::HandleFrameEndEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_MONEY, 
+		EventDelegate::FromFunction<Player, &Player::HandleCollectedMoneyEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_HOLDING, 
+		EventDelegate::FromFunction<Player, &Player::HandleHoldingEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_ON_TUNNEL, 
+		EventDelegate::FromFunction<Player, &Player::HandleOnTunnelEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_GO_EXIT, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerGoExitEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_UPPER_JUMP, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_DAMAGED, 
+		EventDelegate::FromFunction<Player, &Player::HandlePlayerDamagedEvent>(this));
 }
 
 HRESULT Player::Init(BaseProperty *property)
@@ -58,6 +77,7 @@ HRESULT Player::Init(BaseProperty *property)
 	BuildAnimationSprite(L"throw", IntVector2(-40, -72));
 
 	BuildAnimationSprite(L"exit", IntVector2(-40, -72));
+	BuildAnimationSprite(L"faint", IntVector2(-40, -72));
 
 	BuildWeaponAnimationSprite(L"whip", IntVector2(-40, -90));
 	BuildWeaponAnimationSprite(L"mattock", IntVector2(-40, -90));
@@ -68,6 +88,7 @@ HRESULT Player::Init(BaseProperty *property)
 	_stateManager.Init(this, new IdleState);
 
 	_exitTimer.Init(1.3f);
+	_vulnerableTimer.Init(1.0f);
 
 	return S_OK;
 }
@@ -101,6 +122,14 @@ void Player::Update(float deltaTime)
 
 		_onTunnel = false;
 
+		if (!_vulnerable && !_isFaint)
+		{
+			if (_vulnerableTimer.Tick(deltaTime))
+			{
+				_vulnerable = true;
+			}
+		}
+
 		if (!_interpolating)
 		{
 			CollisionCheck();
@@ -108,7 +137,6 @@ void Player::Update(float deltaTime)
 
 		//Console::Log("fallig : %d\n", _isFalling);
 		EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset, _isFalling));
-
 	}
 	else
 	{
@@ -130,14 +158,29 @@ void Player::Update(float deltaTime)
 		}
 		else
 		{
-			if (_exitTimer.Tick(deltaTime))
+			if (_exitOnMiddleStage)
 			{
-				Reset();
-				EVENTMANAGER->DiscardAllEvents();
-				EVENTMANAGER->FireEvent(new StageTransitionEvent());
-				return;
+				if (KEYMANAGER->IsOnceKeyDown('Q'))
+				{
+					Reset();
+					EVENTMANAGER->DiscardAllEvents();
+					EVENTMANAGER->FireEvent(new StageTransitionEvent());
+					EVENTMANAGER->QueueEvent(new ExitMiddleStageEvent());
+					return;
+				}
+				_currentSprite->Update(deltaTime);
 			}
-			_currentSprite->Update(deltaTime);
+			else
+			{
+				if (_exitTimer.Tick(deltaTime))
+				{
+					Reset();
+					EVENTMANAGER->DiscardAllEvents();
+					EVENTMANAGER->FireEvent(new StageTransitionEvent());
+					return;
+				}
+				_currentSprite->Update(deltaTime);
+			}
 		}
 	}
 }
@@ -146,11 +189,24 @@ void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos
 {
 	Vector2 drawingPos = position.UnTilelize() -camPos;
 
+
 	if (_currentWeaponSprite)
 	{
 		_currentWeaponSprite->Render(renderTarget, drawingPos.x + _weaponOffset.x, drawingPos.y + _weaponOffset.y);
 	}
-	_currentSprite->Render(renderTarget, drawingPos.x, drawingPos.y);
+
+	if (!_vulnerable)
+	{
+		static int vulnerRender = 0;
+		if (((vulnerRender++) % 6) == 0)
+		{
+			_currentSprite->Render(renderTarget, drawingPos.x, drawingPos.y);
+		}
+	}
+	else
+	{
+		_currentSprite->Render(renderTarget, drawingPos.x, drawingPos.y);
+	}
 }
 
 void Player::Serialize(FileUtils::File & file)
@@ -234,6 +290,8 @@ void Player::HandlePlayerGoExitEvent(const IEvent * event)
 		_exitTimer.ResetAndChangeTargetSecond(1.3f);
 	}
 
+	_exitOnMiddleStage = convertedEvent->GetIsMiddle();
+
 	_canControl = false;
 	_exitStartPosition = position;
 	_moveToExitInterpolating = true;
@@ -257,6 +315,28 @@ void Player::HandlePlayerUpperJumpEvent(const IEvent * event)
 	_jumpPower -= 100;
 	_stateManager.ChangeState(new JumpState);
 	_jumpPower += 100;
+}
+
+void Player::HandlePlayerDamagedEvent(const IEvent * event)
+{
+	PlayerDamagedEvent *convertedEvent = (PlayerDamagedEvent *)(event);
+	if (_vulnerable)
+	{
+		_hp -= convertedEvent->GetDamage();
+		if (_hp<= 0)
+		{
+			//여기서 죽는거 처리하자
+			//EVENTMANAGER->QueueEvent(new PlayerDeadEvent());
+		}
+
+		_vulnerable = false;
+		Vector2 enemyPosDiff = convertedEvent->GetPosDiff();
+		enemyPosDiff.Normalize();
+		enemyPosDiff *= 500;
+		enemyPosDiff.y -= 300;
+		_velocity = enemyPosDiff;
+		_stateManager.ChangeState(new FaintState());
+	}
 }
 
 void Player::HandleMessage(const IEvent * event)
@@ -352,7 +432,15 @@ void Player::CollisionCheck()
 					if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
 					{
 						desiredPosition.AddToTileRel(0, -overlapRect.height);
-						_velocity.y = 0.0f;
+						if (_collisionRepulse)
+						{
+							_velocity.y *= -0.3f;
+							_velocity.x *= 0.6;
+						}
+						else
+						{
+							_velocity.y = 0.0f;
+						}
 						_onGround = true;
 						_isFalling = false;
 					}
@@ -360,8 +448,18 @@ void Player::CollisionCheck()
 						(_velocity.y >= 0.0f) && (desiredPosition.tileRel.y < 10) &&
 						(!_stateClimbing))
 					{
+
 						desiredPosition.AddToTileRel(0, -overlapRect.height);
-						_velocity.y = 0.0f;
+
+						if (_collisionRepulse)
+						{
+							_velocity.y *= -0.3f;
+							_velocity.x *= 0.6;
+						}
+						else
+						{
+							_velocity.y = 0.0f;
+						}
 						_canClimb = true;
 						_onGround = true;
 						_isFalling = false;
@@ -378,21 +476,31 @@ void Player::CollisionCheck()
 						if (i == 1)
 						{
 							desiredPosition.AddToTileRel(0, overlapRect.height);
-							_velocity.y = 0.0f;
+							if (_collisionRepulse)
+							{
+								_velocity.y = 0.0f;
+								_velocity.x *= 0.6;
+							}
+							else
+							{
+								_velocity.y = 0.0f;
+							}
 							_headHit = true;
 						}
 						//왼 타일
 						else if (i == 2)
 						{
 							desiredPosition.AddToTileRel(overlapRect.width, 0);
-							_velocity.x = 0.0f;
+							if (_collisionRepulse) { _velocity.x *= -0.6f; }
+							else { _velocity.x = 0.0f; }
 							_onWall = true;
 						}
 						//오른 타일
 						else if (i == 3)
 						{
 							desiredPosition.AddToTileRel(-overlapRect.width, 0);
-							_velocity.x = 0.0f;
+							if (_collisionRepulse) { _velocity.x *= -0.6f; }
+							else { _velocity.x = 0.0f; }
 							_onWall = true;
 						}
 						//대각선
@@ -502,7 +610,6 @@ void Player::CheckCurrentTile()
 			_onLedge = true;
 		}
 	}
-
 	if ((!_onGround) &&
 		(leftColType == TILE_COLLISION_BLOCK) &&
 		(upperLeftColType == TILE_COLLISION_NONE) &&
@@ -526,4 +633,8 @@ void Player::CheckCurrentTile()
 void Player::Reset()
 {
 	_canControl = true;
+}
+
+void Player::Damaged()
+{
 }

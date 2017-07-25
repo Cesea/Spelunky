@@ -21,8 +21,14 @@ public :
 
 	void SetDrawExitText(bool b) { _drawExitText = b; }
 private :
-
 	void HandleOnTunnelEvent(const IEvent *event);
+	void HandleOnMiddleStageEvent(const IEvent *event);
+	void HandleExitMiddleStageEvent(const IEvent *event);
+
+	void RenderMiddleStageStatus(float deltaTime);
+
+	void SetShowIndexCorrespondingToGemType(GemType type);
+	void SetShowIndexCorrespondingToEnemyType(EnemyType type);
 
 private :
 
@@ -36,13 +42,32 @@ private :
 
 	Player *_pPlayer{};
 
-	IDWriteTextFormat *_smallBlackText{};
-	IDWriteTextFormat *_bigBlackText{};
 	IDWriteTextFormat *_whiteText{};
+	IDWriteTextFormat *_smallWhiteText{};
 	IDWriteTextFormat *_pinkText{};
 
 	bool _drawExitText{false};
 	TilePosition _exitPosition{};
+
+	bool _drawMiddleStageUI{ false };
+	SpriteObject _board;
+	SpriteObject _tunnelTitle;
+	SpriteObject _scroll;
+	SpriteObject _paper;
+
+	D2DSprite *_uiElements{};
+	D2DSprite *_objectElements{};
+
+	std::wstring _timeText{};
+	std::wstring _moneyText{};
+
+	bool32 _finishedShowGold{ false };
+	Timer _showTimer;
+	bool32 _finishedShowEnemy{ false };
+
+	IntVector2 _objectShowingIndex{ -1, -1 };
+	int _gemShowValue{ 0 };
+	bool32 _endShowing{ false };
 
 };
 

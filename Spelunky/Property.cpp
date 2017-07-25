@@ -207,7 +207,35 @@
 void GemProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 {
 	sourceIndex = propertyInfo.sourceIndex;
-	value = _wtoi( propertyInfo.value0);
+	value = _wtoi(propertyInfo.value0);
+	if (value == 800)
+	{
+		type = GemType::GEM_Emerald;
+	}
+	else if (value == 1200)
+	{
+		type = GemType::GEM_Saphire;
+	}
+	else if (value == 1600)
+	{
+		type = GemType::GEM_Ruby;
+	}
+	else if (value == 2000)
+	{
+		type = GemType::GEM_Diamond;
+	}
+	else if (value == 500)
+	{
+		type = GemType::GEM_Ingot;
+	}
+	else if (value == 1500)
+	{
+		type = GemType::GEM_ThreeIngot;
+	}
+	else if (value == 100)
+	{
+		type = GemType::GEM_Nugget;
+	}
 }
 
 void TunnelProperty::Init(const MapTool::PropertyInfo & propertyInfo)

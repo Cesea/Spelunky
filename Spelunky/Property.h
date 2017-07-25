@@ -31,6 +31,17 @@ enum EnemyType
 	ENEMY_StrongSnake,
 };
 
+enum GemType
+{
+	GEM_Emerald,
+	GEM_Saphire,
+	GEM_Ruby,
+	GEM_Diamond,
+	GEM_Ingot,
+	GEM_ThreeIngot,
+	GEM_Nugget
+};
+
 //다 막힌 방
 //복도 방,
 //위만 뚤린 방
@@ -88,6 +99,7 @@ struct GemProperty : public BaseProperty
 {
 	IntVector2 sourceIndex{-1, -1};
 	int value;
+	GemType type;
 	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 

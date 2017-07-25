@@ -23,7 +23,7 @@ void Enemy::Damaged(int damage, Direction hitDirection)
 	_hp -= 1;
 	if (_hp <= 0)
 	{
-		EVENTMANAGER->QueueEvent(new EnemyDeadEvent(_id));
+		EVENTMANAGER->QueueEvent(new EnemyDeadEvent(_id, _enemyType));
 	}
 	else
 	{
@@ -102,7 +102,7 @@ void Enemy::HandlePlayerAttackEvent(const IEvent * event)
 	if (seeingDirection == Direction::Left)
 	{
 		if (positionUntiled.x <= playerPositionUntiled.x + 15 &&
-			positionUntiled.x >= playerPositionUntiled.x - 75 &&
+			positionUntiled.x >= playerPositionUntiled.x - 83 &&
 			position.tileY == playerTilePosition.tileY)
 		{
 			hitted = true;
@@ -111,7 +111,7 @@ void Enemy::HandlePlayerAttackEvent(const IEvent * event)
 	else if (seeingDirection == Direction::Right)
 	{
 		if (positionUntiled.x >= playerPositionUntiled.x - 15 &&
-			positionUntiled.x <= playerPositionUntiled.x + 75 &&
+			positionUntiled.x <= playerPositionUntiled.x + 83 &&
 			position.tileY == playerTilePosition.tileY)
 		{
 

@@ -10,6 +10,8 @@ Gem::Gem(ObjectId id)
 
 Gem::~Gem()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Item, &Gem::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Gem, &Gem::HandlePlayerAttackEvent>(this));
 }
 
 HRESULT Gem::Init(BaseProperty *property)
@@ -80,7 +82,7 @@ GameObject * Gem::Copy(ObjectId id)
 
 void Gem::Apply(ObjectId id)
 {
-	EVENTMANAGER->QueueEvent(new CollectMoneyEvent(_id, _onActorId, _value));
+	EVENTMANAGER->QueueEvent(new CollectMoneyEvent(_id, _onActorId, _value, _gemType));
 	_valid = false;
 }
 
@@ -153,6 +155,7 @@ Gem & Gem::operator=(const GemProperty * other)
 	position.tileY = other->position.y;
 	_sourceIndex = other->sourceIndex;
 	_value = other->value;
+	_gemType = other->type;
 	return *this;
 }
 

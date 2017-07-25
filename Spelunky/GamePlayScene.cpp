@@ -33,6 +33,16 @@ HRESULT GamePlayScene::LoadContent()
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\monsters.png", L"monsters");
 
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\particles.png", L"particles");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\board.png", L"board");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\tunneltitle.png", L"tunneltitle");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\scrollroll.png", L"scrollroll");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\scrollpaper.png", L"scrollpaper");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\uiElement.png", L"uiElement");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\objectSprite.png", L"objectSprite");
+
 #pragma region Animation For Player
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
@@ -87,7 +97,7 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_faint", L"char_orange", 80, 80, faintArray, 4, 10, false);
 
 	int attackArray[] = {48, 49, 50, 51, 52, 53};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_attack", L"char_orange", 80, 80, attackArray, 6, 12, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_attack", L"char_orange", 80, 80, attackArray, 6, 16, false);
 
 	int throwArray[] = {54, 55, 56, 57, 58};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_throw", L"char_orange", 80, 80, throwArray, 5, 10, false);
@@ -100,13 +110,13 @@ HRESULT GamePlayScene::LoadContent()
 
 #pragma region Animation Weapons
 	int whipArray[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_whip", L"weaponanimation", 80, 80, whipArray, 11, 20, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_whip", L"weaponanimation", 80, 80, whipArray, 11, 24, false);
 
 	int mattockArray[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
-	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_mattock", L"weaponanimation", 80, 80, mattockArray, 11, 20, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_mattock", L"weaponanimation", 80, 80, mattockArray, 11, 24, false);
 
 	int macheteArray[] = {22, 23, 24, 25, 26 , 27, 28, 29, 30, 31, 32};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_machete", L"weaponanimation", 80, 80, macheteArray, 11, 20, false);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"weapon_machete", L"weaponanimation", 80, 80, macheteArray, 11, 24, false);
 #pragma endregion
 
 #pragma region Animation Bomb
@@ -156,6 +166,7 @@ HRESULT GamePlayScene::LoadContent()
 
 
 
+
 #pragma endregion
 
 	return S_OK;
@@ -173,6 +184,9 @@ HRESULT GamePlayScene::Init(void)
 
 	PlayerProperty playerProperty{};
 	_pPlayer = (Player *)OBJECTMANAGER->CreateObject(L"player", &playerProperty);
+
+	_dWrite.CreateTextFormat(&_smallText, L"Dunkin", 25);
+	_dWrite.CreateTextFormat(&_bigText, L"Dunkin", 25);
 
 	_camera.Init();
 	_camera.SetTarget(_pPlayer);
@@ -256,6 +270,9 @@ void GamePlayScene::Render(void)
 	EFFECTMANAGER->Render();
 
 	UIMANAGER->Render(unTiledCamPos);
+
+	//_dWrite.PrintTextFromFormat(gRenderTarget, 100, 140, 100, 50, L"Hello", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _bigText);
+	//_dWrite.PrintTextFromFormat(gRenderTarget, 100, 140, 100, 50, L"Hello", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _smallText);
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

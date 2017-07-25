@@ -191,3 +191,29 @@ inline int GetIndexFromXY(int x, int y, int xCount)
 	return result;
 }
 
+inline float ToRadians(float degrees)
+{
+	float result = 0;
+	result = degrees * (M_PI / 180.0f);
+	return result;
+}
+
+inline float ToDegrees(float radians)
+{
+	float result = 0;
+	result = radians * (180 / M_PI);
+
+	return result;
+}
+
+inline float GetAngle(float startX, float startY, float endX, float endY)
+{
+	float x = endX - startX;
+	float y = endY - startY;
+
+	float d = sqrt(x * x + y * y);
+
+	float angle = acos(x / d);
+	if (y > 0) angle = M_PI2 - angle;
+	return angle;
+}

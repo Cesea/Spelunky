@@ -4,6 +4,7 @@
 #include "Snake.h"
 #include "Bat.h"
 #include "Spider.h"
+#include "StrongSnake.h"
 
 EnemyFactory::EnemyFactory()
 {
@@ -40,6 +41,7 @@ void EnemyFactory::RegisterBuilders()
 	RegisterBuilder(EnemyType::ENEMY_Snake, new TEnemyBuilder<Snake>());
 	RegisterBuilder(EnemyType::ENEMY_Bat, new TEnemyBuilder<Bat>());
 	RegisterBuilder(EnemyType::ENEMY_Spider, new TEnemyBuilder<Spider>());
+	RegisterBuilder(EnemyType::ENEMY_StrongSnake, new TEnemyBuilder<StrongSnake>());
 }
 
 void EnemyFactory::UnRegisterBuilders()
@@ -47,6 +49,7 @@ void EnemyFactory::UnRegisterBuilders()
 	UnRegisterBuilder(EnemyType::ENEMY_Snake);
 	UnRegisterBuilder(EnemyType::ENEMY_Bat);
 	UnRegisterBuilder(EnemyType::ENEMY_Spider);
+	UnRegisterBuilder(EnemyType::ENEMY_StrongSnake);
 }
 
 void EnemyFactory::RegisterBuilder(EnemyType type, EnemyBuilder *builder)

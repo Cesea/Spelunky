@@ -76,6 +76,8 @@ public:
 
 	const TilePosition &GetCurrentExitPosition() { return _tunnels[1]->position; }
 
+	const int GetMoneyCollected() { return _moneyCollected; }
+
 private:
 	void RegisterDelegates();
 	void UnRegisterDelegates();
@@ -122,6 +124,8 @@ private:
 	D2DSprite *_backgroundSprite{};
 
 	RandomRoomGenerated _stageBuildInfo{};
+
+	int _moneyCollected{0};
 };
 
 #endif
