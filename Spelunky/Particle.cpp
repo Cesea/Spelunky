@@ -108,12 +108,12 @@ void Particle::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camP
 		D2D1::Matrix3x2F::Rotation(_degrees, D2D1::Point2F(_firstRect.width / 2, _firstRect.height / 2)) * 
 			D2D1::Matrix3x2F::Scale(_scale, _scale, D2D1::Point2F(_firstRect.width / 2, _firstRect.height / 2)) );
 
-		const Vector2 itemUntiledPosition = position.UnTilelize();
-		Rect itemAbsRect =
-			RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _rect.width, _rect.height);
-		itemAbsRect += _rectOffset;
+		//const Vector2 itemUntiledPosition = position.UnTilelize();
+		//Rect itemAbsRect =
+		//	RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _rect.width, _rect.height);
+		//itemAbsRect += _rectOffset;
 
-		DrawBox(gRenderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 1.0f, 0.0f));
+		//DrawBox(gRenderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 1.0f, 0.0f));
 	}
 }
 

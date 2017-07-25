@@ -460,6 +460,7 @@ public :
 	EventType GetType() const override { return _type; }
 
 	const Vector2 &GetOtherVelocity() { return _otherVelocity; }
+	ObjectId GetAttackerId() { return _id; }
 	int GetDamage() { return _damage; }
 	const TilePosition &GetTilePosition() { return _position; }
 	const Rect &GetRect() { return _rect; }

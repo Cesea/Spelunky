@@ -71,7 +71,7 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 	if (command.vertical == Command::MoveDown)
 	{
 		//LadderClimbState로의 이전 처리
-		if (object->_canClimb && !object->_onGround)
+		if (object->_canClimb && ! object->_endOfLadder)
 		{
 			newState = new LadderClimbState;
 			return newState;

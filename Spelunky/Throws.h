@@ -21,6 +21,7 @@ public:
 	virtual void Apply(ObjectId id);
 
 	virtual void HandlePlayerAttackEvent(const IEvent *event);
+	void HandleDamageEvent(const IEvent *event);
 
 	inline BreakType GetBreakType() { return _breakType; }
 

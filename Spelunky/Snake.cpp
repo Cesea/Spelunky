@@ -13,6 +13,7 @@ Snake::Snake(ObjectId id)
 
 Snake::~Snake()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Snake::HandleDamageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Enemy::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Snake, &Snake::HandlePlayerPositionEvent>(this));
 	_graphics.Release();
@@ -22,6 +23,7 @@ Snake::~Snake()
 HRESULT Snake::Init(BaseProperty * property)
 {
 	_hp = 1;
+	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Snake::HandleDamageEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Snake::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Snake, &Snake::HandlePlayerPositionEvent>(this));
 	_collisionComp = new CollisionComponent;
@@ -71,6 +73,13 @@ void Snake::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
 	Vector2 drawingPos = position.UnTilelize() -camPos;
 	_currentSprite->Render(renderTarget, drawingPos.x, drawingPos.y);
+
+	//const Vector2 itemUntiledPosition = position.UnTilelize();
+	//Rect itemAbsRect =
+	//	RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	//itemAbsRect += _collisionComp->GetOffset();
+
+	//DrawBox(gRenderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 1.0f, 0.0f));
 }
 
 GameObject * Snake::Copy(ObjectId id)

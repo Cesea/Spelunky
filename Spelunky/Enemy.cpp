@@ -123,3 +123,33 @@ void Enemy::HandlePlayerAttackEvent(const IEvent * event)
 		Damaged(1, (xDiff < 0) ? Direction::Right : Direction::Left);
 	}
 }
+
+void Enemy::HandleDamageEvent(const IEvent * event)
+{
+	DamageEvent *convertedEvent = (DamageEvent *)(event);
+	if (_id == convertedEvent->GetAttackerId())
+	{
+		return;
+	}
+
+	const TilePosition &attackerPosition = convertedEvent->GetTilePosition();
+	int tileXDiff = attackerPosition.tileX - position.tileX;
+	int tileYDiff = attackerPosition.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 2 || abs(tileYDiff) > 2)
+	{
+		return;
+	}
+
+	const Rect &attackerRect = convertedEvent->GetRect();
+	const Vector2 &attackerRectOffset = convertedEvent->GetRectOffset();
+
+	Rect attackerAbsRect = attackerRect + attackerRectOffset + attackerPosition.UnTilelize();
+	Rect thisAbsRect = _collisionComp->GetRect() + _collisionComp->GetOffset() + position.UnTilelize();
+
+	Rect overlapRect;
+	if (IsRectangleOverlap(attackerAbsRect, thisAbsRect, overlapRect))
+	{
+		Damaged(1, (tileXDiff >= 0) ? Direction::Right : Direction::Left);
+	}
+}

@@ -15,6 +15,7 @@ Throws::~Throws()
 HRESULT Throws::Init(BaseProperty *property)
 {
 	EquipItem::Init(property);
+	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Throws, &Throws::HandleDamageEvent>(this));
 	_sprite = new D2DFrameSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"throws"), 80, 80, IntVector2(-40, -40));
 
@@ -37,6 +38,7 @@ HRESULT Throws::Init(BaseProperty *property)
 void Throws::Release(void)
 {
 	EquipItem::Release();
+	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Throws, &Throws::HandleDamageEvent>(this));
 	SAFE_RELEASE_AND_DELETE(_sprite);
 }
 
@@ -63,6 +65,12 @@ void Throws::Update(float deltaTime)
 		bool collisionResult = _collisionComp->Update(this, deltaTime, &_nearTiles);
 		if (_throwed)
 		{
+			float velLength = _velocity.Distance();
+			if (velLength > 300.0f)
+			{
+				EVENTMANAGER->QueueEvent(new DamageEvent(_id, 1, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+			}
+
 			if (_breakable && collisionResult)
 			{
 				if (_sourceIndex.x == 1)
@@ -73,6 +81,12 @@ void Throws::Update(float deltaTime)
 				{
 					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bone));
 				}
+			}
+
+			if (_velocity.DistanceSquare() < 36.0f)
+			{
+				_throwed = false;
+				_velocity = Vector2();
 			}
 		}
 	}
@@ -187,7 +201,12 @@ void Throws::HandlePlayerAttackEvent(const IEvent * event)
 				{
 					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Jar));
 				}
-				else if (_sourceIndex.x == 2 || _sourceIndex.x == 3)
+				else if (_sourceIndex.x == 2)
+				{
+					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_BackBone));
+				}
+
+				else if (_sourceIndex.x == 3)
 				{
 					EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bone));
 				}
@@ -206,6 +225,48 @@ void Throws::HandlePlayerAttackEvent(const IEvent * event)
 			}
 		}
 	}
+}
+
+void Throws::HandleDamageEvent(const IEvent * event)
+{
+	DamageEvent *convertedEvent = (DamageEvent *)(event);
+	if (_id == convertedEvent->GetAttackerId())
+	{
+		return;
+	}
+
+	const TilePosition &attackerPosition = convertedEvent->GetTilePosition();
+	int tileXDiff = attackerPosition.tileX - position.tileX;
+	int tileYDiff = attackerPosition.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 2 || abs(tileYDiff) > 2)
+	{
+		return;
+	}
+
+	const Rect &attackerRect = convertedEvent->GetRect();
+	const Vector2 &attackerRectOffset = convertedEvent->GetRectOffset();
+
+	Rect attackerAbsRect = attackerRect + attackerRectOffset + attackerPosition.UnTilelize();
+	Rect thisAbsRect = _collisionComp->GetRect() + _collisionComp->GetOffset() + position.UnTilelize();
+
+	Rect overlapRect;
+	if (IsRectangleOverlap(attackerAbsRect, thisAbsRect, overlapRect))
+	{
+		if (_sourceIndex.x == 1)
+		{
+			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Jar));
+		}
+		else if (_sourceIndex.x == 2)
+		{
+			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_BackBone));
+		}
+		else if (_sourceIndex.x == 3)
+		{
+			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bone));
+		}
+	}
+
 }
 
 void Throws::operator=(const ThrowProperty * property)

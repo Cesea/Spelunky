@@ -13,6 +13,7 @@ Bat::Bat(ObjectId id)
 
 Bat::~Bat()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Bat::HandleDamageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Bat::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Bat, &Bat::HandlePlayerPositionEvent>(this));
 	_graphics.Release();
@@ -21,10 +22,11 @@ Bat::~Bat()
 HRESULT Bat::Init(BaseProperty * property)
 {
 	_hp = 1;
+	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Bat::HandleDamageEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Bat::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Bat, &Bat::HandlePlayerPositionEvent>(this));
 	_collisionComp = new CollisionComponent;
-	_collisionComp->Init(RectMake(0, 0, 38, 44), Vector2(-19, -44));
+	_collisionComp->Init(RectMake(0, 0, 38, 38), Vector2(-19, -44));
 
 	BuildAnimationSprite(L"on_top", IntVector2(-40, -72));
 	BuildAnimationSprite(L"fly", IntVector2(-40, -72));
@@ -70,6 +72,14 @@ void Bat::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
 	Vector2 drawingPos = position.UnTilelize() -camPos;
 	_currentSprite->Render(renderTarget, drawingPos.x, drawingPos.y);
+
+
+	//const Vector2 itemUntiledPosition = position.UnTilelize();
+	//Rect itemAbsRect =
+	//	RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	//itemAbsRect += _collisionComp->GetOffset();
+
+	//DrawBox(gRenderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 1.0f, 0.0f));
 }
 
 GameObject * Bat::Copy(ObjectId id)

@@ -116,6 +116,7 @@ private :
 
 	bool _stickyBomb{ false };
 
+	bool32 _endOfLadder{ false };
 	bool32 _isFalling{ false };
 	bool32 _collisionRepulse{ false };
 	bool32 _isFaint{ false };

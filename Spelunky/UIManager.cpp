@@ -23,7 +23,6 @@ HRESULT UIManager::Init()
 	_whiteText->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);	
 	_whiteText->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
-
 	_pinkText->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 	_pinkText->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
@@ -240,7 +239,7 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 
 			if (!_finishedShowGold)
 			{
-				_dWrite.PrintTextFromFormat(gRenderTarget, 1008, 150, 140, 100, L"Gold", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+				_dWrite.PrintTextFromFormat(gRenderTarget, 1020, 150, 140, 100, L"Gold", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
 				_dWrite.PrintTextFromFormat(gRenderTarget, 955, 182, 225, 52, std::to_wstring(_gemShowValue).c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _smallWhiteText);
 			}
 			else

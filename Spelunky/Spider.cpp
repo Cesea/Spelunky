@@ -14,6 +14,7 @@ Spider::Spider(ObjectId id)
 
 Spider::~Spider()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Spider::HandleDamageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Spider::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Spider, &Spider::HandlePlayerPositionEvent>(this));
 	_graphics.Release();
@@ -22,6 +23,7 @@ Spider::~Spider()
 HRESULT Spider::Init(BaseProperty * property)
 {
 	_hp = 1;
+	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Spider::HandleDamageEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Spider::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Spider, &Spider::HandlePlayerPositionEvent>(this));
 	_collisionComp = new CollisionComponent;

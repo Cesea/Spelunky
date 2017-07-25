@@ -119,6 +119,7 @@ void Player::Update(float deltaTime)
 		_canClimb = false;
 		_canClimbUp = false;
 		_upperDeath = false;
+		_endOfLadder = false;
 
 		_onTunnel = false;
 
@@ -573,6 +574,11 @@ void Player::CheckCurrentTile()
 		_nearTiles.tiles[5]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
 	TileCollisionType upperRightColType = (_nearTiles.tiles[7]) ? 
 		_nearTiles.tiles[7]->collisionType : TileCollisionType::TILE_COLLISION_NONE;
+
+	if (centerColType == TILE_COLLISION_LADDER && lowerColType == TILE_COLLISION_BLOCK)
+	{
+		_endOfLadder = true;
+	}
 
 	if (centerColType == TILE_COLLISION_UPPER_DEAD && position.tileRel.y < 40)
 	{

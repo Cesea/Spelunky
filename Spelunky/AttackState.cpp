@@ -55,6 +55,11 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
 	}
 
+	if (!object->_canClimb)
+	{
+		object->_stateClimbing = false;
+	}
+
 	if (object->_stateClimbing)
 	{
 		object->_accel.y -= GRAVITY;

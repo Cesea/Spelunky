@@ -18,6 +18,7 @@ public :
 
 	void HandlePlayerPositionEvent(const IEvent *event);
 	void HandlePlayerAttackEvent(const IEvent *event);
+	void HandleDamageEvent(const IEvent *event);
 
 	D2DSprite *GetCurrentGraphics() { return _currentSprite; }
 	void SetGraphics(const std::wstring &key);
