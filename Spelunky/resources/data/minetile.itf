@@ -181,7 +181,7 @@ Mask Info : 0
 Layer : 1
 Applied : 1
 At X : 4, Y : 2
-Boomb Destroy : 0
+Boomb Destroy : 1
 Destroyed Index X : 4, Y : 2
 This Mask Info : 0
 Near Mask Info : 15
@@ -190,7 +190,7 @@ Mask Info : 0
 Layer : 3
 Applied : 1
 At X : 5, Y : 2
-Boomb Destroy : 0
+Boomb Destroy : 1
 Destroyed Index X : 5, Y : 2
 This Mask Info : 0
 Near Mask Info : 0
@@ -199,7 +199,7 @@ Mask Info : 0
 Layer : 3
 Applied : 1
 At X : 6, Y : 2
-Boomb Destroy : 0
+Boomb Destroy : 1
 Destroyed Index X : 6, Y : 2
 This Mask Info : 0
 Near Mask Info : 0

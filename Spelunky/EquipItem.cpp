@@ -19,7 +19,7 @@ HRESULT EquipItem::Init(BaseProperty *property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PICK_UP, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePickupEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PUT_DOWN, EventDelegate::FromFunction<EquipItem, &EquipItem::HandlePutDownEvent>(this));
 	_collisionComp = new CollisionComponent();
-	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -20));
+	_collisionComp->Init(RectMake(0, 0, 40, 30), Vector2(-20, -24));
 
 	_equiped = 0;
 
@@ -39,7 +39,7 @@ void EquipItem::Update(float deltaTime)
 	if (_equiped)
 	{
 		desiredPosition = _pOwner->desiredPosition;
-		desiredPosition.AddToTileRelY(-32);
+		desiredPosition.AddToTileRelY(50);
 		position = desiredPosition;
 	}
 	else

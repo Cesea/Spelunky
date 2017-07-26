@@ -215,6 +215,14 @@ HRESULT Stage::InitForMiddleStage(const std::wstring firstKey)
 	return S_OK;
 }
 
+void Stage::PostInit()
+{
+	for (auto &enemy : _enemies)
+	{
+		enemy->PostInit();
+	}
+}
+
 void Stage::Release()
 {
 }
@@ -532,6 +540,7 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 	Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
 	Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
 	Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
+	Tile *pLayer3Tile = tileLayer3[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
 
 	TileCollisionType breakTileCollType{ TILE_COLLISION_NONE };
 
@@ -546,9 +555,6 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		pLayer0Tile->thisMaskInfo = 0;
 		pLayer0Tile->nearMaskInfo = 15;
 		destroyed = true;
-
-		//pLayer2Tile = pLayer0Tile;
-		//pLayer0Tile = nullptr;
 	}
 	else if(pLayer1Tile != nullptr &&
 		pLayer1Tile->canBeDestroyedByBomb)
@@ -565,8 +571,7 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = std::move(pLayer1Tile);
 		tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
 	}
-
-	if (pLayer2Tile != nullptr &&
+	else if (pLayer2Tile != nullptr &&
 		pLayer2Tile->canBeDestroyedByBomb)
 	{
 		pLayer2Tile->canBeDestroyedByBomb = false;
@@ -579,6 +584,15 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = std::move(pLayer2Tile);
 		tileLayer2[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
 	}
+
+	if (pLayer3Tile != nullptr &&
+		pLayer3Tile->canBeDestroyedByBomb)
+	{
+		OBJECTMANAGER->DestroyObject(pLayer3Tile->GetId());
+		tileLayer3[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+	}
+
+
 	if (destroyed)
 	{
 		for (auto &gem : _gems)
@@ -598,6 +612,16 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 			}
 		}
 
+		int upperIndex = GetIndexFromXY(tilePos.x, tilePos.y - 1, STAGE_TOTAL_COUNTX);
+		Tile *upperTile = tileLayer1[upperIndex];
+		if (upperTile &&
+			upperTile->collisionType == TileCollisionType::TILE_COLLISION_UPPER_DEAD)
+		{
+			tileLayer1[upperIndex] = nullptr;
+			OBJECTMANAGER->DestroyObject(upperTile->GetId());
+			EFFECTMANAGER->PlayThornParticle(TilePosition(tilePos.x, tilePos.y, 32, 32).UnTilelize());
+		}
+
 		ClearAllTheBits(tilePos.x - 1, tilePos.y - 1, 3, 3);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 0);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 1);
@@ -611,6 +635,10 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 			breakTileCollType == TileCollisionType::TILE_COLLISION_EOF_LADDER)
 		{
 			EFFECTMANAGER->PlayWoodParticle(TilePosition(tilePos.x, tilePos.y, 32, 32).UnTilelize());
+		}
+		else if (breakTileCollType == TileCollisionType::TILE_COLLISION_UPPER_DEAD)
+		{
+			EFFECTMANAGER->PlayThornParticle(TilePosition(tilePos.x, tilePos.y, 32, 32).UnTilelize());
 		}
 	}
 }
@@ -628,10 +656,19 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 			{
 				continue;
 			}
+
+			if (xStartIndex < 0 || yStartIndex < 0 ||
+				xStartIndex + width > STAGE_TOTAL_COUNTX - 1 ||
+				yStartIndex + height > STAGE_TOTAL_COUNTY - 1)
+			{
+				continue;
+			}
+
 			//int currentIndex = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
 			Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
 			Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
 			Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			Tile *pLayer3Tile = tileLayer3[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
 
 			TileCollisionType breakTileCollType{TILE_COLLISION_NONE};
 
@@ -647,8 +684,6 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				pLayer0Tile->nearMaskInfo = 15;
 				destroyed = true;
 
-				pLayer2Tile = pLayer0Tile;
-				pLayer0Tile = nullptr;
 			}
 			else if (pLayer1Tile != nullptr &&
 				pLayer1Tile->canBeDestroyedByBomb)
@@ -662,11 +697,10 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				pLayer1Tile->nearMaskInfo = 15;
 				destroyed = true;
 
-				pLayer2Tile = pLayer1Tile;
-				pLayer1Tile = nullptr;
+				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = std::move(pLayer1Tile);
+				tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = nullptr;
 			}
-
-			if (pLayer2Tile != nullptr &&
+			else if (pLayer2Tile != nullptr &&
 				pLayer2Tile->canBeDestroyedByBomb)
 			{
 				pLayer2Tile->canBeDestroyedByBomb = false;
@@ -675,10 +709,32 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				pLayer2Tile->thisMaskInfo = 0;
 				pLayer2Tile->nearMaskInfo = 15;
 				destroyed = true;
-			}
 
+				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = std::move(pLayer2Tile);
+				tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = nullptr;
+			}
+			if (pLayer3Tile != nullptr &&
+				pLayer3Tile->canBeDestroyedByBomb)
+			{
+				OBJECTMANAGER->DestroyObject(pLayer3Tile->GetId());
+				tileLayer3[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = nullptr;
+			}
 			if (destroyed)
 			{
+				if (y == yStartIndex)
+				{
+					int upperIndex = GetIndexFromXY(x, y - 1, STAGE_TOTAL_COUNTX);
+					Tile *upperTile = tileLayer1[upperIndex];
+					if (upperTile &&
+						upperTile->collisionType == TileCollisionType::TILE_COLLISION_UPPER_DEAD)
+					{
+						tileLayer1[upperIndex] = nullptr;
+
+						OBJECTMANAGER->DestroyObject(upperTile->GetId());
+						EFFECTMANAGER->PlayThornParticle(TilePosition(x, y, 32, 32).UnTilelize());
+					}
+				}
+
 				for (auto &gem : _gems)
 				{
 					if ((gem->position.tileX == x) && 
@@ -704,6 +760,10 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				{
 					EFFECTMANAGER->PlayWoodParticle(TilePosition(x, y, 32, 32).UnTilelize());
 				}
+				else if (breakTileCollType == TileCollisionType::TILE_COLLISION_UPPER_DEAD)
+				{
+					EFFECTMANAGER->PlayThornParticle(TilePosition(x, y, 32, 32).UnTilelize());
+				}
 			}
 		}
 	}
@@ -722,6 +782,7 @@ void Stage::RegisterDelegates()
 	EVENTMANAGER->RegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_ENEMY_DEAD, EventDelegate::FromFunction<Stage, &Stage::HandleEnemyDeadEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_DESTROY_A_TILE, EventDelegate::FromFunction<Stage, &Stage::HandleDestroyATileEvent>(this));
 }
 
 void Stage::UnRegisterDelegates()
@@ -730,6 +791,7 @@ void Stage::UnRegisterDelegates()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ITEM_BREAK, EventDelegate::FromFunction < Stage, &Stage::HandleItemBreakEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ENEMY_DEAD, EventDelegate::FromFunction<Stage, &Stage::HandleEnemyDeadEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_DESTROY_A_TILE, EventDelegate::FromFunction<Stage, &Stage::HandleDestroyATileEvent>(this));
 }
 
 void Stage::BuildBorder()
@@ -760,27 +822,29 @@ void Stage::BuildBorder()
 
 bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
-	//switch (types)
-	//{
-	//case RoomType::ROOM_BLOCK:
-	//{
-	//	str += L"_block_00.rt";
-	//}break;
-	//case RoomType::ROOM_AISLE :
-	//{
-	//	str += L"_aisle_00.rt";
-	//}break;
-	//case RoomType::ROOM_TOP_OPEN :
-	//{
-	//	str += L"_topopen_00.rt";
-	//}break;
-	//case RoomType::ROOM_BOTTOM_OPEN :
-	//{
-	//	str += L"_bottomopen_00.rt";
-	//}break;
-	//}
+	int randInt = RND->GetFromIntTo(0, 9);
 
-	str = L"00.rt";
+	switch (types)
+	{
+	case RoomType::ROOM_BLOCK:
+	{
+		str += L"_block_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_AISLE :
+	{
+		str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_TOP_OPEN :
+	{
+		str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_BOTTOM_OPEN :
+	{
+		str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	}
+
+	//str = L"00.rt";
 	return true;
 }
 
@@ -791,6 +855,7 @@ void Stage::BuildRoomFromFile(const std::wstring &fileName,
 	FileUtils::File loadFile;
 	std::wstring filePath;
 	filePath += LdataPath;
+	filePath += L"mine_room_type\\";
 	filePath += fileName;
 
 	if (loadFile.Open(filePath, FileUtils::FileAccess::Read))
@@ -1128,6 +1193,7 @@ void Stage::BuildThrows()
 
 								newThrows->position.tileX = worldPosition.x;
 								newThrows->position.tileY = worldPosition.y;
+								newThrows->position.AddToTileRelX(16);
 								newThrows->position.AddToTileRelY(32);
 								newThrows->desiredPosition = newThrows->position;
 
@@ -1136,6 +1202,7 @@ void Stage::BuildThrows()
 
 								newThrowsSecond->position.tileX = worldPosition.x;
 								newThrowsSecond->position.tileY = worldPosition.y;
+								newThrows->position.AddToTileRelX(32);
 								newThrows->position.AddToTileRelY(32);
 								newThrowsSecond->desiredPosition = newThrows->position;
 
@@ -1148,6 +1215,7 @@ void Stage::BuildThrows()
 
 								newThrows->position.tileX = worldPosition.x;
 								newThrows->position.tileY = worldPosition.y;
+								newThrows->position.AddToTileRelX(16);
 								newThrows->position.AddToTileRelY(32);
 								newThrows->desiredPosition = newThrows->position;
 
@@ -1164,6 +1232,7 @@ void Stage::BuildThrows()
 
 							newThrows->position.tileX = worldPosition.x;
 							newThrows->position.tileY = worldPosition.y;
+							newThrows->position.AddToTileRelX(16);
 							newThrows->position.AddToTileRelY(32);
 							newThrows->desiredPosition = newThrows->position;
 
@@ -1172,6 +1241,7 @@ void Stage::BuildThrows()
 
 							newThrowsSecond->position.tileX = worldPosition.x;
 							newThrowsSecond->position.tileY = worldPosition.y;
+							newThrows->position.AddToTileRelX(32);
 							newThrows->position.AddToTileRelY(32);
 							newThrowsSecond->desiredPosition = newThrows->position;
 
@@ -1180,11 +1250,11 @@ void Stage::BuildThrows()
 						}
 						else
 						{
-
 							Throws *newThrows = (Throws *)OBJECTMANAGER->CreateObject(L"throws", prop);
 
 							newThrows->position.tileX = worldPosition.x;
 							newThrows->position.tileY = worldPosition.y;
+							newThrows->position.AddToTileRelX(16);
 							newThrows->position.AddToTileRelY(32);
 							newThrows->desiredPosition = newThrows->position;
 
@@ -1341,6 +1411,10 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 	{
 		EFFECTMANAGER->PlayRockParticle(objectPosition, 0.3f);
 	}break;
+	case BREAK_BackBone :
+	{
+		EFFECTMANAGER->PlayBackBoneParticle(objectPosition, 0.3f);
+	}break;
 	case BREAK_Live :
 	{
 
@@ -1348,6 +1422,7 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 	}
 	if (breakType == BreakType::BREAK_Jar ||
 		breakType == BreakType::BREAK_Bone ||
+		breakType == BreakType::BREAK_BackBone ||
 		breakType == BreakType::BREAK_Rock)
 	{
 		for (auto &iter = _throws.begin(); iter != _throws.end();)
@@ -1366,6 +1441,7 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 	}
 	else if (breakType == BreakType::BREAK_Bomb)
 	{
+		EVENTMANAGER->QueueEvent(new DamageEvent(UNVALID_OBJECT_ID, 5, object->position, RectMake(0, 0, 320, 256), Vector2(-160, -120)));
 		for (auto &iter = _bombs.begin(); iter != _bombs.end();)
 		{
 			if ((*iter) == object)
@@ -1380,7 +1456,10 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			}
 		}
 	}
-	object->Release();
+
+	Console::Log("destroyed Item Id %d\n", object->GetId());
+	Console::Log("listSize %d\n", _throws.size());
+	//object->Release();
 	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
@@ -1426,6 +1505,52 @@ void Stage::HandleThrowBombEvent(const IEvent * event)
 	_bombs.push_back(newBomb);
 }
 
+void Stage::HandleDestroyATileEvent(const IEvent * event)
+{
+	DestroyATileEvent *convertedEvent = (DestroyATileEvent *)(event);
+	const TilePosition &tilePosition = convertedEvent->GetTilePosition();
+	IntVector2 destroyIndex(tilePosition.tileX, tilePosition.tileY );
+
+	if (convertedEvent->GetDirection() == Direction::Left)
+	{
+		destroyIndex.x -= 1;
+	}
+	else if(convertedEvent->GetDirection() == Direction::Right)
+	{
+		destroyIndex.x += 1;
+	}
+
+	Tile *sideTile = GetValidTileAt(destroyIndex.x, destroyIndex.y);
+	if (sideTile && sideTile->canBeDestroyedByBomb)
+	{
+		DestroyTile(destroyIndex);
+	}
+	else
+	{
+		destroyIndex.y += 1;
+		DestroyTile(destroyIndex);
+	}
+
+}
+
+Tile * Stage::GetValidTileAt(int x, int y)
+{
+	Tile *result = nullptr;
+
+	int index = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
+
+	result = tileLayer0[index];
+	if (result == nullptr)
+	{
+		result = tileLayer1[index];
+	}
+	if (result == nullptr)
+	{
+		result = tileLayer2[index];
+	}
+	return result;
+}
+
 ReturnTile Stage::GetAdjacent9(const IntVector2 & pos)
 {
 	ReturnTile result{};
@@ -1447,22 +1572,28 @@ ReturnTile Stage::GetAdjacent9(const IntVector2 & pos)
 				index++;
 				continue;
 			}
-			result.tiles[index] = tileLayer1[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
+			int worldIndex = absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX;
+			result.tiles[index] = tileLayer0[worldIndex];
 			if (result.tiles[index] == nullptr)
 			{
-				result.tiles[index] = tileLayer0[absTilePos.x + absTilePos.y * STAGE_TOTAL_COUNTX];
+				result.tiles[index] = tileLayer1[worldIndex];
+			}
+			if (result.tiles[index] == nullptr)
+			{
+				result.tiles[index] = tileLayer2[worldIndex];
 			}
 			index++;
 		}
 	}
 
-	if (tileLayer1[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)] == nullptr)
-	{
-		result.tiles[8] = tileLayer0[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)];
-	}
-	else
+	result.tiles[8] = tileLayer0[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)];
+	if (result.tiles[8] == nullptr)
 	{
 		result.tiles[8] = tileLayer1[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)];
+	}
+	if (result.tiles[8] == nullptr)
+	{
+		result.tiles[8] = tileLayer2[GetIndexFromXY(pos.x, pos.y, STAGE_TOTAL_COUNTX)];
 	}
 
 	Tile *temp;

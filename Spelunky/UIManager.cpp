@@ -79,7 +79,6 @@ void UIManager::Render(const Vector2 &camPos)
 
 	if (!_drawMiddleStageUI)
 	{
-
 		_playerHudSprite->FrameRender(gRenderTarget, 80, 40, 0, 0);
 		_moneyHudSprite->Render(gRenderTarget, 0, 140);
 

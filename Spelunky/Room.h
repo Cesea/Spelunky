@@ -58,6 +58,8 @@ public:
 	HRESULT Init();
 	HRESULT InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomGenerated &randomTypes);
 	HRESULT InitForMiddleStage(const std::wstring firstKey);
+
+	void PostInit();
 	void Release();
 
 	void Update(float deltaTime);
@@ -81,6 +83,8 @@ public:
 	const TilePosition &GetCurrentExitPosition() { return _tunnels[1]->position; }
 
 	const int GetMoneyCollected() { return _moneyCollected; }
+
+	Tile *GetValidTileAt(int x, int y);
 
 private:
 	void RegisterDelegates();
@@ -108,6 +112,8 @@ private:
 	void HandleItemBreakEvent(const IEvent *event);
 	void HandleEnemyDeadEvent(const IEvent *event);
 	void HandleThrowBombEvent(const IEvent *event);
+	void HandleDestroyATileEvent(const IEvent *event);
+
 private:
 	Room _rooms[16]{};
 

@@ -12,6 +12,10 @@ public :
 	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
 	State<Player> *HandleFrameEndEvent(Player *actor) override { return nullptr; }
 	void OnExit(Player *object);
+
+private :
+	Timer _cameraMoveTimer;
+	bool32 _didFired{false};
 };
 
 

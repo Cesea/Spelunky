@@ -45,12 +45,20 @@ void CrawlState::OnExit(Player * object)
 void CrawlIdleState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"crawlIdle");
+
+	_cameraMoveTimer.Init(1.5f);
 }
 
 State<Player>* CrawlIdleState::Update(Player * object, float deltaTime)
 {
 	object->_velocity += object->_accel * deltaTime;
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
+
+	if (_cameraMoveTimer.Tick(deltaTime) && !_didFired)
+	{
+		EVENTMANAGER->QueueEvent(new CameraMoveToEvent(object->position, Direction::Down, false));
+		_didFired = true;
+	}
 	return nullptr;
 }
 
@@ -86,15 +94,10 @@ State<Player>* CrawlIdleState::HandleCommand(Player * object, const ControlComma
 		if (object->_holding)
 		{
 			ObjectId putDownId = UNVALID_OBJECT_ID;
-			if (object->_holdingObjectId[1] == UNVALID_OBJECT_ID)
+			if (object->_holdingObject[0])
 			{
-				putDownId = object->_holdingObjectId[0];
-				object->_holdingObjectId[0] = UNVALID_OBJECT_ID;
-			}
-			else
-			{
-				putDownId = object->_holdingObjectId[1];
-				object->_holdingObjectId[1] = UNVALID_OBJECT_ID;
+				putDownId = object->_holdingObject[0]->GetId();
+				object->_holdingObject[0] = nullptr;
 			}
 			EVENTMANAGER->QueueEvent(new PutDownEvent(putDownId, object->_seeingDirection));
 			object->_holding = false;
@@ -129,4 +132,8 @@ State<Player>* CrawlIdleState::HandleCommand(Player * object, const ControlComma
 
 void CrawlIdleState::OnExit(Player * object)
 {
+	if (_didFired)
+	{
+		EVENTMANAGER->QueueEvent(new CameraMoveToEvent(object->position, Direction::Up, true));
+	}
 }

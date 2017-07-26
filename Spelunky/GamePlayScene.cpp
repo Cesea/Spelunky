@@ -192,10 +192,10 @@ void GamePlayScene::UnRegisterDelegates()
 
 void GamePlayScene::HandleLayerOnEvent(const IEvent * event)
 {
-	gRenderTarget->BeginDraw();
-	gRenderTarget->Clear(D2D1::ColorF(0.0, 0.0f, 0.0f, 1.0f));
+	//gRenderTarget->BeginDraw();
+	//gRenderTarget->Clear(D2D1::ColorF(0.0, 0.0f, 0.0f, 1.0f));
 
-	gRenderTarget->EndDraw();
+	//gRenderTarget->EndDraw();
 
 	LayerOnEvent *convertedEvent = (LayerOnEvent *)event;
 	//넓히는것
@@ -279,7 +279,7 @@ HRESULT GamePlayScene::Init(void)
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
 
 	_deadBackground = new D2DSprite;
-	_deadBackground->Init(IMAGEMANAGER->GetImage(L"bookbg"), 0, 0, 1024, 709, IntVector2(-512, -354));
+	_deadBackground->Init(IMAGEMANAGER->GetImage(L"bookbg"), 0, 0, WINSIZEX, WINSIZEY, IntVector2(-WINSIZEX / 2, -WINSIZEY / 2));
 	_deadBook = new D2DSprite;
 	_deadBook->Init(IMAGEMANAGER->GetImage(L"bookgameover"), 0, 0, 1024, 512, IntVector2(-512, -256));
 
@@ -373,14 +373,16 @@ void GamePlayScene::Update(void)
 	//플레이어 죽은 상태에서 업데이트
 	else if (_sceneState == PlaySceneState::PlayerDead)
 	{
-		//if (KEYMANAGER->IsOnceKeyDown('Z'))
-		//{
-		//	SCENEMANAGER->ChangeScene(L"MenuScene");
-		//}
-		//else if (KEYMANAGER->IsOnceKeyDown('X'))
-		//{
-		//	ResetToLobyStage();
-		//}
+		if (KEYMANAGER->IsOnceKeyDown('Z'))
+		{
+			STAGEMANAGER->Reset();
+			EVENTCOLLECTOR->Reset();
+			SCENEMANAGER->ChangeScene(L"MenuScene");
+		}
+		else if (KEYMANAGER->IsOnceKeyDown('X'))
+		{
+			//ResetToLobyStage();
+		}
 	}
 }
 
@@ -425,19 +427,22 @@ void GamePlayScene::Render(void)
 				D2D1_LAYER_OPTIONS_NONE),
 				layer);
 
-			STAGEMANAGER->Render();
+			STAGEMANAGER->Render(Vector2(0, 0));
 			_pPlayer->Render(gRenderTarget, unTiledCamPos);
 			EFFECTMANAGER->Render();
 			UIMANAGER->Render(unTiledCamPos);
 
 			gRenderTarget->PopLayer();
 
-			_radialBrush->Release();
+			if (_radialBrush != nullptr)
+			{
+				_radialBrush->Release();
+			}
 
 		}
 		else
 		{
-			STAGEMANAGER->Render();
+			STAGEMANAGER->Render(Vector2());
 
 			//_pPlayer->Render(gRenderTarget, unTiledCamPos);
 
@@ -448,6 +453,10 @@ void GamePlayScene::Render(void)
 	}
 	else if (_sceneState == PlaySceneState::PlayerDead)
 	{
+		Vector2 offset = (_pPlayer->position.UnTilelize() - _camera.GetPosition().UnTilelize()) - Vector2(440, 256);
+
+		STAGEMANAGER->Render(Vector2(offset));
+
 		std::wstring timeText{};
 
 		int totalStageElapseTime = (int)STAGEMANAGER->GetTotalStageElapsedTime();
@@ -467,7 +476,6 @@ void GamePlayScene::Render(void)
 
 		_deadBackground->Render(gRenderTarget, WINSIZEX / 2, WINSIZEY / 2);
 		_deadBook->Render(gRenderTarget, WINSIZEX / 2, WINSIZEY / 2);
-
 
 		_dWrite.PrintTextFromFormat(gRenderTarget, 702, 160, 284, 72, L"GameOver", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _deadOverText);
 

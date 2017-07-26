@@ -15,6 +15,7 @@ public :
 	virtual ~Spider();
 
 	virtual HRESULT Init(BaseProperty *property);
+	virtual void PostInit();
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
@@ -31,6 +32,8 @@ private :
 
 	bool32 _onTop{ true };
 	bool32 _jumping{ false };
+
+	Tile *_holdingTile{};
 };
 
 #endif

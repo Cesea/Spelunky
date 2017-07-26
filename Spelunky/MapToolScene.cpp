@@ -496,6 +496,7 @@ void MapToolScene::SaveMapButtonAction()
 	//strcpy(filePath, dataPath);
 	std::wstring filePath;
 	filePath += LdataPath;
+	filePath += L"mine_room_type\\";
 	filePath += _mapLoadSaveNameBuffer;
 
 	if (saveFile.Open(filePath, FileUtils::FileAccess::Write))
@@ -519,7 +520,7 @@ void MapToolScene::LoadMapButtonAction()
 
 	std::wstring filePath;
 	filePath += LdataPath;
-
+	filePath += L"mine_room_type\\";
 	filePath += _mapLoadSaveNameBuffer;
 
 	if (loadFile.Open(filePath, FileUtils::FileAccess::Read))

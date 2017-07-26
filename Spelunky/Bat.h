@@ -14,6 +14,7 @@ public:
 	virtual ~Bat();
 
 	virtual HRESULT Init(BaseProperty *property);
+	virtual void PostInit();
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
@@ -27,6 +28,8 @@ private:
 	StateManager<Bat> _stateManager;
 
 	bool32 _flying{ false };
+
+	Tile *_holdingTile{};
 };
 
 

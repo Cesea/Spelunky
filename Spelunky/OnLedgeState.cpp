@@ -121,15 +121,10 @@ void LedgeGrabState::OnEnter(Player * object)
 	if (object->_holding)
 	{
 		ObjectId putDownId = UNVALID_OBJECT_ID;
-		if (object->_holdingObjectId[1] == UNVALID_OBJECT_ID)
+		if (object->_holdingObject[0])
 		{
-			putDownId = object->_holdingObjectId[0];
-			object->_holdingObjectId[0] = UNVALID_OBJECT_ID;
-		}
-		else
-		{
-			putDownId = object->_holdingObjectId[1];
-			object->_holdingObjectId[1] = UNVALID_OBJECT_ID;
+			putDownId = object->_holdingObject[0]->GetId();
+			object->_holdingObject[0] = nullptr;
 		}
 		EVENTMANAGER->QueueEvent(new PutDownEvent(putDownId, (object->_seeingDirection == Direction::Right) ? Direction::Left : Direction::Right));
 		object->_holding = false;

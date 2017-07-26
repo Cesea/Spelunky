@@ -19,6 +19,7 @@ public :
 	const TilePosition &GetPosition() { return _position; }
 
 	void Move(const Vector2 &v);
+	void MoveTo(const TilePosition &position);
 
 	void Shake(float power, int shakeCount, float t);
 
@@ -26,6 +27,7 @@ public :
 	void ResetForNormalStage();
 	
 private :
+	void HandleCameraMoveToEvent(const IEvent *event);
 
 	void KeepCameraInsideAnchorRect();
 
@@ -49,6 +51,10 @@ private :
 	float _powerSubDelta{ 0 };
 	int _shakeCount{ 0 };
 	Timer _shakeTimer;
+
+	Timer _moveTimer;
+	bool32 _positionInterPolating;
+	bool32 _moveOn;
 
 };
 

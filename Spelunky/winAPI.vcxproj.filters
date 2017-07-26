@@ -214,6 +214,9 @@
     <Filter Include="Game\RankingManager">
       <UniqueIdentifier>{ee456563-d706-45b5-9126-5c32a7c53e15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Item\Crate">
+      <UniqueIdentifier>{e2845894-b9b9-45a4-bad6-2d91f86fd2ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -545,6 +548,9 @@
     </ClInclude>
     <ClInclude Include="RankingManager.h">
       <Filter>Game\RankingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Crate.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Crate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

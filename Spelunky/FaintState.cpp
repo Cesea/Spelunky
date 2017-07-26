@@ -54,7 +54,6 @@ State<Player>* FaintState::Update(Player * object, float deltaTime)
 		else
 		{
 			EVENTMANAGER->QueueEvent(new LayerOnEvent(false, false, object->_dead, object->position));
-			//EVENTMANAGER->QueueEvent(new PlayerDeadEvent(object->_lastEnemyHittedType));
 		}
 	}
 

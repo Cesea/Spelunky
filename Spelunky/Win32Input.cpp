@@ -23,6 +23,7 @@ void PullRawInput(Win32RawInputState * rawInput)
 	PullDigitalButton(&rawInput->keyboard.s, 'S');
 	PullDigitalButton(&rawInput->keyboard.z, 'Z');
 	PullDigitalButton(&rawInput->keyboard.x, 'X');
+	PullDigitalButton(&rawInput->keyboard.c, 'C');
 
 	rawInput->mouse.currentPoint = currentMouse;
 	rawInput->mouse.offset = rawInput->mouse.currentPoint - rawInput->mouse.prevPoint;

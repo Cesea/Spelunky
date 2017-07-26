@@ -42,6 +42,9 @@ EventType PlayerDamagedEvent::_type = EVENT_PLAYER_DAMAGED;
 EventType LayerOnEvent::_type = EVENT_LAYER_ON;
 EventType PlayerDeadEvent::_type = EVENT_PLAYER_DEAD;
 
+EventType DestroyATileEvent::_type = EVENT_DESTROY_A_TILE;
+EventType CameraMoveToEvent::_type = EVENT_CAMERA_MOVE_TO;
+
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
 {
@@ -518,4 +521,34 @@ IEvent * PlayerDeadEvent::Copy() const
 const WCHAR * PlayerDeadEvent::GetName() const
 {
 	return L"Player Dead Event";
+}
+
+DestroyATileEvent::DestroyATileEvent(const TilePosition & tilePosition, Direction direction)
+	:_tilePosition(tilePosition), _direction(direction)
+{
+}
+
+IEvent * DestroyATileEvent::Copy() const
+{
+	return new DestroyATileEvent(_tilePosition, _direction);
+}
+
+const WCHAR * DestroyATileEvent::GetName() const
+{
+	return L"Destory A Tile Event";
+}
+
+CameraMoveToEvent::CameraMoveToEvent(const TilePosition & tilePosition, Direction direction, bool32 isRevert)
+	:_tilePosition(), _direction(direction), _isRevert(isRevert)
+{
+}
+
+IEvent * CameraMoveToEvent::Copy() const
+{
+	return new CameraMoveToEvent(_tilePosition, _direction, _isRevert);
+}
+
+const WCHAR * CameraMoveToEvent::GetName() const
+{
+	return L"Camera Move To Event";
 }

@@ -42,6 +42,7 @@ HRESULT Spider::Init(BaseProperty * property)
 	position.AddToTileRelY(60);
 	desiredPosition = position;
 
+
 	_stateManager.Init(this, new SpiderOnTopState);
 
 	_speed = Vector2(300, 600);
@@ -50,6 +51,11 @@ HRESULT Spider::Init(BaseProperty * property)
 	_enemyType = EnemyType::ENEMY_Spider;
 
 	return S_OK;
+}
+
+void Spider::PostInit()
+{
+	_holdingTile = STAGEMANAGER->GetCurrentStage()->GetValidTileAt(position.tileX, position.tileY - 1);
 }
 
 void Spider::Release(void)
@@ -61,7 +67,13 @@ void Spider::Update(float deltaTime)
 	if (!_onTop)
 	{
 		_accel.y += GRAVITY;
-
+	}
+	else
+	{
+		if (_holdingTile->collisionType != TILE_COLLISION_BLOCK)
+		{
+			_onTop = false;
+		}
 	}
 
 	TilePosition centerPos = desiredPosition;

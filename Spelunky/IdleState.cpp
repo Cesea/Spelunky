@@ -98,7 +98,7 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 		}
 	}
 	//Attack이나 Throw 상태로의 이전 처리
-	if (command.action == Command::Attack)
+	if (command.action == Command::Attack || command.action == Command::Dig)
 	{
 		if (object->_holding)
 		{

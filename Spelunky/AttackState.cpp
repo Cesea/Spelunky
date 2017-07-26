@@ -11,7 +11,14 @@
 void AttackState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"attack");
-	object->SetWeaponGraphics(L"whip");
+	if (object->_digging)
+	{
+		object->SetWeaponGraphics(L"mattock");
+	}
+	else
+	{
+		object->SetWeaponGraphics(L"whip");
+	}
 	object->_offsetCount = 0;
 	object->_weaponOffset = Vector2();
 
@@ -43,17 +50,26 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 	if (object->_offsetCount == 5)
 	{
 		object->_weaponOffset = Vector2((object->GetDirection() == Direction::Right) ? 50 : -50, 23);
-		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
+		if (!object->_digging)
+		{
+			EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
+		}
 	}
 	else if (object->_offsetCount == 7)
 	{
 		object->_weaponOffset = Vector2((object->GetDirection() == Direction::Right) ? 50 : -50, 23);
-		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
+		if (!object->_digging)
+		{
+			EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
+		}
 	}
 	else if (object->_offsetCount == 9 || object->_offsetCount == 10 || 
 		object->_offsetCount == 11 || object->_offsetCount == 8)
 	{
-		EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
+		if (!object->_digging)
+		{
+			EVENTMANAGER->QueueEvent(new PlayerAttackEvent(object->GetDirection(), object->position));
+		}
 	}
 
 	if (!object->_canClimb)
@@ -181,6 +197,13 @@ State<Player>* AttackState::HandleFrameEndEvent(Player * object)
 
 void AttackState::OnExit(Player * object)
 {
+	if (object->_digging)
+	{
+		TilePosition tilePosition = object->position;
+		tilePosition.AddToTileRelY(-16);
+		EVENTMANAGER->QueueEvent(new DestroyATileEvent(tilePosition, object->_seeingDirection));
+	}
+	object->_digging = false;
 	object->_currentWeaponSprite = nullptr;
 }
 
@@ -188,7 +211,7 @@ void ThrowState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"throw");
 	object->_holding = false;
-	object->_holdingObjectId[0] = UNVALID_OBJECT_ID;
+	object->_holdingObject[0] = nullptr;
 }
 
 State<Player>* ThrowState::Update(Player * object, float deltaTime)

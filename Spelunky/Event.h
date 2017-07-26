@@ -45,6 +45,10 @@ enum  EventType
 	EVENT_LAYER_ON = 0x4f67e141,
 
 	EVENT_PLAYER_DEAD = 0xda84106b,
+	EVENT_DESTROY_A_TILE = 0x4da540bc,
+
+	EVENT_CAMERA_MOVE_TO = 0xe345aebe,
+
 };
 
 
@@ -580,6 +584,49 @@ public:
 private:
 	static EventType _type;
 	EnemyType _enemyType;
+
+};
+
+class DestroyATileEvent : public BaseEvent
+{
+public :
+	DestroyATileEvent(const TilePosition &tilePosition, Direction direction);
+	virtual ~DestroyATileEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const TilePosition &GetTilePosition() { return _tilePosition; }
+	const Direction GetDirection() { return _direction; }
+
+private:
+	static EventType _type;
+	TilePosition _tilePosition;
+	Direction _direction;
+};
+
+class CameraMoveToEvent : public BaseEvent
+{
+public :
+	CameraMoveToEvent(const TilePosition &tilePosition, Direction direction, bool32 isRevert);
+	virtual ~CameraMoveToEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const TilePosition &GetTilePosition() { return _tilePosition; }
+	const Direction GetDirection() { return _direction; }
+	const bool32 GetIsRevert() { return _isRevert; }
+
+private:
+	static EventType _type;
+	TilePosition _tilePosition;
+	Direction _direction;
+	bool32 _isRevert;
+
+private :
 
 };
 

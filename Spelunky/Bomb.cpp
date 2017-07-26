@@ -90,7 +90,7 @@ void Bomb::Update(float deltaTime)
 		}
 		else if (_bombStage == 3)
 		{
-			STAGEMANAGER->DestroyTile(position.tileX - 2, position.tileY - 2, 4, 4);
+			STAGEMANAGER->DestroyTile(position.tileX - 2, position.tileY - 2, 4, 3);
 			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bomb));
 			EFFECTMANAGER->PlayExplosionEffect(position.UnTilelize());
 			EFFECTMANAGER->PlaySmokeEffect(position.UnTilelize());

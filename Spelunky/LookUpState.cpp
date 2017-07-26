@@ -9,6 +9,7 @@
 void LookUpState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"lookUp");
+	_cameraMoveTimer.Init(1.5f);
 }
 
 State<Player>* LookUpState::Update(Player * object, float deltaTime)
@@ -16,6 +17,12 @@ State<Player>* LookUpState::Update(Player * object, float deltaTime)
 	State<Player> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
+
+	if (_cameraMoveTimer.Tick(deltaTime) && !_didFired)
+	{
+		EVENTMANAGER->QueueEvent(new CameraMoveToEvent(object->position, Direction::Up, false));
+		_didFired = true;
+	}
 
 	return nullptr;
 }
@@ -47,4 +54,8 @@ State<Player>* LookUpState::HandleCommand(Player * object, const ControlCommand 
 
 void LookUpState::OnExit(Player * object)
 {
+	if (_didFired)
+	{
+		EVENTMANAGER->QueueEvent(new CameraMoveToEvent(object->position, Direction::Down, true));
+	}
 }

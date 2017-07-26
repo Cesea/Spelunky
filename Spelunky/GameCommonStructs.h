@@ -107,6 +107,7 @@ enum class Command
 	Jump,
 	JumpOff,
 	GoExit,
+	Dig,
 };
 
 struct ControlCommand

@@ -126,6 +126,8 @@ private :
 	bool32 _dead{ false };
 	Timer _vulnerableTimer;
 
+	bool32 _digging{ false };
+
 
 	DataSet<D2DSprite *> _graphics;
 	D2DSprite *_currentSprite{};
@@ -142,7 +144,7 @@ private :
 	uint32 _bomb{ 4 };
 	uint32 _rope{ 4 };
 
-	ObjectId _holdingObjectId[2]{UNVALID_OBJECT_ID, };
+	GameObject *_holdingObject[2]{NULL, NULL};
 
 	Vector2 _weaponOffset{};
 	int _offsetCount{ 0 };

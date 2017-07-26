@@ -22,6 +22,8 @@ WCHAR LdataPath[50] = L"resources\\data\\";;
 WCHAR LgfxPath[50]= L"resources\\gfx";;
 WCHAR LsfxPath[50] = L"resources\\sfx";;
 
+WCHAR deathText[40]{};
+
 ID2D1HwndRenderTarget *	gRenderTarget;
 
 bool _running = false;

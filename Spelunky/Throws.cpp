@@ -17,7 +17,7 @@ HRESULT Throws::Init(BaseProperty *property)
 	EquipItem::Init(property);
 	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Throws, &Throws::HandleDamageEvent>(this));
 	_sprite = new D2DFrameSprite;
-	_sprite->Init(IMAGEMANAGER->GetImage(L"throws"), 80, 80, IntVector2(-40, -40));
+	_sprite->Init(IMAGEMANAGER->GetImage(L"throws"), 80, 80, IntVector2(-40, -50));
 
 	_speed = Vector2(400, 300);
 	_maxVelocity = Vector2(300, 550);
@@ -47,7 +47,7 @@ void Throws::Update(float deltaTime)
 	if (_equiped)
 	{
 		desiredPosition = _pOwner->desiredPosition;
-		desiredPosition.AddToTileRelY(-32);
+		desiredPosition.AddToTileRelY(-16);
 		position = desiredPosition;
 	}
 	else
@@ -59,8 +59,11 @@ void Throws::Update(float deltaTime)
 		desiredPosition.AddToTileRel(_velocity * deltaTime);
 
 		TilePosition centerPos = desiredPosition;
-		centerPos.AddToTileRelY(-8.0f);
+		centerPos.AddToTileRelY(-16.0f);
 		_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
+
+		//Vector2 posUn = centerPos.UnTilelize();
+
 
 		bool collisionResult = _collisionComp->Update(this, deltaTime, &_nearTiles);
 		if (_throwed)
@@ -97,12 +100,16 @@ void Throws::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos
 	Vector2 drawPos = position.UnTilelize() - camPos;
 	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
 
-	//const Vector2 itemUntiledPosition = position.UnTilelize();
-	//Rect itemAbsRect =
-	//		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	//itemAbsRect += _collisionComp->GetOffset();
+	const Vector2 itemUntiledPosition = position.UnTilelize();
+	Rect itemAbsRect =
+			RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
 
-	//DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
+	DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
+
+	Vector2 pos = position.UnTilelize();
+
+	DrawBox(renderTarget, pos.x - camPos.x, pos.y - camPos.y, 5, 5, D2D1::ColorF(1.0f, 1.0, 0.0, 1.0f));
 }
 
 void Throws::Use(const ControlCommand &commands)

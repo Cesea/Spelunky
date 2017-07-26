@@ -54,6 +54,10 @@ HRESULT Enemy::Init(BaseProperty * property)
 	return S_OK;
 }
 
+void Enemy::PostInit()
+{
+}
+
 void Enemy::Release(void)
 {
 }

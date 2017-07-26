@@ -49,6 +49,11 @@ HRESULT Bat::Init(BaseProperty * property)
 	return S_OK;
 }
 
+void Bat::PostInit()
+{
+	_holdingTile = STAGEMANAGER->GetCurrentStage()->GetValidTileAt(position.tileX, position.tileY - 1);
+}
+
 void Bat::Release(void)
 {
 }
@@ -57,6 +62,14 @@ void Bat::Update(float deltaTime)
 {
 	TilePosition centerPos = desiredPosition;
 	centerPos.AddToTileRelY(-28.0f);
+
+	if (!_flying)
+	{
+		if (_holdingTile->collisionType != TILE_COLLISION_BLOCK)
+		{
+			_flying = true;
+		}
+	}
 
 	_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
 	_stateManager.Update(deltaTime);

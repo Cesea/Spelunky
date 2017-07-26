@@ -22,6 +22,8 @@ public :
 
 	int GetEnemyDeadCount() { return _enemyDeadCount; }
 
+	void Reset();
+
 private :
 	void RegisterDelegates();
 	void UnRegisterDelegates();

@@ -40,12 +40,13 @@ void StageManager::Update(float deltaTime)
 	}
 }
 
-void StageManager::Render()
+void StageManager::Render(const Vector2 &offset)
 {
 	if (_currentStage)
 	{
 		const TilePosition &camPos = _pCamera->GetPosition();
-		const Vector2 &camPosUntiled = camPos.UnTilelize();
+		Vector2 &camPosUntiled = camPos.UnTilelize();
+		camPosUntiled += offset;
 
 		int minX = camPos.tileX;
 		int maxX = camPos.tileX + 21;
@@ -92,12 +93,26 @@ Stage * StageManager::GetCurrentStage()
 	return nullptr;
 }
 
+void StageManager::Reset()
+{
+	_currentStage->Release();
+	SAFE_DELETE(_currentStage);
+
+	_timeElapsedInStage= 0;
+	_currentStageCount= 0;
+
+	_inMiddleStage = true;
+
+	_currentStageElapsedTime = 0 ;
+	_totalStageElapsedTime = 0 ;
+
+	_normalStageMoneyCollected= 0 ;
+}
+
 RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 {
 	RandomRoomGenerated result{};
 	result.startRoomIndex = IntVector2(RND->GetFromIntTo(0, 3), 0);
-
-	result.roomTypes[GetIndexFromXY(result.startRoomIndex.x, result.startRoomIndex.y, 4)] = (RoomType)RND->GetFromIntTo(2, 4);
 
 	IntVector2 prevPath(-1, -1);
 	IntVector2 currentPath = result.startRoomIndex;
@@ -114,15 +129,21 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 		{
 			delta.x = 1;
 			majorDirection = Direction::Right;
+			result.roomTypes[GetIndexFromXY(prevPath.x, prevPath.y, 4)] = RoomType::ROOM_BOTTOM_OPEN;
+			type = RoomType::ROOM_TOP_OPEN;
 		}
 		else if (currentPath.x == 3 && prevPath.x == 3)
 		{
 			delta.x = -1;
 			majorDirection = Direction::Left;
+			result.roomTypes[GetIndexFromXY(prevPath.x, prevPath.y, 4)] = RoomType::ROOM_BOTTOM_OPEN;
+			type = RoomType::ROOM_TOP_OPEN;
 		}
 		else if (currentPath.x == 0 || currentPath.x == 3)
 		{
 			delta.y += 1;
+			majorDirection = Direction::Right;
+			type = RoomType::ROOM_BOTTOM_OPEN;
 		}
 		else
 		{
@@ -137,24 +158,33 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 				{
 					delta.x = 1;
 				}
+				type = RoomType::ROOM_AISLE;
 			}
 			else if (randomDirection == 5)
 			{
 				delta.y += 1;
+				type = RoomType::ROOM_BOTTOM_OPEN;
 			}
 		}
 		prevPath = currentPath;
+
+		if (currentPath.y == 3)
+		{
+			int a = 0; 
+		}
+
+		result.roomTypes[GetIndexFromXY(currentPath.x, currentPath.y, 4)] = type;
 		currentPath += delta;
+
+		Console::Log("%d, %d\n", currentPath.x, currentPath.y);
 
 		if (currentPath.y == 4)
 		{
 			ended = true;
 			result.exitRoomIndex = prevPath;
-			continue;
+			currentPath.y = 3;
+			break;
 		}
-
-		type = (RoomType)RND->GetFromIntTo(2, 4);
-		result.roomTypes[GetIndexFromXY(currentPath.x, currentPath.y, 4)] = type;
 	}
 
 	for (int i = 0; i < 16; ++i)
@@ -230,6 +260,7 @@ void StageManager::BuildNextStage()
 	exitPositionToPlayer.AddToTileRelY(64);
 	_pPlayer->SetExitPosition(exitPositionToPlayer);
 	_pCamera->ResetForNormalStage();
+	_currentStage->PostInit();
 
 	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }

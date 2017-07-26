@@ -50,6 +50,19 @@ const IEvent * EventCollector::GetFirstCollectMoneyEvent()
 	return result;
 }
 
+void EventCollector::Reset()
+{
+	for (auto &eventList : _eventMap)
+	{
+		for (auto &ev : eventList.second)
+		{
+			SAFE_DELETE(ev);
+		}
+		eventList.second.clear();
+	}
+	_enemyDeadCount=0;
+}
+
 void EventCollector::RegisterDelegates()
 {
 	EVENTMANAGER->RegisterDelegate(EVENT_ENEMY_DEAD, 

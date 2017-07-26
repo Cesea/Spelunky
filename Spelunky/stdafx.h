@@ -206,6 +206,8 @@ extern WCHAR LdataPath[50];
 extern WCHAR LgfxPath[50];
 extern WCHAR LsfxPath[50];
 
+extern WCHAR deathText[40];
+
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 
 #endif

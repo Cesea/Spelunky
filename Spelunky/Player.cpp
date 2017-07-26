@@ -4,6 +4,7 @@
 #include "IdleState.h"
 #include "JumpState.h"
 #include "FaintState.h"
+#include "FallingState.h"
 
 Player::Player(ObjectId id)
 	:MovingObject::MovingObject(id)
@@ -187,12 +188,10 @@ void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos
 {
 	Vector2 drawingPos = position.UnTilelize() -camPos;
 
-
 	if (_currentWeaponSprite)
 	{
 		_currentWeaponSprite->Render(renderTarget, drawingPos.x + _weaponOffset.x, drawingPos.y + _weaponOffset.y);
 	}
-
 	if (!_vulnerable)
 	{
 		static int vulnerRender = 0;
@@ -204,6 +203,14 @@ void Player::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos
 	else
 	{
 		_currentSprite->Render(renderTarget, drawingPos.x, drawingPos.y);
+	}
+
+	for (int i = 0; i < 2; ++i)
+	{
+		if (_holdingObject[i])
+		{
+			_holdingObject[i]->Render(renderTarget, camPos);
+		}
 	}
 }
 
@@ -239,6 +246,11 @@ void Player::HandlePlayerInputEvent(const IEvent * event)
 	{
 		EVENTMANAGER->QueueEvent(new PlayerGoExitEvent(false));
 	}
+
+	if (controlCommand.action == Command::Dig)
+	{
+		_digging = true;
+	}
 	_stateManager.HandleCommand(controlCommand);
 }
 
@@ -263,11 +275,11 @@ void Player::HandleHoldingEvent(const IEvent * event)
 	EquipSlot slotType = convertedEvent->GetSlot();
 	if (slotType == EquipSlot::Weapon)
 	{
-		_holdingObjectId[0] = convertedEvent->GetId();
+		_holdingObject[0] = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 	}
 	else if (slotType == EquipSlot::Jump)
 	{
-		_holdingObjectId[1] = convertedEvent->GetId();
+		_holdingObject[1] = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 	}
 }
 
@@ -633,6 +645,7 @@ void Player::CheckCurrentTile()
 void Player::Reset()
 {
 	_canControl = true;
+	_stateManager.ChangeState(new FallingState);
 }
 
 void Player::Damaged()

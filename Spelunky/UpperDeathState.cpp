@@ -6,6 +6,8 @@
 void UpperDeathState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"upperDeath");
+	object->_dead = true;
+	_deadTimer.Init(2.0f);
 }
 
 State<Player>* UpperDeathState::Update(Player * object, float deltaTime)
@@ -15,6 +17,10 @@ State<Player>* UpperDeathState::Update(Player * object, float deltaTime)
 	currentSprite->Update(deltaTime);
 
 	object->_accel.y -= GRAVITY;
+	if (_deadTimer.Tick(deltaTime))
+	{
+		EVENTMANAGER->QueueEvent(new LayerOnEvent(false, false, object->_dead, object->position));
+	}
 
 	return nullptr;
 }

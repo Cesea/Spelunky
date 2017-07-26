@@ -20,12 +20,14 @@ public:
 	void SetPlayerLink(Player *player) { _pPlayer = player; }
 
 	void Update(float deltaTime);
-	void Render();
+	void Render(const Vector2 &offset);
 
 	void DestroyTile(const IntVector2 &tilePos);
 	void DestroyTile(const int xStartIndex, const int yStartIndex, const int width, const int height);
 
 	Stage *GetCurrentStage();
+
+	void Reset();
 
 	void SetCurrentStage(int i) { _currentStageCount = i; }
 	int GetCurrentStageCount() { return _currentStageCount; }
@@ -48,7 +50,6 @@ private:
 private:
 	Stage *_currentStage{};
 
-	Stage *_middleStage{};
 	Camera *_pCamera{ nullptr };
 	Player *_pPlayer{ nullptr };
 

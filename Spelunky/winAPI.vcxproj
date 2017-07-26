@@ -98,6 +98,7 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="Crate.h" />
     <ClInclude Include="CrawlMoveState.h" />
     <ClInclude Include="CrawlState.h" />
     <ClInclude Include="D2D.h" />
