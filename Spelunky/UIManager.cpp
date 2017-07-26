@@ -52,6 +52,7 @@ HRESULT UIManager::Init()
 	_objectElements->Init(IMAGEMANAGER->GetImage(L"objectSprite"), 80, 80, IntVector2(0, 0));
 
 	_showTimer.Init(1.0f);
+	_middleUpdateOnTimer.Init(1.0f);
 
 	RegisterDelegates();
 
@@ -75,25 +76,30 @@ void UIManager::Update(float deltaTime)
 void UIManager::Render(const Vector2 &camPos)
 {
 	float deltaTime = TIMEMANAGER->GetElapsedTime();
-	_playerHudSprite->FrameRender(gRenderTarget, 80, 40, 0, 0);
-	_moneyHudSprite->Render(gRenderTarget, 0, 140);
 
-	int playerHp = _pPlayer->GetHp();
-	int playerBomb = _pPlayer->GetBombCount();
-	int playerRope = _pPlayer->GetRopeCount();
-	int playerMoney = _pPlayer->GetMoney();
+	if (!_drawMiddleStageUI)
+	{
 
-	_dWrite.PrintTextFromFormat(gRenderTarget, 74, 40, 100, 50, std::to_wstring(playerHp).c_str(), 
-		D2D1::ColorF(1.0, 0.6, 0.6, 1.0f), _pinkText);
+		_playerHudSprite->FrameRender(gRenderTarget, 80, 40, 0, 0);
+		_moneyHudSprite->Render(gRenderTarget, 0, 140);
 
-	_dWrite.PrintTextFromFormat(gRenderTarget, 196, 50, 100, 50, std::to_wstring(playerBomb).c_str(),
-		D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+		int playerHp = _pPlayer->GetHp();
+		int playerBomb = _pPlayer->GetBombCount();
+		int playerRope = _pPlayer->GetRopeCount();
+		int playerMoney = _pPlayer->GetMoney();
 
-	_dWrite.PrintTextFromFormat(gRenderTarget, 290, 50, 100, 50, std::to_wstring(playerRope).c_str(), 
-		D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 74, 40, 100, 50, std::to_wstring(playerHp).c_str(),
+			D2D1::ColorF(1.0, 0.6, 0.6, 1.0f), _pinkText);
 
-	_dWrite.PrintTextFromFormat(gRenderTarget, 130, 150, 160, 50, std::to_wstring(playerMoney).c_str(), 
-		D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 196, 50, 100, 50, std::to_wstring(playerBomb).c_str(),
+			D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+
+		_dWrite.PrintTextFromFormat(gRenderTarget, 290, 50, 100, 50, std::to_wstring(playerRope).c_str(),
+			D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+
+		_dWrite.PrintTextFromFormat(gRenderTarget, 130, 150, 160, 50, std::to_wstring(playerMoney).c_str(),
+			D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+	}
 
 	if (_drawExitText)
 	{
@@ -110,6 +116,11 @@ void UIManager::Render(const Vector2 &camPos)
 		_tunnelTitle.Render(gRenderTarget, Vector2());
 		_scroll.Render(gRenderTarget, Vector2());
 		_paper.Render(gRenderTarget, Vector2());
+
+		if (_middleUpdateOnTimer.Tick(deltaTime))
+		{
+			_middleUpdateOn = true;
+		}
 
 		RenderMiddleStageStatus(deltaTime);
 	}
@@ -147,7 +158,7 @@ void UIManager::HandleOnMiddleStageEvent(const IEvent * event)
 	_timeText += L"/";
 	int totalStageElapseTime = (int)STAGEMANAGER->GetTotalStageElapsedTime();
 	int totalMinute = totalStageElapseTime / 60;
-	int totalSecond = totalStageElapseTime - (currentMinute * 60);
+	int totalSecond = totalStageElapseTime - (totalMinute * 60);
 
 	_timeText += std::to_wstring(totalMinute);
 	_timeText += L":";
@@ -168,6 +179,19 @@ void UIManager::HandleOnMiddleStageEvent(const IEvent * event)
 void UIManager::HandleExitMiddleStageEvent(const IEvent * event)
 {
 	_drawMiddleStageUI = false;
+	_finishedShowEnemy = false;
+	_finishedShowGold = false;
+	_endShowing = false;
+	_enemyKillCount = 0;
+}
+
+void UIManager::HandleLayerOnEvent(const IEvent * event)
+{
+	LayerOnEvent *convertedEvent = (LayerOnEvent *)(event);
+	if (convertedEvent->GetWiden())
+	{
+		_middleUpdateOn = false;
+	}
 }
 
 void UIManager::RenderMiddleStageStatus(float deltaTime)
@@ -186,8 +210,9 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 
 	_objectElements->FrameRender(gRenderTarget, 805, 167, 0,  0);
 
-	if (_showTimer.Tick(deltaTime) &&
-		!_finishedShowGold && !_finishedShowEnemy)
+
+	if (_middleUpdateOn && _showTimer.Tick(deltaTime) &&
+		!_finishedShowEnemy)
 	{
 		if (!_finishedShowGold)
 		{
@@ -195,7 +220,7 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 			if (firstEvent != nullptr)
 			{
 				CollectMoneyEvent *convertedEvent = (CollectMoneyEvent *)(firstEvent);
-				_gemShowValue = convertedEvent->GetValue();
+				_gemShowValue += convertedEvent->GetValue();
 				SetShowIndexCorrespondingToGemType(convertedEvent->GetGemType());
 			}
 			else
@@ -212,6 +237,7 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 			{
 				EnemyDeadEvent *convertedEvent = (EnemyDeadEvent *)(firstEvent);
 				SetShowIndexCorrespondingToEnemyType(convertedEvent->GetEnemyType());
+				_enemyKillCount++;
 			}
 			else
 			{
@@ -223,10 +249,7 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 
 	if (_finishedShowEnemy)
 	{
-		if (_showTimer.Tick(deltaTime))
-		{
-			_endShowing = true;
-		}
+		_endShowing = true;
 	}
 	if (_objectShowingIndex.x != -1)
 	{
@@ -236,17 +259,19 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 			t *= t;
 			_objectElements->FrameRenderMatrix(gRenderTarget, 880, 165, _objectShowingIndex.x, _objectShowingIndex.y,
 				D2D1::Matrix3x2F::Scale(t, t, D2D1::Point2F(40, 40)));
-
-			if (!_finishedShowGold)
-			{
-				_dWrite.PrintTextFromFormat(gRenderTarget, 1020, 150, 140, 100, L"Gold", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
-				_dWrite.PrintTextFromFormat(gRenderTarget, 955, 182, 225, 52, std::to_wstring(_gemShowValue).c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _smallWhiteText);
-			}
-			else
-			{
-				_dWrite.PrintTextFromFormat(gRenderTarget, 1008, 150, 140, 100, L"Enemy", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
-			}
 		}
+	}
+	if (!_finishedShowGold)
+	{
+		_dWrite.PrintTextFromFormat(gRenderTarget, 1026, 150, 140, 100, L"Gold", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 955, 182, 225, 52,
+			std::to_wstring(_gemShowValue).c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _smallWhiteText);
+	}
+	else
+	{
+		_dWrite.PrintTextFromFormat(gRenderTarget, 1008, 150, 140, 100, L"Enemy", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _whiteText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 955, 182, 225, 52,
+			std::to_wstring(_enemyKillCount).c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _smallWhiteText);
 	}
 }
 
@@ -280,6 +305,7 @@ void UIManager::RegisterDelegates()
 	EVENTMANAGER->RegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<UIManager, &UIManager::HandleOnTunnelEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_ON_MIDDLE_STAGE, EventDelegate::FromFunction<UIManager, &UIManager::HandleOnMiddleStageEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_EXIT_MIDDLE_STAGE, EventDelegate::FromFunction<UIManager, &UIManager::HandleExitMiddleStageEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_LAYER_ON, EventDelegate::FromFunction<UIManager, &UIManager::HandleLayerOnEvent>(this));
 }
 
 void UIManager::UnRegisterDelegates()
@@ -287,4 +313,5 @@ void UIManager::UnRegisterDelegates()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ON_TUNNEL, EventDelegate::FromFunction<UIManager, &UIManager::HandleOnTunnelEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ON_MIDDLE_STAGE, EventDelegate::FromFunction<UIManager, &UIManager::HandleOnMiddleStageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_EXIT_MIDDLE_STAGE, EventDelegate::FromFunction<UIManager, &UIManager::HandleExitMiddleStageEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_LAYER_ON, EventDelegate::FromFunction<UIManager, &UIManager::HandleLayerOnEvent>(this));
 }

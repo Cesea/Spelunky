@@ -40,6 +40,7 @@ EventType ExitMiddleStageEvent::_type = EVENT_EXIT_MIDDLE_STAGE;
 EventType PlayerDamagedEvent::_type = EVENT_PLAYER_DAMAGED;
 
 EventType LayerOnEvent::_type = EVENT_LAYER_ON;
+EventType PlayerDeadEvent::_type = EVENT_PLAYER_DEAD;
 
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
@@ -489,17 +490,32 @@ const WCHAR * PlayerDamagedEvent::GetName() const
 	return L"Player Damaged Event";
 }
 
-LayerOnEvent::LayerOnEvent(bool widen, bool updateOthers, const TilePosition &position)
-	:_widen(widen), _updateOthers(updateOthers),_position(position)
+LayerOnEvent::LayerOnEvent(bool32 widen, bool32 updateOthers, bool32 playerDead, const TilePosition &position)
+	:_widen(widen), _updateOthers(updateOthers), _playerDead(playerDead), _position(position)
 {
 }
 
 IEvent * LayerOnEvent::Copy() const
 {
-	return new LayerOnEvent(_widen, _updateOthers, _position);
+	return new LayerOnEvent(_widen, _updateOthers, _playerDead, _position);
 }
 
 const WCHAR * LayerOnEvent::GetName() const
 {
 	return L"Layer On Event";
+}
+
+PlayerDeadEvent::PlayerDeadEvent(EnemyType enemyType)
+	:_enemyType(enemyType)
+{
+}
+
+IEvent * PlayerDeadEvent::Copy() const
+{
+	return new PlayerDeadEvent(_enemyType);
+}
+
+const WCHAR * PlayerDeadEvent::GetName() const
+{
+	return L"Player Dead Event";
 }

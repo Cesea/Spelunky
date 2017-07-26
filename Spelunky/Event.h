@@ -43,6 +43,8 @@ enum  EventType
 	EVENT_PLAYER_DAMAGED = 0x8b6aca10,
 
 	EVENT_LAYER_ON = 0x4f67e141,
+
+	EVENT_PLAYER_DEAD = 0xda84106b,
 };
 
 
@@ -543,22 +545,42 @@ private:
 class LayerOnEvent : public BaseEvent
 {
 public:
-	LayerOnEvent(bool widen, bool updateOthers, const TilePosition &position);
+	LayerOnEvent(bool32 widen, bool32 updateOthers, bool32 playerDead, const TilePosition &position);
 	virtual ~LayerOnEvent() {}
 
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
 	EventType GetType() const override { return _type; }
 
-	bool GetWiden() { return _widen; }
-	bool GetUpdateOthers() { return _updateOthers; }
+	bool32 GetWiden() { return _widen; }
+	bool32 GetUpdateOthers() { return _updateOthers; }
+	bool32 GetPlayerDead() { return _playerDead; }
 	const TilePosition &GetPosition() { return _position; }
 private:
 	static EventType _type;
 
-	bool _widen;
-	bool _updateOthers;
+	bool32 _widen;
+	bool32 _updateOthers;
+	bool32 _playerDead;
 	TilePosition _position;
+};
+
+class PlayerDeadEvent : public BaseEvent
+{
+public:
+	PlayerDeadEvent(EnemyType enemyType);
+	virtual ~PlayerDeadEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	EnemyType GetEnemyType() { return _enemyType; }
+
+private:
+	static EventType _type;
+	EnemyType _enemyType;
+
 };
 
 

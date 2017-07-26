@@ -150,6 +150,14 @@ void Enemy::HandleDamageEvent(const IEvent * event)
 	Rect overlapRect;
 	if (IsRectangleOverlap(attackerAbsRect, thisAbsRect, overlapRect))
 	{
+		MovingObject *attacker = (MovingObject *)OBJECTMANAGER->FindObjectId(convertedEvent->GetAttackerId());
+		Vector2 attackerVel = attacker->GetVelocity();
+		attackerVel.x *= -0.5;
+		if (attackerVel.y < 0)
+		{
+			attackerVel.y *= 0.4;
+		}
+		attacker->SetVelocity(attackerVel);
 		Damaged(1, (tileXDiff >= 0) ? Direction::Right : Direction::Left);
 	}
 }

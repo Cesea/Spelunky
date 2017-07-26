@@ -83,8 +83,8 @@ Stage::~Stage()
 		for (int x = 0; x < STAGE_TOTAL_COUNTX; ++x)
 		{
 			Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
-			Tile *pLayer1Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
-			Tile *pLayer2Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
 
 			if (pLayer0Tile)
 			{
@@ -1097,6 +1097,7 @@ void Stage::BuildThrows()
 
 								newThrows->position.tileX = worldPosition.x;
 								newThrows->position.tileY = worldPosition.y;
+								newThrows->position.AddToTileRelY(32);
 								newThrows->desiredPosition = newThrows->position;
 
 								randomProperty.sourceIndex.x += 1;
@@ -1104,6 +1105,7 @@ void Stage::BuildThrows()
 
 								newThrowsSecond->position.tileX = worldPosition.x;
 								newThrowsSecond->position.tileY = worldPosition.y;
+								newThrows->position.AddToTileRelY(32);
 								newThrowsSecond->desiredPosition = newThrows->position;
 
 								_throws.push_back(newThrows);
@@ -1115,6 +1117,7 @@ void Stage::BuildThrows()
 
 								newThrows->position.tileX = worldPosition.x;
 								newThrows->position.tileY = worldPosition.y;
+								newThrows->position.AddToTileRelY(32);
 								newThrows->desiredPosition = newThrows->position;
 
 								if (newThrows->position.tileX)
@@ -1130,6 +1133,7 @@ void Stage::BuildThrows()
 
 							newThrows->position.tileX = worldPosition.x;
 							newThrows->position.tileY = worldPosition.y;
+							newThrows->position.AddToTileRelY(32);
 							newThrows->desiredPosition = newThrows->position;
 
 							convertedProperty->sourceIndex.x += 1;
@@ -1137,6 +1141,7 @@ void Stage::BuildThrows()
 
 							newThrowsSecond->position.tileX = worldPosition.x;
 							newThrowsSecond->position.tileY = worldPosition.y;
+							newThrows->position.AddToTileRelY(32);
 							newThrowsSecond->desiredPosition = newThrows->position;
 
 							_throws.push_back(newThrows);
@@ -1149,6 +1154,7 @@ void Stage::BuildThrows()
 
 							newThrows->position.tileX = worldPosition.x;
 							newThrows->position.tileY = worldPosition.y;
+							newThrows->position.AddToTileRelY(32);
 							newThrows->desiredPosition = newThrows->position;
 
 							if (newThrows->position.tileX)

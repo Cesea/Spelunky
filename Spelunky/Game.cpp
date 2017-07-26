@@ -28,19 +28,18 @@ HRESULT Game::Init(void)
 	OBJECTMANAGER->Init();
 	PROPERTYFACTORY->Init();
 	EVENTCOLLECTOR->Init();
+	RANKINGMANAGER->Init();
 
 	IScene *gamePlayScene = new GamePlayScene;
 	IScene *mapToolScene = new MapToolScene;
 	IScene *loadingScene = new LoadingScene;
 	IScene *menuScene = new MenuScene;
-	IScene *testScene = new TestScene;
 
 	//씬추가
 	SCENEMANAGER->AddScene(_T("GamePlayScene"), gamePlayScene);
 	SCENEMANAGER->AddScene(_T("MapToolScene"), mapToolScene);
 	SCENEMANAGER->AddScene(_T("LoadingScene"), loadingScene);
 	SCENEMANAGER->AddScene(_T("MenuScene"), menuScene);
-	SCENEMANAGER->AddScene(_T("TestScene"), testScene);
 
 	//현재 씬 설정
 	SCENEMANAGER->ChangeScene(_T("GamePlayScene"));
@@ -65,6 +64,9 @@ void Game::Release(void)
 
 	PROPERTYFACTORY->Release();
 	PROPERTYFACTORY->releaseSingleton();
+
+	RANKINGMANAGER->Release();
+	RANKINGMANAGER->releaseSingleton();
 }
 
 //업데이트...

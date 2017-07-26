@@ -5,7 +5,7 @@
 
 class Enemy : public MovingObject
 {
-public :
+public:
 	Enemy(ObjectId id);
 	virtual ~Enemy();
 
@@ -22,6 +22,8 @@ public :
 
 	D2DSprite *GetCurrentGraphics() { return _currentSprite; }
 	void SetGraphics(const std::wstring &key);
+
+	EnemyType GetEnemyType() { return _enemyType; }
 
 protected :
 	void Damaged(int damage, Direction hitDirection);

@@ -43,6 +43,11 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\uiElement.png", L"uiElement");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\objectSprite.png", L"objectSprite");
 
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\buttonSprite.png", L"buttonSprite");
+
 #pragma region Animation For Player
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
@@ -164,9 +169,6 @@ HRESULT GamePlayScene::LoadContent()
 	int strongSnakeSpitArray[] = {101, 102, 103, 104, 105, 106, 107};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"strong_snake_spit", L"monsters", 80, 80, strongSnakeSpitArray, 7, 12, false);
 
-
-
-
 #pragma endregion
 
 	return S_OK;
@@ -174,19 +176,29 @@ HRESULT GamePlayScene::LoadContent()
 
 void GamePlayScene::RegisterDelegates()
 {
-	EVENTMANAGER->RegisterDelegate(EVENT_LAYER_ON, EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandleLayerOnEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_LAYER_ON, 
+		EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandleLayerOnEvent>(this));
+	//EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_DEAD, 
+	//	EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandlePlayerDeadEvent>(this));
 }
 
 void GamePlayScene::UnRegisterDelegates()
 {
-	EVENTMANAGER->UnRegisterDelegate(EVENT_LAYER_ON, EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandleLayerOnEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_LAYER_ON, 
+		EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandleLayerOnEvent>(this));
+	//EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_DEAD, 
+	//	EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandlePlayerDeadEvent>(this));
 }
 
 void GamePlayScene::HandleLayerOnEvent(const IEvent * event)
 {
+	gRenderTarget->BeginDraw();
+	gRenderTarget->Clear(D2D1::ColorF(0.0, 0.0f, 0.0f, 1.0f));
+
+	gRenderTarget->EndDraw();
+
 	LayerOnEvent *convertedEvent = (LayerOnEvent *)event;
 	//넓히는것
-
 	if (convertedEvent->GetWiden())
 	{
 		_enterTheStage = true;
@@ -199,8 +211,12 @@ void GamePlayScene::HandleLayerOnEvent(const IEvent * event)
 		_enterTheStage = false;
 		_startLayeredRadius = 1000;
 		_targetLayeredRadius = 3;
-	}
 
+		//if (convertedEvent->GetPlayerDead())
+		//{
+		//	_sceneState = PlaySceneState::PlayerDead;
+		//}
+	}
 	_layerRenderOn = true;
 
 	_layeredCenter = convertedEvent->GetPosition().UnTilelize() - _camera.GetPosition().UnTilelize();
@@ -226,6 +242,20 @@ HRESULT GamePlayScene::Init(void)
 	_dWrite.CreateTextFormat(&_smallText, L"Dunkin", 25);
 	_dWrite.CreateTextFormat(&_bigText, L"Dunkin", 25);
 
+	_dWrite.CreateTextFormat(&_deadOverText, L"Tekton", 30);
+	_dWrite.CreateTextFormat(&_deadBlackText, L"Tekton", 20);
+	_dWrite.CreateTextFormat(&_deadWhiteText, L"Dunkin", 19);
+
+
+	_deadOverText->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	_deadOverText->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+	_deadWhiteText->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+	_deadWhiteText->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+	_deadBlackText->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
+	_deadBlackText->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
 	_camera.Init();
 	_camera.SetTarget(_pPlayer);
 	STAGEMANAGER->Init();
@@ -243,6 +273,18 @@ HRESULT GamePlayScene::Init(void)
 
 	_layerRenderTimer.Init(1.0f);
 
+	_sceneState = PlaySceneState::OnDungeon;
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
+
+	_deadBackground = new D2DSprite;
+	_deadBackground->Init(IMAGEMANAGER->GetImage(L"bookbg"), 0, 0, 1024, 709, IntVector2(-512, -354));
+	_deadBook = new D2DSprite;
+	_deadBook->Init(IMAGEMANAGER->GetImage(L"bookgameover"), 0, 0, 1024, 512, IntVector2(-512, -256));
+
+	_buttonSprite = new D2DSprite;
+	_buttonSprite->Init(IMAGEMANAGER->GetImage(L"buttonSprite"), 0, 0, 32, 32, IntVector2(0, 0));
 
 	return S_OK;
 }
@@ -251,69 +293,94 @@ void GamePlayScene::Release(void)
 {
 	STAGEMANAGER->Release();
 	UnRegisterDelegates();
-	//SAFE_RELEASE_AND_DELETE(_obstacle);
+
+	SAFE_RELEASE_AND_DELETE(_deadBackground);
+	SAFE_RELEASE_AND_DELETE(_deadBook);
 }
 
 void GamePlayScene::Update(void)
 {
-
 	float deltaTime = TIMEMANAGER->GetElapsedTime();
 
-	if (_updateOthers)
+	//던전씬에서의 업데이트
+	if (_sceneState == PlaySceneState::OnDungeon)
 	{
-		Win32RawInputState rawInput = {};
-		PullRawInput(&rawInput);
-		ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
-		if (playerCommand.fire)
+		if (_updateOthers)
 		{
-			EVENTMANAGER->QueueEvent(new PlayerInputEvent(_playerId, playerCommand));
-		}
-
-		_pPlayer->Update(deltaTime);
-
-		float camSpeed = 200.0f;
-
-		_camera.Update(deltaTime);
-		STAGEMANAGER->Update(deltaTime);
-
-		Vector2 absMouseVector = _camera.GetPosition().UnTilelize() + currentMouse;
-
-		if (KEYMANAGER->IsOnceKeyDown('Q'))
-		{
-			TilePosition mouseTilePos(absMouseVector);
-			STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));
-		}
-		EFFECTMANAGER->Update(deltaTime);
-		UIMANAGER->Update(deltaTime);
-	}
-
-	if (_layerRenderOn)
-	{
-		if (_layerRenderTimer.Tick(deltaTime))
-		{
-			_layerRenderTimer.Reset();
-			if (_enterTheStage)
+			Win32RawInputState rawInput = {};
+			PullRawInput(&rawInput);
+			ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
+			if (playerCommand.fire)
 			{
-				_layerRenderOn = false;
-				_updateOthers = true;
+				EVENTMANAGER->QueueEvent(new PlayerInputEvent(_playerId, playerCommand));
+			}
+
+			_pPlayer->Update(deltaTime);
+
+			float camSpeed = 200.0f;
+
+			_camera.Update(deltaTime);
+			STAGEMANAGER->Update(deltaTime);
+
+			Vector2 absMouseVector = _camera.GetPosition().UnTilelize() + currentMouse;
+
+			if (KEYMANAGER->IsOnceKeyDown('Q'))
+			{
+				TilePosition mouseTilePos(absMouseVector);
+				STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));
+			}
+			EFFECTMANAGER->Update(deltaTime);
+			UIMANAGER->Update(deltaTime);
+		}
+
+		if (_layerRenderOn)
+		{
+			if (_layerRenderTimer.Tick(deltaTime))
+			{
+				_layerRenderTimer.Reset();
+				if (_enterTheStage)
+				{
+					_layerRenderOn = false;
+					_updateOthers = true;
+				}
+				else
+				{
+					_pPlayer->Reset();
+					if (_pPlayer->GetDead())
+					{
+						EVENTMANAGER->DiscardAllEvents();
+						_sceneState = PlaySceneState::PlayerDead;
+					}
+					else
+					{
+						_layerRenderOn = false;
+						EVENTMANAGER->DiscardAllEvents();
+						EVENTMANAGER->FireEvent(new StageTransitionEvent());
+					}
+				}
 			}
 			else
 			{
-				_pPlayer->Reset();
-				_layerRenderOn = false;
-				EVENTMANAGER->DiscardAllEvents();
-				EVENTMANAGER->FireEvent(new StageTransitionEvent());
+				_t = _layerRenderTimer.GetCurrentSecond() / _layerRenderTimer.GetTargetSecond();
 			}
 		}
-		else
+		if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
 		{
-			_t = _layerRenderTimer.GetCurrentSecond() / _layerRenderTimer.GetTargetSecond();
+			EVENTMANAGER->DiscardAllEvents();
+			SCENEMANAGER->ChangeScene(L"MenuScene");
 		}
 	}
-	if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
+	//플레이어 죽은 상태에서 업데이트
+	else if (_sceneState == PlaySceneState::PlayerDead)
 	{
-		EVENTMANAGER->DiscardAllEvents();
-		SCENEMANAGER->ChangeScene(L"MenuScene");
+		//if (KEYMANAGER->IsOnceKeyDown('Z'))
+		//{
+		//	SCENEMANAGER->ChangeScene(L"MenuScene");
+		//}
+		//else if (KEYMANAGER->IsOnceKeyDown('X'))
+		//{
+		//	ResetToLobyStage();
+		//}
 	}
 }
 
@@ -323,61 +390,112 @@ void GamePlayScene::Render(void)
 	gRenderTarget->BeginDraw();
 	gRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f));
 
-
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();
 
-	if (_layerRenderOn)
+	if (_sceneState == PlaySceneState::OnDungeon)
 	{
-		D2D1_GRADIENT_STOP gradientStops[3];
-		gradientStops[0].color = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);
-		gradientStops[0].position = 0.0f;
-		gradientStops[1].color = D2D1::ColorF(0.0, 0.0, 0.0, 1.0f);
-		gradientStops[1].position = 0.98f;
-		gradientStops[2].color = D2D1::ColorF(0.0, 0.0, 0.0, 0.0f);
-		gradientStops[2].position = 1.0f;
+		if (_layerRenderOn)
+		{
+			D2D1_GRADIENT_STOP gradientStops[3];
+			gradientStops[0].color = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);
+			gradientStops[0].position = 0.0f;
+			gradientStops[1].color = D2D1::ColorF(0.0, 0.0, 0.0, 1.0f);
+			gradientStops[1].position = 0.98f;
+			gradientStops[2].color = D2D1::ColorF(0.0, 0.0, 0.0, 0.0f);
+			gradientStops[2].position = 1.0f;
 
-		gRenderTarget->CreateGradientStopCollection(gradientStops,
-			3, &_pGradientStopCollection);
+			gRenderTarget->CreateGradientStopCollection(gradientStops,
+				3, &_pGradientStopCollection);
 
-		gRenderTarget->CreateRadialGradientBrush(
-			D2D1::RadialGradientBrushProperties(D2D1::Point2F(_layeredCenter.x, _layeredCenter.y), D2D1::Point2F(0, 0),
-				InterpolateFloat(_startLayeredRadius, _targetLayeredRadius, _t), InterpolateFloat(_startLayeredRadius, _targetLayeredRadius, _t)),
-			_pGradientStopCollection,
-			&_radialBrush);
+			gRenderTarget->CreateRadialGradientBrush(
+				D2D1::RadialGradientBrushProperties(D2D1::Point2F(_layeredCenter.x, _layeredCenter.y), D2D1::Point2F(0, 0),
+					InterpolateFloat(_startLayeredRadius, _targetLayeredRadius, _t), InterpolateFloat(_startLayeredRadius, _targetLayeredRadius, _t)),
+				_pGradientStopCollection,
+				&_radialBrush);
 
-		ID2D1Layer *layer{};
-		gRenderTarget->CreateLayer(&layer);
-		gRenderTarget->PushLayer(D2D1::LayerParameters(
-		D2D1::InfiniteRect(), 
-		NULL, 
-		D2D1_ANTIALIAS_MODE_PER_PRIMITIVE, 
-		D2D1::IdentityMatrix(),
-		1.0f,
-		_radialBrush, 
-		D2D1_LAYER_OPTIONS_NONE), 
-		layer);
+			ID2D1Layer *layer{};
+			gRenderTarget->CreateLayer(&layer);
+			gRenderTarget->PushLayer(D2D1::LayerParameters(
+				D2D1::InfiniteRect(),
+				NULL,
+				D2D1_ANTIALIAS_MODE_PER_PRIMITIVE,
+				D2D1::IdentityMatrix(),
+				1.0f,
+				_radialBrush,
+				D2D1_LAYER_OPTIONS_NONE),
+				layer);
 
-		STAGEMANAGER->Render();
-		_pPlayer->Render(gRenderTarget, unTiledCamPos);
-		EFFECTMANAGER->Render();
-		UIMANAGER->Render(unTiledCamPos);
+			STAGEMANAGER->Render();
+			_pPlayer->Render(gRenderTarget, unTiledCamPos);
+			EFFECTMANAGER->Render();
+			UIMANAGER->Render(unTiledCamPos);
 
-		gRenderTarget->PopLayer();
+			gRenderTarget->PopLayer();
 
-		_radialBrush->Release();
+			_radialBrush->Release();
+
+		}
+		else
+		{
+			STAGEMANAGER->Render();
+
+			_pPlayer->Render(gRenderTarget, unTiledCamPos);
+
+			EFFECTMANAGER->Render();
+
+			UIMANAGER->Render(unTiledCamPos);
+		}
+	}
+	else if (_sceneState == PlaySceneState::PlayerDead)
+	{
+		std::wstring timeText{};
+
+		int totalStageElapseTime = (int)STAGEMANAGER->GetTotalStageElapsedTime();
+		int totalMinute = totalStageElapseTime / 60;
+		int totalSecond = totalStageElapseTime - (totalMinute * 60);
+
+		timeText += std::to_wstring(totalMinute);
+		timeText += L":";
+		if (totalSecond < 10)
+		{
+			timeText += L"0" + std::to_wstring(totalStageElapseTime - (totalMinute * 60));
+		}
+		else
+		{
+			timeText += std::to_wstring(totalStageElapseTime - (totalMinute * 60));
+		}
+
+		_deadBackground->Render(gRenderTarget, WINSIZEX / 2, WINSIZEY / 2);
+		_deadBook->Render(gRenderTarget, WINSIZEX / 2, WINSIZEY / 2);
+
+
+		_dWrite.PrintTextFromFormat(gRenderTarget, 702, 160, 284, 72, L"GameOver", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _deadOverText);
+
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728, 226, 116, 32, L"Level:", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _deadBlackText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728, 226 + 39 * 1, 116, 32, L"Money:", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _deadBlackText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728, 226 + 39 * 2, 116, 32, L"Time:", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _deadBlackText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728, 226 + 39 * 3, 116, 32, L"Damsels:", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _deadBlackText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728, 226 + 39 * 4, 116, 32, L"Kills:", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _deadBlackText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728, 226 + 39 * 5, 116, 32, L"TotalDeaths:", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _deadBlackText);
+
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728 + 160, 226 + 39 * 0, 116, 32,
+			std::to_wstring(STAGEMANAGER->GetCurrentStageCount()).c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _deadWhiteText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728 + 160, 226 + 39 * 1, 116, 32,
+			std::to_wstring(_pPlayer->GetMoney()).c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _deadWhiteText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728 + 160, 226 + 39 * 2, 116, 32,
+			timeText.c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _deadWhiteText);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728 + 160, 226 + 39 * 4, 116, 32,
+			std::to_wstring(EVENTCOLLECTOR->GetEnemyDeadCount()).c_str(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _deadWhiteText);
+
+		_dWrite.PrintTextFromFormat(gRenderTarget, 663, 471, 362, 106, 
+			L"Continue\nQuick Restart", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _deadOverText);
+
+		_buttonSprite->Render(gRenderTarget, 750, 474);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 728, 476, 40, 40, L"Z", D2D1::ColorF(0, 0, 0, 1), _deadBlackText);
+		_buttonSprite->Render(gRenderTarget, 717, 510);
+		_dWrite.PrintTextFromFormat(gRenderTarget, 696, 514, 40, 40, L"X", D2D1::ColorF(0,0,0,1), _deadBlackText);
 
 	}
-	else
-	{
-		STAGEMANAGER->Render();
-
-		_pPlayer->Render(gRenderTarget, unTiledCamPos);
-
-		EFFECTMANAGER->Render();
-
-		UIMANAGER->Render(unTiledCamPos);
-	}
-
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

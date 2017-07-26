@@ -211,6 +211,9 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Faint">
       <UniqueIdentifier>{e78646e8-e823-49ff-ab65-118d992a645d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\RankingManager">
+      <UniqueIdentifier>{ee456563-d706-45b5-9126-5c32a7c53e15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="singletonBase.h">
@@ -540,6 +543,9 @@
     <ClInclude Include="TextSpriteObject.h">
       <Filter>Game\Scene\MenuScene\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="RankingManager.h">
+      <Filter>Game\RankingManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -826,6 +832,9 @@
     </ClCompile>
     <ClCompile Include="FaintState.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Faint</Filter>
+    </ClCompile>
+    <ClCompile Include="RankingManager.cpp">
+      <Filter>Game\RankingManager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

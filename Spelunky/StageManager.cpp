@@ -183,6 +183,7 @@ void StageManager::BuildMiddleStage()
 void StageManager::BuildNextStage()
 {
 	SAFE_DELETE(_currentStage);
+	EVENTMANAGER->FireEvent(new ExitMiddleStageEvent());
 	_currentStageElapsedTime = 0;
 
 	_inMiddleStage = false;
@@ -200,8 +201,8 @@ void StageManager::BuildNextStage()
 	_currentStageCount++;
 
 	_pPlayer->position.tileX = _currentStage->GetStartPosition().x;
-	_pPlayer->position.tileY = _currentStage->GetStartPosition().y ;
-	_pPlayer->position.AddToTileRelY(-20);
+	_pPlayer->position.tileY = _currentStage->GetStartPosition().y + 1;
+	_pPlayer->position.AddToTileRelY(-30);
 
 	_pPlayer->desiredPosition = _pPlayer->position;
 
@@ -225,5 +226,5 @@ void StageManager::HandleStageTransitionEvent(const IEvent * event)
 		BuildMiddleStage();
 	}
 	TIMEMANAGER->Tick();
-	EVENTMANAGER->FireEvent(new LayerOnEvent(true, false, _pPlayer->position));
+	EVENTMANAGER->FireEvent(new LayerOnEvent(true, false, false, _pPlayer->position));
 }

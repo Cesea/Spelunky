@@ -30,20 +30,27 @@ public:
 	void UnRegisterDelegates();
 
 	void HandleLayerOnEvent(const IEvent *event);
+	//void HandlePlayerDeadEvent(const IEvent *event);
 
 private:
 	Camera _camera;
 
 private:
-
 	IDWriteTextFormat *_smallText{};
 	IDWriteTextFormat *_bigText{};
-	//ObjectMap _objects;
+
+
+	IDWriteTextFormat *_deadOverText{};
+	IDWriteTextFormat *_deadWhiteText{};
+	IDWriteTextFormat *_deadBlackText{};
+
 
 	InputMapper _inputMapper;
 
 	ObjectId _playerId;
 	Player *_pPlayer{};
+
+	PlaySceneState _sceneState;
 
 	ObjectId _lastId{1};
 	ObjectId GetNextId() { return _lastId++; }
@@ -64,6 +71,9 @@ private:
 
 	bool _exitOnMiddle{false};
 
+	D2DSprite *_deadBackground{};
+	D2DSprite *_deadBook{};
+	D2DSprite *_buttonSprite{};
 
 };
 #endif

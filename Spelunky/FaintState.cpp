@@ -8,12 +8,17 @@
 void FaintState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"faint");
-	_onGroundTimer.Init(1.0f);
-	_recoverTimer.Init(2.0f);
+	_onGroundTimer.Init(0.4f);
+	_recoverTimer.Init(1.6f);
 
 	object->_collisionRepulse = true;
 	object->_isFaint = true;
 	object->_rectOffset.y = -55;
+
+	if (object->_hp <= 0)
+	{
+		object->_dead = true;
+	}
 }
 
 State<Player>* FaintState::Update(Player * object, float deltaTime)
@@ -36,13 +41,23 @@ State<Player>* FaintState::Update(Player * object, float deltaTime)
 		}
 	}
 
+
 	if (_recoverTimerOn)
 	{
-		if (_recoverTimer.Tick(deltaTime))
+		if (!object->_dead)
 		{
-			newState = new StandUpState;
+			if (_recoverTimer.Tick(deltaTime))
+			{
+				newState = new StandUpState;
+			}
+		}
+		else
+		{
+			EVENTMANAGER->QueueEvent(new LayerOnEvent(false, false, object->_dead, object->position));
+			//EVENTMANAGER->QueueEvent(new PlayerDeadEvent(object->_lastEnemyHittedType));
 		}
 	}
+
 
 
 	return newState;

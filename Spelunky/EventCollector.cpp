@@ -83,6 +83,8 @@ void EventCollector::HandleEnemyDeadEvent(const IEvent * event)
 	{
 		found->second.push_back(copyiedEvent);
 	}
+
+	_enemyDeadCount++;
 }
 
 void EventCollector::HandleCollectMoneyEvent(const IEvent * event)

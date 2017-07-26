@@ -158,6 +158,7 @@ typedef Vector3 MeterVector3;
 #include "EffectManager.h"
 #include "UIManager.h"
 #include "EventCollector.h"
+#include "RankingManager.h"
 
 #define EVENTMANAGER EventManager::getSingleton()
 #define OBJECTMANAGER GameObjectManager::getSingleton()
@@ -165,6 +166,7 @@ typedef Vector3 MeterVector3;
 #define EFFECTMANAGER EffectManager::getSingleton()
 #define UIMANAGER UIManager::getSingleton()
 #define EVENTCOLLECTOR EventCollector::getSingleton()
+#define RANKINGMANAGER RankingManager::getSingleton()
 
 #include "Win32Input.h"
 #include "Utillities.h"

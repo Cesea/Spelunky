@@ -24,6 +24,7 @@ private :
 	void HandleOnTunnelEvent(const IEvent *event);
 	void HandleOnMiddleStageEvent(const IEvent *event);
 	void HandleExitMiddleStageEvent(const IEvent *event);
+	void HandleLayerOnEvent(const IEvent *event);
 
 	void RenderMiddleStageStatus(float deltaTime);
 
@@ -62,12 +63,16 @@ private :
 	std::wstring _moneyText{};
 
 	bool32 _finishedShowGold{ false };
+	Timer _middleUpdateOnTimer;
 	Timer _showTimer;
 	bool32 _finishedShowEnemy{ false };
 
 	IntVector2 _objectShowingIndex{ -1, -1 };
 	int _gemShowValue{ 0 };
+	int _enemyKillCount{ 0 };
 	bool32 _endShowing{ false };
+
+	bool32 _middleUpdateOn{ false };
 
 };
 

@@ -20,6 +20,8 @@ public :
 	const IEvent *GetFirstEnemyDeadEvent();
 	const IEvent *GetFirstCollectMoneyEvent();
 
+	int GetEnemyDeadCount() { return _enemyDeadCount; }
+
 private :
 	void RegisterDelegates();
 	void UnRegisterDelegates();
@@ -27,8 +29,9 @@ private :
 	void HandleEnemyDeadEvent(const IEvent *event);
 	void HandleCollectMoneyEvent(const IEvent *event);
 
-
 	EventListMap _eventMap;
+
+	int _enemyDeadCount{ 0 };
 };
 
 

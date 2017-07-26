@@ -26,6 +26,9 @@ public :
 	inline bool GetHolding() { return _holding; }
 	inline void SetHolding(bool b) { _holding = b; }
 
+	void SetVelocity(const Vector2 &v) { _velocity = v; };
+	Vector2 GetVelocity() { return _velocity; }
+
 protected  :
 	Vector2 _speed{};
 	Vector2 _accel{};

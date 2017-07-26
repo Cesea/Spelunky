@@ -116,6 +116,7 @@
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="PropertyFactory.h" />
+    <ClInclude Include="RankingManager.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeAttackState.h" />
     <ClInclude Include="SnakeWalkState.h" />
@@ -258,6 +259,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="PropertyFactory.cpp" />
+    <ClCompile Include="RankingManager.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SnakeAttackState.cpp" />
     <ClCompile Include="SnakeWalkState.cpp" />

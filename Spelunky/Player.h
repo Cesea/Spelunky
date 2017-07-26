@@ -72,6 +72,8 @@ public :
 	int GetRopeCount() { return _rope; }
 	int GetBombCount() { return _bomb; }
 
+	bool32 GetDead() { return _dead; }
+
 	void SetWeaponGraphics(const std::wstring &key);
 	void EndWeaponGraphics();
 
@@ -121,6 +123,7 @@ private :
 	bool32 _collisionRepulse{ false };
 	bool32 _isFaint{ false };
 	bool32 _vulnerable{ true };
+	bool32 _dead{ false };
 	Timer _vulnerableTimer;
 
 
@@ -134,7 +137,8 @@ private :
 
 	ReturnTile _nearTiles;
 	int _money{ 0 };
-	int _hp{ 5 };
+
+	int _hp{ 2 };
 	uint32 _bomb{ 4 };
 	uint32 _rope{ 4 };
 
@@ -153,6 +157,8 @@ private :
 	bool32 _exitOnMiddleStage{ false };
 
 	float _jumpPower{530};
+
+	EnemyType _lastEnemyHittedType;
 
 
 };

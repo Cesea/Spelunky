@@ -163,11 +163,8 @@ void Player::Update(float deltaTime)
 			{
 				if (KEYMANAGER->IsOnceKeyDown('Q'))
 				{
-					//Reset();
 					EVENTMANAGER->DiscardAllEvents();
-					EVENTMANAGER->FireEvent(new LayerOnEvent(false, true, position));
-					//EVENTMANAGER->FireEvent(new StageTransitionEvent());
-					EVENTMANAGER->QueueEvent(new ExitMiddleStageEvent());
+					EVENTMANAGER->FireEvent(new LayerOnEvent(false, true, _dead, position));
 					return;
 				}
 				_currentSprite->Update(deltaTime);
@@ -176,10 +173,8 @@ void Player::Update(float deltaTime)
 			{
 				if (_exitTimer.Tick(deltaTime))
 				{
-					//Reset();
 					EVENTMANAGER->DiscardAllEvents();
-					EVENTMANAGER->FireEvent(new LayerOnEvent(false, true, position));
-					//EVENTMANAGER->FireEvent(new StageTransitionEvent());
+					EVENTMANAGER->FireEvent(new LayerOnEvent(false, true, _dead, position));
 					return;
 				}
 				_currentSprite->Update(deltaTime);
@@ -325,13 +320,10 @@ void Player::HandlePlayerDamagedEvent(const IEvent * event)
 	PlayerDamagedEvent *convertedEvent = (PlayerDamagedEvent *)(event);
 	if (_vulnerable)
 	{
-		_hp -= convertedEvent->GetDamage();
-		if (_hp<= 0)
-		{
-			//여기서 죽는거 처리하자
-			//EVENTMANAGER->QueueEvent(new PlayerDeadEvent());
-		}
+		Enemy *convertedObject = (Enemy *)OBJECTMANAGER->FindObjectId(convertedEvent->GetAttackerId());
 
+		_lastEnemyHittedType = convertedObject->GetEnemyType();
+		_hp -= convertedEvent->GetDamage();
 		_vulnerable = false;
 		Vector2 enemyPosDiff = convertedEvent->GetPosDiff();
 		enemyPosDiff.Normalize();
