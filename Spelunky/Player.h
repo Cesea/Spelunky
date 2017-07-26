@@ -76,6 +76,7 @@ public :
 	void EndWeaponGraphics();
 
 	void SetExitPosition(const TilePosition &exitPosition) { _exitPosition = exitPosition; }
+	void Reset();
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 	void BuildWeaponAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
@@ -84,7 +85,6 @@ private :
 	void CheckCurrentTile();
 
 
-	void Reset();
 	void Damaged();
 
 private :

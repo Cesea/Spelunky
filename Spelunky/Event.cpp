@@ -39,6 +39,8 @@ EventType ExitMiddleStageEvent::_type = EVENT_EXIT_MIDDLE_STAGE;
 
 EventType PlayerDamagedEvent::_type = EVENT_PLAYER_DAMAGED;
 
+EventType LayerOnEvent::_type = EVENT_LAYER_ON;
+
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
 {
@@ -485,4 +487,19 @@ IEvent * PlayerDamagedEvent::Copy() const
 const WCHAR * PlayerDamagedEvent::GetName() const
 {
 	return L"Player Damaged Event";
+}
+
+LayerOnEvent::LayerOnEvent(bool widen, bool updateOthers, const TilePosition &position)
+	:_widen(widen), _updateOthers(updateOthers),_position(position)
+{
+}
+
+IEvent * LayerOnEvent::Copy() const
+{
+	return new LayerOnEvent(_widen, _updateOthers, _position);
+}
+
+const WCHAR * LayerOnEvent::GetName() const
+{
+	return L"Layer On Event";
 }

@@ -159,18 +159,7 @@ void StageManager::BuildMiddleStage()
 
 	Stage *newStage = new Stage;
 	std::wstring firstKey{};
-	if ((_currentStageCount / 4) == 0)
-	{
-		firstKey = L"mine";
-	}
-	else if ((_currentStageCount / 4) == 1)
-	{
-		firstKey = L"jungle";
-	}
-	else if ((_currentStageCount / 4) == 2)
-	{
-		firstKey = L"temple";
-	}
+	firstKey = L"mine";
 	newStage->InitForMiddleStage(firstKey);
 	newStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 
@@ -201,18 +190,8 @@ void StageManager::BuildNextStage()
 	RandomRoomGenerated randomTypes = MakeRandomRoomTypes();
 
 	std::wstring firstKey{};
-	if ((_currentStageCount / 4) == 0)
-	{
 		firstKey = L"mine";
-	}
-	else if ((_currentStageCount / 4) == 1)
-	{
-		firstKey = L"jungle";
-	}
-	else if ((_currentStageCount / 4) == 2)
-	{
-		firstKey = L"temple";
-	}
+
 	newStage->InitFromRoomTypes(firstKey, randomTypes);
 	newStage->CalculateAllMask(0, 0, STAGE_TOTAL_COUNTX, STAGE_TOTAL_COUNTY);
 
@@ -246,4 +225,5 @@ void StageManager::HandleStageTransitionEvent(const IEvent * event)
 		BuildMiddleStage();
 	}
 	TIMEMANAGER->Tick();
+	EVENTMANAGER->FireEvent(new LayerOnEvent(true, false, _pPlayer->position));
 }

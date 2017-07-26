@@ -163,9 +163,10 @@ void Player::Update(float deltaTime)
 			{
 				if (KEYMANAGER->IsOnceKeyDown('Q'))
 				{
-					Reset();
+					//Reset();
 					EVENTMANAGER->DiscardAllEvents();
-					EVENTMANAGER->FireEvent(new StageTransitionEvent());
+					EVENTMANAGER->FireEvent(new LayerOnEvent(false, true, position));
+					//EVENTMANAGER->FireEvent(new StageTransitionEvent());
 					EVENTMANAGER->QueueEvent(new ExitMiddleStageEvent());
 					return;
 				}
@@ -175,9 +176,10 @@ void Player::Update(float deltaTime)
 			{
 				if (_exitTimer.Tick(deltaTime))
 				{
-					Reset();
+					//Reset();
 					EVENTMANAGER->DiscardAllEvents();
-					EVENTMANAGER->FireEvent(new StageTransitionEvent());
+					EVENTMANAGER->FireEvent(new LayerOnEvent(false, true, position));
+					//EVENTMANAGER->FireEvent(new StageTransitionEvent());
 					return;
 				}
 				_currentSprite->Update(deltaTime);

@@ -41,7 +41,10 @@ enum  EventType
 	EVENT_EXIT_MIDDLE_STAGE = 0xc68b0567,
 
 	EVENT_PLAYER_DAMAGED = 0x8b6aca10,
+
+	EVENT_LAYER_ON = 0x4f67e141,
 };
+
 
 
 class IEvent
@@ -535,6 +538,27 @@ private:
 	ObjectId _attackerId;
 	int _damage;
 	Vector2 _posDiff;
+};
+
+class LayerOnEvent : public BaseEvent
+{
+public:
+	LayerOnEvent(bool widen, bool updateOthers, const TilePosition &position);
+	virtual ~LayerOnEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	bool GetWiden() { return _widen; }
+	bool GetUpdateOthers() { return _updateOthers; }
+	const TilePosition &GetPosition() { return _position; }
+private:
+	static EventType _type;
+
+	bool _widen;
+	bool _updateOthers;
+	TilePosition _position;
 };
 
 

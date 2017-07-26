@@ -172,10 +172,48 @@ HRESULT GamePlayScene::LoadContent()
 	return S_OK;
 }
 
+void GamePlayScene::RegisterDelegates()
+{
+	EVENTMANAGER->RegisterDelegate(EVENT_LAYER_ON, EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandleLayerOnEvent>(this));
+}
+
+void GamePlayScene::UnRegisterDelegates()
+{
+	EVENTMANAGER->UnRegisterDelegate(EVENT_LAYER_ON, EventDelegate::FromFunction<GamePlayScene, &GamePlayScene::HandleLayerOnEvent>(this));
+}
+
+void GamePlayScene::HandleLayerOnEvent(const IEvent * event)
+{
+	LayerOnEvent *convertedEvent = (LayerOnEvent *)event;
+	//넓히는것
+
+	if (convertedEvent->GetWiden())
+	{
+		_enterTheStage = true;
+		_startLayeredRadius = 3;
+		_targetLayeredRadius = 1000;
+		_camera.Update(0.016);
+	}
+	else
+	{
+		_enterTheStage = false;
+		_startLayeredRadius = 1000;
+		_targetLayeredRadius = 3;
+	}
+
+	_layerRenderOn = true;
+
+	_layeredCenter = convertedEvent->GetPosition().UnTilelize() - _camera.GetPosition().UnTilelize();
+	_updateOthers = convertedEvent->GetUpdateOthers();
+
+}
+
 HRESULT GamePlayScene::Init(void)
 {
 	HRESULT result = LoadContent();
 	Assert(SUCCEEDED(result));
+
+	RegisterDelegates();
 
 	std::wstring moduleLocation = Utils::GetWorkingDirectory();
 	std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
@@ -203,13 +241,16 @@ HRESULT GamePlayScene::Init(void)
 
 	EVENTMANAGER->QueueEvent(new StageTransitionEvent());
 
+	_layerRenderTimer.Init(1.0f);
+
+
 	return S_OK;
 }
 
 void GamePlayScene::Release(void)
 {
 	STAGEMANAGER->Release();
-
+	UnRegisterDelegates();
 	//SAFE_RELEASE_AND_DELETE(_obstacle);
 }
 
@@ -218,35 +259,57 @@ void GamePlayScene::Update(void)
 
 	float deltaTime = TIMEMANAGER->GetElapsedTime();
 
-	Win32RawInputState rawInput = {};
-	PullRawInput(&rawInput);
-	ControlCommand playerCommand =  _inputMapper.InterpretRawInput(&rawInput);
-	if (playerCommand.fire)
+	if (_updateOthers)
 	{
-		EVENTMANAGER->QueueEvent(new PlayerInputEvent(_playerId, playerCommand));
+		Win32RawInputState rawInput = {};
+		PullRawInput(&rawInput);
+		ControlCommand playerCommand = _inputMapper.InterpretRawInput(&rawInput);
+		if (playerCommand.fire)
+		{
+			EVENTMANAGER->QueueEvent(new PlayerInputEvent(_playerId, playerCommand));
+		}
+
+		_pPlayer->Update(deltaTime);
+
+		float camSpeed = 200.0f;
+
+		_camera.Update(deltaTime);
+		STAGEMANAGER->Update(deltaTime);
+
+		Vector2 absMouseVector = _camera.GetPosition().UnTilelize() + currentMouse;
+
+		if (KEYMANAGER->IsOnceKeyDown('Q'))
+		{
+			TilePosition mouseTilePos(absMouseVector);
+			STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));
+		}
+		EFFECTMANAGER->Update(deltaTime);
+		UIMANAGER->Update(deltaTime);
 	}
 
-
-	_pPlayer->Update(deltaTime);
-
-	float camSpeed = 200.0f;
-
-	_camera.Update(deltaTime);
-	STAGEMANAGER->Update(deltaTime);
-
-	Vector2 absMouseVector = _camera.GetPosition().UnTilelize() + currentMouse;
-
-	if (KEYMANAGER->IsOnceKeyDown('Q'))
+	if (_layerRenderOn)
 	{
-		TilePosition mouseTilePos(absMouseVector);
-		STAGEMANAGER->DestroyTile(IntVector2(mouseTilePos.tileX, mouseTilePos.tileY));
+		if (_layerRenderTimer.Tick(deltaTime))
+		{
+			_layerRenderTimer.Reset();
+			if (_enterTheStage)
+			{
+				_layerRenderOn = false;
+				_updateOthers = true;
+			}
+			else
+			{
+				_pPlayer->Reset();
+				_layerRenderOn = false;
+				EVENTMANAGER->DiscardAllEvents();
+				EVENTMANAGER->FireEvent(new StageTransitionEvent());
+			}
+		}
+		else
+		{
+			_t = _layerRenderTimer.GetCurrentSecond() / _layerRenderTimer.GetTargetSecond();
+		}
 	}
-
-	EFFECTMANAGER->Update(deltaTime);
-
-	UIMANAGER->Update(deltaTime);
-
-
 	if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
 	{
 		EVENTMANAGER->DiscardAllEvents();
@@ -263,16 +326,58 @@ void GamePlayScene::Render(void)
 
 	Vector2 unTiledCamPos = _camera.GetPosition().UnTilelize();
 
-	STAGEMANAGER->Render();
+	if (_layerRenderOn)
+	{
+		D2D1_GRADIENT_STOP gradientStops[3];
+		gradientStops[0].color = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);
+		gradientStops[0].position = 0.0f;
+		gradientStops[1].color = D2D1::ColorF(0.0, 0.0, 0.0, 1.0f);
+		gradientStops[1].position = 0.98f;
+		gradientStops[2].color = D2D1::ColorF(0.0, 0.0, 0.0, 0.0f);
+		gradientStops[2].position = 1.0f;
 
-	_pPlayer->Render(gRenderTarget, unTiledCamPos);
+		gRenderTarget->CreateGradientStopCollection(gradientStops,
+			3, &_pGradientStopCollection);
 
-	EFFECTMANAGER->Render();
+		gRenderTarget->CreateRadialGradientBrush(
+			D2D1::RadialGradientBrushProperties(D2D1::Point2F(_layeredCenter.x, _layeredCenter.y), D2D1::Point2F(0, 0),
+				InterpolateFloat(_startLayeredRadius, _targetLayeredRadius, _t), InterpolateFloat(_startLayeredRadius, _targetLayeredRadius, _t)),
+			_pGradientStopCollection,
+			&_radialBrush);
 
-	UIMANAGER->Render(unTiledCamPos);
+		ID2D1Layer *layer{};
+		gRenderTarget->CreateLayer(&layer);
+		gRenderTarget->PushLayer(D2D1::LayerParameters(
+		D2D1::InfiniteRect(), 
+		NULL, 
+		D2D1_ANTIALIAS_MODE_PER_PRIMITIVE, 
+		D2D1::IdentityMatrix(),
+		1.0f,
+		_radialBrush, 
+		D2D1_LAYER_OPTIONS_NONE), 
+		layer);
 
-	//_dWrite.PrintTextFromFormat(gRenderTarget, 100, 140, 100, 50, L"Hello", D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), _bigText);
-	//_dWrite.PrintTextFromFormat(gRenderTarget, 100, 140, 100, 50, L"Hello", D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), _smallText);
+		STAGEMANAGER->Render();
+		_pPlayer->Render(gRenderTarget, unTiledCamPos);
+		EFFECTMANAGER->Render();
+		UIMANAGER->Render(unTiledCamPos);
+
+		gRenderTarget->PopLayer();
+
+		_radialBrush->Release();
+
+	}
+	else
+	{
+		STAGEMANAGER->Render();
+
+		_pPlayer->Render(gRenderTarget, unTiledCamPos);
+
+		EFFECTMANAGER->Render();
+
+		UIMANAGER->Render(unTiledCamPos);
+	}
+
 
 	//그린 후에는 항상 EndDraw()
 	gRenderTarget->EndDraw();

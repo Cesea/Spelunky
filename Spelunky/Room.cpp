@@ -1278,6 +1278,7 @@ void Stage::HandleCollectMoneyEvent(const IEvent * event)
 	TilePosition objectPosition = object->position;
 	objectPosition.AddToTileRelY(-20);
 	EFFECTMANAGER->PlayBlingParticle(objectPosition.UnTilelize());
+	object->Release();
 	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
@@ -1308,7 +1309,6 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 
 	}break;
 	}
-
 	if (breakType == BreakType::BREAK_Jar ||
 		breakType == BreakType::BREAK_Bone ||
 		breakType == BreakType::BREAK_Rock)
@@ -1343,30 +1343,35 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			}
 		}
 	}
+	object->Release();
 	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
 void Stage::HandleEnemyDeadEvent(const IEvent * event)
 {
 	EnemyDeadEvent *convertedEvent = (EnemyDeadEvent *)event;
-	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 
-	Vector2 effectPosition = object->position.UnTilelize();
-	effectPosition.y -= 32;
-	EFFECTMANAGER->PlayBloodParticle(effectPosition, 0.3f);
-	for (auto &iter = _enemies.begin(); iter != _enemies.end();)
+	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+	if (object)
 	{
-		if ((*iter) == object)
+		Vector2 effectPosition = object->position.UnTilelize();
+		effectPosition.y -= 32;
+		EFFECTMANAGER->PlayBloodParticle(effectPosition, 0.3f);
+		for (auto &iter = _enemies.begin(); iter != _enemies.end();)
 		{
-			_enemies.erase(iter);
-			break;
+			if ((*iter) == object)
+			{
+				_enemies.erase(iter);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
 		}
-		else
-		{
-			iter++;
-		}
+		object->Release();
+		OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 	}
-	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
 void Stage::HandleThrowBombEvent(const IEvent * event)
