@@ -439,7 +439,7 @@ void GamePlayScene::Render(void)
 		{
 			STAGEMANAGER->Render();
 
-			_pPlayer->Render(gRenderTarget, unTiledCamPos);
+			//_pPlayer->Render(gRenderTarget, unTiledCamPos);
 
 			EFFECTMANAGER->Render();
 

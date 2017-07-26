@@ -7,7 +7,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 1, Y : 0
 Boomb Destroy : 0
@@ -16,7 +16,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 2, Y : 0
 Boomb Destroy : 0
@@ -52,7 +52,7 @@ This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 6, Y : 0
 Boomb Destroy : 0
@@ -61,7 +61,7 @@ This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 7, Y : 0
 Boomb Destroy : 0
@@ -70,7 +70,7 @@ This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 0, Y : 1
 Boomb Destroy : 0
@@ -79,7 +79,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 1, Y : 1
 Boomb Destroy : 0
@@ -88,7 +88,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 2, Y : 1
 Boomb Destroy : 0
@@ -124,7 +124,7 @@ This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 6, Y : 1
 Boomb Destroy : 0
@@ -133,7 +133,7 @@ This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 7, Y : 1
 Boomb Destroy : 0
@@ -142,7 +142,7 @@ This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 0, Y : 2
 Boomb Destroy : 0
@@ -151,7 +151,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 1, Y : 2
 Boomb Destroy : 0
@@ -160,7 +160,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 2, Y : 2
 Boomb Destroy : 0
@@ -196,7 +196,7 @@ This Mask Info : 0
 Near Mask Info : 15
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 6, Y : 2
 Boomb Destroy : 0
@@ -205,7 +205,7 @@ This Mask Info : 0
 Near Mask Info : 15
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 7, Y : 2
 Boomb Destroy : 0
@@ -214,7 +214,7 @@ This Mask Info : 0
 Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Applied : 1
 At X : 0, Y : 3
 Boomb Destroy : 0
@@ -223,7 +223,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 1, Y : 3
 Boomb Destroy : 0
@@ -232,7 +232,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 2, Y : 3
 Boomb Destroy : 0
@@ -295,7 +295,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 1, Y : 4
 Boomb Destroy : 0
@@ -304,7 +304,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 2, Y : 4
 Boomb Destroy : 0
@@ -367,7 +367,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 1, Y : 5
 Boomb Destroy : 0
@@ -376,7 +376,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Applied : 1
 At X : 2, Y : 5
 Boomb Destroy : 0

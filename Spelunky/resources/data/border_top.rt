@@ -8,7 +8,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 1, Y : 0
 Image Key : bordertile
@@ -18,7 +18,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 2, Y : 0
 Image Key : bordertile
@@ -28,7 +28,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 3, Y : 0
 Image Key : bordertile
@@ -38,7 +38,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 4, Y : 0
 Image Key : bordertile
@@ -48,7 +48,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 5, Y : 0
 Image Key : bordertile
@@ -58,29 +58,9 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 6, Y : 0
-Image Key : bordertile
-SourceIndex X : 0, Y : 4
-Destroyed Index X : 0, Y : 4
-This Mask Info : 15
-Near Mask Info : 0
-Collision Type : 1
-Mask Info : 0
-Layer : 0
-Can Be Destroyed : 0
-At X : 7, Y : 0
-Image Key : bordertile
-SourceIndex X : 1, Y : 4
-Destroyed Index X : 1, Y : 4
-This Mask Info : 15
-Near Mask Info : 0
-Collision Type : 1
-Mask Info : 0
-Layer : 0
-Can Be Destroyed : 0
-At X : 8, Y : 0
 Image Key : bordertile
 SourceIndex X : 0, Y : 0
 Destroyed Index X : 0, Y : 0
@@ -88,9 +68,9 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
-At X : 9, Y : 0
+At X : 7, Y : 0
 Image Key : bordertile
 SourceIndex X : 1, Y : 0
 Destroyed Index X : 1, Y : 0
@@ -98,7 +78,27 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
+Can Be Destroyed : 0
+At X : 8, Y : 0
+Image Key : bordertile
+SourceIndex X : 0, Y : 2
+Destroyed Index X : 0, Y : 2
+This Mask Info : 15
+Near Mask Info : 0
+Collision Type : 1
+Mask Info : 0
+Layer : 2
+Can Be Destroyed : 0
+At X : 9, Y : 0
+Image Key : bordertile
+SourceIndex X : 1, Y : 2
+Destroyed Index X : 1, Y : 2
+This Mask Info : 15
+Near Mask Info : 0
+Collision Type : 1
+Mask Info : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 0, Y : 1
 Image Key : bordertile
@@ -108,7 +108,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 1, Y : 1
 Image Key : bordertile
@@ -118,7 +118,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 2, Y : 1
 Image Key : bordertile
@@ -128,7 +128,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 3, Y : 1
 Image Key : bordertile
@@ -138,7 +138,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 4, Y : 1
 Image Key : bordertile
@@ -148,7 +148,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 5, Y : 1
 Image Key : bordertile
@@ -158,29 +158,9 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 6, Y : 1
-Image Key : bordertile
-SourceIndex X : 0, Y : 5
-Destroyed Index X : 0, Y : 5
-This Mask Info : 15
-Near Mask Info : 0
-Collision Type : 1
-Mask Info : 0
-Layer : 0
-Can Be Destroyed : 0
-At X : 7, Y : 1
-Image Key : bordertile
-SourceIndex X : 1, Y : 5
-Destroyed Index X : 1, Y : 5
-This Mask Info : 15
-Near Mask Info : 0
-Collision Type : 1
-Mask Info : 0
-Layer : 0
-Can Be Destroyed : 0
-At X : 8, Y : 1
 Image Key : bordertile
 SourceIndex X : 0, Y : 1
 Destroyed Index X : 0, Y : 1
@@ -188,9 +168,9 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
-At X : 9, Y : 1
+At X : 7, Y : 1
 Image Key : bordertile
 SourceIndex X : 1, Y : 1
 Destroyed Index X : 1, Y : 1
@@ -198,67 +178,87 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
+Can Be Destroyed : 0
+At X : 8, Y : 1
+Image Key : bordertile
+SourceIndex X : 0, Y : 3
+Destroyed Index X : 0, Y : 3
+This Mask Info : 15
+Near Mask Info : 0
+Collision Type : 1
+Mask Info : 0
+Layer : 2
+Can Be Destroyed : 0
+At X : 9, Y : 1
+Image Key : bordertile
+SourceIndex X : 1, Y : 3
+Destroyed Index X : 1, Y : 3
+This Mask Info : 15
+Near Mask Info : 0
+Collision Type : 1
+Mask Info : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 0, Y : 2
 Image Key : bordertile
-SourceIndex X : 0, Y : 4
-Destroyed Index X : 0, Y : 4
+SourceIndex X : 0, Y : 0
+Destroyed Index X : 0, Y : 0
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 1, Y : 2
 Image Key : bordertile
-SourceIndex X : 1, Y : 4
-Destroyed Index X : 1, Y : 4
+SourceIndex X : 1, Y : 0
+Destroyed Index X : 1, Y : 0
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 2, Y : 2
 Image Key : bordertile
-SourceIndex X : 0, Y : 0
-Destroyed Index X : 0, Y : 0
+SourceIndex X : 0, Y : 2
+Destroyed Index X : 0, Y : 2
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 3, Y : 2
 Image Key : bordertile
-SourceIndex X : 1, Y : 0
-Destroyed Index X : 1, Y : 0
+SourceIndex X : 1, Y : 2
+Destroyed Index X : 1, Y : 2
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 4, Y : 2
 Image Key : bordertile
-SourceIndex X : 0, Y : 0
-Destroyed Index X : 0, Y : 0
+SourceIndex X : 0, Y : 2
+Destroyed Index X : 0, Y : 2
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 5, Y : 2
 Image Key : bordertile
-SourceIndex X : 1, Y : 0
-Destroyed Index X : 1, Y : 0
+SourceIndex X : 1, Y : 2
+Destroyed Index X : 1, Y : 2
 This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 6, Y : 2
 Image Key : bordertile
@@ -268,7 +268,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 7, Y : 2
 Image Key : bordertile
@@ -278,7 +278,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 8, Y : 2
 Image Key : bordertile
@@ -288,7 +288,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 9, Y : 2
 Image Key : bordertile
@@ -298,7 +298,7 @@ This Mask Info : 15
 Near Mask Info : 0
 Collision Type : 1
 Mask Info : 0
-Layer : 0
+Layer : 2
 Can Be Destroyed : 0
 At X : 0, Y : 3
 Image Key : e
@@ -801,14 +801,14 @@ Mask Info : 0
 Layer : 0
 Can Be Destroyed : 0
 At X : 0, Y : 0
-Image Key : bordertile
-SourceIndex X : 5, Y : 2
-Destroyed Index X : 5, Y : 2
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
 This Mask Info : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 0
 Can Be Destroyed : 0
 At X : 1, Y : 0
 Image Key : e
@@ -891,14 +891,14 @@ Mask Info : 0
 Layer : 0
 Can Be Destroyed : 0
 At X : 9, Y : 0
-Image Key : e
-SourceIndex X : -1, Y : -1
-Destroyed Index X : 0, Y : 0
+Image Key : bordertile
+SourceIndex X : 6, Y : 2
+Destroyed Index X : 6, Y : 2
 This Mask Info : 0
-Near Mask Info : 0
+Near Mask Info : 15
 Collision Type : 0
 Mask Info : 0
-Layer : 0
+Layer : 3
 Can Be Destroyed : 0
 At X : 0, Y : 1
 Image Key : e
@@ -1028,7 +1028,7 @@ This Mask Info : 0
 Near Mask Info : 15
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 3
 Can Be Destroyed : 0
 At X : 3, Y : 2
 Image Key : e
@@ -1071,14 +1071,14 @@ Mask Info : 0
 Layer : 0
 Can Be Destroyed : 0
 At X : 7, Y : 2
-Image Key : bordertile
-SourceIndex X : 5, Y : 2
-Destroyed Index X : 5, Y : 2
+Image Key : e
+SourceIndex X : -1, Y : -1
+Destroyed Index X : 0, Y : 0
 This Mask Info : 0
-Near Mask Info : 15
+Near Mask Info : 0
 Collision Type : 0
 Mask Info : 0
-Layer : 2
+Layer : 0
 Can Be Destroyed : 0
 At X : 8, Y : 2
 Image Key : e

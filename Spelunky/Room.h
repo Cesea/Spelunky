@@ -63,6 +63,10 @@ public:
 	void Update(float deltaTime);
 	void Render(const TilePosition &camPos);
 
+	void RenderDeeperLayer(int minX, int maxX, int minY, int maxY, const Vector2 &camPos);
+	void RenderBlockingLayer(int minX, int maxX, int minY, int maxY, const Vector2 &camPos);
+	void RenderObjects(const Vector2 &camPos);
+
 	void ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int height);
 	void CalculateAllMask(int xStartIndex, int yStartIndex, int width, int height);
 	void CalculateMask(int xStartIndex, int yStartIndex, int width, int height, int layer);
@@ -91,7 +95,7 @@ private:
 
 	void CheckUsingSpriteExistence(const std::wstring &key);
 
-	void TileInfoBitmaskCopy(D2DSprite *sourSprite, Tile *sourTile, Tile *maskTile, uint32 offset);
+	void TileInfoBitmaskCopy(D2DSprite *sourSprite, Tile *sourTile, uint32 offset);
 
 	void BuildEntrance();
 	void BuildGems();
@@ -110,6 +114,7 @@ private:
 	Tile *tileLayer0[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
 	Tile *tileLayer1[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
 	Tile *tileLayer2[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
+	Tile *tileLayer3[STAGE_TOTAL_COUNTX * STAGE_TOTAL_COUNTY]{};
 
 	Tunnel *_tunnels[2]{};
 

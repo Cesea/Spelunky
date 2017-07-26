@@ -42,10 +42,10 @@ private :
 	void LoadCurrentEditingInfoAction();
 	void SaveCurrentEditingInfoAction();
 
-	void CalculateBitMask(MapTool::TileInfo *sourceLayer, MapTool::TileInfo *maskLayer);
+	void CalculateBitMask(MapTool::TileInfo *sourceLayer);
 	void ClearAllTheBits(MapTool::RoomInfo *roomInfo);
 
-	void TileInfoBitmaskCopy(const std::wstring imageKey, MapTool::TileInfo &sourTile, MapTool::TileInfo &maskTile, uint32 offset);
+	void TileInfoBitmaskCopy(const std::wstring imageKey, MapTool::TileInfo &sourTile, uint32 offset);
 
 	int InSyncImageInfo();
 	int OutSyncImageInfo();
@@ -55,6 +55,8 @@ private :
 
 	void WriteTilePropertyInfoChunkForMap(FileUtils::File &file, const MapTool::PropertyInfo *infos, int xCount, int yCount);
 	void ReadTilePropertyInfoChunkForMap(FileUtils::File &file, MapTool::PropertyInfo *infos, int xCount, int yCount);
+
+	void RenderMaskTile(int x, int y, MapTool::TileInfo &tileInfo);
 
 private:
 	D2D1::ColorF _sceneClearColor{0.1f, 0.1f, 0.1f, 1.0f};

@@ -44,6 +44,24 @@ void StageManager::Render()
 {
 	if (_currentStage)
 	{
+		const TilePosition &camPos = _pCamera->GetPosition();
+		const Vector2 &camPosUntiled = camPos.UnTilelize();
+
+		int minX = camPos.tileX;
+		int maxX = camPos.tileX + 21;
+		int minY = camPos.tileY;
+		int maxY = camPos.tileY + 12;
+		if (minX < 0) { minX = 0; }
+		if (minY < 0) { minY = 0; }
+		if (maxX > STAGE_TOTAL_COUNTX - 1) { maxX = STAGE_TOTAL_COUNTX - 1; }
+		if (maxY > STAGE_TOTAL_COUNTY - 1) { maxY = STAGE_TOTAL_COUNTY - 1; }
+
+		_currentStage->RenderDeeperLayer(minX, maxX, minY, maxY, camPosUntiled);
+
+		_currentStage->RenderObjects(camPosUntiled);
+		_pPlayer->Render(gRenderTarget, camPosUntiled);
+		_currentStage->RenderBlockingLayer(minX, maxX, minY, maxY, camPosUntiled);
+
 		_currentStage->Render(_pCamera->GetPosition());
 	}
 }
@@ -202,7 +220,8 @@ void StageManager::BuildNextStage()
 
 	_pPlayer->position.tileX = _currentStage->GetStartPosition().x;
 	_pPlayer->position.tileY = _currentStage->GetStartPosition().y + 1;
-	_pPlayer->position.AddToTileRelY(-30);
+	_pPlayer->position.AddToTileRelX(20);
+	_pPlayer->position.AddToTileRelY(-10);
 
 	_pPlayer->desiredPosition = _pPlayer->position;
 

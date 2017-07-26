@@ -274,23 +274,25 @@ void Stage::ClearAllTheBits(int xStartIndex, int yStartIndex, int width, int hei
 void Stage::CalculateAllMask(int xStartIndex, int yStartIndex, int width, int height)
 {
 	ClearAllTheBits(xStartIndex, yStartIndex, width, height);
-	CalculateMask(xStartIndex, yStartIndex, width, height, 1);
 	CalculateMask(xStartIndex, yStartIndex, width, height, 0);
+	CalculateMask(xStartIndex, yStartIndex, width, height, 1);
+	CalculateMask(xStartIndex, yStartIndex, width, height, 2);
 }
 
 void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int height, int layer)
 {
 	Tile **tileLayer = nullptr;
-	Tile **otherLayer = nullptr;
 	if (layer == 0)
 	{
 		tileLayer = tileLayer0;
-		otherLayer = tileLayer1;
 	}
 	else if (layer == 1)
 	{
 		tileLayer = tileLayer1;
-		otherLayer = tileLayer0;
+	}
+	else if (layer == 2)
+	{
+		tileLayer = tileLayer2;
 	}
 	for (int y = yStartIndex; y < yStartIndex + height; ++y)
 	{
@@ -310,7 +312,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 					{
 						if ((tileLayer[index]->thisMaskInfo >> 0) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 0);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y],  0);
 						}
 					}
 					//위에 타일이 있다. 
@@ -319,7 +321,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 						if (((tileLayer[x + STAGE_TOTAL_COUNTX * upperY]->nearMaskInfo >> 3) & 1) &&
 							(tileLayer[index]->thisMaskInfo >> 0) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 0);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y],  0);
 						}
 					}
 				}
@@ -332,7 +334,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 					{
 						if ((tileLayer[index]->thisMaskInfo >> 1) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 1);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y],  1);
 						}
 					}
 					//왼쪽 타일이 있다
@@ -341,7 +343,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 						if (((tileLayer[leftX + STAGE_TOTAL_COUNTX * y]->nearMaskInfo >> 2) & 1) &&
 							((tileLayer[index]->thisMaskInfo >> 1) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 1);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], 1);
 						}
 					}
 				}
@@ -354,7 +356,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 					{
 						if (((tileLayer[index]->thisMaskInfo >> 2) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 2);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y],  2);
 						}
 					}
 					//오른쪽 타일이 있다
@@ -363,7 +365,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 						if (((tileLayer[rightX + STAGE_TOTAL_COUNTX * y]->nearMaskInfo >> 1) & 1) &&
 							((tileLayer[index]->thisMaskInfo >> 2) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 2);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], 2);
 						}
 					}
 				}
@@ -376,7 +378,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 					{
 						if (((tileLayer[index]->thisMaskInfo >> 3) & 1))
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 3);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y],  3);
 						}
 					}
 					//아래쪽 타일이 있다
@@ -385,7 +387,7 @@ void Stage::CalculateMask(int xStartIndex, int yStartIndex, int width, int heigh
 						if (((tileLayer[x + STAGE_TOTAL_COUNTX * lowerY]->nearMaskInfo >> 0) & 1) &&
 							(tileLayer[index]->thisMaskInfo >> 3) & 1)
 						{
-							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], tileLayer2[x + STAGE_TOTAL_COUNTX * y], 3);
+							TileInfoBitmaskCopy(thisTileSprite, tileLayer[x + STAGE_TOTAL_COUNTX * y], 3);
 						}
 					}
 				}
@@ -425,7 +427,6 @@ void Stage::Update(float deltaTime)
 void Stage::Render(const TilePosition &camPos)
 {
 	int minX = camPos.tileX;
-	//여기서 마스크 레이어의 재대로 된 렌더를 위하여 1을 더 해줌
 	int maxX = camPos.tileX + 21;
 	int minY = camPos.tileY;
 	int maxY = camPos.tileY + 12;
@@ -436,6 +437,10 @@ void Stage::Render(const TilePosition &camPos)
 
 	Vector2 untileldCamPos = camPos.UnTilelize();
 
+}
+
+void Stage::RenderDeeperLayer(int minX, int maxX, int minY, int maxY, const Vector2 &camPos)
+{
 	int backMinX = minX / 4;
 	int backMaxX = maxX / 4;
 	int backMinY = minY / 4;
@@ -445,14 +450,13 @@ void Stage::Render(const TilePosition &camPos)
 	{
 		for (int x = backMinX; x <= backMaxX; ++x)
 		{
-			_backgroundSprite->Render(gRenderTarget, x * BACKGROUND_SIZE - untileldCamPos.x, 
-				y * BACKGROUND_SIZE - untileldCamPos.y);
+			_backgroundSprite->Render(gRenderTarget, x * BACKGROUND_SIZE - camPos.x, 
+				y * BACKGROUND_SIZE - camPos.y);
 		}
 	}
 
-	_tunnels[0]->Render(gRenderTarget, untileldCamPos);
-	_tunnels[1]->Render(gRenderTarget, untileldCamPos);
-
+	_tunnels[0]->Render(gRenderTarget, camPos);
+	_tunnels[1]->Render(gRenderTarget, camPos);
 
 	for (int y = minY; y <= maxY; ++y)
 	{
@@ -460,7 +464,31 @@ void Stage::Render(const TilePosition &camPos)
 		{
 			if (tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
 			{
-				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
+				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, camPos);
+			}
+		}
+	}
+	for (int y = minY; y <= maxY; ++y)
+	{
+		for (int x = minX; x <= maxX; ++x)
+		{
+			if (tileLayer3[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				tileLayer3[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, camPos);
+			}
+		}
+	}
+}
+
+void Stage::RenderBlockingLayer(int minX, int maxX, int minY, int maxY, const Vector2 &camPos)
+{
+	for (int y = minY; y <= maxY; ++y)
+	{
+		for (int x = minX; x <= maxX; ++x)
+		{
+			if (tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
+			{
+				tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, camPos);
 			}
 		}
 	}
@@ -469,34 +497,31 @@ void Stage::Render(const TilePosition &camPos)
 	{
 		for (int x = minX; x <= maxX; ++x)
 		{
-			if (tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
-			{
-				tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
-			}
 			if (tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)])
 			{
-				tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, untileldCamPos);
+				tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)]->Render(gRenderTarget, camPos);
 			}
 		}
 	}
+}
 
-
+void Stage::RenderObjects(const Vector2 & camPos)
+{
 	for (auto &throws : _throws)
 	{
-		throws->Render(gRenderTarget, untileldCamPos);
+		throws->Render(gRenderTarget, camPos);
 	}
-
 	for (auto &gem : _gems)
 	{
-		gem->Render(gRenderTarget, untileldCamPos);
+		gem->Render(gRenderTarget, camPos);
 	}
 	for (auto &bomb : _bombs)
 	{
-		bomb->Render(gRenderTarget, untileldCamPos);
+		bomb->Render(gRenderTarget, camPos);
 	}
 	for (auto &enemy : _enemies)
 	{
-		enemy->Render(gRenderTarget, untileldCamPos);
+		enemy->Render(gRenderTarget, camPos);
 	}
 }
 
@@ -522,8 +547,8 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		pLayer0Tile->nearMaskInfo = 15;
 		destroyed = true;
 
-		pLayer2Tile = pLayer0Tile;
-		pLayer0Tile = nullptr;
+		//pLayer2Tile = pLayer0Tile;
+		//pLayer0Tile = nullptr;
 	}
 	else if(pLayer1Tile != nullptr &&
 		pLayer1Tile->canBeDestroyedByBomb)
@@ -537,8 +562,8 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		pLayer1Tile->nearMaskInfo = 15;
 		destroyed = true;
 
-		pLayer2Tile = pLayer1Tile;
-		pLayer1Tile = nullptr;
+		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = std::move(pLayer1Tile);
+		tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
 	}
 
 	if (pLayer2Tile != nullptr &&
@@ -550,6 +575,9 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		pLayer2Tile->thisMaskInfo = 0;
 		pLayer2Tile->nearMaskInfo = 15;
 		destroyed = true;
+
+		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = std::move(pLayer2Tile);
+		tileLayer2[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
 	}
 	if (destroyed)
 	{
@@ -573,6 +601,7 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		ClearAllTheBits(tilePos.x - 1, tilePos.y - 1, 3, 3);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 0);
 		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 1);
+		CalculateMask(tilePos.x - 1, tilePos.y - 1, 3, 3, 2);
 
 		if (breakTileCollType == TileCollisionType::TILE_COLLISION_BLOCK)
 		{
@@ -683,6 +712,7 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 		ClearAllTheBits(xStartIndex -2 , yStartIndex - 2 , width + 6 , height + 6 );
 		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 6, height + 6, 0);
 		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 6, height + 6, 1);
+		CalculateMask(xStartIndex - 2, yStartIndex - 2, width + 6, height + 6, 2);
 	}
 }
 
@@ -825,11 +855,12 @@ void Stage::BuildTileLayerFromFile(FileUtils::File & file,
 					newTile->position.tileX = worldPositon.x;
 					newTile->position.tileY = worldPositon.y;
 					newTile->desiredPosition = newTile->position;
-					if (property->layer == 0)
-					{
-						tileLayer0[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
-					}
-					else if (property->layer == 2)
+					//if (property->layer == 0)
+					//{
+					//	tileLayer0[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
+					//}
+					/*else */
+					if (property->layer == 2)
 					{
 						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
 					}
@@ -909,9 +940,9 @@ void Stage::BuildOrnamentsFromFile(FileUtils::File & file, int roomX, int roomY,
 					newTile->position.tileX = worldPositon.x;
 					newTile->position.tileY = worldPositon.y;
 					newTile->desiredPosition = newTile->position;
-					if (property->layer == 2)
+					if (property->layer == 3)
 					{
-						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
+						tileLayer3[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
 					}
 				}
 				else
@@ -920,9 +951,9 @@ void Stage::BuildOrnamentsFromFile(FileUtils::File & file, int roomX, int roomY,
 					newTile->position.tileX = worldPositon.x;
 					newTile->position.tileY = worldPositon.y;
 					newTile->desiredPosition = newTile->position;
-					if (property->layer == 2)
+					if (property->layer == 3)
 					{
-						tileLayer2[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
+						tileLayer3[GetIndexFromXY(worldPositon.x, worldPositon.y, STAGE_TOTAL_COUNTX)] = newTile;
 					}
 				}
 			}
@@ -951,7 +982,7 @@ void Stage::CheckUsingSpriteExistence(const std::wstring & key)
 
 
 
-void Stage::TileInfoBitmaskCopy(D2DSprite * sourSprite, Tile * sourTile, Tile * maskTile, uint32 offset)
+void Stage::TileInfoBitmaskCopy(D2DSprite * sourSprite, Tile * sourTile, uint32 offset)
 {
 	sourTile->maskInfo |= (1 << offset);
 	sourTile->spriteMaskInfo[offset].hasMask = true;
