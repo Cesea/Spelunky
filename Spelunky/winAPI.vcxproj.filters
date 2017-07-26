@@ -842,5 +842,8 @@
     <ClCompile Include="RankingManager.cpp">
       <Filter>Game\RankingManager</Filter>
     </ClCompile>
+    <ClCompile Include="Crate.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Crate</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

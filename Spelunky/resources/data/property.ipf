@@ -147,20 +147,20 @@ Applied : 0
 At X : 0, Y : 3
 Property Name : crate
 SourceIndex X : 0, Y : 0
-Value0 : none
-Value1 : none
+Value0 : gemSpawn
+Value1 : 0
 Applied : 1
 At X : 1, Y : 3
 Property Name : crate
 SourceIndex X : 1, Y : 0
-Value0 : none
-Value1 : none
+Value0 : itemSpawn
+Value1 : 0
 Applied : 1
 At X : 2, Y : 3
 Property Name : crate
-SourceIndex X : 2, Y : 0
-Value0 : none
-Value1 : none
+SourceIndex X : -2, Y : -2
+Value0 : 0
+Value1 : 0
 Applied : 1
 At X : 3, Y : 3
 Property Name : none

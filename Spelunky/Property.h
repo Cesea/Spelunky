@@ -21,6 +21,12 @@ struct MaskInfo
 	bool32 hasMask{};
 };
 
+enum CrateType
+{
+	CRATE_GemSpawn,
+	CRATE_ItemSpawn
+};
+
 enum EnemyType
 {
 	ENEMY_NONE,
@@ -128,6 +134,13 @@ struct ThrowProperty : public BaseProperty
 struct EnemyProperty : public BaseProperty
 {
 	EnemyType type;
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
+};
+
+struct CrateProperty : public BaseProperty
+{
+	IntVector2 sourceIndex{ -1, -1 };
+	CrateType type;
 	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 

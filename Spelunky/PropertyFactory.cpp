@@ -39,6 +39,7 @@ void PropertyFactory::RegisterBuilders()
 	RegisterBuilder(L"bomb", new TPropertyBuilder<BombProperty>());
 	RegisterBuilder(L"throws", new TPropertyBuilder<ThrowProperty>());
 	RegisterBuilder(L"enemy", new TPropertyBuilder<EnemyProperty>());
+	RegisterBuilder(L"crate", new TPropertyBuilder<CrateProperty>());
 }
 
 void PropertyFactory::UnRegisterBuilders()
@@ -48,6 +49,7 @@ void PropertyFactory::UnRegisterBuilders()
 	UnRegisterBuilder(L"gem");
 	UnRegisterBuilder(L"throws");
 	UnRegisterBuilder(L"enemy");
+	UnRegisterBuilder(L"crate");
 }
 
 void PropertyFactory::RegisterBuilder(const std::wstring & key, PropertyBuilder * builder)

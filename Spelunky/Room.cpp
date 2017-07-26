@@ -171,7 +171,7 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 	BuildGems();
 	BuildThrows();
 	BuildEnemies();
-
+	BuildCrates();
 	return S_OK;
 }
 
@@ -527,6 +527,10 @@ void Stage::RenderObjects(const Vector2 & camPos)
 	{
 		bomb->Render(gRenderTarget, camPos);
 	}
+	for (auto &crate : _crates)
+	{
+		crate->Render(gRenderTarget, camPos);
+	}
 	for (auto &enemy : _enemies)
 	{
 		enemy->Render(gRenderTarget, camPos);
@@ -824,27 +828,27 @@ bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
 	int randInt = RND->GetFromIntTo(0, 9);
 
-	switch (types)
-	{
-	case RoomType::ROOM_BLOCK:
-	{
-		str += L"_block_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	case RoomType::ROOM_AISLE :
-	{
-		str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	case RoomType::ROOM_TOP_OPEN :
-	{
-		str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	case RoomType::ROOM_BOTTOM_OPEN :
-	{
-		str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	}
+	//switch (types)
+	//{
+	//case RoomType::ROOM_BLOCK:
+	//{
+	//	str += L"_block_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//case RoomType::ROOM_AISLE :
+	//{
+	//	str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//case RoomType::ROOM_TOP_OPEN :
+	//{
+	//	str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//case RoomType::ROOM_BOTTOM_OPEN :
+	//{
+	//	str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//}
 
-	//str = L"00.rt";
+	str = L"00.rt";
 	return true;
 }
 
@@ -1290,6 +1294,36 @@ void Stage::BuildEnemies()
 					if (newEnemy)
 					{
 						_enemies.push_back(newEnemy);
+					}
+
+				}
+			}
+		}
+	}
+}
+
+void Stage::BuildCrates()
+{
+	for (int y = 0; y < 4; ++y)
+	{
+		for (int x = 0; x < 4; ++x)
+		{
+			auto &found = _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"crate");
+			if (found != _rooms[GetIndexFromXY(x, y, 4)].properties.end())
+			{
+				for (auto &prop : found->second)
+				{
+					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+
+					CrateProperty *convertedProperty = (CrateProperty *)(prop);
+					convertedProperty->position.x = worldPosition.x;
+					convertedProperty->position.y = worldPosition.y;
+
+					Crate *newCrate = (Crate *)OBJECTMANAGER->CreateObject(L"crate", convertedProperty);
+
+					if (newCrate)
+					{
+						_crates.push_back(newCrate);
 					}
 
 				}

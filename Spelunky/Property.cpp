@@ -277,3 +277,16 @@ void EnemyProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 	}
 
 }
+
+void CrateProperty::Init(const MapTool::PropertyInfo & propertyInfo)
+{
+	sourceIndex = propertyInfo.sourceIndex;
+	if (wcscmp(propertyInfo.value0, L"gemSpawn"))
+	{
+		type = CRATE_GemSpawn;
+	}
+	else if (wcscmp(propertyInfo.value0, L"itemSpawn"))
+	{
+		type = CRATE_ItemSpawn;
+	}
+}

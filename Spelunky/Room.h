@@ -10,6 +10,8 @@
 #include "Bomb.h"
 #include "Enemy.h"
 
+#include "Crate.h"
+
 struct RandomRoomGenerated
 {
 	IntVector2 startRoomIndex{};
@@ -105,6 +107,7 @@ private:
 	void BuildGems();
 	void BuildThrows();
 	void BuildEnemies();
+	void BuildCrates();
 	void CollectRoomPropertyFromFile(FileUtils::File &file, Room *room);
 
 
@@ -128,6 +131,7 @@ private:
 	std::list<Gem *> _gems{};
 	std::list<Throws *> _throws{};
 	std::list<Enemy *> _enemies{};
+	std::list<Crate *> _crates{};
 
 
 	std::map<std::wstring, D2DSprite *> _usingSprites;

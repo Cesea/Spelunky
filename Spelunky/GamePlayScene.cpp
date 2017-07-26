@@ -34,6 +34,7 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\monsters.png", L"monsters");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\particles.png", L"particles");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\crates.png", L"crates");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\board.png", L"board");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\tunneltitle.png", L"tunneltitle");
