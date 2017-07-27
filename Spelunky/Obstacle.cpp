@@ -39,3 +39,7 @@ void Obstacle::HandlePlayerPositionEvent(const IEvent * event)
 void Obstacle::HandlePlayerAttackEvent(const IEvent * event)
 {
 }
+
+void Obstacle::HandleObstaclePositionEvent(const IEvent * event)
+{
+}

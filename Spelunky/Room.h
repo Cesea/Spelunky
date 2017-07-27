@@ -118,6 +118,7 @@ private:
 
 	void HandleSpawnObjectEvent(const IEvent *event);
 	void HandleCollectEatableEvent(const IEvent *event);
+	void HandleFireArrowEvent(const IEvent *event);
 
 private :
 	void BuildRandomGem(const IntVector2 &genPos);

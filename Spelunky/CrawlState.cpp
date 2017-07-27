@@ -20,6 +20,12 @@ State<Player>* CrawlState::Update(Player * object, float deltaTime)
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
+
 	object->_velocity += object->_accel * deltaTime;
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
 
@@ -57,6 +63,11 @@ void CrawlIdleState::OnEnter(Player * object)
 
 State<Player>* CrawlIdleState::Update(Player * object, float deltaTime)
 {
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
+
 	object->_velocity += object->_accel * deltaTime;
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
 

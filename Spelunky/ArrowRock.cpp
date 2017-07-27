@@ -15,7 +15,7 @@ ArrowRock::~ArrowRock()
 
 HRESULT ArrowRock::Init(BaseProperty * property)
 {
-	_sourceIndex = IntVector2(2, 0);
+	_sourceIndex = IntVector2(1, 0);
 	_sprite = new D2DFrameSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"obstacles"), 64, 64, IntVector2(-32, -64));
 
@@ -27,11 +27,13 @@ HRESULT ArrowRock::Init(BaseProperty * property)
 	_obstacleType = OBSTACLE_BombCrate;
 	position.tileX = convertedProperty->position.x;
 	position.tileY = convertedProperty->position.y;
-	position.AddToTileRel(32, 44);
+	position.AddToTileRel(32, 64);
 	desiredPosition = position;
 
+	_facingDirection = convertedProperty->facingDirection;
+
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandlePlayerPositionEvent>(this));
-	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandlePlayerAttackEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleObstaclePositionEvent>(this));
 
 	return S_OK;
 }
@@ -42,7 +44,7 @@ void ArrowRock::Release(void)
 	SAFE_DELETE(_collisionComp);
 
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandlePlayerPositionEvent>(this));
-	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandlePlayerAttackEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleObstaclePositionEvent>(this));
 }
 
 void ArrowRock::Update(float deltaTime)
@@ -62,7 +64,14 @@ void ArrowRock::Update(float deltaTime)
 void ArrowRock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 {
 	Vector2 drawPos = position.UnTilelize() - camPos;
-	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
+	if (_facingDirection == Direction::Left)
+	{
+		_sprite->FrameRenderFlip(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
+	}
+	else if (_facingDirection == Direction::Right)
+	{
+		_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
+	}
 
 	const Vector2 itemUntiledPosition = position.UnTilelize();
 	Rect itemAbsRect =
@@ -88,14 +97,14 @@ void ArrowRock::HandlePlayerPositionEvent(const IEvent * event)
 	int tileXDiff = playerTilePosition.tileX - position.tileX;
 	int tileYDiff = playerTilePosition.tileY - position.tileY;
 
-	if (abs(tileXDiff) >= 3 || abs(tileYDiff) >= 3)
+	if (abs(tileXDiff) >= 8 || abs(tileYDiff) >= 3)
 	{
 		return;
 	}
 
 	Player *pPlayer = (Player *)OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 
-	const Vector2 &playerUntiled = playerTilePosition.UnTilelize();
+	Vector2 &playerUntiled = playerTilePosition.UnTilelize();
 	const Vector2 untiled = position.UnTilelize();
 	const Rect &playerRect = convertedEvent->GetRect();
 
@@ -107,8 +116,30 @@ void ArrowRock::HandlePlayerPositionEvent(const IEvent * event)
 		RectMake(untiled.x, untiled.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
 	itemAbsRect += _collisionComp->GetOffset();
 
+	playerUntiled.y -= 16;
 	float relXDiff = playerUntiled.x - untiled.x;
 	float relYDiff = playerUntiled.y - untiled.y;
+
+	if (!_fired)
+	{
+		if (_facingDirection == Direction::Left)
+		{
+			//플레이어가 왼쪽에 있을때 
+			if ((relXDiff < 0) && (abs(relYDiff) < 16))
+			{
+				Console::Log("fire\n");
+				Fire();
+			}
+		}
+		else
+		{
+			if ((relXDiff > 0) && (abs(relYDiff) < 16))
+			{
+				Console::Log("fire\n");
+				Fire();
+			}
+		}
+	}
 
 	Rect overlapRect;
 	if (IsRectangleOverlap(playerAbsRect, itemAbsRect, overlapRect))
@@ -119,12 +150,14 @@ void ArrowRock::HandlePlayerPositionEvent(const IEvent * event)
 			{
 				pPlayer->position.AddToTileRelY(overlapRect.height);
 				pPlayer->desiredPosition = pPlayer->position;
+				pPlayer->SetVelocityY(0);
 				pPlayer->SetHeadHit(true);
 			}
 			else
 			{
 				pPlayer->position.AddToTileRelY(-overlapRect.height);
 				pPlayer->desiredPosition = pPlayer->position;
+				pPlayer->SetOnObject(true);
 				pPlayer->SetOnGround(true);
 			}
 		}
@@ -134,16 +167,91 @@ void ArrowRock::HandlePlayerPositionEvent(const IEvent * event)
 			{
 				pPlayer->position.AddToTileRelX(overlapRect.width);
 				pPlayer->desiredPosition = pPlayer->position;
+				pPlayer->SetVelocityX(0);
 			}
 			else
 			{
 				pPlayer->position.AddToTileRelX(-overlapRect.width);
 				pPlayer->desiredPosition = pPlayer->position;
+				pPlayer->SetVelocityX(0);
 			}
 		}
 	}
 }
 
-void ArrowRock::HandlePlayerAttackEvent(const IEvent * event)
+void ArrowRock::HandleObstaclePositionEvent(const IEvent * event)
 {
+	ObstaclePositionEvent *convertedEvent = (ObstaclePositionEvent *)(event);
+	if (convertedEvent->GetId() == _id)
+	{
+		return;
+	}
+	const TilePosition &otherTilePosition = convertedEvent->GetPosition();
+	int tileXDiff = otherTilePosition.tileX - position.tileX;
+	int tileYDiff = otherTilePosition.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 2 || abs(tileYDiff) >= 2)
+	{
+		return;
+	}
+
+	Obstacle *pObstacle = (Obstacle *)OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+
+	const Vector2 &otherUntiled = otherTilePosition.UnTilelize();
+	const Vector2 untiled = position.UnTilelize();
+	const Rect &otherRect = convertedEvent->GetRect();
+
+	Rect otherAbsRect = RectMake(otherUntiled.x, otherUntiled.y,
+		otherRect.width, otherRect.height);
+	otherAbsRect += convertedEvent->GetRectOffset();
+
+	Rect itemAbsRect =
+		RectMake(untiled.x, untiled.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
+
+	float relXDiff = otherUntiled.x - untiled.x;
+	float relYDiff = otherUntiled.y - untiled.y;
+
+	Rect overlapRect;
+	if (IsRectangleOverlap(otherAbsRect, itemAbsRect, overlapRect))
+	{
+		if (overlapRect.width > overlapRect.height)
+		{
+			if (relYDiff > 0)
+			{
+				//pObstacle->SetHeadHit(true);
+			}
+			else
+			{
+				pObstacle->position.AddToTileRelY(-overlapRect.height);
+				pObstacle->desiredPosition = pObstacle->position;
+				pObstacle->SetOnObject(true);
+			}
+		}
+		else
+		{
+			if (relXDiff > 0)
+			{
+				position.AddToTileRelX(-overlapRect.width / 2);
+				desiredPosition = position;
+				pObstacle->position.AddToTileRelX(overlapRect.width/2);
+				pObstacle->desiredPosition = pObstacle->position;
+				pObstacle->SetVelocity(Vector2(0, 0));
+			}
+			else
+			{
+				position.AddToTileRelX(overlapRect.width / 2);
+				desiredPosition = position;
+				pObstacle->position.AddToTileRelX(-overlapRect.width/2);
+				pObstacle->desiredPosition = pObstacle->position;
+				pObstacle->SetVelocity(Vector2(0, 0));
+			}
+		}
+	}
+}
+
+void ArrowRock::Fire()
+{
+	_fired = true;
+	EVENTMANAGER->QueueEvent(new FireArrowEvent(_id, position, _facingDirection));
 }

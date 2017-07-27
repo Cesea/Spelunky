@@ -17,10 +17,12 @@ public:
 	virtual GameObject *Copy(ObjectId id);
 
 	virtual void HandlePlayerPositionEvent(const IEvent *event);
-	virtual void HandlePlayerAttackEvent(const IEvent *event);
+	virtual void HandleObstaclePositionEvent(const IEvent *event);
 
 protected:
 	ObstacleType _obstacleType;
+	bool32 _beeingPushed{ false };
+	float _prevXOverlapAmount{ 0 };
 };
 
 #endif

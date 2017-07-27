@@ -19,8 +19,6 @@ HRESULT Throws::Init(BaseProperty *property)
 	_sprite = new D2DFrameSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"throws"), 80, 80, IntVector2(-40, -50));
 
-	_speed = Vector2(400, 300);
-	_maxVelocity = Vector2(300, 550);
 
 	ThrowProperty *convertedProperty = (ThrowProperty *)(property);
 	*this = convertedProperty;
@@ -31,6 +29,9 @@ HRESULT Throws::Init(BaseProperty *property)
 	else if(_sourceIndex.x == 1) { _breakType = BreakType::BREAK_Jar; }
 	else if(_sourceIndex.x == 2) { _breakType = BreakType::BREAK_BackBone; }
 	else if(_sourceIndex.x == 3) { _breakType = BreakType::BREAK_Bone; }
+
+	_speed = Vector2(400, 300);
+	_maxVelocity = Vector2(760, 950);
 
 	return S_OK;
 }
@@ -53,10 +54,14 @@ void Throws::Update(float deltaTime)
 	else
 	{
 		_accel.y += GRAVITY;
+
 		_velocity += _accel * deltaTime;
 
 		_accel = Vector2();
+		ClampFloat(&_velocity.x, -_maxVelocity.x, _maxVelocity.x);
+		ClampFloat(&_velocity.y, -_maxVelocity.y, _maxVelocity.y);
 		desiredPosition.AddToTileRel(_velocity * deltaTime);
+
 
 		TilePosition centerPos = desiredPosition;
 		centerPos.AddToTileRelY(-16.0f);
@@ -64,8 +69,8 @@ void Throws::Update(float deltaTime)
 
 		//Vector2 posUn = centerPos.UnTilelize();
 
-
 		bool collisionResult = _collisionComp->Update(this, deltaTime, &_nearTiles);
+
 		if (_throwed)
 		{
 			float velLength = _velocity.Distance();

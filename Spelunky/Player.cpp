@@ -5,6 +5,7 @@
 #include "JumpState.h"
 #include "FaintState.h"
 #include "FallingState.h"
+#include "PushingState.h"
 
 Player::Player(ObjectId id)
 	:MovingObject::MovingObject(id)
@@ -27,6 +28,8 @@ Player::Player(ObjectId id)
 		EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_DAMAGED, 
 		EventDelegate::FromFunction<Player, &Player::HandlePlayerDamagedEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_PUSHING_OBJECT, 
+		EventDelegate::FromFunction<Player, &Player::HandlePushingObjectEvent>(this));
 
 	_rect = RectMake(0, 0, 38, 44);
 	_rectOffset = Vector2(-19, -44);
@@ -53,6 +56,8 @@ Player::~Player()
 		EventDelegate::FromFunction<Player, &Player::HandlePlayerUpperJumpEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_DAMAGED, 
 		EventDelegate::FromFunction<Player, &Player::HandlePlayerDamagedEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_PUSHING_OBJECT, 
+		EventDelegate::FromFunction<Player, &Player::HandlePushingObjectEvent>(this));
 }
 
 HRESULT Player::Init(BaseProperty *property)
@@ -73,6 +78,7 @@ HRESULT Player::Init(BaseProperty *property)
 	BuildAnimationSprite(L"ledgeGrab", IntVector2(-40, -72));
 	BuildAnimationSprite(L"grab", IntVector2(-40, -72));
 	BuildAnimationSprite(L"upperDeath", IntVector2(-40, -72));
+	BuildAnimationSprite(L"pushing", IntVector2(-40, -72));
 
 	BuildAnimationSprite(L"attack", IntVector2(-40, -72));
 	BuildAnimationSprite(L"throw", IntVector2(-40, -72));
@@ -126,8 +132,6 @@ void Player::Update(float deltaTime)
 		_endOfLadder = false;
 		_onTunnel = false;
 		_onObject = false;
-
-		_pushingObject = false;
 
 		if (!_vulnerable && !_isFaint)
 		{
@@ -356,6 +360,10 @@ void Player::HandlePlayerDamagedEvent(const IEvent * event)
 
 void Player::HandlePushingObjectEvent(const IEvent * event)
 {
+	if (!_pushingObject && _onGround)
+	{
+		_stateManager.ChangeState(new PushingState);
+	}
 }
 
 void Player::HandleMessage(const IEvent * event)

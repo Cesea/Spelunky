@@ -44,6 +44,11 @@ State<Player>* AttackState::Update(Player * object, float deltaTime)
 		}
 	}
 
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
+
 	Animation *currentWeapon = object->GetCurrentWeaponGraphics()->GetAnimation();
 	if (currentWeapon->FrameUpdate(deltaTime))
 	{
@@ -222,6 +227,11 @@ State<Player>* ThrowState::Update(Player * object, float deltaTime)
 	State<Player> *newState = nullptr;
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
+
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
 
 	if (object->_stateClimbing)
 	{

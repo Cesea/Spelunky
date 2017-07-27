@@ -16,6 +16,11 @@ State<Player>* LookRevertState::Update(Player * object, float deltaTime)
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
+
 	return nullptr;
 }
 

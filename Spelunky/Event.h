@@ -53,6 +53,11 @@ enum  EventType
 	EVENT_COLLECT_EATABLE= 0xe9241d1f,
 
 	EVENT_PUSHING_OBJECT = 0x1f567fe4,
+	EVENT_OBSTACLE_POSITION_EVENT = 0x63cc3046,
+	EVENT_FIRE_ARROW = 0x8f372025,
+
+
+	EVENT_OBSTACLE_POSITION = 0xb5004395,
 
 };
 
@@ -682,6 +687,53 @@ private:
 	static EventType _type;
 	ObjectId _id;
 };
+
+class FireArrowEvent : public BaseEvent
+{
+public:
+	FireArrowEvent(ObjectId id, const TilePosition &firePosition, Direction fireDirection);
+	virtual ~FireArrowEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+	const TilePosition &GetFirePosition() { return _firePosition; }
+	Direction GetFireDirection() { return _fireDirection; }
+private:
+	static EventType _type;
+	ObjectId _id;
+	TilePosition _firePosition;
+	Direction _fireDirection;
+};
+
+class ObstaclePositionEvent : public BaseEvent
+{
+public :
+	explicit ObstaclePositionEvent(ObjectId id, const TilePosition &position, 
+		const Rect &rect, const Vector2 &rectOffset);
+	virtual ~ObstaclePositionEvent() {}
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+
+	const TilePosition &GetPosition() { return _position; }
+	const Rect &GetRect() { return _rect; }
+	const Vector2 &GetRectOffset() { return _rectOffset; }
+
+private:
+	ObjectId _id;
+
+	TilePosition _position;
+	Rect _rect;
+	Vector2 _rectOffset;
+
+	static EventType _type;
+};
+
 
 
 #endif

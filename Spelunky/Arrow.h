@@ -1,16 +1,16 @@
-#ifndef THROWS_H
-#define THROWS_H
+#ifndef ARROW_H
+#define ARROW_H
 
-#include "EquipItem.h"
+#include "Throws.h"
 
-class Throws : public EquipItem
+class Arrow : public Throws
 {
 public:
-	Throws(ObjectId id);
-	virtual ~Throws();
+	Arrow(ObjectId id);
+	virtual ~Arrow();
 
 	virtual HRESULT Init(BaseProperty *property);
-	virtual void PostInit() {}
+	void PostInit();
 	virtual void Release(void);
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
@@ -25,18 +25,16 @@ public:
 	void HandleDamageEvent(const IEvent *event);
 
 	inline BreakType GetBreakType() { return _breakType; }
-	virtual void SetThrowDir(Direction direction) {}
 
-protected:
+	void SetFireDirection(Direction direction) { _throwDirection = direction; }
+	virtual void SetThrowDir(Direction direction) { _throwDirection = direction; }
+
+private:
 
 	void operator= (const ThrowProperty *property);
 
-	IntVector2 _sourceIndex{};
-	bool32 _breakable{};
-	bool32 _throwed{false};
-
-	BreakType _breakType;
-
+	bool32 _arrowFirstHit{ false };
+	Direction _throwDirection{};
 };
 
 #endif

@@ -325,4 +325,13 @@ void ObstacleProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 	{
 		type = OBSTACLE_BombCrate;
 	}
+
+	if (wcscmp(propertyInfo.value1, L"left") == 0)
+	{
+		facingDirection = Direction::Left;
+	}
+	else if (wcscmp(propertyInfo.value1, L"right") == 0)
+	{
+		facingDirection = Direction::Right;
+	}
 }

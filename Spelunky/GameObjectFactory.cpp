@@ -10,6 +10,7 @@
 #include "Enemy.h"
 #include "Crate.h"
 #include "Eatables.h"
+#include "Arrow.h"
 
 GameObjectFactory::GameObjectFactory()
 {
@@ -70,6 +71,7 @@ void GameObjectFactory::RegisterBuilders()
 	RegisterBuilder(L"crate", new TGameObjectBuilder<Crate>());
 	RegisterBuilder(L"eatables", new TGameObjectBuilder<Eatables>());
 	RegisterBuilder(L"obstacle", new TGameObjectBuilder<Obstacle>());
+	RegisterBuilder(L"arrow", new TGameObjectBuilder<Arrow>());
 }
 
 void GameObjectFactory::UnRegisterBuilders()
@@ -84,6 +86,7 @@ void GameObjectFactory::UnRegisterBuilders()
 	UnRegisterBuilder(L"crate");
 	UnRegisterBuilder(L"eatables");
 	UnRegisterBuilder(L"obstacle");
+	UnRegisterBuilder(L"arrow");
 }
 
 void GameObjectFactory::RegisterBuilder(const std::wstring & key, GameObjectBuilder * builder)

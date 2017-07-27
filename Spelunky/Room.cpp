@@ -867,6 +867,7 @@ void Stage::RegisterDelegates()
 	EVENTMANAGER->RegisterDelegate(EVENT_DESTROY_A_TILE, EventDelegate::FromFunction<Stage, &Stage::HandleDestroyATileEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_SPAWN_OBJECT, EventDelegate::FromFunction<Stage, &Stage::HandleSpawnObjectEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_EATABLE, EventDelegate::FromFunction<Stage, &Stage::HandleCollectEatableEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_FIRE_ARROW, EventDelegate::FromFunction<Stage, &Stage::HandleFireArrowEvent>(this));
 }
 
 
@@ -879,6 +880,7 @@ void Stage::UnRegisterDelegates()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_DESTROY_A_TILE, EventDelegate::FromFunction<Stage, &Stage::HandleDestroyATileEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_SPAWN_OBJECT, EventDelegate::FromFunction<Stage, &Stage::HandleSpawnObjectEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_EATABLE, EventDelegate::FromFunction<Stage, &Stage::HandleCollectEatableEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_FIRE_ARROW, EventDelegate::FromFunction<Stage, &Stage::HandleFireArrowEvent>(this));
 }
 
 void Stage::BuildBorder()
@@ -1576,6 +1578,11 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 		{
 
 		}break;
+		case BREAK_Arrow :
+		{
+
+		}break;
+
 		case BREAK_Live:
 		{
 
@@ -1761,6 +1768,22 @@ void Stage::HandleCollectEatableEvent(const IEvent * event)
 		object->Release();
 		OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 	}
+}
+
+void Stage::HandleFireArrowEvent(const IEvent * event)
+{
+	FireArrowEvent *convertedEvent = (FireArrowEvent *)event;
+	ThrowProperty arrowProperty{};
+	arrowProperty.sourceIndex.x = 4;
+	arrowProperty.sourceIndex.y = 0;
+
+	Throws *arrow = (Throws *)OBJECTMANAGER->CreateObject(L"arrow", &arrowProperty);
+	const TilePosition &firePosition = convertedEvent->GetFirePosition();
+	arrow->position = firePosition;
+	arrow->SetThrowDir(convertedEvent->GetFireDirection());
+	arrow->PostInit();
+
+	_throws.push_back(arrow);
 }
 
 void Stage::BuildRandomGem(const IntVector2 &genPos)

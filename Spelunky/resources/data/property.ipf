@@ -298,26 +298,26 @@ At X : 1, Y : 6
 Property Name : obstacle
 SourceIndex X : 1, Y : 0
 Value0 : arrow
-Value1 : 0
+Value1 : left
 Applied : 1
 At X : 2, Y : 6
+Property Name : obstacle
+SourceIndex X : 2, Y : 0
+Value0 : arrow
+Value1 : right
+Applied : 1
+At X : 3, Y : 6
 Property Name : obstacle
 SourceIndex X : 2, Y : 0
 Value0 : bombCrate
 Value1 : 0
 Applied : 1
-At X : 3, Y : 6
+At X : 4, Y : 6
 Property Name : obstacle
 SourceIndex X : -2, Y : -2
 Value0 : 0
 Value1 : 0
 Applied : 1
-At X : 4, Y : 6
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-Applied : 0
 At X : 5, Y : 6
 Property Name : none
 SourceIndex X : -1, Y : -1

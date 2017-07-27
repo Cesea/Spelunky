@@ -18,6 +18,12 @@ State<Player>* LookUpState::Update(Player * object, float deltaTime)
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
+
+
 	if (_cameraMoveTimer.Tick(deltaTime) && !_didFired)
 	{
 		EVENTMANAGER->QueueEvent(new CameraMoveToEvent(object->position, Direction::Up, false));

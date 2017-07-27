@@ -170,6 +170,7 @@ struct ObstacleProperty : public BaseProperty
 {
 	IntVector2 sourceIndex{ -1, -1 };
 	ObstacleType type;
+	Direction facingDirection;
 	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 

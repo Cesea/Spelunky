@@ -28,11 +28,12 @@ HRESULT BombCrate::Init(BaseProperty * property)
 	_obstacleType = OBSTACLE_BombCrate;
 	position.tileX = convertedProperty->position.x;
 	position.tileY = convertedProperty->position.y;
-	position.AddToTileRel(32, 44);
+	position.AddToTileRel(32, 64);
 	desiredPosition = position;
 
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerAttackEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleObstaclePositionEvent>(this));
 
 	return S_OK;
 }
@@ -44,6 +45,7 @@ void BombCrate::Release(void)
 
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerAttackEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleObstaclePositionEvent>(this));
 }
 
 void BombCrate::Update(float deltaTime)
@@ -65,8 +67,10 @@ void BombCrate::Update(float deltaTime)
 		{
 			STAGEMANAGER->DestroyTile(position.tileX - 2, position.tileY - 2, 4, 3);
 			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_BombCrate));
-			EFFECTMANAGER->PlayExplosionEffect(position.UnTilelize());
-			EFFECTMANAGER->PlaySmokeEffect(position.UnTilelize());
+			Vector2 playPos = position.UnTilelize();
+			playPos -= Vector2(50, 50);
+			EFFECTMANAGER->PlayExplosionEffect(playPos);
+			EFFECTMANAGER->PlaySmokeEffect(playPos);
 			SOUNDMANAGER->Play(L"bomb_explosion");
 		}
 	}
@@ -150,11 +154,13 @@ void BombCrate::HandlePlayerPositionEvent(const IEvent * event)
 			{
 				pPlayer->position.AddToTileRelX(overlapRect.width);
 				pPlayer->desiredPosition = pPlayer->position;
+				pPlayer->SetVelocityX(0);
 			}
 			else
 			{
 				pPlayer->position.AddToTileRelX(-overlapRect.width);
 				pPlayer->desiredPosition = pPlayer->position;
+				pPlayer->SetVelocityX(0);
 			}
 		}
 		_timerOn = true;
@@ -207,5 +213,79 @@ void BombCrate::HandlePlayerAttackEvent(const IEvent * event)
 	if (hitted)
 	{
 		_timerOn = true;
+	}
+}
+
+void BombCrate::HandleObstaclePositionEvent(const IEvent * event)
+{
+	ObstaclePositionEvent *convertedEvent = (ObstaclePositionEvent *)(event);
+	if (convertedEvent->GetId() == _id)
+	{
+		return;
+	}
+	const TilePosition &otherTilePosition = convertedEvent->GetPosition();
+	int tileXDiff = otherTilePosition.tileX - position.tileX;
+	int tileYDiff = otherTilePosition.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 2 || abs(tileYDiff) >= 2)
+	{
+		return;
+	}
+
+	Obstacle *pObstacle = (Obstacle *)OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+
+	const Vector2 &otherUntiled = otherTilePosition.UnTilelize();
+	const Vector2 untiled = position.UnTilelize();
+	const Rect &otherRect = convertedEvent->GetRect();
+
+	Rect otherAbsRect = RectMake(otherUntiled.x, otherUntiled.y,
+		otherRect.width, otherRect.height);
+	otherAbsRect += convertedEvent->GetRectOffset();
+
+	Rect itemAbsRect =
+		RectMake(untiled.x, untiled.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
+
+	float relXDiff = otherUntiled.x - untiled.x;
+	float relYDiff = otherUntiled.y - untiled.y;
+
+	Rect overlapRect;
+	if (IsRectangleOverlap(otherAbsRect, itemAbsRect, overlapRect))
+	{
+		if (overlapRect.width > overlapRect.height)
+		{
+			if (relYDiff > 0)
+			{
+				//pObstacle->SetHeadHit(true);
+			}
+			else
+			{
+				pObstacle->position.AddToTileRelY(-overlapRect.height);
+				pObstacle->desiredPosition = pObstacle->position;
+				pObstacle->SetOnObject(true);
+				_timerOn = true;
+			}
+		}
+		else
+		{
+			if (relXDiff > 0)
+			{
+				position.AddToTileRelX(-overlapRect.width / 2);
+				desiredPosition = position;
+				pObstacle->position.AddToTileRelX(overlapRect.width/2);
+				pObstacle->desiredPosition = pObstacle->position;
+				pObstacle->SetVelocity(Vector2(0, 0));
+				_timerOn = true;
+			}
+			else
+			{
+				position.AddToTileRelX(overlapRect.width / 2);
+				desiredPosition = position;
+				pObstacle->position.AddToTileRelX(-overlapRect.width/2);
+				pObstacle->desiredPosition = pObstacle->position;
+				pObstacle->SetVelocity(Vector2(0, 0));
+				_timerOn = true;
+			}
+		}
 	}
 }

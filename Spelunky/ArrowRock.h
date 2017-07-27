@@ -18,11 +18,15 @@ public:
 	virtual GameObject *Copy(ObjectId id);
 
 	virtual void HandlePlayerPositionEvent(const IEvent *event);
-	virtual void HandlePlayerAttackEvent(const IEvent *event);
+	virtual void HandleObstaclePositionEvent(const IEvent *event);
 
 protected:
+
+	void Fire();
+
 	bool _fired{ false };
 	ObstacleType _obstacleType;
+	Direction _facingDirection;
 };
 
 

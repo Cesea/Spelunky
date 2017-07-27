@@ -117,6 +117,9 @@ HRESULT GamePlayScene::LoadContent()
 	int exitArray[] = {60, 61, 62, 63, 64, 65};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_exit", L"char_orange", 80, 80, exitArray, 6, 10, true);
 
+	int pushingArray[] = {78, 79, 80, 81, 82, 83};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_pushing", L"char_orange", 80, 80, pushingArray, 6, 10, true);
+
 #pragma endregion
 
 

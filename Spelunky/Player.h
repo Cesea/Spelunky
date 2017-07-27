@@ -34,6 +34,7 @@ class Player : public MovingObject
 	friend class AttackState;
 	friend class ThrowState;
 	friend class FaintState;
+	friend class PushingState;
 
 public :
 	Player(ObjectId id);

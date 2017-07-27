@@ -49,6 +49,9 @@ EventType SpawnObjectEvent::_type = EVENT_SPAWN_OBJECT;
 EventType CollectEatableEvent::_type = EVENT_COLLECT_EATABLE;
 
 EventType PushingObjectEvent::_type = EVENT_PUSHING_OBJECT;
+EventType FireArrowEvent::_type = EVENT_FIRE_ARROW;
+
+EventType ObstaclePositionEvent::_type = EVENT_OBSTACLE_POSITION;
 
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
@@ -601,4 +604,34 @@ IEvent * PushingObjectEvent::Copy() const
 const WCHAR * PushingObjectEvent::GetName() const
 {
 	return L"Pushing Object Event";
+}
+
+FireArrowEvent::FireArrowEvent(ObjectId id, const TilePosition &firePosition, Direction fireDirection)
+	:_id(id), _firePosition(firePosition), _fireDirection(fireDirection)
+{
+}
+
+IEvent * FireArrowEvent::Copy() const
+{
+	return new FireArrowEvent(_id, _firePosition, _fireDirection);
+}
+
+const WCHAR * FireArrowEvent::GetName() const
+{
+	return L"Fire Arrow Event";
+}
+
+ObstaclePositionEvent::ObstaclePositionEvent(ObjectId id, const TilePosition & position, const Rect & rect, const Vector2 & rectOffset)
+	:_id(id), _position(position), _rectOffset(rectOffset), _rect(rect)
+{
+}
+
+IEvent * ObstaclePositionEvent::Copy() const
+{
+	return new ObstaclePositionEvent(_id, _position, _rect, _rectOffset);
+}
+
+const WCHAR * ObstaclePositionEvent::GetName() const
+{
+	return L"Obstacle Position Event";
 }

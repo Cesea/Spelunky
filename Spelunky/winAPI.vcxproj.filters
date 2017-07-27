@@ -582,6 +582,12 @@
     <ClInclude Include="PushingRock.h">
       <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\PushingRock</Filter>
     </ClInclude>
+    <ClInclude Include="PushingState.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Pushing</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -895,6 +901,12 @@
     </ClCompile>
     <ClCompile Include="PushingRock.cpp">
       <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\PushingRock</Filter>
+    </ClCompile>
+    <ClCompile Include="PushingState.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Player\States\Pushing</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Item\Equip</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

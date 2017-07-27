@@ -128,6 +128,7 @@ enum BreakType
 	BREAK_Rock,
 	BREAK_Live,
 	BREAK_Crate,
+	BREAK_Arrow,
 	BREAK_Bomb,
 	BREAK_BombCrate,
 };

@@ -44,6 +44,13 @@ void D2DFrameSprite::FrameRender(ID2D1HwndRenderTarget * renderTarget, float des
 		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), alpha);
 }
 
+void D2DFrameSprite::FrameRenderFlip(ID2D1HwndRenderTarget * renderTarget, float destX, float destY, int xIndex, int yIndex, float alpha)
+{
+	_sourceImage->RenderFlipX(renderTarget, ConvertFloatToInt(destX + _anchor.x), ConvertFloatToInt(destY + _anchor.y), 
+		ConvertFloatToInt(xIndex * _widthPerFrame), ConvertFloatToInt(yIndex * _heightPerFrame),
+		ConvertFloatToInt(_widthPerFrame), ConvertFloatToInt(_heightPerFrame), alpha);
+}
+
 void D2DFrameSprite::FrameRenderMatrix(ID2D1HwndRenderTarget * renderTarget, float destX, float destY,
 	int xIndex, int yIndex, const D2D1::Matrix3x2F & mat, float alpha)
 {
