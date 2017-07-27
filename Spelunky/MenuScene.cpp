@@ -48,6 +48,17 @@ HRESULT MenuScene::LoadContent()
 	int stickyBombArray[] = { 3, 4, 5 };
 	KEYANIMANAGER->AddArrayFrameAnimation(L"bomb", L"bomb", 80, 80, stickyBombArray, 3, 12, true);
 
+
+	SOUNDMANAGER->AddSound(L"mm_amb", L"resources\\sfx\\Sound\\mm_amb.wav", true, false);
+	SOUNDMANAGER->AddSound(L"mm_door1", L"resources\\sfx\\Sound\\mm_door1.wav", false, false);
+	SOUNDMANAGER->AddSound(L"mm_door2", L"resources\\sfx\\Sound\\mm_door2.wav", false, false);
+	SOUNDMANAGER->AddSound(L"mm_door3", L"resources\\sfx\\Sound\\mm_door3.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"tikispike", L"resources\\sfx\\Sound\\tikispike.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"mm_bgm", L"resources\\sfx\\Music\\Menu.ogg", true, true);
+
+
 	return S_OK;
 }
 
@@ -82,7 +93,6 @@ void MenuScene::ShowTitleText()
 
 HRESULT MenuScene::Init(void)
 {
-
 	if (_firstEntered)
 	{
 		_firstEntered = false;
@@ -202,7 +212,7 @@ HRESULT MenuScene::Init(void)
 		_menuTexts[4] = L"Help & Options";
 		_menuTexts[5] = L"Exit Game";
 
-		//EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2, 367));
+		//SOUNDMANAGER->Play(L"menu_bgm");
 	}
 
 #pragma endregion
@@ -262,6 +272,7 @@ void MenuScene::Update(void)
 
 				if (!_menuObjects.spears[currentTemp].GetPositionInterpolating())
 				{
+					SOUNDMANAGER->Play(L"tikispike");
 					if ((currentTemp % 2) == 0) { deltaMove = Vector2(-500.0f, 0.0f); }
 					else { deltaMove = Vector2(500.0f, 0.0f); }
 
@@ -282,6 +293,7 @@ void MenuScene::Update(void)
 
 				if (!_menuObjects.spears[currentTemp].GetPositionInterpolating())
 				{
+					SOUNDMANAGER->Play(L"tikispike");
 					if ((currentTemp % 2) == 0) { deltaMove = Vector2(-500.0f, 0.0f); }
 					else { deltaMove = Vector2(500.0f, 0.0f); }
 
@@ -429,6 +441,8 @@ void MenuScene::MenuAnimationEndFunction()
 	if (_menuObjects.animationEndTracker == 1)
 	{
 		_menuObjects.head.RotateTo(180.0f, 1.0f);
+		SOUNDMANAGER->Play(L"mm_door1");
+		SOUNDMANAGER->Play(L"mm_amb");
 		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 - 26, 410));
 		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 + 20, 424));
 	}
@@ -444,6 +458,7 @@ void MenuScene::MenuAnimationEndFunction()
 			_menuObjects.doors[i].MoveTo(_menuObjects.doors[i].position + delta, 1.8f);
 		}
 		_camera.Shake(30, 50, 1.8f);
+		SOUNDMANAGER->Play(L"mm_door2");
 	}
 	else if (_menuObjects.animationEndTracker == 3)
 	{
@@ -454,15 +469,17 @@ void MenuScene::MenuAnimationEndFunction()
 	{
 		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 - 10, 647));
 		EFFECTMANAGER->PlayDustParticles(Vector2(WINSIZEX / 2 + 15, 656));
-		_menuObjects.body.MoveBy(Vector2(0, 400), 2.0f);
-		_menuObjects.head.MoveBy(Vector2(0, 400), 2.0f);
+		_menuObjects.body.MoveBy(Vector2(0, 400), 3.6f);
+		_menuObjects.head.MoveBy(Vector2(0, 400), 3.6f);
 		_camera.Shake(8, 50, 2.0f);
+		SOUNDMANAGER->Play(L"mm_door3");
 	}
 	else if (_menuObjects.animationEndTracker == 5)
 	{
 		_menuObjects.spears[0].MoveBy(Vector2(500.0f, 0), SPEAR_TIME);
 		ShowTitleText();
 		_canReceiveInput = true;
+		SOUNDMANAGER->Play(L"mm_bgm");
 	}
 }
 
@@ -470,6 +487,13 @@ void MenuScene::HandleSceneChange()
 {
 	if (_menuObjects.selectingMenuIndex == 0)
 	{
+		SOUNDMANAGER->Stop(L"mm_bgm");
+		SOUNDMANAGER->Stop(L"mm_amb");
+		SOUNDMANAGER->Stop(L"mm_door1");
+		SOUNDMANAGER->Stop(L"mm_door2");
+		SOUNDMANAGER->Stop(L"mm_door3");
+		SOUNDMANAGER->Stop(L"tikispide");
+
 		SCENEMANAGER->ChangeScene(L"GamePlayScene");
 	}
 	else if (_menuObjects.selectingMenuIndex == 1)

@@ -36,7 +36,7 @@ HRESULT Bomb::Init(BaseProperty * property)
 	}
 	_sprite->Init(IMAGEMANAGER->GetImage(L"bomb"), animation, IntVector2(-40, -40));
 
-	_bombTimer.Init(1.4f);
+	_bombTimer.Init(0.8f);
 
 	_scaleTimer.Init(0.2f);
 	mat = D2D1::Matrix3x2F::Identity();
@@ -82,11 +82,13 @@ void Bomb::Update(float deltaTime)
 
 			_startScale = _scale;
 			_targetScale = (_scale == 1.0f) ? 0.4f : 1.0f;
+			SOUNDMANAGER->Play(L"bomb_timer");
 		}
 		else if(_bombStage == 2)
 		{
 			_scaleTimer.ResetAndChangeTargetSecond(0.1f);
 			_sprite->GetAnimation()->SetFPS(30);
+
 		}
 		else if (_bombStage == 3)
 		{
@@ -94,6 +96,7 @@ void Bomb::Update(float deltaTime)
 			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bomb));
 			EFFECTMANAGER->PlayExplosionEffect(position.UnTilelize());
 			EFFECTMANAGER->PlaySmokeEffect(position.UnTilelize());
+			SOUNDMANAGER->Play(L"bomb_explosion");
 		}
 	}
 	_sprite->Update(deltaTime);

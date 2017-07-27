@@ -11,7 +11,7 @@ public :
 	void OnEnter(Player *object);
 	State<Player> *Update(Player *object, float deltaTime);
 	State<Player> *HandleCommand(Player *object, const ControlCommand &command);
-	State<Player> *HandleFrameEndEvent(Player *actor) override { return nullptr; }
+	State<Player> *HandleFrameEndEvent(Player *actor) override;
 	void OnExit(Player *object);
 private :
 	bool _wasControlled{false};

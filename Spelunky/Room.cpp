@@ -426,6 +426,16 @@ void Stage::Update(float deltaTime)
 		bomb->Update(deltaTime);
 	}
 
+	for (auto &crate : _crates)
+	{
+		crate->Update(deltaTime);
+	}
+
+	for (auto &eatable : _eatables)
+	{
+		eatable->Update(deltaTime);
+	}
+
 	for (auto &enemy : _enemies)
 	{
 		enemy->Update(deltaTime);
@@ -527,6 +537,10 @@ void Stage::RenderObjects(const Vector2 & camPos)
 	{
 		bomb->Render(gRenderTarget, camPos);
 	}
+	for (auto &eatable : _eatables)
+	{
+		eatable->Render(gRenderTarget, camPos);
+	}
 	for (auto &crate : _crates)
 	{
 		crate->Render(gRenderTarget, camPos);
@@ -541,10 +555,12 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 {
 	bool destroyed = false;
 
-	Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
-	Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
-	Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
-	Tile *pLayer3Tile = tileLayer3[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)];
+	int index = GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX);
+
+	Tile *pLayer0Tile = tileLayer0[index];
+	Tile *pLayer1Tile = tileLayer1[index];
+	Tile *pLayer2Tile = tileLayer2[index];
+	Tile *pLayer3Tile = tileLayer3[index];
 
 	TileCollisionType breakTileCollType{ TILE_COLLISION_NONE };
 
@@ -572,8 +588,8 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		pLayer1Tile->nearMaskInfo = 15;
 		destroyed = true;
 
-		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = std::move(pLayer1Tile);
-		tileLayer1[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+		tileLayer0[index] = std::move(pLayer1Tile);
+		tileLayer1[index] = nullptr;
 	}
 	else if (pLayer2Tile != nullptr &&
 		pLayer2Tile->canBeDestroyedByBomb)
@@ -585,15 +601,15 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		pLayer2Tile->nearMaskInfo = 15;
 		destroyed = true;
 
-		tileLayer0[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = std::move(pLayer2Tile);
-		tileLayer2[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+		tileLayer0[index] = std::move(pLayer2Tile);
+		tileLayer2[index] = nullptr;
 	}
 
 	if (pLayer3Tile != nullptr &&
 		pLayer3Tile->canBeDestroyedByBomb)
 	{
 		OBJECTMANAGER->DestroyObject(pLayer3Tile->GetId());
-		tileLayer3[GetIndexFromXY(tilePos.x, tilePos.y, STAGE_TOTAL_COUNTX)] = nullptr;
+		tileLayer3[index] = nullptr;
 	}
 
 
@@ -644,6 +660,8 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 		{
 			EFFECTMANAGER->PlayThornParticle(TilePosition(tilePos.x, tilePos.y, 32, 32).UnTilelize());
 		}
+
+		SOUNDMANAGER->Play(L"boulder_hit_" + std::to_wstring(index % 4));
 	}
 }
 
@@ -668,11 +686,12 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				continue;
 			}
 
-			//int currentIndex = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
-			Tile *pLayer0Tile = tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
-			Tile *pLayer1Tile = tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
-			Tile *pLayer2Tile = tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
-			Tile *pLayer3Tile = tileLayer3[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)];
+			int currentIndex = GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX);
+
+			Tile *pLayer0Tile = tileLayer0[currentIndex];
+			Tile *pLayer1Tile = tileLayer1[currentIndex];
+			Tile *pLayer2Tile = tileLayer2[currentIndex];
+			Tile *pLayer3Tile = tileLayer3[currentIndex];
 
 			TileCollisionType breakTileCollType{TILE_COLLISION_NONE};
 
@@ -701,8 +720,8 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				pLayer1Tile->nearMaskInfo = 15;
 				destroyed = true;
 
-				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = std::move(pLayer1Tile);
-				tileLayer1[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = nullptr;
+				tileLayer0[currentIndex] = std::move(pLayer1Tile);
+				tileLayer1[currentIndex] = nullptr;
 			}
 			else if (pLayer2Tile != nullptr &&
 				pLayer2Tile->canBeDestroyedByBomb)
@@ -714,18 +733,18 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				pLayer2Tile->nearMaskInfo = 15;
 				destroyed = true;
 
-				tileLayer0[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = std::move(pLayer2Tile);
-				tileLayer2[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = nullptr;
+				tileLayer0[currentIndex] = std::move(pLayer2Tile);
+				tileLayer2[currentIndex] = nullptr;
 			}
 			if (pLayer3Tile != nullptr &&
 				pLayer3Tile->canBeDestroyedByBomb)
 			{
 				OBJECTMANAGER->DestroyObject(pLayer3Tile->GetId());
-				tileLayer3[GetIndexFromXY(x, y, STAGE_TOTAL_COUNTX)] = nullptr;
+				tileLayer3[currentIndex] = nullptr;
 			}
 			if (destroyed)
 			{
-				if (y == yStartIndex)
+				if (y == yStartIndex || y == yStartIndex + 1)
 				{
 					int upperIndex = GetIndexFromXY(x, y - 1, STAGE_TOTAL_COUNTX);
 					Tile *upperTile = tileLayer1[upperIndex];
@@ -768,6 +787,7 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 				{
 					EFFECTMANAGER->PlayThornParticle(TilePosition(x, y, 32, 32).UnTilelize());
 				}
+				SOUNDMANAGER->Play(L"boulder_hit_" + std::to_wstring(currentIndex % 4));
 			}
 		}
 	}
@@ -787,7 +807,10 @@ void Stage::RegisterDelegates()
 	EVENTMANAGER->RegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_ENEMY_DEAD, EventDelegate::FromFunction<Stage, &Stage::HandleEnemyDeadEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_DESTROY_A_TILE, EventDelegate::FromFunction<Stage, &Stage::HandleDestroyATileEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_SPAWN_OBJECT, EventDelegate::FromFunction<Stage, &Stage::HandleSpawnObjectEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_COLLECT_EATABLE, EventDelegate::FromFunction<Stage, &Stage::HandleCollectEatableEvent>(this));
 }
+
 
 void Stage::UnRegisterDelegates()
 {
@@ -796,6 +819,8 @@ void Stage::UnRegisterDelegates()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_THROW_BOMB, EventDelegate::FromFunction<Stage, &Stage::HandleThrowBombEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_ENEMY_DEAD, EventDelegate::FromFunction<Stage, &Stage::HandleEnemyDeadEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_DESTROY_A_TILE, EventDelegate::FromFunction<Stage, &Stage::HandleDestroyATileEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_SPAWN_OBJECT, EventDelegate::FromFunction<Stage, &Stage::HandleSpawnObjectEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_COLLECT_EATABLE, EventDelegate::FromFunction<Stage, &Stage::HandleCollectEatableEvent>(this));
 }
 
 void Stage::BuildBorder()
@@ -1100,32 +1125,7 @@ void Stage::BuildGems()
 					{
 						if (RND->GetFloat() > 0.4)
 						{
-							GemProperty randomGemProperty{};
-							randomGemProperty.sourceIndex.y = 0;
-							int randSourceX = RND->GetFromIntTo(2, 5);
-							randomGemProperty.sourceIndex.x = randSourceX;
-							if (randSourceX == 2) { randomGemProperty.value = 800; randomGemProperty.type = GEM_Emerald; }
-							else if (randSourceX == 3) { randomGemProperty.value = 1200; randomGemProperty.type = GEM_Saphire; }
-							else if (randSourceX == 4) { randomGemProperty.value = 1600; randomGemProperty.type = GEM_Ruby; }
-							else if (randSourceX == 5) { randomGemProperty.value = 2000; randomGemProperty.type = GEM_Diamond; }
-							Gem *randomGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", &randomGemProperty);
-							randomGem->position.tileX = worldPosition.x;
-							randomGem->position.tileY = worldPosition.y;
-							randomGem->desiredPosition = randomGem->position;
-							if (tileLayer0[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
-							{
-								randomGem->SetIsInTile(true);
-							}
-							else
-							{
-								if (tileLayer1[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
-								{
-									randomGem->SetIsInTile(true);
-								}
-							}
-
-							if (randomGem->position.tileX)
-								_gems.push_back(randomGem);
+							BuildRandomGem(worldPosition);
 						}
 					}
 					else
@@ -1427,74 +1427,99 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 {
 	ItemBreakEvent *convertedEvent = (ItemBreakEvent *)event;
 	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
-	Vector2 objectPosition = object->position.UnTilelize();
-	objectPosition.y -= 16;
+	if (object)
+	{
+		Vector2 objectPosition = object->position.UnTilelize();
+		objectPosition.y -= 16;
 
-	BreakType breakType = convertedEvent->GetBreakType();
-	switch (breakType)
-	{
-	case BREAK_Jar:
-	{
-		EFFECTMANAGER->PlayJarParticle(objectPosition, 0.3f);
-	}break;
-	case BREAK_Bone:
-	{
-		EFFECTMANAGER->PlayBoneParticle(objectPosition, 0.3f);
-	}break;
-	case BREAK_Rock:
-	{
-		EFFECTMANAGER->PlayRockParticle(objectPosition, 0.3f);
-	}break;
-	case BREAK_BackBone :
-	{
-		EFFECTMANAGER->PlayBackBoneParticle(objectPosition, 0.3f);
-	}break;
-	case BREAK_Live :
-	{
-
-	}break;
-	}
-	if (breakType == BreakType::BREAK_Jar ||
-		breakType == BreakType::BREAK_Bone ||
-		breakType == BreakType::BREAK_BackBone ||
-		breakType == BreakType::BREAK_Rock)
-	{
-		for (auto &iter = _throws.begin(); iter != _throws.end();)
+		BreakType breakType = convertedEvent->GetBreakType();
+		switch (breakType)
 		{
-			if ((*iter) == object)
+		case BREAK_Jar:
+		{
+			EFFECTMANAGER->PlayJarParticle(objectPosition, 0.3f);
+			SOUNDMANAGER->Play(L"shatter");
+		}break;
+		case BREAK_Bone:
+		{
+			EFFECTMANAGER->PlayBoneParticle(objectPosition, 0.3f);
+			SOUNDMANAGER->Play(L"bone_shatter");
+		}break;
+		case BREAK_Rock:
+		{
+			EFFECTMANAGER->PlayRockParticle(objectPosition, 0.3f);
+		}break;
+		case BREAK_BackBone:
+		{
+			EFFECTMANAGER->PlayBackBoneParticle(objectPosition, 0.3f);
+			SOUNDMANAGER->Play(L"bone_shatter");
+		}break;
+		case BREAK_Crate:
+		{
+			EFFECTMANAGER->PlayWoodParticle(objectPosition, 0.3f);
+			SOUNDMANAGER->Play(L"crate_open");
+		}break;
+		case BREAK_Live:
+		{
+
+		}break;
+		}
+		if (breakType == BreakType::BREAK_Jar ||
+			breakType == BreakType::BREAK_Bone ||
+			breakType == BreakType::BREAK_BackBone ||
+			breakType == BreakType::BREAK_Rock)
+		{
+			for (auto &iter = _throws.begin(); iter != _throws.end();)
 			{
-				(*iter)->Release();
-				_throws.erase(iter);
-				break;
-			}
-			else
-			{
-				iter++;
+				if ((*iter) == object)
+				{
+					(*iter)->Release();
+					_throws.erase(iter);
+					break;
+				}
+				else
+				{
+					iter++;
+				}
 			}
 		}
-	}
-	else if (breakType == BreakType::BREAK_Bomb)
-	{
-		EVENTMANAGER->QueueEvent(new DamageEvent(UNVALID_OBJECT_ID, 5, object->position, RectMake(0, 0, 320, 256), Vector2(-160, -120)));
-		for (auto &iter = _bombs.begin(); iter != _bombs.end();)
+		else if (breakType == BreakType::BREAK_Bomb)
 		{
-			if ((*iter) == object)
+			EVENTMANAGER->QueueEvent(new DamageEvent(UNVALID_OBJECT_ID, 5, object->position, RectMake(0, 0, 320, 256), Vector2(-160, -120)));
+			for (auto &iter = _bombs.begin(); iter != _bombs.end();)
 			{
-				(*iter)->Release();
-				_bombs.erase(iter);
-				break;
-			}
-			else
-			{
-				iter++;
+				if ((*iter) == object)
+				{
+					(*iter)->Release();
+					_bombs.erase(iter);
+					break;
+				}
+				else
+				{
+					iter++;
+				}
 			}
 		}
+		else if (breakType == BreakType::BREAK_Crate)
+		{
+			for (auto &iter = _crates.begin(); iter != _crates.end();)
+			{
+				if ((*iter) == object)
+				{
+					(*iter)->Release();
+					_crates.erase(iter);
+					break;
+				}
+				else
+				{
+					iter++;
+				}
+			}
+		}
+		Console::Log("destroyed Item Id %d\n", object->GetId());
+		Console::Log("listSize %d\n", _throws.size());
+		OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 	}
-
-	Console::Log("destroyed Item Id %d\n", object->GetId());
-	Console::Log("listSize %d\n", _throws.size());
-	//object->Release();
-	OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 }
 
 void Stage::HandleEnemyDeadEvent(const IEvent * event)
@@ -1565,6 +1590,100 @@ void Stage::HandleDestroyATileEvent(const IEvent * event)
 		DestroyTile(destroyIndex);
 	}
 
+}
+
+void Stage::HandleSpawnObjectEvent(const IEvent * event)
+{
+	SpawnObjectEvent *convertedEvent = (SpawnObjectEvent *)(event);
+	const TilePosition &eventPos = convertedEvent->GetTilePosition();
+	if (convertedEvent->GetKey() == L"gem")
+	{
+		BuildRandomGem(IntVector2(eventPos.tileX, eventPos.tileY));
+	}
+	else if (convertedEvent->GetKey() == L"eatable")
+	{
+		BuildRandomEatable(IntVector2(eventPos.tileX, eventPos.tileY));
+	}
+}
+
+void Stage::HandleCollectEatableEvent(const IEvent * event)
+{
+	CollectEatableEvent *convertedEvent = (CollectEatableEvent *)event;
+
+	GameObject *object = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+	if (object)
+	{
+		for (auto &iter = _eatables.begin(); iter != _eatables.end();)
+		{
+			if ((*iter) == object)
+			{
+				_eatables.erase(iter);
+				break;
+			}
+			else
+			{
+				iter++;
+			}
+		}
+		object->Release();
+		OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
+	}
+}
+
+void Stage::BuildRandomGem(const IntVector2 &genPos)
+{
+	GemProperty randomGemProperty{};
+	randomGemProperty.sourceIndex.y = 0;
+	int randSourceX = RND->GetFromIntTo(2, 5);
+	randomGemProperty.sourceIndex.x = randSourceX;
+	if (randSourceX == 2) { randomGemProperty.value = 800; randomGemProperty.type = GEM_Emerald; }
+	else if (randSourceX == 3) { randomGemProperty.value = 1200; randomGemProperty.type = GEM_Saphire; }
+	else if (randSourceX == 4) { randomGemProperty.value = 1600; randomGemProperty.type = GEM_Ruby; }
+	else if (randSourceX == 5) { randomGemProperty.value = 2000; randomGemProperty.type = GEM_Diamond; }
+	Gem *randomGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", &randomGemProperty);
+	randomGem->position.tileX = genPos.x;
+	randomGem->position.tileY = genPos.y;
+	randomGem->position.AddToTileRelX(-16.0f);
+	randomGem->desiredPosition = randomGem->position;
+	if (tileLayer0[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+	{
+		randomGem->SetIsInTile(true);
+	}
+	else
+	{
+		if (tileLayer1[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+		{
+			randomGem->SetIsInTile(true);
+		}
+	}
+
+	if (randomGem->position.tileX)
+		_gems.push_back(randomGem);
+}
+
+void Stage::BuildRandomEatable(const IntVector2 & genPos)
+{
+	EatableProperty randEatableProperty{};
+	randEatableProperty.position = genPos;
+
+	float randFloat = RND->GetFloat();
+	if (randFloat < 0.5f)
+	{
+		randEatableProperty.type = EATABLE_Bomb;
+		randEatableProperty.sourceIndex = IntVector2(0, 0);
+	}
+	else
+	{
+		randEatableProperty.type = EATABLE_Rope;
+		randEatableProperty.sourceIndex = IntVector2(1, 0);
+	}
+	Eatables *randomEatable = (Eatables *)OBJECTMANAGER->CreateObject(L"eatables", &randEatableProperty);
+	randomEatable->position.tileX = genPos.x;
+	randomEatable->position.tileY = genPos.y;
+	randomEatable->position.AddToTileRelX(-16.0f);
+	randomEatable->desiredPosition = randomEatable->position;
+
+	_eatables.push_back(randomEatable);
 }
 
 Tile * Stage::GetValidTileAt(int x, int y)

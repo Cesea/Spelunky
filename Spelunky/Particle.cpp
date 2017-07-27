@@ -16,6 +16,25 @@ HRESULT Particle::Init(const IntVector2 &sourceIndex, ParticleType particleType)
 	_sourceIndex = sourceIndex;
 	_particleType = particleType;
 
+	if ((_sourceIndex.x == 0 && _sourceIndex.y == 0) || 
+		(_sourceIndex.x == 5 && _sourceIndex.y == 0) ||
+		(_sourceIndex.x == 6 && _sourceIndex.y == 0) ||
+		(_sourceIndex.x == 2 && _sourceIndex.y == 1) ||
+		(_sourceIndex.x == 3 && _sourceIndex.y == 1))
+	{
+		_soundType = ParticleSoundType::PARTICLE_Boulder;
+	}
+	else if ((_sourceIndex.x == 2 && _sourceIndex.y == 0) ||
+		(_sourceIndex.x == 3 && _sourceIndex.y == 0))
+	{
+		_soundType = ParticleSoundType::PARTICLE_Bone;
+	}
+	else if ((_sourceIndex.x == 4 && _sourceIndex.y == 0))
+	{
+		_soundType = ParticleSoundType::PARTICLE_Vase;
+	}
+
+
 	//_collisionComp = new CollisionComponent;
 	//_collisionComp->Init(RectMake(0, 0, 48, 48), Vector2(-24, -24));
 	_firstRect = RectMake(0, 0, 48, 48);
@@ -54,6 +73,7 @@ void Particle::Update(float deltaTime)
 			if (_lifeTimer.Tick(deltaTime))
 			{
 				_valid = false;
+				_firstHitted = false;
 			}
 			float t = 1.0f - _lifeTimer.GetCurrentSecond() / _lifeTimer.GetTargetSecond();
 
@@ -72,7 +92,10 @@ void Particle::Update(float deltaTime)
 
 			desiredPosition.AddToTileRel(_velocity * deltaTime);
 
-			CalculateCollision();
+			if (_scale > 0.22)
+			{
+				CalculateCollision();
+			}
 		}
 	}break;
 	case BlingParticle :
@@ -179,6 +202,8 @@ void Particle::PlayAt(const TilePosition &position, float scaleMult)
 
 void Particle::CalculateCollision()
 {
+	bool hitResult = false;
+
 	for (int i = 0; i < 8; ++i)
 	{
 		if (_nearTiles.tiles[i] == nullptr ||
@@ -201,6 +226,7 @@ void Particle::CalculateCollision()
 					desiredPosition.AddToTileRel(0, -overlapRect.height);
 					_velocity.y *= -0.3f;
 					_velocity.x *= 0.6;
+					hitResult = true;
 				}
 			}
 		}
@@ -216,18 +242,21 @@ void Particle::CalculateCollision()
 						desiredPosition.AddToTileRel(0, overlapRect.height);
 						_velocity.y = 0.0f;
 						_velocity.x *= 0.6;
+						hitResult = true;
 					}
 					//왼 타일
 					else if (i == 2)
 					{
 						desiredPosition.AddToTileRel(overlapRect.width, 0);
 						_velocity.x *= -0.6f;
+						hitResult = true;
 					}
 					//오른 타일
 					else if (i == 3)
 					{
 						desiredPosition.AddToTileRel(-overlapRect.width, 0);
 						_velocity.x *= -0.6f;
+						hitResult = true;
 					}
 					//대각선
 					else
@@ -248,6 +277,7 @@ void Particle::CalculateCollision()
 								_velocity.y = 0.0f;
 							}
 							desiredPosition.AddToTileRel(0, pushingHeight);
+							hitResult = true;
 						}
 						//수평으로 충돌이 일어남
 						else
@@ -265,6 +295,7 @@ void Particle::CalculateCollision()
 								_velocity.x *= -0.5f;
 							}
 							desiredPosition.AddToTileRel(pushingWidth, 0);
+							hitResult = true;
 						}
 					}
 				}
@@ -272,5 +303,24 @@ void Particle::CalculateCollision()
 		}
 	}
 	position = desiredPosition;
+	if (hitResult && !_firstHitted)
+	{
+		_firstHitted = true;
+		switch (_soundType)
+		{
+		case ParticleSoundType::PARTICLE_Bone :
+		{
+			SOUNDMANAGER->Play(L"rubble_bone" + std::to_wstring(((int)_degrees % 3)) );
+		}break;
+		case ParticleSoundType::PARTICLE_Boulder :
+		{
+			SOUNDMANAGER->Play(L"rubble" + std::to_wstring(((int)_degrees % 3)));
+		}break;
+		case ParticleSoundType::PARTICLE_Vase :
+		{
+			SOUNDMANAGER->Play(L"rubble_vase" + std::to_wstring(((int)_degrees % 3)));
+		}break;
+		}
+	}
 }
 

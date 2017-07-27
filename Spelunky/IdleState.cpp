@@ -73,6 +73,7 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 		//LadderClimbState로의 이전 처리
 		if (object->_canClimb && ! object->_endOfLadder)
 		{
+			SOUNDMANAGER->Play(L"grab");
 			newState = new LadderClimbState;
 			return newState;
 		}
@@ -87,6 +88,7 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 		//LadderClimbState로의 이전 처리
 		if (object->_canClimb)
 		{
+			SOUNDMANAGER->Play(L"grab");
 			newState = new LadderClimbState;
 			return newState;
 		}
@@ -113,23 +115,27 @@ State<Player>* IdleState::HandleCommand(Player * object, const ControlCommand & 
 	}
 	else if (command.action == Command::UseBomb)
 	{
-		TilePosition bombThrowPosition = object->position;
-		bombThrowPosition.AddToTileRelY(-32);
+		if (object->_bomb > 0)
+		{
+			TilePosition bombThrowPosition = object->position;
+			bombThrowPosition.AddToTileRelY(-32);
 
-		Vector2 direction;
-		if (object->GetDirection() == Direction::Left)
-		{
-			direction.x = -900;
-			direction.y = -600;
+			Vector2 direction;
+			if (object->GetDirection() == Direction::Left)
+			{
+				direction.x = -900;
+				direction.y = -600;
+			}
+			else if (object->GetDirection() == Direction::Right)
+			{
+				direction.x = 900;
+				direction.y = -600;
+			}
+			direction.Normalize();
+			direction *= 600.0f;
+			EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
+			object->_bomb--;
 		}
-		else if (object->GetDirection() == Direction::Right)
-		{
-			direction.x = 900;
-			direction.y = -600;
-		}
-		direction.Normalize();
-		direction *= 600.0f;
-		EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
 	}
 
 	return nullptr;

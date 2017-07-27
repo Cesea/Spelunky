@@ -11,6 +11,7 @@ void OnLedgeState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"onLedge");
 	_enteredPosition = object->position;
+	SOUNDMANAGER->Play(L"on_ledge");
 }
 
 State<Player>* OnLedgeState::Update(Player * object, float deltaTime)
@@ -98,8 +99,14 @@ State<Player>* OnLedgeState::HandleCommand(Player * object, const ControlCommand
 	return newState;
 }
 
+State<Player>* OnLedgeState::HandleFrameEndEvent(Player * actor)
+{
+	return nullptr;
+}
+
 void OnLedgeState::OnExit(Player * object)
 {
+	SOUNDMANAGER->Stop(L"on_ledge");
 }
 
 void LedgeGrabState::OnEnter(Player * object)

@@ -41,7 +41,6 @@ void Gem::Update(float deltaTime)
 {
 	if (!_isInTile)
 	{
-		//if (_velocity.DistanceSquare() > 1.0f)
 		{
 			_accel.y += GRAVITY;
 			_velocity += _accel * deltaTime;
@@ -82,6 +81,7 @@ GameObject * Gem::Copy(ObjectId id)
 
 void Gem::Apply(ObjectId id)
 {
+	SOUNDMANAGER->Play(L"gem" + std::to_wstring(_sourceIndex.x % 5));
 	EVENTMANAGER->QueueEvent(new CollectMoneyEvent(_id, _onActorId, _value, _gemType));
 	_valid = false;
 }
@@ -106,6 +106,16 @@ void Gem::HandlePlayerAttackEvent(const IEvent * event)
 	if (!_isInTile)
 	{
 		PlayerAttackEvent *convertedEvent = (PlayerAttackEvent *)event;
+		TilePosition playerPos = convertedEvent->GetTilePosition();
+
+		int tileXDiff = playerPos.tileX - position.tileX;
+		int tileYDiff = playerPos.tileY - position.tileY;
+
+		if (abs(tileXDiff) >= 3 || abs(tileYDiff) >= 3)
+		{
+			return;
+		}
+
 		Direction seeingDirection = convertedEvent->GetDirection();
 
 		Vector2 positionUntiled = position.UnTilelize();

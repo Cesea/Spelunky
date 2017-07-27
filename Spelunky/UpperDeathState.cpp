@@ -7,6 +7,7 @@ void UpperDeathState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"upperDeath");
 	object->_dead = true;
+	SOUNDMANAGER->Play(L"spike_hit");
 	_deadTimer.Init(2.0f);
 }
 

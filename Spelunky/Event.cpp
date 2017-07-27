@@ -45,6 +45,9 @@ EventType PlayerDeadEvent::_type = EVENT_PLAYER_DEAD;
 EventType DestroyATileEvent::_type = EVENT_DESTROY_A_TILE;
 EventType CameraMoveToEvent::_type = EVENT_CAMERA_MOVE_TO;
 
+EventType SpawnObjectEvent::_type = EVENT_SPAWN_OBJECT;
+EventType CollectEatableEvent::_type = EVENT_COLLECT_EATABLE;
+
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
 {
@@ -551,4 +554,34 @@ IEvent * CameraMoveToEvent::Copy() const
 const WCHAR * CameraMoveToEvent::GetName() const
 {
 	return L"Camera Move To Event";
+}
+
+SpawnObjectEvent::SpawnObjectEvent(const std::wstring & key, const TilePosition & tilePosition)
+	:_tilePosition(tilePosition), _key(key)
+{
+}
+
+IEvent * SpawnObjectEvent::Copy() const
+{
+	return new SpawnObjectEvent(_key, _tilePosition);
+}
+
+const WCHAR * SpawnObjectEvent::GetName() const
+{
+	return L"Spawn Object Event";
+}
+
+CollectEatableEvent::CollectEatableEvent(ObjectId id)
+	:_id(id)
+{
+}
+
+IEvent * CollectEatableEvent::Copy() const
+{
+	return new CollectEatableEvent(_id);
+}
+
+const WCHAR * CollectEatableEvent::GetName() const
+{
+	return L"Collect Eatable Event";
 }

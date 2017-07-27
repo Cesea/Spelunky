@@ -14,10 +14,12 @@ void AttackState::OnEnter(Player * object)
 	if (object->_digging)
 	{
 		object->SetWeaponGraphics(L"mattock");
+		SOUNDMANAGER->Play(L"mattock");
 	}
 	else
 	{
 		object->SetWeaponGraphics(L"whip");
+		SOUNDMANAGER->Play(L"whip");
 	}
 	object->_offsetCount = 0;
 	object->_weaponOffset = Vector2();
@@ -210,6 +212,7 @@ void AttackState::OnExit(Player * object)
 void ThrowState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"throw");
+	SOUNDMANAGER->Play(L"throw");
 	object->_holding = false;
 	object->_holdingObject[0] = nullptr;
 }

@@ -95,6 +95,7 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 	if (object->_canClimb && 
 		command.vertical != Command::None)
 	{
+		SOUNDMANAGER->Play(L"grab");
 		newState = new LadderClimbState;
 		return newState;
 	}
@@ -113,23 +114,27 @@ State<Player>* WalkState::HandleCommand(Player * object, const ControlCommand & 
 	}
 	else if (command.action == Command::UseBomb)
 	{
-		TilePosition bombThrowPosition = object->position;
-		bombThrowPosition.AddToTileRelY(-32);
+		if (object->_bomb > 0)
+		{
+			TilePosition bombThrowPosition = object->position;
+			bombThrowPosition.AddToTileRelY(-32);
 
-		Vector2 direction;
-		if (object->GetDirection() == Direction::Left)
-		{
-			direction.x = -900;
-			direction.y = -600;
+			Vector2 direction;
+			if (object->GetDirection() == Direction::Left)
+			{
+				direction.x = -900;
+				direction.y = -600;
+			}
+			else if (object->GetDirection() == Direction::Right)
+			{
+				direction.x = 900;
+				direction.y = -600;
+			}
+			direction.Normalize();
+			direction *= 800.0f;
+			EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
+			object->_bomb--;
 		}
-		else if (object->GetDirection() == Direction::Right)
-		{
-			direction.x = 900;
-			direction.y = -600;
-		}
-		direction.Normalize();
-		direction *= 800.0f;
-		EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
 	}
 
 	return newState;

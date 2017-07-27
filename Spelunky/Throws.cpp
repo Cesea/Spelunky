@@ -72,6 +72,11 @@ void Throws::Update(float deltaTime)
 			if (velLength > 300.0f)
 			{
 				EVENTMANAGER->QueueEvent(new DamageEvent(_id, 1, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+
+				if (collisionResult && _sourceIndex.x == 0)
+				{
+					SOUNDMANAGER->Play(L"bounce");
+				}
 			}
 
 			if (_breakable && collisionResult)
@@ -184,7 +189,7 @@ void Throws::HandlePlayerAttackEvent(const IEvent * event)
 		if (seeingDirection == Direction::Left)
 		{
 			if (positionUntiled.x <= playerPositionUntiled.x  + 10&&
-				positionUntiled.x >= playerPositionUntiled.x - 70 && 
+				positionUntiled.x >= playerPositionUntiled.x - 74 && 
 				position.tileY == playerPosition.tileY)
 			{
 				hitted = true;
@@ -193,7 +198,7 @@ void Throws::HandlePlayerAttackEvent(const IEvent * event)
 		else if (seeingDirection == Direction::Right)
 		{
 			if (positionUntiled.x >= playerPositionUntiled.x - 10 &&
-				positionUntiled.x <= playerPositionUntiled.x + 70 && 
+				positionUntiled.x <= playerPositionUntiled.x + 74 && 
 				position.tileY == playerPosition.tileY)
 			{
 
@@ -241,39 +246,40 @@ void Throws::HandleDamageEvent(const IEvent * event)
 	{
 		return;
 	}
-
-	const TilePosition &attackerPosition = convertedEvent->GetTilePosition();
-	int tileXDiff = attackerPosition.tileX - position.tileX;
-	int tileYDiff = attackerPosition.tileY - position.tileY;
-
-	if (abs(tileXDiff) >= 2 || abs(tileYDiff) > 2)
+	else
 	{
-		return;
+		const TilePosition &attackerPosition = convertedEvent->GetTilePosition();
+		int tileXDiff = attackerPosition.tileX - position.tileX;
+		int tileYDiff = attackerPosition.tileY - position.tileY;
+
+		if (abs(tileXDiff) >= 2 || abs(tileYDiff) > 2)
+		{
+			return;
+		}
+
+		const Rect &attackerRect = convertedEvent->GetRect();
+		const Vector2 &attackerRectOffset = convertedEvent->GetRectOffset();
+
+		Rect attackerAbsRect = attackerRect + attackerRectOffset + attackerPosition.UnTilelize();
+		Rect thisAbsRect = _collisionComp->GetRect() + _collisionComp->GetOffset() + position.UnTilelize();
+
+		Rect overlapRect;
+		if (IsRectangleOverlap(attackerAbsRect, thisAbsRect, overlapRect))
+		{
+			if (_sourceIndex.x == 1)
+			{
+				EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Jar));
+			}
+			else if (_sourceIndex.x == 2)
+			{
+				EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_BackBone));
+			}
+			else if (_sourceIndex.x == 3)
+			{
+				EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bone));
+			}
+		}
 	}
-
-	const Rect &attackerRect = convertedEvent->GetRect();
-	const Vector2 &attackerRectOffset = convertedEvent->GetRectOffset();
-
-	Rect attackerAbsRect = attackerRect + attackerRectOffset + attackerPosition.UnTilelize();
-	Rect thisAbsRect = _collisionComp->GetRect() + _collisionComp->GetOffset() + position.UnTilelize();
-
-	Rect overlapRect;
-	if (IsRectangleOverlap(attackerAbsRect, thisAbsRect, overlapRect))
-	{
-		if (_sourceIndex.x == 1)
-		{
-			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Jar));
-		}
-		else if (_sourceIndex.x == 2)
-		{
-			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_BackBone));
-		}
-		else if (_sourceIndex.x == 3)
-		{
-			EVENTMANAGER->QueueEvent(new ItemBreakEvent(_id, BreakType::BREAK_Bone));
-		}
-	}
-
 }
 
 void Throws::operator=(const ThrowProperty * property)

@@ -26,6 +26,9 @@ WCHAR deathText[40]{};
 
 ID2D1HwndRenderTarget *	gRenderTarget;
 
+Delegate<void, int> playerBombEatFunction;
+Delegate<void, int> playerRopeEatFunction;
+
 bool _running = false;
 
 //=================================================
@@ -126,6 +129,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 			}
 			_game.Update();
 			_game.Render();
+			SOUNDMANAGER->Update();
 			EVENTMANAGER->Update(TIMEMANAGER->GetElapsedTime());
 		}
 	}

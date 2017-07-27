@@ -37,6 +37,7 @@ void Enemy::Damaged(int damage, Direction hitDirection)
 		}
 		_velocity.y -= 80;
 	}
+	SOUNDMANAGER->Play(L"hit");
 }
 
 Enemy::Enemy(ObjectId id)
@@ -155,13 +156,22 @@ void Enemy::HandleDamageEvent(const IEvent * event)
 	if (IsRectangleOverlap(attackerAbsRect, thisAbsRect, overlapRect))
 	{
 		MovingObject *attacker = (MovingObject *)OBJECTMANAGER->FindObjectId(convertedEvent->GetAttackerId());
-		Vector2 attackerVel = attacker->GetVelocity();
-		attackerVel.x *= -0.5;
-		if (attackerVel.y < 0)
+		EVENTMANAGER->QueueEvent(new DamageEvent(_id, 1, attacker->position, _collisionComp->GetRect(), _collisionComp->GetOffset() ));
+
+		if (attacker == nullptr)
 		{
-			attackerVel.y *= 0.4;
+			Damaged(5, (tileXDiff >= 0) ? Direction::Right : Direction::Left);
 		}
-		attacker->SetVelocity(attackerVel);
-		Damaged(1, (tileXDiff >= 0) ? Direction::Right : Direction::Left);
+		else
+		{
+			Vector2 attackerVel = attacker->GetVelocity();
+			attackerVel.x *= -0.5;
+			if (attackerVel.y < 0)
+			{
+				attackerVel.y *= 0.4;
+			}
+			attacker->SetVelocity(attackerVel);
+			Damaged(1, (tileXDiff >= 0) ? Direction::Right : Direction::Left);
+		}
 	}
 }

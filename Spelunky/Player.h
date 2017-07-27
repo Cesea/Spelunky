@@ -79,13 +79,16 @@ public :
 
 	void SetExitPosition(const TilePosition &exitPosition) { _exitPosition = exitPosition; }
 	void Reset();
+
+	void EatBomb(int num) { _bomb += num; }
+	void EatRope(int num) { _rope += num; }
+
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 	void BuildWeaponAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 
 	void CollisionCheck();
 	void CheckCurrentTile();
-
 
 	void Damaged();
 

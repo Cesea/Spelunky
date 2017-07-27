@@ -60,6 +60,8 @@ void StageManager::Render(const Vector2 &offset)
 		_currentStage->RenderDeeperLayer(minX, maxX, minY, maxY, camPosUntiled);
 
 		_currentStage->RenderObjects(camPosUntiled);
+
+		EFFECTMANAGER->Render();
 		_pPlayer->Render(gRenderTarget, camPosUntiled);
 		_currentStage->RenderBlockingLayer(minX, maxX, minY, maxY, camPosUntiled);
 
@@ -199,7 +201,10 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 
 void StageManager::BuildMiddleStage()
 {
-	_normalStageMoneyCollected = _currentStage->GetMoneyCollected();
+	if (_currentStage)
+	{
+		_normalStageMoneyCollected = _currentStage->GetMoneyCollected();
+	}
 	SAFE_DELETE(_currentStage);
 
 	_inMiddleStage = true;

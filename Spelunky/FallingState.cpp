@@ -32,6 +32,7 @@ State<Player>* FallingState::Update(Player * object, float deltaTime)
 
 	if (object->_onGround)
 	{
+		SOUNDMANAGER->Play(L"land");
 		newState = new WalkState;
 	}
 	if (object->_canGrab)
@@ -98,6 +99,7 @@ State<Player>* FallingState::HandleCommand(Player * object, const ControlCommand
 	if (object->_canClimb && 
 		command.vertical == Command::MoveUp)
 	{
+		SOUNDMANAGER->Play(L"grab");
 		newState = new LadderClimbState;
 		return newState;
 	}

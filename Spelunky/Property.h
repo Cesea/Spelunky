@@ -21,6 +21,12 @@ struct MaskInfo
 	bool32 hasMask{};
 };
 
+enum EatableType
+{
+	EATABLE_Bomb,
+	EATABLE_Rope,
+};
+
 enum CrateType
 {
 	CRATE_GemSpawn,
@@ -141,6 +147,13 @@ struct CrateProperty : public BaseProperty
 {
 	IntVector2 sourceIndex{ -1, -1 };
 	CrateType type;
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
+};
+
+struct EatableProperty : public BaseProperty
+{
+	IntVector2 sourceIndex{ -1, -1 };
+	EatableType type;
 	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 

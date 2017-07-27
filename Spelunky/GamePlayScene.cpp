@@ -48,6 +48,10 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
 
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\buttonSprite.png", L"buttonSprite");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\eatables.png", L"eatables");
+
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
 
 #pragma region Animation For Player
 	int idleArray[1] = {0};
@@ -87,7 +91,7 @@ HRESULT GamePlayScene::LoadContent()
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_ladderClimb", L"char_orange", 80, 80, ladderClimbArray, 6, 10, true);
 
 	int onLedgeArray[] = {36, 37, 38, 39, 40, 41, 42, 43};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_onLedge", L"char_orange", 80, 80, onLedgeArray, 8, 15, true);
+	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_onLedge", L"char_orange", 80, 80, onLedgeArray, 8, 13, true);
 
 	int grabLedgeArray[] = {29, 30, 31, 32, 33, 34};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_ledgeGrab", L"char_orange", 80, 80, grabLedgeArray, 6, 10, false);
@@ -172,6 +176,68 @@ HRESULT GamePlayScene::LoadContent()
 
 #pragma endregion
 
+	SOUNDMANAGER->AddSound(L"gp_bgm_00", L"resources\\sfx\\Music\\A01_A.ogg", true, true);
+	SOUNDMANAGER->AddSound(L"gp_bgm_01", L"resources\\sfx\\Music\\A01_B.ogg", true, true);
+	SOUNDMANAGER->AddSound(L"gp_bgm_02", L"resources\\sfx\\Music\\A01_C.ogg", true, true);
+	SOUNDMANAGER->AddSound(L"gp_bgm_03", L"resources\\sfx\\Music\\A01_first.ogg", true, true);
+
+	SOUNDMANAGER->AddSound(L"bat_one_flap", L"resources\\sfx\\Sound\\batoneflap.wav", false, false);
+	SOUNDMANAGER->AddSound(L"bat_flap", L"resources\\sfx\\Sound\\batflap.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"bomb_explosion", L"resources\\sfx\\Sound\\kaboom.wav", false, false);
+	SOUNDMANAGER->AddSound(L"bomb_timer", L"resources\\sfx\\Sound\\bomb_timer.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"into_door", L"resources\\sfx\\Sound\\intodoor.wav", false, false);
+	SOUNDMANAGER->AddSound(L"fade_in", L"resources\\sfx\\Sound\\fadein.wav", false, false);
+	SOUNDMANAGER->AddSound(L"fade_out", L"resources\\sfx\\Sound\\fadeout.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"gem0", L"resources\\sfx\\Sound\\gem1.wav", false, false);
+	SOUNDMANAGER->AddSound(L"gem1", L"resources\\sfx\\Sound\\gem2.wav", false, false);
+	SOUNDMANAGER->AddSound(L"gem2", L"resources\\sfx\\Sound\\gem3.wav", false, false);
+	SOUNDMANAGER->AddSound(L"gem3", L"resources\\sfx\\Sound\\gem4.wav", false, false);
+	SOUNDMANAGER->AddSound(L"gem4", L"resources\\sfx\\Sound\\gem5.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"jump", L"resources\\sfx\\Sound\\jump.wav", false, false);
+	SOUNDMANAGER->AddSound(L"land", L"resources\\sfx\\Sound\\land.wav", false, false);
+	SOUNDMANAGER->AddSound(L"grab", L"resources\\sfx\\Sound\\grab.wav", false, false);
+	SOUNDMANAGER->AddSound(L"on_ledge", L"resources\\sfx\\Sound\\on_ledge.wav", false, true);
+
+	SOUNDMANAGER->AddSound(L"boulder_hit_0", L"resources\\sfx\\Sound\\boulderhit.wav", false, false);
+	SOUNDMANAGER->AddSound(L"boulder_hit_1", L"resources\\sfx\\Sound\\boulderhit2.wav", false, false);
+	SOUNDMANAGER->AddSound(L"boulder_hit_2", L"resources\\sfx\\Sound\\boulderhit3.wav", false, false);
+	SOUNDMANAGER->AddSound(L"boulder_hit_3", L"resources\\sfx\\Sound\\boulderhit4.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"shatter", L"resources\\sfx\\Sound\\newshatter.wav", false, false);
+	SOUNDMANAGER->AddSound(L"bone_shatter", L"resources\\sfx\\Sound\\bone_shatter.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"rubble0", L"resources\\sfx\\Sound\\rubble1.wav", false, false);
+	SOUNDMANAGER->AddSound(L"rubble1", L"resources\\sfx\\Sound\\rubble2.wav", false, false);
+	SOUNDMANAGER->AddSound(L"rubble2", L"resources\\sfx\\Sound\\rubble3.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"rubble_bone0", L"resources\\sfx\\Sound\\rubble_bone1.wav", false, false);
+	SOUNDMANAGER->AddSound(L"rubble_bone1", L"resources\\sfx\\Sound\\rubble_bone2.wav", false, false);
+	SOUNDMANAGER->AddSound(L"rubble_bone2", L"resources\\sfx\\Sound\\rubble_bone3.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"rubble_vase0", L"resources\\sfx\\Sound\\rubble_vase1.wav", false, false);
+	SOUNDMANAGER->AddSound(L"rubble_vase1", L"resources\\sfx\\Sound\\rubble_vase2.wav", false, false);
+	SOUNDMANAGER->AddSound(L"rubble_vase2", L"resources\\sfx\\Sound\\rubble_vase3.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"collect", L"resources\\sfx\\Sound\\collect.wav", false, false);
+	SOUNDMANAGER->AddSound(L"crate_open", L"resources\\sfx\\Sound\\crateopen.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"whip", L"resources\\sfx\\Sound\\whip.wav", false, false);
+	SOUNDMANAGER->AddSound(L"mattock", L"resources\\sfx\\Sound\\mattock.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"bounce", L"resources\\sfx\\Sound\\bounce.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"hit", L"resources\\sfx\\Sound\\hit.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"item_drop", L"resources\\sfx\\Sound\\item_drop.wav", false, false);
+	SOUNDMANAGER->AddSound(L"throw", L"resources\\sfx\\Sound\\throw_item.wav", false, false);
+	SOUNDMANAGER->AddSound(L"pick_up", L"resources\\sfx\\Sound\\pickup.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"spike_hit", L"resources\\sfx\\Sound\\spike_hit.wav", false, false);
+
 	return S_OK;
 }
 
@@ -193,15 +259,11 @@ void GamePlayScene::UnRegisterDelegates()
 
 void GamePlayScene::HandleLayerOnEvent(const IEvent * event)
 {
-	//gRenderTarget->BeginDraw();
-	//gRenderTarget->Clear(D2D1::ColorF(0.0, 0.0f, 0.0f, 1.0f));
-
-	//gRenderTarget->EndDraw();
-
 	LayerOnEvent *convertedEvent = (LayerOnEvent *)event;
 	//³ÐÈ÷´Â°Í
 	if (convertedEvent->GetWiden())
 	{
+		SOUNDMANAGER->Play(L"fade_in");
 		_enterTheStage = true;
 		_startLayeredRadius = 3;
 		_targetLayeredRadius = 1000;
@@ -209,14 +271,11 @@ void GamePlayScene::HandleLayerOnEvent(const IEvent * event)
 	}
 	else
 	{
+		SOUNDMANAGER->Play(L"fade_out");
 		_enterTheStage = false;
 		_startLayeredRadius = 1000;
 		_targetLayeredRadius = 3;
 
-		//if (convertedEvent->GetPlayerDead())
-		//{
-		//	_sceneState = PlaySceneState::PlayerDead;
-		//}
 	}
 	_layerRenderOn = true;
 
@@ -276,8 +335,6 @@ HRESULT GamePlayScene::Init(void)
 
 	_sceneState = PlaySceneState::OnDungeon;
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
 
 	_deadBackground = new D2DSprite;
 	_deadBackground->Init(IMAGEMANAGER->GetImage(L"bookbg"), 0, 0, WINSIZEX, WINSIZEY, IntVector2(-WINSIZEX / 2, -WINSIZEY / 2));
@@ -346,7 +403,10 @@ void GamePlayScene::Update(void)
 				}
 				else
 				{
-					_pPlayer->Reset();
+					if (!_pPlayer->GetDead())
+					{
+						_pPlayer->Reset();
+					}
 					if (_pPlayer->GetDead())
 					{
 						EVENTMANAGER->DiscardAllEvents();
@@ -447,7 +507,6 @@ void GamePlayScene::Render(void)
 
 			//_pPlayer->Render(gRenderTarget, unTiledCamPos);
 
-			EFFECTMANAGER->Render();
 
 			UIMANAGER->Render(unTiledCamPos);
 		}

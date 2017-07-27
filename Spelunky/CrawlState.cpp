@@ -100,6 +100,7 @@ State<Player>* CrawlIdleState::HandleCommand(Player * object, const ControlComma
 				object->_holdingObject[0] = nullptr;
 			}
 			EVENTMANAGER->QueueEvent(new PutDownEvent(putDownId, object->_seeingDirection));
+			SOUNDMANAGER->Play(L"item_drop");
 			object->_holding = false;
 		}
 		else
@@ -109,23 +110,28 @@ State<Player>* CrawlIdleState::HandleCommand(Player * object, const ControlComma
 	}
 	else if (command.action == Command::UseBomb)
 	{
-		TilePosition bombThrowPosition = object->position;
-		bombThrowPosition.AddToTileRelY(-16);
+		if (object->_bomb > 0)
+		{
 
-		Vector2 direction;
-		if (object->GetDirection() == Direction::Left)
-		{
-			direction.x = -200;
-			direction.y = -30;
+			TilePosition bombThrowPosition = object->position;
+			bombThrowPosition.AddToTileRelY(-16);
+
+			Vector2 direction;
+			if (object->GetDirection() == Direction::Left)
+			{
+				direction.x = -200;
+				direction.y = -30;
+			}
+			else if (object->GetDirection() == Direction::Right)
+			{
+				direction.x = 200;
+				direction.y = -30;
+			}
+			direction.Normalize();
+			direction *= 150.0f;
+			EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
+			object->_bomb--;
 		}
-		else if (object->GetDirection() == Direction::Right)
-		{
-			direction.x = 200;
-			direction.y = -30;
-		}
-		direction.Normalize();
-		direction *= 150.0f;
-		EVENTMANAGER->QueueEvent(new ThrowBombEvent(bombThrowPosition, direction, object->_stickyBomb));
 	}
 	return newState;
 }

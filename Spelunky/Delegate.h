@@ -41,6 +41,13 @@ public:
 		return result;
 	}
 
+	Delegate &operator = (const Delegate &other)
+	{
+		fpCallee = other.fpCallee;
+		fpFunctionPointer = other.fpFunctionPointer;
+		return *this;
+	}
+
 private:
 	void *fpCallee;
 	Type fpFunctionPointer;

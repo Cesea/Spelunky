@@ -47,7 +47,10 @@ enum  EventType
 	EVENT_PLAYER_DEAD = 0xda84106b,
 	EVENT_DESTROY_A_TILE = 0x4da540bc,
 
+
 	EVENT_CAMERA_MOVE_TO = 0xe345aebe,
+	EVENT_SPAWN_OBJECT = 0x62b7de16,
+	EVENT_COLLECT_EATABLE= 0xe9241d1f,
 
 };
 
@@ -625,9 +628,41 @@ private:
 	TilePosition _tilePosition;
 	Direction _direction;
 	bool32 _isRevert;
+};
 
-private :
+class SpawnObjectEvent : public BaseEvent
+{
+public :
+	SpawnObjectEvent(const std::wstring &key, const TilePosition &tilePosition);
+	virtual ~SpawnObjectEvent() {}
 
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	const TilePosition &GetTilePosition() { return _tilePosition; }
+	const std::wstring &GetKey() { return _key; }
+
+private:
+	static EventType _type;
+	TilePosition _tilePosition;
+	std::wstring _key;
+};
+
+class CollectEatableEvent : public BaseEvent
+{
+public:
+	CollectEatableEvent(ObjectId id);
+	virtual ~CollectEatableEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+private:
+	static EventType _type;
+	ObjectId _id;
 };
 
 

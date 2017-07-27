@@ -91,6 +91,9 @@ HRESULT Player::Init(BaseProperty *property)
 	_exitTimer.Init(1.3f);
 	_vulnerableTimer.Init(1.0f);
 
+	playerBombEatFunction = Delegate<void, int>::FromFunction<Player, &Player::EatBomb>(this);
+	playerRopeEatFunction = Delegate<void, int>::FromFunction<Player, &Player::EatRope>(this);
+
 	return S_OK;
 }
 
@@ -149,6 +152,7 @@ void Player::Update(float deltaTime)
 				_moveToExitInterpolating = false;
 				position = _exitPosition;
 				_exitTimer.ResetAndChangeTargetSecond(1.3f);
+				SOUNDMANAGER->Play(L"into_door");
 				SetGraphics(L"exit");
 			}
 			else
@@ -276,6 +280,7 @@ void Player::HandleHoldingEvent(const IEvent * event)
 	if (slotType == EquipSlot::Weapon)
 	{
 		_holdingObject[0] = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+		SOUNDMANAGER->Play(L"pick_up");
 	}
 	else if (slotType == EquipSlot::Jump)
 	{
@@ -314,9 +319,7 @@ void Player::HandlePlayerGoExitEvent(const IEvent * event)
 	{
 		_seeingDirection = Direction::Left;
 	}
-	
 	SetGraphics(L"walk");
-
 }
 
 void Player::HandlePlayerUpperJumpEvent(const IEvent * event)
@@ -333,16 +336,19 @@ void Player::HandlePlayerDamagedEvent(const IEvent * event)
 	if (_vulnerable)
 	{
 		Enemy *convertedObject = (Enemy *)OBJECTMANAGER->FindObjectId(convertedEvent->GetAttackerId());
-
-		_lastEnemyHittedType = convertedObject->GetEnemyType();
-		_hp -= convertedEvent->GetDamage();
-		_vulnerable = false;
-		Vector2 enemyPosDiff = convertedEvent->GetPosDiff();
-		enemyPosDiff.Normalize();
-		enemyPosDiff *= 500;
-		enemyPosDiff.y -= 300;
-		_velocity = enemyPosDiff;
-		_stateManager.ChangeState(new FaintState());
+		if (convertedObject)
+		{
+			SOUNDMANAGER->Play(L"hit");
+			_lastEnemyHittedType = convertedObject->GetEnemyType();
+			_hp -= convertedEvent->GetDamage();
+			_vulnerable = false;
+			Vector2 enemyPosDiff = convertedEvent->GetPosDiff();
+			enemyPosDiff.Normalize();
+			enemyPosDiff *= 500;
+			enemyPosDiff.y -= 300;
+			_velocity = enemyPosDiff;
+			_stateManager.ChangeState(new FaintState());
+		}
 	}
 }
 
@@ -624,7 +630,7 @@ void Player::CheckCurrentTile()
 	}
 	if ((!_onGround) &&
 		(leftColType == TILE_COLLISION_BLOCK) &&
-		(upperLeftColType == TILE_COLLISION_NONE) &&
+		(upperLeftColType != TILE_COLLISION_BLOCK) &&
 		(_seeingDirection == Direction::Left) &&
 		(position.tileRel.x < 36.0f) &&
 		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)
@@ -633,7 +639,7 @@ void Player::CheckCurrentTile()
 	}
 	else if ((!_onGround) &&
 		(rightColType == TILE_COLLISION_BLOCK) &&
-		(upperRightColType == TILE_COLLISION_NONE) &&
+		(upperRightColType != TILE_COLLISION_BLOCK) &&
 		(_seeingDirection == Direction::Right) &&
 		(position.tileRel.x > 28.0f) &&
 		desiredPosition.tileRel.y > 40.0f && desiredPosition.tileRel.y < 46.0f)

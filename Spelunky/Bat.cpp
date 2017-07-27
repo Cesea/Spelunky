@@ -67,6 +67,7 @@ void Bat::Update(float deltaTime)
 	{
 		if (_holdingTile->collisionType != TILE_COLLISION_BLOCK)
 		{
+			_stateManager.ChangeState(new BatFlyingState);
 			_flying = true;
 		}
 	}

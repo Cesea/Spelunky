@@ -290,3 +290,8 @@ void CrateProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 		type = CRATE_ItemSpawn;
 	}
 }
+
+void EatableProperty::Init(const MapTool::PropertyInfo & propertyInfo)
+{
+	sourceIndex = propertyInfo.sourceIndex;
+}

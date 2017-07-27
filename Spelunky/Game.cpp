@@ -22,6 +22,7 @@ HRESULT Game::Init(void)
 {
 	gameNode::Init();
 	IMAGEMANAGER->Init();
+	SOUNDMANAGER->Init();
 	FILEMANAGER->Init();
 	KEYMANAGER->Init();
 	TIMEMANAGER->Init();
@@ -42,7 +43,7 @@ HRESULT Game::Init(void)
 	SCENEMANAGER->AddScene(_T("MenuScene"), menuScene);
 
 	//ÇöÀç ¾À ¼³Á¤
-	SCENEMANAGER->ChangeScene(_T("MapToolScene"));
+	SCENEMANAGER->ChangeScene(_T("GamePlayScene"));
 
 	return S_OK;
 }
@@ -53,6 +54,8 @@ void Game::Release(void)
 	gameNode::Release();
 	IMAGEMANAGER->Release();
 	IMAGEMANAGER->releaseSingleton();
+	SOUNDMANAGER->Release();
+	SOUNDMANAGER->releaseSingleton();
 	KEYMANAGER->Release();
 	KEYMANAGER->releaseSingleton();
 	TIMEMANAGER->Release();

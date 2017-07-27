@@ -62,6 +62,7 @@
 #include "TextDataManager.h"
 
 #include "KeyAnimationManager.h"
+#include "SoundManager.h"
 
 //=================================================
 //======== 20170309 #디파인문#======
@@ -93,6 +94,7 @@
 #define SCENEMANAGER SceneManager::getSingleton()
 #define TEXTDATAMANAGER TextDataManager::getSingleton()
 #define KEYANIMANAGER KeyAnimationManager::getSingleton()
+#define SOUNDMANAGER SoundManager::getSingleton()
 
 #define INTERPOLATIONMODE D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
 
@@ -207,6 +209,9 @@ extern WCHAR LgfxPath[50];
 extern WCHAR LsfxPath[50];
 
 extern WCHAR deathText[40];
+
+extern Delegate<void, int> playerBombEatFunction;
+extern Delegate<void, int> playerRopeEatFunction;
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 

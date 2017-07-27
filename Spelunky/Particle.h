@@ -11,6 +11,13 @@ enum ParticleType
 	SparkParticle,
 };
 
+enum ParticleSoundType
+{
+	PARTICLE_Boulder,
+	PARTICLE_Vase,
+	PARTICLE_Bone,
+};
+
 class Particle 
 {
 public:
@@ -31,6 +38,7 @@ protected:
 	void CalculateCollision();
 
 protected:
+	bool _firstHitted{ false };
 	IntVector2 _sourceIndex{};
 	ParticleType _particleType{};
 	D2DSprite *_sprite{};
@@ -54,5 +62,7 @@ protected:
 
 	bool32 _valid{ false };
 	float _rotationDirection{};
+
+	ParticleSoundType _soundType;
 };
 #endif

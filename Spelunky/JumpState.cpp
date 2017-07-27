@@ -11,8 +11,8 @@ void JumpState::OnEnter(Player * object)
 {
 	object->SetGraphics(L"jump");
 	object->_velocity.y = -object->_jumpPower;
-
 	object->_onGround = false;
+	SOUNDMANAGER->Play(L"jump");
 }
 
 State<Player>* JumpState::Update(Player * object, float deltaTime)

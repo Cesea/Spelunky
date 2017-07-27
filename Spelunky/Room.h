@@ -11,6 +11,7 @@
 #include "Enemy.h"
 
 #include "Crate.h"
+#include "Eatables.h"
 
 struct RandomRoomGenerated
 {
@@ -38,10 +39,6 @@ struct Room
 {
 	~Room()
 	{
-		//for (auto &prop : properties)
-		//{
-		//	SAFE_DELETE(prop.second);
-		//}
 		properties.clear();
 	}
 
@@ -117,6 +114,13 @@ private:
 	void HandleThrowBombEvent(const IEvent *event);
 	void HandleDestroyATileEvent(const IEvent *event);
 
+	void HandleSpawnObjectEvent(const IEvent *event);
+	void HandleCollectEatableEvent(const IEvent *event);
+
+private :
+	void BuildRandomGem(const IntVector2 &genPos);
+	void BuildRandomEatable(const IntVector2 &genPos);
+
 private:
 	Room _rooms[16]{};
 
@@ -132,6 +136,7 @@ private:
 	std::list<Throws *> _throws{};
 	std::list<Enemy *> _enemies{};
 	std::list<Crate *> _crates{};
+	std::list<Eatables *> _eatables{};
 
 
 	std::map<std::wstring, D2DSprite *> _usingSprites;

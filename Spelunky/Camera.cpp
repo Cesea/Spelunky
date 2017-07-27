@@ -157,12 +157,12 @@ void Camera::HandleCameraMoveToEvent(const IEvent * event)
 
 	if (convertedEvent->GetDirection() == Direction::Up)
 	{
-		playerPos.AddToTileRelY(-96);
+		playerPos.AddToTileRelY(-50);
 		MoveTo(playerPos);
 	}
 	else if(convertedEvent->GetDirection() == Direction::Down)
 	{
-		playerPos.AddToTileRelY(96);
+		playerPos.AddToTileRelY(50);
 		MoveTo(playerPos);
 	}
 }

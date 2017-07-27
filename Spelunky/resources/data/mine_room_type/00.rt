@@ -1676,9 +1676,9 @@ ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 1
 Property Name : enemy
 SourceIndex X : 0, Y : 0
-Value0 : spider
+Value0 : bat
 Value1 : 0
-ImageSourceIndex X : 5, Y : 2
+ImageSourceIndex X : 4, Y : 3
 At X : 3, Y : 1
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1794,11 +1794,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 3
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : throws
+SourceIndex X : -2, Y : -2
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 3, Y : 5
 At X : 3, Y : 3
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1938,17 +1938,17 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 6, Y : 5
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
-At X : 7, Y : 5
-Property Name : crate
-SourceIndex X : 1, Y : 0
-Value0 : itemSpawn
+Property Name : throws
+SourceIndex X : -2, Y : -2
+Value0 : 0
 Value1 : 0
-ImageSourceIndex X : 1, Y : 3
+ImageSourceIndex X : 3, Y : 5
+At X : 7, Y : 5
+Property Name : throws
+SourceIndex X : -2, Y : -2
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 3, Y : 5
 At X : 8, Y : 5
 Property Name : tunnel
 SourceIndex X : 0, Y : 0
@@ -1956,11 +1956,11 @@ Value0 : 0
 Value1 : 0
 ImageSourceIndex X : 0, Y : 0
 At X : 9, Y : 5
-Property Name : crate
-SourceIndex X : 0, Y : 0
-Value0 : gemSpawn
+Property Name : throws
+SourceIndex X : -2, Y : -2
+Value0 : 0
 Value1 : 0
-ImageSourceIndex X : 0, Y : 3
+ImageSourceIndex X : 3, Y : 5
 At X : 0, Y : 6
 Property Name : none
 SourceIndex X : -1, Y : -1
