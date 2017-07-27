@@ -51,7 +51,7 @@ void TimeManager::Tick()
 			QueryPerformanceCounter((LARGE_INTEGER*)&_curTime);
 			//마지막 시간과 현재 시간의 경과량 측정한다
 			_timeElapsed = (_curTime - _lastTime) * _timeScale;
-			Sleep(1);
+			//Sleep(1);
 		}
 	}
 	//초당 프레임 카운트 증가!!

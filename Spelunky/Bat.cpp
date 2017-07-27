@@ -16,6 +16,7 @@ Bat::~Bat()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Bat::HandleDamageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Bat::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Bat, &Bat::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Bat::HandleObstaclePositionEvent>(this));
 	SOUNDMANAGER->Stop(L"bat_flap");
 	_graphics.Release();
 }
@@ -26,6 +27,7 @@ HRESULT Bat::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Bat::HandleDamageEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Bat::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Bat, &Bat::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Bat::HandleObstaclePositionEvent>(this));
 	_collisionComp = new CollisionComponent;
 	_collisionComp->Init(RectMake(0, 0, 38, 38), Vector2(-19, -44));
 
@@ -81,6 +83,11 @@ void Bat::Update(float deltaTime)
 
 	_collisionComp->Update(this, deltaTime, &_nearTiles);
 
+	if (_eventDispatchTimer.Tick(deltaTime))
+	{
+		EVENTMANAGER->QueueEvent(new EnemyPositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	}
+
 }
 
 void Bat::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -109,7 +116,7 @@ void Bat::HandlePlayerPositionEvent(const IEvent * event)
 	int tileXDiff = playerTilePosition.tileX - position.tileX;
 	int tileYDiff = playerTilePosition.tileY - position.tileY;
 
-	if (abs(tileXDiff) >= 6 || abs(tileYDiff) >= 3)
+	if (abs(tileXDiff) >= 6 || abs(tileYDiff) >= 5)
 	{
 		return;
 	}

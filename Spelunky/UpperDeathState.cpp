@@ -8,7 +8,7 @@ void UpperDeathState::OnEnter(Player * object)
 	object->SetGraphics(L"upperDeath");
 	object->_dead = true;
 	SOUNDMANAGER->Play(L"spike_hit");
-	_deadTimer.Init(2.0f);
+	_deadTimer.Init(4.0f);
 }
 
 State<Player>* UpperDeathState::Update(Player * object, float deltaTime)

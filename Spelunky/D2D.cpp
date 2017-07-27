@@ -17,7 +17,7 @@ void D2D::Init()
 {
 	HRESULT result = E_FAIL;
 
-	result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &D2DFactory);
+	result = D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, &D2DFactory);
 	Assert(SUCCEEDED(result));
 
 	CoInitialize(NULL);

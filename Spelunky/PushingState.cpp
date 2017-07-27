@@ -12,6 +12,7 @@ void PushingState::OnEnter(Player * object)
 	object->SetGraphics(L"pushing");
 	object->_pushingObject = true;
 	_initialDirection = object->GetDirection();
+	SOUNDMANAGER->Play(L"push_block");
 }
 
 State<Player>* PushingState::Update(Player * object, float deltaTime)
@@ -97,4 +98,5 @@ State<Player>* PushingState::HandleCommand(Player * object, const ControlCommand
 void PushingState::OnExit(Player * object)
 {
 	object->_pushingObject = false;
+	SOUNDMANAGER->Stop(L"push_block");
 }

@@ -19,6 +19,7 @@ public:
 
 	virtual void HandlePlayerPositionEvent(const IEvent *event);
 	virtual void HandleObstaclePositionEvent(const IEvent *event);
+	virtual void HandleEnemyPositionEvent(const IEvent *event);
 
 protected:
 
@@ -27,6 +28,7 @@ protected:
 	bool _fired{ false };
 	ObstacleType _obstacleType;
 	Direction _facingDirection;
+	float _prevYVel{};
 };
 
 

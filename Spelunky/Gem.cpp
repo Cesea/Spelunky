@@ -12,6 +12,7 @@ Gem::~Gem()
 {
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Item, &Gem::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Gem, &Gem::HandlePlayerAttackEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Gem, &Gem::HandleObstaclePositionEvent>(this));
 }
 
 HRESULT Gem::Init(BaseProperty *property)
@@ -27,6 +28,8 @@ HRESULT Gem::Init(BaseProperty *property)
 
 	_collisionComp = new CollisionComponent;
 	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -20));
+
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Gem, &Gem::HandleObstaclePositionEvent>(this));
 
 	return S_OK;
 }
@@ -156,6 +159,70 @@ void Gem::HandlePlayerAttackEvent(const IEvent * event)
 			}
 			_velocity.y -= 84;
 		}
+	}
+}
+
+void Gem::HandleObstaclePositionEvent(const IEvent * event)
+{
+	ObstaclePositionEvent *convertedEvent = (ObstaclePositionEvent *)(event);
+
+	const TilePosition &obstacleTilePos = convertedEvent->GetPosition();
+	int tileXDiff = obstacleTilePos.tileX - position.tileX;
+	int tileYDiff = obstacleTilePos.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 3 || abs(tileYDiff) >= 3)
+	{
+		return;
+	}
+
+	const Rect &obstacleRect = convertedEvent->GetRect();
+	const Vector2 &obstacleUntiledPosition = convertedEvent->GetPosition().UnTilelize();
+
+	const Vector2 itemUntiledPosition = position.UnTilelize();
+
+	Rect obstacleAbsRect = RectMake(obstacleUntiledPosition.x, obstacleUntiledPosition.y,
+		obstacleRect.width, obstacleRect.height);
+	obstacleAbsRect += convertedEvent->GetRectOffset();
+
+	Rect itemAbsRect =
+		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
+
+	float relXDiff = itemUntiledPosition.x - obstacleUntiledPosition.x;
+	float relYDiff = itemUntiledPosition.y - obstacleUntiledPosition.y;
+
+	Rect overlapRect;
+	if (IsRectangleOverlap(obstacleAbsRect, itemAbsRect, overlapRect))
+	{
+		if (overlapRect.width > overlapRect.height)
+		{
+			if (relYDiff > 0)
+			{
+				position.AddToTileRelY(overlapRect.height);
+				_velocity.y = 0;
+				_velocity.x *= 0.5;
+			}
+			else
+			{
+				position.AddToTileRelY(-overlapRect.height);
+				_velocity.y = 0;
+				_velocity.x *= 0.5;
+			}
+		}
+		else
+		{
+			if (relXDiff > 0)
+			{
+				position.AddToTileRelX(overlapRect.width);
+				_velocity.x *= -0.5;
+			}
+			else
+			{
+				position.AddToTileRelX(-overlapRect.width);
+				_velocity.x *= -0.5;
+			}
+		}
+		desiredPosition = position;
 	}
 }
 

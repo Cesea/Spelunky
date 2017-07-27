@@ -17,6 +17,7 @@ Spider::~Spider()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Spider::HandleDamageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Spider::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Spider, &Spider::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Spider::HandleObstaclePositionEvent>(this));
 	_graphics.Release();
 }
 
@@ -26,6 +27,7 @@ HRESULT Spider::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Spider::HandleDamageEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Spider::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Spider, &Spider::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Spider::HandleObstaclePositionEvent>(this));
 	_collisionComp = new CollisionComponent;
 	_collisionComp->Init(RectMake(0, 0, 38, 44), Vector2(-19, -44));
 
@@ -94,7 +96,10 @@ void Spider::Update(float deltaTime)
 	{
 		_onGround = true;
 	}
-	
+	if (_eventDispatchTimer.Tick(deltaTime))
+	{
+		EVENTMANAGER->QueueEvent(new EnemyPositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	}
 }
 
 void Spider::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)

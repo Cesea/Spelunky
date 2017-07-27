@@ -58,7 +58,7 @@ enum  EventType
 
 
 	EVENT_OBSTACLE_POSITION = 0xb5004395,
-
+	EVENT_ENEMY_POSITION = 0xd2078868,
 };
 
 
@@ -714,6 +714,32 @@ public :
 	explicit ObstaclePositionEvent(ObjectId id, const TilePosition &position, 
 		const Rect &rect, const Vector2 &rectOffset);
 	virtual ~ObstaclePositionEvent() {}
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+
+	const TilePosition &GetPosition() { return _position; }
+	const Rect &GetRect() { return _rect; }
+	const Vector2 &GetRectOffset() { return _rectOffset; }
+
+private:
+	ObjectId _id;
+
+	TilePosition _position;
+	Rect _rect;
+	Vector2 _rectOffset;
+
+	static EventType _type;
+};
+
+class EnemyPositionEvent : public BaseEvent
+{
+public :
+	explicit EnemyPositionEvent(ObjectId id, const TilePosition &position, 
+		const Rect &rect, const Vector2 &rectOffset);
+	virtual ~EnemyPositionEvent() {}
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;
 	EventType GetType() const override { return _type; }

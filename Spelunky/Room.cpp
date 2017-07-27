@@ -125,7 +125,11 @@ Stage::~Stage()
 		enemy->Release();
 		OBJECTMANAGER->DestroyObject(enemy->GetId());
 	}
-
+	for (auto &obstacle : _obstacles)
+	{
+		obstacle->Release();
+		OBJECTMANAGER->DestroyObject(obstacle->GetId());
+	}
 	for (auto &sprite : _usingSprites)
 	{
 		SAFE_DELETE(sprite.second);
@@ -1591,7 +1595,8 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 		if (breakType == BreakType::BREAK_Jar ||
 			breakType == BreakType::BREAK_Bone ||
 			breakType == BreakType::BREAK_BackBone ||
-			breakType == BreakType::BREAK_Rock)
+			breakType == BreakType::BREAK_Rock ||
+			breakType == BreakType::BREAK_Arrow)
 		{
 			for (auto &iter = _throws.begin(); iter != _throws.end();)
 			{

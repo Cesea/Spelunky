@@ -15,7 +15,6 @@ Arrow::~Arrow()
 HRESULT Arrow::Init(BaseProperty * property)
 {
 	EquipItem::Init(property);
-	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Arrow, &Arrow::HandleDamageEvent>(this));
 	_sprite = new D2DFrameSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"throws"), 80, 80, IntVector2(-40, -50));
 
@@ -39,6 +38,7 @@ HRESULT Arrow::Init(BaseProperty * property)
 	_speed = Vector2(400, 300);
 	_maxVelocity = Vector2(1200, 900);
 
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Throws, &Throws::HandleObstaclePositionEvent>(this));
 
 	return S_OK;
 }
@@ -47,27 +47,25 @@ void Arrow::PostInit()
 {
 	if (_throwDirection == Direction::Left)
 	{
-		position.AddToTileRelX(-50);
-		position.AddToTileRelY(-10);
+		position.AddToTileRelX(-70);
+		position.AddToTileRelY(-30);
 		desiredPosition = position;
-		_velocity.x -= 1000;
-		_velocity.y -= 160;
+		_velocity.x -= 900;
+		_velocity.y -= 130;
 	}
 	else if (_throwDirection == Direction::Right)
 	{
-		position.AddToTileRelX(50);
-		position.AddToTileRelY(-10);
+		position.AddToTileRelX(70);
+		position.AddToTileRelY(-30);
 		desiredPosition = position;
-		_velocity.x += 1000;
-		_velocity.y -= 160;
+		_velocity.x += 900;
+		_velocity.y -= 130;
 	}
 }
 
 void Arrow::Release(void)
 {
-	EquipItem::Release();
-	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Arrow, &Arrow::HandleDamageEvent>(this));
-	SAFE_RELEASE_AND_DELETE(_sprite);
+	Throws::Release();
 }
 
 void Arrow::Update(float deltaTime)
@@ -77,6 +75,7 @@ void Arrow::Update(float deltaTime)
 		desiredPosition = _pOwner->desiredPosition;
 		desiredPosition.AddToTileRelY(-16);
 		position = desiredPosition;
+		_throwDirection = _pOwner->GetDirection();
 	}
 	else
 	{
@@ -101,14 +100,18 @@ void Arrow::Update(float deltaTime)
 		if (_throwed)
 		{
 			float velLength = _velocity.Distance();
-			if (velLength > 300.0f)
+			if (velLength > 800.0f)
 			{
 				EVENTMANAGER->QueueEvent(new DamageEvent(_id, 1, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
 
 				if (collisionResult && _sourceIndex.x == 0)
 				{
-					SOUNDMANAGER->Play(L"bounce");
+					SOUNDMANAGER->Play(L"arrow_hit_wall");
 				}
+			}
+			else
+			{
+				SOUNDMANAGER->Play(L"bounce");
 			}
 
 			if (_breakable && collisionResult)
@@ -146,68 +149,36 @@ void Arrow::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 	}
 }
 
-void Arrow::Use(const ControlCommand & commands)
+void Arrow::HandlePlayerPositionEvent(const IEvent * event)
 {
-}
+	PlayerPositionEvent *convertedEvent = (PlayerPositionEvent *)(event);
+	const Rect &playerRect = convertedEvent->GetRect();
+	const Vector2 &playerUntiledPosition = convertedEvent->GetPosition().UnTilelize();
 
-GameObject * Arrow::Copy(ObjectId id)
-{
-	return nullptr;
-}
+	const Vector2 itemUntiledPosition = position.UnTilelize();
 
-void Arrow::Apply(ObjectId id)
-{
-}
+	Rect playerAbsRect = RectMake(playerUntiledPosition.x, playerUntiledPosition.y,
+		playerRect.width, playerRect.height);
+	playerAbsRect += convertedEvent->GetRectOffset();
 
-void Arrow::HandlePlayerAttackEvent(const IEvent * event)
-{
-}
+	Rect itemAbsRect =
+		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
 
-void Arrow::HandleDamageEvent(const IEvent * event)
-{
-	if (!_equiped)
+	float relX = itemUntiledPosition.x - playerUntiledPosition.x;
+	float relY = itemUntiledPosition.y - playerUntiledPosition.y;
+
+	if (IsRectangleOverlap(playerAbsRect, itemAbsRect))
 	{
-		PlayerAttackEvent *convertedEvent = (PlayerAttackEvent *)event;
-		Direction seeingDirection = convertedEvent->GetDirection();
-
-		Vector2 positionUntiled = position.UnTilelize();
-		const TilePosition & playerPosition = convertedEvent->GetTilePosition();
-		Vector2 playerPositionUntiled = playerPosition.UnTilelize();
-
-		bool hitted = false;
-		if (seeingDirection == Direction::Left)
+		if (_velocity.Distance() > 1000)
 		{
-			if (positionUntiled.x <= playerPositionUntiled.x + 10 &&
-				positionUntiled.x >= playerPositionUntiled.x - 74 &&
-				position.tileY == playerPosition.tileY)
-			{
-				hitted = true;
-			}
-		}
-		else if (seeingDirection == Direction::Right)
-		{
-			if (positionUntiled.x >= playerPositionUntiled.x - 10 &&
-				positionUntiled.x <= playerPositionUntiled.x + 74 &&
-				position.tileY == playerPosition.tileY)
-			{
-
-				hitted = true;
-			}
-		}
-		if (hitted)
-		{
-			if (seeingDirection == Direction::Left)
-			{
-				_velocity.x = -140;
-			}
-			else if (seeingDirection == Direction::Right)
-			{
-				_velocity.x = 140;
-			}
-			_velocity.y -= 80;
+			Vector2 diff(relX, relY);
+			diff.Normalize();
+			EVENTMANAGER->QueueEvent(new PlayerDamagedEvent(_id, 1,  diff));
 		}
 	}
 }
+
 
 void Arrow::operator=(const ThrowProperty * property)
 {

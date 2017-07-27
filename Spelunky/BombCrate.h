@@ -19,11 +19,13 @@ public :
 	virtual void HandlePlayerPositionEvent(const IEvent *event);
 	virtual void HandlePlayerAttackEvent(const IEvent *event);
 	virtual void HandleObstaclePositionEvent(const IEvent *event);
+	virtual void HandleDamageEvent(const IEvent *event);
 
 protected:
 	Timer _explosionTimer;
 	bool _timerOn{ false };
 	ObstacleType _obstacleType;
+	float _prevYVel{};
 };
 
 

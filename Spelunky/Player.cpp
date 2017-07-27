@@ -30,6 +30,8 @@ Player::Player(ObjectId id)
 		EventDelegate::FromFunction<Player, &Player::HandlePlayerDamagedEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PUSHING_OBJECT, 
 		EventDelegate::FromFunction<Player, &Player::HandlePushingObjectEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_ITEM_BREAK, 
+		EventDelegate::FromFunction<Player, &Player::HandleItemBreakEvent>(this));
 
 	_rect = RectMake(0, 0, 38, 44);
 	_rectOffset = Vector2(-19, -44);
@@ -58,6 +60,8 @@ Player::~Player()
 		EventDelegate::FromFunction<Player, &Player::HandlePlayerDamagedEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PUSHING_OBJECT, 
 		EventDelegate::FromFunction<Player, &Player::HandlePushingObjectEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_ITEM_BREAK, 
+		EventDelegate::FromFunction<Player, &Player::HandleItemBreakEvent>(this));
 }
 
 HRESULT Player::Init(BaseProperty *property)
@@ -285,12 +289,12 @@ void Player::HandleHoldingEvent(const IEvent * event)
 	EquipSlot slotType = convertedEvent->GetSlot();
 	if (slotType == EquipSlot::Weapon)
 	{
-		_holdingObject[0] = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+		_holdingObject[0] = (EquipItem *)OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 		SOUNDMANAGER->Play(L"pick_up");
 	}
 	else if (slotType == EquipSlot::Jump)
 	{
-		_holdingObject[1] = OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
+		_holdingObject[1] = (EquipItem *)OBJECTMANAGER->FindObjectId(convertedEvent->GetId());
 	}
 }
 
@@ -363,6 +367,21 @@ void Player::HandlePushingObjectEvent(const IEvent * event)
 	if (!_pushingObject && _onGround)
 	{
 		_stateManager.ChangeState(new PushingState);
+	}
+}
+
+void Player::HandleItemBreakEvent(const IEvent * event)
+{
+	ItemBreakEvent *convertedEvent = (ItemBreakEvent *)(event);
+	if (_holding)
+	{
+		if (_holdingObject[0])
+		{
+			if (_holdingObject[0]->GetId() == convertedEvent->GetId())
+			{
+				_holdingObject[0] = nullptr;
+			}
+		}
 	}
 }
 

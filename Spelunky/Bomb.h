@@ -15,6 +15,7 @@ public :
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
 	virtual GameObject *Copy(ObjectId id);
+	virtual void HandleObstaclePositionEvent(const IEvent *event);
 
 private :
 	D2DSprite *_sprite{};

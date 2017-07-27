@@ -34,6 +34,7 @@ HRESULT ArrowRock::Init(BaseProperty * property)
 
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleObstaclePositionEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_ENEMY_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleEnemyPositionEvent>(this));
 
 	return S_OK;
 }
@@ -45,11 +46,18 @@ void ArrowRock::Release(void)
 
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleObstaclePositionEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_ENEMY_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleEnemyPositionEvent>(this));
 }
 
 void ArrowRock::Update(float deltaTime)
 {
 	_accel.y += GRAVITY;
+	if (_onObject)
+	{
+		_accel.y -= GRAVITY;
+		_velocity.y = 0;
+	}
+	_prevYVel = _velocity.y;
 	_velocity += _accel * deltaTime;
 
 	_accel = Vector2();
@@ -59,6 +67,12 @@ void ArrowRock::Update(float deltaTime)
 	centerPos.AddToTileRelY(-16.0f);
 	_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
 	_collisionComp->Update(this, deltaTime, &_nearTiles);
+	if (_prevYVel > 50 && _velocity.y < 50)
+	{
+		SOUNDMANAGER->Play(L"crush_block");
+	}
+
+	EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
 }
 
 void ArrowRock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
@@ -72,17 +86,6 @@ void ArrowRock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & cam
 	{
 		_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
 	}
-
-	const Vector2 itemUntiledPosition = position.UnTilelize();
-	Rect itemAbsRect =
-		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	itemAbsRect += _collisionComp->GetOffset();
-
-	DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
-
-	Vector2 pos = position.UnTilelize();
-
-	DrawBox(renderTarget, pos.x - camPos.x, pos.y - camPos.y, 5, 5, D2D1::ColorF(1.0f, 1.0, 0.0, 1.0f));
 }
 
 GameObject * ArrowRock::Copy(ObjectId id)
@@ -97,7 +100,7 @@ void ArrowRock::HandlePlayerPositionEvent(const IEvent * event)
 	int tileXDiff = playerTilePosition.tileX - position.tileX;
 	int tileYDiff = playerTilePosition.tileY - position.tileY;
 
-	if (abs(tileXDiff) >= 8 || abs(tileYDiff) >= 3)
+	if (abs(tileXDiff) >= 6 || abs(tileYDiff) >= 3)
 	{
 		return;
 	}
@@ -127,7 +130,6 @@ void ArrowRock::HandlePlayerPositionEvent(const IEvent * event)
 			//플레이어가 왼쪽에 있을때 
 			if ((relXDiff < 0) && (abs(relYDiff) < 16))
 			{
-				Console::Log("fire\n");
 				Fire();
 			}
 		}
@@ -135,7 +137,6 @@ void ArrowRock::HandlePlayerPositionEvent(const IEvent * event)
 		{
 			if ((relXDiff > 0) && (abs(relYDiff) < 16))
 			{
-				Console::Log("fire\n");
 				Fire();
 			}
 		}
@@ -234,7 +235,7 @@ void ArrowRock::HandleObstaclePositionEvent(const IEvent * event)
 			{
 				position.AddToTileRelX(-overlapRect.width / 2);
 				desiredPosition = position;
-				pObstacle->position.AddToTileRelX(overlapRect.width/2);
+				pObstacle->position.AddToTileRelX(overlapRect.width / 2);
 				pObstacle->desiredPosition = pObstacle->position;
 				pObstacle->SetVelocity(Vector2(0, 0));
 			}
@@ -242,9 +243,49 @@ void ArrowRock::HandleObstaclePositionEvent(const IEvent * event)
 			{
 				position.AddToTileRelX(overlapRect.width / 2);
 				desiredPosition = position;
-				pObstacle->position.AddToTileRelX(-overlapRect.width/2);
+				pObstacle->position.AddToTileRelX(-overlapRect.width / 2);
 				pObstacle->desiredPosition = pObstacle->position;
 				pObstacle->SetVelocity(Vector2(0, 0));
+			}
+		}
+	}
+}
+
+void ArrowRock::HandleEnemyPositionEvent(const IEvent * event)
+{
+	EnemyPositionEvent *convertedEvent = (EnemyPositionEvent *)(event);
+	const TilePosition &enemyTilePosition = convertedEvent->GetPosition();
+	int tileXDiff = enemyTilePosition.tileX - position.tileX;
+	int tileYDiff = enemyTilePosition.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 6 || abs(tileYDiff) >= 3)
+	{
+		return;
+	}
+
+	Vector2 &enemyUntiled = enemyTilePosition.UnTilelize();
+	const Vector2 untiled = position.UnTilelize();
+	const Rect &enemyRect = convertedEvent->GetRect();
+
+	enemyUntiled.y -= 16;
+	float relXDiff = enemyUntiled.x - untiled.x;
+	float relYDiff = enemyUntiled.y - untiled.y;
+
+	if (!_fired)
+	{
+		if (_facingDirection == Direction::Left)
+		{
+			//플레이어가 왼쪽에 있을때 
+			if ((relXDiff < 0) && (abs(relYDiff) < 16))
+			{
+				Fire();
+			}
+		}
+		else
+		{
+			if ((relXDiff > 0) && (abs(relYDiff) < 16))
+			{
+				Fire();
 			}
 		}
 	}
@@ -254,4 +295,5 @@ void ArrowRock::Fire()
 {
 	_fired = true;
 	EVENTMANAGER->QueueEvent(new FireArrowEvent(_id, position, _facingDirection));
+	SOUNDMANAGER->Play(L"arrow_shot");
 }

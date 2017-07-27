@@ -15,16 +15,7 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Render(ID2D1HwndRenderTarget *renderTarget, const Vector2 &camPos);
 
-	virtual void Use(const ControlCommand &commands);
-
-	virtual GameObject *Copy(ObjectId id);
-
-	virtual void Apply(ObjectId id);
-
-	virtual void HandlePlayerAttackEvent(const IEvent *event);
-	void HandleDamageEvent(const IEvent *event);
-
-	inline BreakType GetBreakType() { return _breakType; }
+	virtual void HandlePlayerPositionEvent(const IEvent *event);
 
 	void SetFireDirection(Direction direction) { _throwDirection = direction; }
 	virtual void SetThrowDir(Direction direction) { _throwDirection = direction; }

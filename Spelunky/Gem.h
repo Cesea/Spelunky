@@ -27,6 +27,7 @@ public:
 	GemType GetGemType() { return _gemType; }
 
 	virtual void HandlePlayerAttackEvent(const IEvent *event);
+	void HandleObstaclePositionEvent(const IEvent *event);
 
 	bool IsStone();
 

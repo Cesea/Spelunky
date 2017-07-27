@@ -43,6 +43,7 @@ void Enemy::Damaged(int damage, Direction hitDirection)
 Enemy::Enemy(ObjectId id)
 	:MovingObject::MovingObject(id)
 {
+	_eventDispatchTimer.Init(0.1f);
 }
 
 Enemy::~Enemy()
@@ -173,5 +174,68 @@ void Enemy::HandleDamageEvent(const IEvent * event)
 			attacker->SetVelocity(attackerVel);
 			Damaged(1, (tileXDiff >= 0) ? Direction::Right : Direction::Left);
 		}
+	}
+}
+
+void Enemy::HandleObstaclePositionEvent(const IEvent * event)
+{
+	ObstaclePositionEvent *convertedEvent = (ObstaclePositionEvent *)(event);
+
+	const TilePosition &obstacleTilePos = convertedEvent->GetPosition();
+	int tileXDiff = obstacleTilePos.tileX - position.tileX;
+	int tileYDiff = obstacleTilePos.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 3 || abs(tileYDiff) >= 3)
+	{
+		return;
+	}
+	const Rect &obstacleRect = convertedEvent->GetRect();
+	const Vector2 &obstacleUntiledPosition = convertedEvent->GetPosition().UnTilelize();
+
+	const Vector2 itemUntiledPosition = position.UnTilelize();
+
+	Rect obstacleAbsRect = RectMake(obstacleUntiledPosition.x, obstacleUntiledPosition.y,
+		obstacleRect.width, obstacleRect.height);
+	obstacleAbsRect += convertedEvent->GetRectOffset();
+
+	Rect itemAbsRect =
+		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
+
+	float relXDiff = itemUntiledPosition.x - obstacleUntiledPosition.x;
+	float relYDiff = itemUntiledPosition.y - obstacleUntiledPosition.y;
+
+	Rect overlapRect;
+	if (IsRectangleOverlap(obstacleAbsRect, itemAbsRect, overlapRect))
+	{
+		if (overlapRect.width > overlapRect.height)
+		{
+			if (relYDiff > 0)
+			{
+				position.AddToTileRelY(overlapRect.height);
+				_velocity.y = 0;
+				_velocity.x *= 0.5;
+			}
+			else
+			{
+				position.AddToTileRelY(-overlapRect.height);
+				_velocity.y = 0;
+				_velocity.x *= 0.5;
+			}
+		}
+		else
+		{
+			if (relXDiff > 0)
+			{
+				position.AddToTileRelX(overlapRect.width);
+				_velocity.x *= -0.5;
+			}
+			else
+			{
+				position.AddToTileRelX(-overlapRect.width);
+				_velocity.x *= -0.5;
+			}
+		}
+		desiredPosition = position;
 	}
 }

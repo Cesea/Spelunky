@@ -52,6 +52,7 @@ EventType PushingObjectEvent::_type = EVENT_PUSHING_OBJECT;
 EventType FireArrowEvent::_type = EVENT_FIRE_ARROW;
 
 EventType ObstaclePositionEvent::_type = EVENT_OBSTACLE_POSITION;
+EventType EnemyPositionEvent::_type = EVENT_ENEMY_POSITION;
 
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
@@ -634,4 +635,19 @@ IEvent * ObstaclePositionEvent::Copy() const
 const WCHAR * ObstaclePositionEvent::GetName() const
 {
 	return L"Obstacle Position Event";
+}
+
+EnemyPositionEvent::EnemyPositionEvent(ObjectId id, const TilePosition & position, const Rect & rect, const Vector2 & rectOffset)
+	:_id(id), _position(position), _rectOffset(rectOffset), _rect(rect)
+{
+}
+
+IEvent * EnemyPositionEvent::Copy() const
+{
+	return new EnemyPositionEvent(_id, _position, _rect, _rectOffset);
+}
+
+const WCHAR * EnemyPositionEvent::GetName() const
+{
+	return L"EnemyPositionEvent";
 }

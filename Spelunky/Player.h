@@ -59,6 +59,7 @@ public :
 	void HandlePlayerUpperJumpEvent(const IEvent *event);
 	void HandlePlayerDamagedEvent(const IEvent *event);
 	void HandlePushingObjectEvent(const IEvent *event);
+	void HandleItemBreakEvent(const IEvent *event);
 
 	virtual void HandleMessage(const IEvent *event);
 
@@ -158,7 +159,7 @@ private :
 	uint32 _bomb{ 4 };
 	uint32 _rope{ 4 };
 
-	GameObject *_holdingObject[2]{NULL, NULL};
+	EquipItem *_holdingObject[2]{NULL, NULL};
 
 	Vector2 _weaponOffset{};
 	int _offsetCount{ 0 };

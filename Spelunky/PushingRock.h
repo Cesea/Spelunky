@@ -23,6 +23,8 @@ protected:
 	ObstacleType _obstacleType;
 	bool32 _beeingPushed{ false };
 	float _prevXOverlapAmount{ 0 };
+
+	float _prevYVel{};
 };
 
 #endif

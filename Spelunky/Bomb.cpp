@@ -10,6 +10,7 @@ Bomb::Bomb(ObjectId id)
 
 Bomb::~Bomb()
 {
+	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Bomb, &Bomb::HandleObstaclePositionEvent>(this));
 	SAFE_RELEASE_AND_DELETE(_sprite);
 	SAFE_DELETE(_collisionComp);
 }
@@ -49,6 +50,7 @@ HRESULT Bomb::Init(BaseProperty * property)
 
 	_collisionComp->SetRepulse(true);
 
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Bomb, &Bomb::HandleObstaclePositionEvent>(this));
 	return S_OK;
 }
 
@@ -124,4 +126,68 @@ void Bomb::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 GameObject * Bomb::Copy(ObjectId id)
 {
 	return nullptr;
+}
+
+void Bomb::HandleObstaclePositionEvent(const IEvent * event)
+{
+	ObstaclePositionEvent *convertedEvent = (ObstaclePositionEvent *)(event);
+
+	const TilePosition &obstacleTilePos = convertedEvent->GetPosition();
+	int tileXDiff = obstacleTilePos.tileX - position.tileX;
+	int tileYDiff = obstacleTilePos.tileY - position.tileY;
+
+	if (abs(tileXDiff) >= 3 || abs(tileYDiff) >= 3)
+	{
+		return;
+	}
+
+	const Rect &obstacleRect = convertedEvent->GetRect();
+	const Vector2 &obstacleUntiledPosition = convertedEvent->GetPosition().UnTilelize();
+
+	const Vector2 itemUntiledPosition = position.UnTilelize();
+
+	Rect obstacleAbsRect = RectMake(obstacleUntiledPosition.x, obstacleUntiledPosition.y,
+		obstacleRect.width, obstacleRect.height);
+	obstacleAbsRect += convertedEvent->GetRectOffset();
+
+	Rect itemAbsRect =
+		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+	itemAbsRect += _collisionComp->GetOffset();
+
+	float relXDiff = itemUntiledPosition.x - obstacleUntiledPosition.x;
+	float relYDiff = itemUntiledPosition.y - obstacleUntiledPosition.y;
+
+	Rect overlapRect;
+	if (IsRectangleOverlap(obstacleAbsRect, itemAbsRect, overlapRect))
+	{
+		if (overlapRect.width > overlapRect.height)
+		{
+			if (relYDiff > 0)
+			{
+				position.AddToTileRelY(overlapRect.height);
+				_velocity.y = 0;
+				_velocity.x *= 0.5;
+			}
+			else
+			{
+				position.AddToTileRelY(-overlapRect.height);
+				_velocity.y = 0;
+				_velocity.x *= 0.5;
+			}
+		}
+		else
+		{
+			if (relXDiff > 0)
+			{
+				position.AddToTileRelX(overlapRect.width);
+				_velocity.x *= -0.5;
+			}
+			else
+			{
+				position.AddToTileRelX(-overlapRect.width);
+				_velocity.x *= -0.5;
+			}
+		}
+		desiredPosition = position;
+	}
 }

@@ -23,6 +23,7 @@ public:
 
 	virtual void HandlePlayerAttackEvent(const IEvent *event);
 	void HandleDamageEvent(const IEvent *event);
+	void HandleObstaclePositionEvent(const IEvent *event);
 
 	inline BreakType GetBreakType() { return _breakType; }
 	virtual void SetThrowDir(Direction direction) {}

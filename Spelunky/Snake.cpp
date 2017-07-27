@@ -16,6 +16,7 @@ Snake::~Snake()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Snake::HandleDamageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Enemy::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Snake, &Snake::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Snake::HandleObstaclePositionEvent>(this));
 	_graphics.Release();
 
 }
@@ -26,6 +27,7 @@ HRESULT Snake::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Snake::HandleDamageEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Snake::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Snake, &Snake::HandlePlayerPositionEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Snake::HandleObstaclePositionEvent>(this));
 	_collisionComp = new CollisionComponent;
 	_collisionComp->Init(RectMake(0, 0, 44, 48), Vector2(-22, -44));
 
@@ -66,6 +68,11 @@ void Snake::Update(float deltaTime)
 	desiredPosition.AddToTileRel(_velocity * deltaTime);
 
 	_collisionComp->Update(this, deltaTime, &_nearTiles);
+
+	if (_eventDispatchTimer.Tick(deltaTime))
+	{
+		EVENTMANAGER->QueueEvent(new EnemyPositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	}
 
 }
 

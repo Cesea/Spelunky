@@ -29,6 +29,10 @@ State<Player>* FallingState::Update(Player * object, float deltaTime)
 	{
 		_canGrabAgain = true;
 	}
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.995;
+	}
 
 	if (object->_onGround)
 	{

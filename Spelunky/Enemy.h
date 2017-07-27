@@ -20,6 +20,7 @@ public:
 	void HandlePlayerPositionEvent(const IEvent *event);
 	void HandlePlayerAttackEvent(const IEvent *event);
 	void HandleDamageEvent(const IEvent *event);
+	void HandleObstaclePositionEvent(const IEvent *event);
 
 	D2DSprite *GetCurrentGraphics() { return _currentSprite; }
 	void SetGraphics(const std::wstring &key);
@@ -37,6 +38,8 @@ protected :
 
 	ReturnTile _nearTiles;
 	EnemyType _enemyType;
+
+	Timer _eventDispatchTimer;
 
 	int _hp{ 0 };
 

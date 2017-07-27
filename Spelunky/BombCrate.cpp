@@ -34,6 +34,7 @@ HRESULT BombCrate::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleObstaclePositionEvent>(this));
+	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleDamageEvent>(this));
 
 	return S_OK;
 }
@@ -46,11 +47,18 @@ void BombCrate::Release(void)
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<BombCrate, &BombCrate::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleObstaclePositionEvent>(this));
+	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleDamageEvent>(this));
 }
 
 void BombCrate::Update(float deltaTime)
 {
 	_accel.y += GRAVITY;
+	if (_onObject)
+	{
+		_accel.y -= GRAVITY;
+		_velocity.y = 0;
+	}
+	_prevYVel = _velocity.y;
 	_velocity += _accel * deltaTime;
 
 	_accel = Vector2();
@@ -60,6 +68,11 @@ void BombCrate::Update(float deltaTime)
 	centerPos.AddToTileRelY(-16.0f);
 	_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
 	_collisionComp->Update(this, deltaTime, &_nearTiles);
+
+	if (_prevYVel > 50 && _velocity.y < 50)
+	{
+		SOUNDMANAGER->Play(L"crush_block");
+	}
 
 	if (_timerOn)
 	{
@@ -74,6 +87,7 @@ void BombCrate::Update(float deltaTime)
 			SOUNDMANAGER->Play(L"bomb_explosion");
 		}
 	}
+	EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
 
 }
 
@@ -81,17 +95,6 @@ void BombCrate::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & cam
 {
 	Vector2 drawPos = position.UnTilelize() - camPos;
 	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
-
-	const Vector2 itemUntiledPosition = position.UnTilelize();
-	Rect itemAbsRect =
-		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	itemAbsRect += _collisionComp->GetOffset();
-
-	DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
-
-	Vector2 pos = position.UnTilelize();
-
-	DrawBox(renderTarget, pos.x - camPos.x, pos.y - camPos.y, 5, 5, D2D1::ColorF(1.0f, 1.0, 0.0, 1.0f));
 }
 
 GameObject * BombCrate::Copy(ObjectId id)
@@ -286,6 +289,38 @@ void BombCrate::HandleObstaclePositionEvent(const IEvent * event)
 				pObstacle->SetVelocity(Vector2(0, 0));
 				_timerOn = true;
 			}
+		}
+	}
+}
+
+void BombCrate::HandleDamageEvent(const IEvent * event)
+{
+	DamageEvent *convertedEvent = (DamageEvent *)(event);
+	if (_id == convertedEvent->GetAttackerId())
+	{
+		return;
+	}
+	else
+	{
+		const TilePosition &attackerPosition = convertedEvent->GetTilePosition();
+		int tileXDiff = attackerPosition.tileX - position.tileX;
+		int tileYDiff = attackerPosition.tileY - position.tileY;
+
+		if (abs(tileXDiff) >= 2 || abs(tileYDiff) > 2)
+		{
+			return;
+		}
+
+		const Rect &attackerRect = convertedEvent->GetRect();
+		const Vector2 &attackerRectOffset = convertedEvent->GetRectOffset();
+
+		Rect attackerAbsRect = attackerRect + attackerRectOffset + attackerPosition.UnTilelize();
+		Rect thisAbsRect = _collisionComp->GetRect() + _collisionComp->GetOffset() + position.UnTilelize();
+
+		Rect overlapRect;
+		if (IsRectangleOverlap(attackerAbsRect, thisAbsRect, overlapRect))
+		{
+			_timerOn = true;
 		}
 	}
 }

@@ -1674,11 +1674,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 1
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : enemy
+SourceIndex X : 0, Y : 0
+Value0 : bat
+Value1 : 0
+ImageSourceIndex X : 4, Y : 3
 At X : 3, Y : 1
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1704,17 +1704,17 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 7, Y : 1
-Property Name : obstacle
-SourceIndex X : 1, Y : 0
-Value0 : arrow
-Value1 : left
-ImageSourceIndex X : 1, Y : 6
-At X : 8, Y : 1
 Property Name : none
 SourceIndex X : -1, Y : -1
 Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
+At X : 8, Y : 1
+Property Name : gem
+SourceIndex X : 0, Y : 0
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 0, Y : 1
 At X : 9, Y : 1
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1770,11 +1770,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 8, Y : 2
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : 0, Y : 0
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 0, Y : 1
 At X : 9, Y : 2
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1842,11 +1842,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 0, Y : 4
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : 0, Y : 0
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 0, Y : 1
 At X : 1, Y : 4
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1854,11 +1854,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 4
-Property Name : obstacle
-SourceIndex X : 2, Y : 0
-Value0 : bombCrate
-Value1 : 0
-ImageSourceIndex X : 3, Y : 6
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 3, Y : 4
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1902,23 +1902,23 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 0, Y : 5
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : 1, Y : 0
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 1, Y : 1
 At X : 1, Y : 5
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : 1, Y : 0
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 1, Y : 1
 At X : 2, Y : 5
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : -2, Y : -2
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 3, Y : 2
 At X : 3, Y : 5
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1974,11 +1974,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 6
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : -2, Y : -2
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 3, Y : 2
 At X : 3, Y : 6
 Property Name : throws
 SourceIndex X : -2, Y : -2
@@ -2010,11 +2010,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 8, Y : 6
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : -2, Y : -2
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 3, Y : 2
 At X : 9, Y : 6
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -2058,11 +2058,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 6, Y : 7
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : gem
+SourceIndex X : 0, Y : 0
+Value0 : 0
+Value1 : 0
+ImageSourceIndex X : 0, Y : 1
 At X : 7, Y : 7
 Property Name : none
 SourceIndex X : -1, Y : -1

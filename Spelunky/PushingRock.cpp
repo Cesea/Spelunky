@@ -52,16 +52,25 @@ void PushingRock::Update(float deltaTime)
 		_accel.y -= GRAVITY;
 		_velocity.y = 0;
 	}
+	_prevYVel = _velocity.y;
 	_velocity += _accel * deltaTime;
 	_onObject = false;
 
 	_accel = Vector2();
 	desiredPosition.AddToTileRel(_velocity * deltaTime);
 
+	//Console::Log("%f, %f\n", _prevYVel, _velocity.y);
+
 	TilePosition centerPos = desiredPosition;
 	centerPos.AddToTileRelY(-16.0f);
 	_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
 	_collisionComp->Update(this, deltaTime, &_nearTiles);
+
+	if (_prevYVel > 50 && _velocity.y < 50)
+	{
+		SOUNDMANAGER->Play(L"crush_block");
+	}
+
 	EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
 }
 
@@ -69,17 +78,6 @@ void PushingRock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & c
 {
 	Vector2 drawPos = position.UnTilelize() - camPos;
 	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
-
-	const Vector2 itemUntiledPosition = position.UnTilelize();
-	Rect itemAbsRect =
-		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	itemAbsRect += _collisionComp->GetOffset();
-
-	DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
-
-	Vector2 pos = position.UnTilelize();
-
-	DrawBox(renderTarget, pos.x - camPos.x, pos.y - camPos.y, 5, 5, D2D1::ColorF(1.0f, 1.0, 0.0, 1.0f));
 }
 
 GameObject * PushingRock::Copy(ObjectId id)

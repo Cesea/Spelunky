@@ -248,6 +248,12 @@ HRESULT GamePlayScene::LoadContent()
 
 	SOUNDMANAGER->AddSound(L"chime", L"resources\\sfx\\Sound\\chime.wav", false, false);
 
+	SOUNDMANAGER->AddSound(L"crush_block", L"resources\\sfx\\Sound\\crushblock.wav", false, false);
+	SOUNDMANAGER->AddSound(L"push_block", L"resources\\sfx\\Sound\\pushblock.wav", false, true);
+
+	SOUNDMANAGER->AddSound(L"arrow_shot", L"resources\\sfx\\Sound\\arrowshot.wav", false, false);
+	SOUNDMANAGER->AddSound(L"arrow_hit_wall", L"resources\\sfx\\Sound\\arrowhitwall.wav", false, false);
+
 
 	return S_OK;
 }
