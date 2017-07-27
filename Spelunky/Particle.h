@@ -13,6 +13,7 @@ enum ParticleType
 
 enum ParticleSoundType
 {
+	PARTICLE_None,
 	PARTICLE_Boulder,
 	PARTICLE_Vase,
 	PARTICLE_Bone,

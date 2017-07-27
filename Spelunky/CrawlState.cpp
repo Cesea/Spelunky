@@ -6,6 +6,7 @@
 #include "CrawlMoveState.h"
 #include "StandUpState.h"
 #include "LookUpState.h"
+#include "FallingState.h"
 
 void CrawlState::OnEnter(Player * object)
 {
@@ -22,7 +23,12 @@ State<Player>* CrawlState::Update(Player * object, float deltaTime)
 	object->_velocity += object->_accel * deltaTime;
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
 
-	return nullptr;
+	if (!object->_onGround)
+	{
+		newState = new FallingState;
+	}
+
+	return newState;
 }
 
 State<Player>* CrawlState::HandleCommand(Player * object, const ControlCommand & command)

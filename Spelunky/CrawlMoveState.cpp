@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "StandUpState.h"
+#include "FallingState.h"
 
 #include "CrawlState.h"
 
@@ -24,6 +25,11 @@ State<Player>* CrawlMoveState::Update(Player * object, float deltaTime)
 	ClampFloat(&object->_velocity.y, -object->_maxVelocity.y * 0.2f, object->_maxVelocity.y * 0.2f);
 
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
+
+	if (!object->_onGround)
+	{
+		newState = new FallingState;
+	}
 
 	if (_wasControlled)
 	{

@@ -1674,11 +1674,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 1
-Property Name : enemy
-SourceIndex X : 0, Y : 0
-Value0 : bat
-Value1 : 0
-ImageSourceIndex X : 4, Y : 3
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 3, Y : 1
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1782,11 +1782,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 0, Y : 3
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : enemy
+SourceIndex X : 0, Y : 0
+Value0 : snake
+Value1 : 0
+ImageSourceIndex X : 4, Y : 2
 At X : 1, Y : 3
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1980,11 +1980,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 3, Y : 6
-Property Name : none
-SourceIndex X : -1, Y : -1
-Value0 : none
-Value1 : none
-ImageSourceIndex X : 0, Y : 0
+Property Name : enemy
+SourceIndex X : 0, Y : 0
+Value0 : snake
+Value1 : 0
+ImageSourceIndex X : 4, Y : 2
 At X : 4, Y : 6
 Property Name : none
 SourceIndex X : -1, Y : -1

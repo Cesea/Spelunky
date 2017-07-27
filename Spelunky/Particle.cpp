@@ -24,14 +24,18 @@ HRESULT Particle::Init(const IntVector2 &sourceIndex, ParticleType particleType)
 	{
 		_soundType = ParticleSoundType::PARTICLE_Boulder;
 	}
-	else if ((_sourceIndex.x == 2 && _sourceIndex.y == 0) ||
-		(_sourceIndex.x == 3 && _sourceIndex.y == 0))
+	else if ((_sourceIndex.x == 3 && _sourceIndex.y == 0) ||
+		(_sourceIndex.x == 5 && _sourceIndex.y == 0))
 	{
 		_soundType = ParticleSoundType::PARTICLE_Bone;
 	}
-	else if ((_sourceIndex.x == 4 && _sourceIndex.y == 0))
+	else if ((_sourceIndex.x == 2 && _sourceIndex.y == 0))
 	{
 		_soundType = ParticleSoundType::PARTICLE_Vase;
+	}
+	else
+	{
+		_soundType = ParticleSoundType::PARTICLE_None;
 	}
 
 
@@ -108,6 +112,7 @@ void Particle::Update(float deltaTime)
 		if (_scale < 0.15)
 		{
 			_valid = false;
+			_firstHitted = false;
 		}
 		_degrees += _rotationDirection;
 
@@ -310,15 +315,16 @@ void Particle::CalculateCollision()
 		{
 		case ParticleSoundType::PARTICLE_Bone :
 		{
-			SOUNDMANAGER->Play(L"rubble_bone" + std::to_wstring(((int)_degrees % 3)) );
+			SOUNDMANAGER->Play(L"rubble_bone" + std::to_wstring( abs(((int)_degrees % 3)) ) );
+			Console::Log("bone\n");
 		}break;
 		case ParticleSoundType::PARTICLE_Boulder :
 		{
-			SOUNDMANAGER->Play(L"rubble" + std::to_wstring(((int)_degrees % 3)));
+			SOUNDMANAGER->Play(L"rubble" + std::to_wstring( abs((int)_degrees % 3)));
 		}break;
 		case ParticleSoundType::PARTICLE_Vase :
 		{
-			SOUNDMANAGER->Play(L"rubble_vase" + std::to_wstring(((int)_degrees % 3)));
+			SOUNDMANAGER->Play(L"rubble_vase" + std::to_wstring( abs((int)_degrees % 3)));
 		}break;
 		}
 	}

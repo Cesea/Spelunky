@@ -851,29 +851,29 @@ void Stage::BuildBorder()
 
 bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
-	int randInt = RND->GetFromIntTo(0, 9);
+	int randInt = (int)(RND->GetFloat() * 10);
 
-	//switch (types)
-	//{
-	//case RoomType::ROOM_BLOCK:
-	//{
-	//	str += L"_block_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//case RoomType::ROOM_AISLE :
-	//{
-	//	str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//case RoomType::ROOM_TOP_OPEN :
-	//{
-	//	str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//case RoomType::ROOM_BOTTOM_OPEN :
-	//{
-	//	str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//}
+	switch (types)
+	{
+	case RoomType::ROOM_BLOCK:
+	{
+		str += L"_block_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_AISLE :
+	{
+		str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_TOP_OPEN :
+	{
+		str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_BOTTOM_OPEN :
+	{
+		str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	}
 
-	str = L"00.rt";
+	//str = L"00.rt";
 	return true;
 }
 

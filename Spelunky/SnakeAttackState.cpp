@@ -8,6 +8,7 @@ void SnakeAttackState::OnEnter(Snake * object)
 {
 	object->SetGraphics(L"attack");
 	object->_attacking = true;
+	SOUNDMANAGER->Play(L"snake_bite");
 }
 
 State<Snake>* SnakeAttackState::Update(Snake * object, float deltaTime)

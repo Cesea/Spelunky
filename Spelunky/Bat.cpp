@@ -16,6 +16,7 @@ Bat::~Bat()
 	EVENTMANAGER->UnRegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Enemy, &Bat::HandleDamageEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Bat::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->UnRegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Bat, &Bat::HandlePlayerPositionEvent>(this));
+	SOUNDMANAGER->Stop(L"bat_flap");
 	_graphics.Release();
 }
 

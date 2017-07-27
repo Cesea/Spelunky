@@ -51,8 +51,8 @@ HRESULT UIManager::Init()
 	_objectElements = new D2DFrameSprite();
 	_objectElements->Init(IMAGEMANAGER->GetImage(L"objectSprite"), 80, 80, IntVector2(0, 0));
 
-	_showTimer.Init(1.0f);
-	_middleUpdateOnTimer.Init(1.0f);
+	_showTimer.Init(0.9f);
+	_middleUpdateOnTimer.Init(0.9f);
 
 	RegisterDelegates();
 
@@ -221,6 +221,7 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 				CollectMoneyEvent *convertedEvent = (CollectMoneyEvent *)(firstEvent);
 				_gemShowValue += convertedEvent->GetValue();
 				SetShowIndexCorrespondingToGemType(convertedEvent->GetGemType());
+				SOUNDMANAGER->Play(L"chime");
 			}
 			else
 			{
@@ -237,6 +238,7 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 				EnemyDeadEvent *convertedEvent = (EnemyDeadEvent *)(firstEvent);
 				SetShowIndexCorrespondingToEnemyType(convertedEvent->GetEnemyType());
 				_enemyKillCount++;
+				SOUNDMANAGER->Play(L"chime");
 			}
 			else
 			{

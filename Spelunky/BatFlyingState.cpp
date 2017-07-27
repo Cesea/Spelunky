@@ -6,6 +6,7 @@
 void BatFlyingState::OnEnter(Bat * object)
 {
 	object->SetGraphics(L"fly");
+	SOUNDMANAGER->Play(L"bat_flap");
 }
 
 State<Bat>* BatFlyingState::Update(Bat * object, float deltaTime)

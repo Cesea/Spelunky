@@ -12,8 +12,8 @@
 #pragma comment (lib, "lib/fmodex_vc.lib")
 
 //Ã¤³Î °¹¼ö (¹öÆÛ~!!!)
-#define EXTRACHANNLEBUFFER 40
-#define SOUNDBUFFER 80
+#define EXTRACHANNLEBUFFER 50
+#define SOUNDBUFFER 100
 
 //ÃÑ »ç¿îµå °¹¼ö
 #define TOTALSOUNDBUFFER (EXTRACHANNLEBUFFER + SOUNDBUFFER)

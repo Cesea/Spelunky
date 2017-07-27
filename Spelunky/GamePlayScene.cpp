@@ -176,10 +176,10 @@ HRESULT GamePlayScene::LoadContent()
 
 #pragma endregion
 
-	SOUNDMANAGER->AddSound(L"gp_bgm_00", L"resources\\sfx\\Music\\A01_A.ogg", true, true);
-	SOUNDMANAGER->AddSound(L"gp_bgm_01", L"resources\\sfx\\Music\\A01_B.ogg", true, true);
-	SOUNDMANAGER->AddSound(L"gp_bgm_02", L"resources\\sfx\\Music\\A01_C.ogg", true, true);
-	SOUNDMANAGER->AddSound(L"gp_bgm_03", L"resources\\sfx\\Music\\A01_first.ogg", true, true);
+	SOUNDMANAGER->AddSound(L"gp_bgm0", L"resources\\sfx\\Music\\A01_A.ogg", true, true);
+	SOUNDMANAGER->AddSound(L"gp_bgm1", L"resources\\sfx\\Music\\A01_B.ogg", true, true);
+	SOUNDMANAGER->AddSound(L"gp_bgm2", L"resources\\sfx\\Music\\A01_C.ogg", true, true);
+	SOUNDMANAGER->AddSound(L"gp_bgm3", L"resources\\sfx\\Music\\A01_first.ogg", true, true);
 
 	SOUNDMANAGER->AddSound(L"bat_one_flap", L"resources\\sfx\\Sound\\batoneflap.wav", false, false);
 	SOUNDMANAGER->AddSound(L"bat_flap", L"resources\\sfx\\Sound\\batflap.wav", false, false);
@@ -237,6 +237,12 @@ HRESULT GamePlayScene::LoadContent()
 	SOUNDMANAGER->AddSound(L"pick_up", L"resources\\sfx\\Sound\\pickup.wav", false, false);
 
 	SOUNDMANAGER->AddSound(L"spike_hit", L"resources\\sfx\\Sound\\spike_hit.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"bat_flap", L"resources\\sfx\\Sound\\bat_flap.wav", false, false);
+	SOUNDMANAGER->AddSound(L"snake_bite", L"resources\\sfx\\Sound\\snakebite.wav", false, false);
+
+	SOUNDMANAGER->AddSound(L"chime", L"resources\\sfx\\Sound\\chime.wav", false, false);
+
 
 	return S_OK;
 }
@@ -400,6 +406,12 @@ void GamePlayScene::Update(void)
 				{
 					_layerRenderOn = false;
 					_updateOthers = true;
+
+					if (!STAGEMANAGER->GetIsInMiddleStage())
+					{
+						_currentPlayingBGM = L"gp_bgm" + std::to_wstring(RND->GetFromIntTo(0, 2));
+						SOUNDMANAGER->Play(_currentPlayingBGM);
+					}
 				}
 				else
 				{
@@ -418,6 +430,7 @@ void GamePlayScene::Update(void)
 						EVENTMANAGER->DiscardAllEvents();
 						EVENTMANAGER->FireEvent(new StageTransitionEvent());
 					}
+					SOUNDMANAGER->Stop(_currentPlayingBGM);
 				}
 			}
 			else

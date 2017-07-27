@@ -141,7 +141,10 @@ void Player::Update(float deltaTime)
 		}
 
 		//Console::Log("fallig : %d\n", _isFalling);
-		EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset, _isFalling));
+		if (_vulnerable)
+		{
+			EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset, _isFalling));
+		}
 	}
 	else
 	{
@@ -444,7 +447,7 @@ void Player::CollisionCheck()
 				{
 					if (currentTile->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
 					{
-						desiredPosition.AddToTileRel(0, -overlapRect.height);
+						desiredPosition.AddToTileRel(0, -overlapRect.height - 0.01f);
 						if (_collisionRepulse)
 						{
 							_velocity.y *= -0.3f;

@@ -75,5 +75,7 @@ private:
 	D2DSprite *_deadBook{};
 	D2DSprite *_buttonSprite{};
 
+	std::wstring _currentPlayingBGM;
+
 };
 #endif

@@ -27,7 +27,7 @@ HRESULT Snake::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_ATTACK, EventDelegate::FromFunction<Enemy, &Snake::HandlePlayerAttackEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Snake, &Snake::HandlePlayerPositionEvent>(this));
 	_collisionComp = new CollisionComponent;
-	_collisionComp->Init(RectMake(0, 0, 38, 44), Vector2(-19, -44));
+	_collisionComp->Init(RectMake(0, 0, 44, 48), Vector2(-22, -44));
 
 	BuildAnimationSprite(L"walk", IntVector2(-40, -72));
 	BuildAnimationSprite(L"attack", IntVector2(-40, -72));
@@ -128,9 +128,12 @@ void Snake::HandlePlayerPositionEvent(const IEvent * event)
 			EVENTMANAGER->QueueEvent(new PlayerDamagedEvent(_id, 1, Vector2(relXDiff, relYDiff)));
 		}
 	}
-	if (abs(relXDiff) <= 40 && abs(relYDiff) < 25 && !_attacking)
+	if (!_attacking)
 	{
-		_stateManager.ChangeState(new SnakeAttackState());
+		if (abs(relXDiff) <= 40 && abs(relYDiff) < 25 && !_attacking)
+		{
+			_stateManager.ChangeState(new SnakeAttackState());
+		}
 	}
 }
 
