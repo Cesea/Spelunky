@@ -28,6 +28,8 @@ public:
 
 	virtual void HandlePlayerAttackEvent(const IEvent *event);
 
+	bool IsStone();
+
 private :
 	Gem &operator= (const GemProperty *other);
 

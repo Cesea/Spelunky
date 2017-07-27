@@ -52,6 +52,8 @@ enum  EventType
 	EVENT_SPAWN_OBJECT = 0x62b7de16,
 	EVENT_COLLECT_EATABLE= 0xe9241d1f,
 
+	EVENT_PUSHING_OBJECT = 0x1f567fe4,
+
 };
 
 
@@ -654,6 +656,22 @@ class CollectEatableEvent : public BaseEvent
 public:
 	CollectEatableEvent(ObjectId id);
 	virtual ~CollectEatableEvent() {}
+
+	IEvent *Copy() const override;
+	const WCHAR *GetName() const;
+	EventType GetType() const override { return _type; }
+
+	ObjectId GetId() { return _id; }
+private:
+	static EventType _type;
+	ObjectId _id;
+};
+
+class PushingObjectEvent : public BaseEvent
+{
+public:
+	PushingObjectEvent(ObjectId id);
+	virtual ~PushingObjectEvent() {}
 
 	IEvent *Copy() const override;
 	const WCHAR *GetName() const;

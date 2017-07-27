@@ -5,6 +5,7 @@
 
 #include "singletonBase.h"
 #include "EnemyFactory.h"
+#include "ObstacleFactory.h"
 
 class GameObjectBuilder
 {
@@ -50,6 +51,7 @@ private:
 	GameObjecetBuilder _builders;
 
 	EnemyFactory _enemyFactory;
+	ObstacleFactory _obstacleFactory;
 };
 
 #endif

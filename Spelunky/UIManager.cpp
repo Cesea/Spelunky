@@ -118,9 +118,9 @@ void UIManager::Render(const Vector2 &camPos)
 
 		if (_middleUpdateOnTimer.Tick(deltaTime))
 		{
-			_middleUpdateOn = true;
+			_middleUpdateOn ++;
+			_middleUpdateOnTimer.Reset();
 		}
-
 		RenderMiddleStageStatus(deltaTime);
 	}
 }
@@ -189,7 +189,7 @@ void UIManager::HandleLayerOnEvent(const IEvent * event)
 	LayerOnEvent *convertedEvent = (LayerOnEvent *)(event);
 	if (convertedEvent->GetWiden())
 	{
-		_middleUpdateOn = false;
+		_middleUpdateOn = 0;
 	}
 }
 
@@ -210,7 +210,7 @@ void UIManager::RenderMiddleStageStatus(float deltaTime)
 	_objectElements->FrameRender(gRenderTarget, 805, 167, 0,  0);
 
 
-	if (_middleUpdateOn && _showTimer.Tick(deltaTime) &&
+	if ((_middleUpdateOn > 1) && _showTimer.Tick(deltaTime) &&
 		!_finishedShowEnemy)
 	{
 		if (!_finishedShowGold)

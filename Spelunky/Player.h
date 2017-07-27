@@ -57,6 +57,7 @@ public :
 	void HandlePlayerGoExitEvent(const IEvent *event);
 	void HandlePlayerUpperJumpEvent(const IEvent *event);
 	void HandlePlayerDamagedEvent(const IEvent *event);
+	void HandlePushingObjectEvent(const IEvent *event);
 
 	virtual void HandleMessage(const IEvent *event);
 
@@ -83,6 +84,12 @@ public :
 	void EatBomb(int num) { _bomb += num; }
 	void EatRope(int num) { _rope += num; }
 
+	void SetOnGround(bool b) { _onGround = b; }
+	void SetHeadHit(bool b) { _headHit = b; }
+	void SetVelocityY(const float f) { _velocity.y = f; }
+	void SetVelocityX(const float f) { _velocity.x = f; }
+	void SetOnObject(bool b) { _onObject = b; }
+	void SetPushingObject(bool b) { _pushingObject = b; }
 private :
 	void BuildAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
 	void BuildWeaponAnimationSprite(const std::wstring & aniKey, const IntVector2 &anchor);
@@ -127,6 +134,9 @@ private :
 	bool32 _isFaint{ false };
 	bool32 _vulnerable{ true };
 	bool32 _dead{ false };
+	bool32 _onObject{ false };
+	bool32 _pushingObject{false};
+
 	Timer _vulnerableTimer;
 
 	bool32 _digging{ false };

@@ -72,7 +72,7 @@ private :
 	int _enemyKillCount{ 0 };
 	bool32 _endShowing{ false };
 
-	bool32 _middleUpdateOn{ false };
+	int _middleUpdateOn{ 0 };
 
 };
 

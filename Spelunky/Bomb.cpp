@@ -60,7 +60,6 @@ void Bomb::Release(void)
 
 void Bomb::Update(float deltaTime)
 {
-	
 	_accel.y += GRAVITY;
 	_velocity += _accel * deltaTime;
 

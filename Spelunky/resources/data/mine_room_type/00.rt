@@ -1782,11 +1782,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 0, Y : 3
-Property Name : enemy
-SourceIndex X : 0, Y : 0
-Value0 : snake
-Value1 : 0
-ImageSourceIndex X : 4, Y : 2
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 1, Y : 3
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1794,11 +1794,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 2, Y : 3
-Property Name : throws
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 5
+Property Name : obstacle
+SourceIndex X : 0, Y : 0
+Value0 : pushing
+Value1 : none
+ImageSourceIndex X : 0, Y : 6
 At X : 3, Y : 3
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1938,29 +1938,29 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 6, Y : 5
-Property Name : throws
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 5
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 7, Y : 5
-Property Name : throws
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 5
-At X : 8, Y : 5
 Property Name : tunnel
 SourceIndex X : 0, Y : 0
 Value0 : 0
 Value1 : 0
 ImageSourceIndex X : 0, Y : 0
+At X : 8, Y : 5
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 9, Y : 5
-Property Name : throws
-SourceIndex X : -2, Y : -2
-Value0 : 0
-Value1 : 0
-ImageSourceIndex X : 3, Y : 5
+Property Name : obstacle
+SourceIndex X : 0, Y : 0
+Value0 : pushing
+Value1 : none
+ImageSourceIndex X : 0, Y : 6
 At X : 0, Y : 6
 Property Name : none
 SourceIndex X : -1, Y : -1
@@ -1980,11 +1980,11 @@ Value0 : none
 Value1 : none
 ImageSourceIndex X : 0, Y : 0
 At X : 3, Y : 6
-Property Name : enemy
-SourceIndex X : 0, Y : 0
-Value0 : snake
-Value1 : 0
-ImageSourceIndex X : 4, Y : 2
+Property Name : none
+SourceIndex X : -1, Y : -1
+Value0 : none
+Value1 : none
+ImageSourceIndex X : 0, Y : 0
 At X : 4, Y : 6
 Property Name : none
 SourceIndex X : -1, Y : -1

@@ -87,11 +87,13 @@
     <ClInclude Include="Action.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="ArcheType.h" />
+    <ClInclude Include="ArrowRock.h" />
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Bat.h" />
     <ClInclude Include="BatFlyingState.h" />
     <ClInclude Include="BatOnTopState.h" />
     <ClInclude Include="Bomb.h" />
+    <ClInclude Include="BombCrate.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollidingObject.h" />
     <ClInclude Include="CollisionComponent.h" />
@@ -116,8 +118,11 @@
     <ClInclude Include="ExitState.h" />
     <ClInclude Include="FaintState.h" />
     <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="Obstacle.h" />
+    <ClInclude Include="ObstacleFactory.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="PropertyFactory.h" />
+    <ClInclude Include="PushingRock.h" />
     <ClInclude Include="RankingManager.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeAttackState.h" />
@@ -200,11 +205,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="ArrowRock.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Bat.cpp" />
     <ClCompile Include="BatFlyingState.cpp" />
     <ClCompile Include="BatOnTopState.cpp" />
     <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="BombCrate.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollidingObject.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
@@ -258,12 +265,15 @@
     <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="MovingObject.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
+    <ClCompile Include="ObstacleFactory.cpp" />
     <ClCompile Include="OnLedgeState.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="PassiveItem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="PropertyFactory.cpp" />
+    <ClCompile Include="PushingRock.cpp" />
     <ClCompile Include="RankingManager.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SnakeAttackState.cpp" />

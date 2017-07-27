@@ -51,7 +51,16 @@ enum GemType
 	GEM_Diamond,
 	GEM_Ingot,
 	GEM_ThreeIngot,
-	GEM_Nugget
+	GEM_Nugget,
+	GEM_Stone,
+	GEM_ThreeStone,
+};
+
+enum ObstacleType
+{
+	OBSTACLE_PushingRock,
+	OBSTACLE_BombCrate,
+	OBSTACLE_ArrowRock,
 };
 
 //´Ù ¸·Èù ¹æ
@@ -154,6 +163,13 @@ struct EatableProperty : public BaseProperty
 {
 	IntVector2 sourceIndex{ -1, -1 };
 	EatableType type;
+	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
+};
+
+struct ObstacleProperty : public BaseProperty
+{
+	IntVector2 sourceIndex{ -1, -1 };
+	ObstacleType type;
 	virtual void Init(const MapTool::PropertyInfo &propertyInfo);
 };
 

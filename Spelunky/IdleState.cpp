@@ -25,6 +25,10 @@ State<Player>* IdleState::Update(Player * object, float deltaTime)
 {
 	State<Player> *newState = nullptr;
 
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
 	object->_velocity += object->_accel * deltaTime;
 	object->desiredPosition.AddToTileRel(object->_velocity * deltaTime);
 

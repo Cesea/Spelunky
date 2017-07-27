@@ -23,6 +23,12 @@ State<Player>* WalkState::Update(Player * object, float deltaTime)
 	D2DSprite *currentSprite = object->GetCurrentGraphics();
 	currentSprite->Update(deltaTime);
 
+
+	if (object->_onObject)
+	{
+		object->_accel.y -= GRAVITY * 0.99;
+	}
+
 	object->_velocity += object->_accel * deltaTime;
 	ClampFloat(&object->_velocity.x, -object->_maxVelocity.x, object->_maxVelocity.x);
 	ClampFloat(&object->_velocity.y, -object->_maxVelocity.y, object->_maxVelocity.y);

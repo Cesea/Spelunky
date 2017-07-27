@@ -100,6 +100,10 @@ void Particle::Update(float deltaTime)
 			{
 				CalculateCollision();
 			}
+			else
+			{
+				position = desiredPosition;
+			}
 		}
 	}break;
 	case BlingParticle :

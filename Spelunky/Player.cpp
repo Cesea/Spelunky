@@ -124,8 +124,10 @@ void Player::Update(float deltaTime)
 		_canClimbUp = false;
 		_upperDeath = false;
 		_endOfLadder = false;
-
 		_onTunnel = false;
+		_onObject = false;
+
+		_pushingObject = false;
 
 		if (!_vulnerable && !_isFaint)
 		{
@@ -141,10 +143,7 @@ void Player::Update(float deltaTime)
 		}
 
 		//Console::Log("fallig : %d\n", _isFalling);
-		if (_vulnerable)
-		{
-			EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset, _isFalling));
-		}
+		EVENTMANAGER->QueueEvent(new PlayerPositionEvent(_id, position, _rect, _rectOffset, _isFalling));
 	}
 	else
 	{
@@ -353,6 +352,10 @@ void Player::HandlePlayerDamagedEvent(const IEvent * event)
 			_stateManager.ChangeState(new FaintState());
 		}
 	}
+}
+
+void Player::HandlePushingObjectEvent(const IEvent * event)
+{
 }
 
 void Player::HandleMessage(const IEvent * event)

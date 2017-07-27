@@ -40,6 +40,7 @@ void PropertyFactory::RegisterBuilders()
 	RegisterBuilder(L"throws", new TPropertyBuilder<ThrowProperty>());
 	RegisterBuilder(L"enemy", new TPropertyBuilder<EnemyProperty>());
 	RegisterBuilder(L"crate", new TPropertyBuilder<CrateProperty>());
+	RegisterBuilder(L"obstacle", new TPropertyBuilder<ObstacleProperty>());
 }
 
 void PropertyFactory::UnRegisterBuilders()
@@ -50,6 +51,7 @@ void PropertyFactory::UnRegisterBuilders()
 	UnRegisterBuilder(L"throws");
 	UnRegisterBuilder(L"enemy");
 	UnRegisterBuilder(L"crate");
+	UnRegisterBuilder(L"obstacle");
 }
 
 void PropertyFactory::RegisterBuilder(const std::wstring & key, PropertyBuilder * builder)

@@ -23,6 +23,7 @@ HRESULT GameObjectFactory::Init()
 {
 	RegisterBuilders();
 	_enemyFactory.Init();
+	_obstacleFactory.Init();
 	return S_OK;
 }
 
@@ -30,6 +31,7 @@ void GameObjectFactory::Release()
 {
 	UnRegisterBuilders();
 	_enemyFactory.Release();
+	_obstacleFactory.Release();
 }
 
 GameObject * GameObjectFactory::Build(const ObjectId id, const std::wstring &key, BaseProperty *property)
@@ -42,6 +44,11 @@ GameObject * GameObjectFactory::Build(const ObjectId id, const std::wstring &key
 		{
 			EnemyProperty *convertedProperty = (EnemyProperty *)(property);
 			result = _enemyFactory.Build(id, convertedProperty->type, convertedProperty);
+		}
+		else if (iter->first.compare(L"obstacle") == 0)
+		{
+			ObstacleProperty *convertedProperty = (ObstacleProperty *)(property);
+			result = _obstacleFactory.Build(id, convertedProperty->type, convertedProperty);
 		}
 		else
 		{
@@ -62,6 +69,7 @@ void GameObjectFactory::RegisterBuilders()
 	RegisterBuilder(L"enemy", new TGameObjectBuilder<Enemy>());
 	RegisterBuilder(L"crate", new TGameObjectBuilder<Crate>());
 	RegisterBuilder(L"eatables", new TGameObjectBuilder<Eatables>());
+	RegisterBuilder(L"obstacle", new TGameObjectBuilder<Obstacle>());
 }
 
 void GameObjectFactory::UnRegisterBuilders()
@@ -75,6 +83,7 @@ void GameObjectFactory::UnRegisterBuilders()
 	UnRegisterBuilder(L"enemy");
 	UnRegisterBuilder(L"crate");
 	UnRegisterBuilder(L"eatables");
+	UnRegisterBuilder(L"obstacle");
 }
 
 void GameObjectFactory::RegisterBuilder(const std::wstring & key, GameObjectBuilder * builder)

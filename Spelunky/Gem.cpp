@@ -41,23 +41,21 @@ void Gem::Update(float deltaTime)
 {
 	if (!_isInTile)
 	{
+		_accel.y += GRAVITY;
+		_velocity += _accel * deltaTime;
+
+		_accel = Vector2();
+		desiredPosition.AddToTileRel(_velocity * deltaTime);
+
+		TilePosition centerPos = desiredPosition;
+		centerPos.AddToTileRelY(-32.0f);
+		_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
+		_collisionComp->Update(this, deltaTime, &_nearTiles);
+
+		if (_actorOn)
 		{
-			_accel.y += GRAVITY;
-			_velocity += _accel * deltaTime;
-
-			_accel = Vector2();
-			desiredPosition.AddToTileRel(_velocity * deltaTime);
-
-			TilePosition centerPos = desiredPosition;
-			centerPos.AddToTileRelY(-32.0f);
-			_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
-			_collisionComp->Update(this, deltaTime, &_nearTiles);
+			Apply(_onActorId);
 		}
-	}
-
-	if (_actorOn)
-	{
-		Apply(_onActorId);
 	}
 	if (!_valid)
 	{
@@ -92,11 +90,13 @@ void Gem::Digged()
 	{
 		_sourceIndex.x = 6;
 		_value = 500;
+		_gemType = GEM_Ingot;
 	}
 	else if (_sourceIndex.x == 1)
 	{
 		_sourceIndex.x = 7;
 		_value = 1500;
+		_gemType = GEM_ThreeIngot;
 	}
 	_isInTile = false;
 }
@@ -157,6 +157,17 @@ void Gem::HandlePlayerAttackEvent(const IEvent * event)
 			_velocity.y -= 84;
 		}
 	}
+}
+
+bool Gem::IsStone()
+{
+	bool result = false;
+	if (_gemType == GemType::GEM_Stone ||
+		_gemType == GemType::GEM_ThreeStone)
+	{
+		result = true;
+	}
+	return result;
 }
 
 Gem & Gem::operator=(const GemProperty * other)

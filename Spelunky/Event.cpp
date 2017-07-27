@@ -48,6 +48,8 @@ EventType CameraMoveToEvent::_type = EVENT_CAMERA_MOVE_TO;
 EventType SpawnObjectEvent::_type = EVENT_SPAWN_OBJECT;
 EventType CollectEatableEvent::_type = EVENT_COLLECT_EATABLE;
 
+EventType PushingObjectEvent::_type = EVENT_PUSHING_OBJECT;
+
 BaseEvent::BaseEvent(float timeStamp)
 	:_timeStamp(timeStamp)
 {
@@ -584,4 +586,19 @@ IEvent * CollectEatableEvent::Copy() const
 const WCHAR * CollectEatableEvent::GetName() const
 {
 	return L"Collect Eatable Event";
+}
+
+PushingObjectEvent::PushingObjectEvent(ObjectId id)
+	:_id(id)
+{
+}
+
+IEvent * PushingObjectEvent::Copy() const
+{
+	return new PushingObjectEvent(_id);
+}
+
+const WCHAR * PushingObjectEvent::GetName() const
+{
+	return L"Pushing Object Event";
 }

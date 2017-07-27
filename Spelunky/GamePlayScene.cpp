@@ -53,6 +53,8 @@ HRESULT GamePlayScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
 
+	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\obstacles.png", L"obstacles");
+
 #pragma region Animation For Player
 	int idleArray[1] = {0};
 	KEYANIMANAGER->AddArrayFrameAnimation(L"char_orange_idle", L"char_orange", 80, 80, idleArray, 1, 10, false);
@@ -383,8 +385,8 @@ void GamePlayScene::Update(void)
 
 			float camSpeed = 200.0f;
 
-			_camera.Update(deltaTime);
 			STAGEMANAGER->Update(deltaTime);
+			_camera.Update(deltaTime);
 
 			Vector2 absMouseVector = _camera.GetPosition().UnTilelize() + currentMouse;
 

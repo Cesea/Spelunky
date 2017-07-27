@@ -172,6 +172,7 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 	BuildThrows();
 	BuildEnemies();
 	BuildCrates();
+	BuildObstacles();
 	return S_OK;
 }
 
@@ -413,6 +414,13 @@ void Stage::Update(float deltaTime)
 			gem->Update(deltaTime);
 		}
 	}
+	for (auto &gem : _gemFowardRenderList)
+	{
+		if (gem)
+		{
+			gem->Update(deltaTime);
+		}
+	}
 	//Console::Log("x : %d, y : %d\n", _throws.front()->position.tileX, _throws.front()->position.tileY);
 	for (auto &throws : _throws)
 	{
@@ -429,6 +437,10 @@ void Stage::Update(float deltaTime)
 	for (auto &crate : _crates)
 	{
 		crate->Update(deltaTime);
+	}
+	for (auto &obstacle : _obstacles)
+	{
+		obstacle->Update(deltaTime);
 	}
 
 	for (auto &eatable : _eatables)
@@ -521,6 +533,11 @@ void Stage::RenderBlockingLayer(int minX, int maxX, int minY, int maxY, const Ve
 			}
 		}
 	}
+
+	for (auto &gem : _gemFowardRenderList)
+	{
+		gem->Render(gRenderTarget, camPos);
+	}
 }
 
 void Stage::RenderObjects(const Vector2 & camPos)
@@ -548,6 +565,10 @@ void Stage::RenderObjects(const Vector2 & camPos)
 	for (auto &enemy : _enemies)
 	{
 		enemy->Render(gRenderTarget, camPos);
+	}
+	for (auto &obstacle : _obstacles)
+	{
+		obstacle->Render(gRenderTarget, camPos);
 	}
 }
 
@@ -615,11 +636,30 @@ void Stage::DestroyTile(const IntVector2 & tilePos)
 
 	if (destroyed)
 	{
+		for (auto &iter = _gemFowardRenderList.begin(); iter != _gemFowardRenderList.end();)
+		{
+			if ((*iter)->position.tileX == tilePos.x && (*iter)->position.tileY == tilePos.y)
+			{
+				if ((*iter)->IsStone())
+				{
+					(*iter)->Digged();
+					_gems.push_back(*iter);
+					_gemFowardRenderList.erase(iter);
+				}
+				break;
+			}
+			else
+			{
+				++iter;
+			}
+		}
+
 		for (auto &gem : _gems)
 		{
 			if (gem->position.tileX == tilePos.x && gem->position.tileY == tilePos.y)
 			{
 				gem->Digged();
+				break;
 			}
 		}
 
@@ -758,12 +798,30 @@ void Stage::DestroyTile(int xStartIndex, int yStartIndex, int width, int height)
 					}
 				}
 
+				for (auto &iter = _gemFowardRenderList.begin(); iter != _gemFowardRenderList.end();)
+				{
+					if ((*iter)->position.tileX == x && (*iter)->position.tileY == y)
+					{
+						if ((*iter)->IsStone())
+						{
+							(*iter)->Digged();
+							_gems.push_back(*iter);
+							_gemFowardRenderList.erase(iter);
+						}
+						break;
+					}
+					else
+					{
+						++iter;
+					}
+				}
+
 				for (auto &gem : _gems)
 				{
-					if ((gem->position.tileX == x) && 
-						(gem->position.tileY == y))
+					if (gem->position.tileX == x && gem->position.tileY == y)
 					{
 						gem->Digged();
+						break;
 					}
 				}
 				for (auto &throws : _throws)
@@ -853,27 +911,27 @@ bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
 	int randInt = (int)(RND->GetFloat() * 10);
 
-	switch (types)
-	{
-	case RoomType::ROOM_BLOCK:
-	{
-		str += L"_block_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	case RoomType::ROOM_AISLE :
-	{
-		str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	case RoomType::ROOM_TOP_OPEN :
-	{
-		str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	case RoomType::ROOM_BOTTOM_OPEN :
-	{
-		str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
-	}break;
-	}
+	//switch (types)
+	//{
+	//case RoomType::ROOM_BLOCK:
+	//{
+	//	str += L"_block_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//case RoomType::ROOM_AISLE :
+	//{
+	//	str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//case RoomType::ROOM_TOP_OPEN :
+	//{
+	//	str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//case RoomType::ROOM_BOTTOM_OPEN :
+	//{
+	//	str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
+	//}break;
+	//}
 
-	//str = L"00.rt";
+	str = L"00.rt";
 	return true;
 }
 
@@ -1131,25 +1189,50 @@ void Stage::BuildGems()
 					else
 					{
 						Gem *newGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", prop);
-
 						newGem->position.tileX = worldPosition.x;
 						newGem->position.tileY = worldPosition.y;
-						newGem->desiredPosition = newGem->position;
+						//newGem->position.AddToTileRel(32, 32);
 
-						if (tileLayer0[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+						int worldIndex = GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX);
+
+						if (newGem->IsStone())
 						{
-							newGem->SetIsInTile(true);
-						}
-						else
-						{
-							if (tileLayer1[GetIndexFromXY(newGem->position.tileX, newGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+							if (tileLayer0[worldIndex] &&
+								tileLayer0[worldIndex]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
 							{
 								newGem->SetIsInTile(true);
 							}
+							else
+							{
+								if (tileLayer1[worldIndex] &&
+									tileLayer1[worldIndex]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+								{
+									newGem->SetIsInTile(true);
+								}
+							}
+							newGem->desiredPosition = newGem->position;
+							if (newGem->position.tileX)
+								_gemFowardRenderList.push_back(newGem);
 						}
-
-						if (newGem->position.tileX)
-							_gems.push_back(newGem);
+						else
+						{
+							if ( tileLayer0[worldIndex] &&
+								tileLayer0[worldIndex]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+							{
+								newGem->SetIsInTile(true);
+							}
+							else
+							{
+								if (tileLayer1[worldIndex] &&
+									tileLayer1[worldIndex]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
+								{
+									newGem->SetIsInTile(true);
+								}
+							}
+							newGem->desiredPosition = newGem->position;
+							if (newGem->position.tileX)
+								_gems.push_back(newGem);
+						}
 					}
 				}
 			}
@@ -1332,6 +1415,36 @@ void Stage::BuildCrates()
 	}
 }
 
+void Stage::BuildObstacles()
+{
+	for (int y = 0; y < 4; ++y)
+	{
+		for (int x = 0; x < 4; ++x)
+		{
+			auto &found = _rooms[GetIndexFromXY(x, y, 4)].properties.find(L"obstacle");
+			if (found != _rooms[GetIndexFromXY(x, y, 4)].properties.end())
+			{
+				for (auto &prop : found->second)
+				{
+					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
+
+					ObstacleProperty *convertedProperty = (ObstacleProperty *)(prop);
+					convertedProperty->position.x = worldPosition.x;
+					convertedProperty->position.y = worldPosition.y;
+
+					Obstacle *newObstacle = (Obstacle *)OBJECTMANAGER->CreateObject(L"obstacle", convertedProperty);
+
+					if (newObstacle)
+					{
+						_obstacles.push_back(newObstacle);
+					}
+
+				}
+			}
+		}
+	}
+}
+
 void Stage::CollectRoomPropertyFromFile(FileUtils::File & file, Room * room)
 {
 	std::wstring str1 = file.GetLine();
@@ -1459,6 +1572,10 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			EFFECTMANAGER->PlayWoodParticle(objectPosition, 0.3f);
 			SOUNDMANAGER->Play(L"crate_open");
 		}break;
+		case BREAK_BombCrate :
+		{
+
+		}break;
 		case BREAK_Live:
 		{
 
@@ -1516,8 +1633,24 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 				}
 			}
 		}
+		else if (breakType == BreakType::BREAK_BombCrate)
+		{
+			for (auto &iter = _obstacles.begin(); iter != _obstacles.end();)
+			{
+				if ((*iter) == object)
+				{
+					(*iter)->Release();
+					_obstacles.erase(iter);
+					break;
+				}
+				else
+				{
+					iter++;
+				}
+			}
+		}
+
 		Console::Log("destroyed Item Id %d\n", object->GetId());
-		Console::Log("listSize %d\n", _throws.size());
 		OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 	}
 }
@@ -1643,15 +1776,19 @@ void Stage::BuildRandomGem(const IntVector2 &genPos)
 	Gem *randomGem = (Gem *)OBJECTMANAGER->CreateObject(L"gem", &randomGemProperty);
 	randomGem->position.tileX = genPos.x;
 	randomGem->position.tileY = genPos.y;
-	randomGem->position.AddToTileRelX(-16.0f);
+	//randomGem->position.AddToTileRelX(-16.0f);
 	randomGem->desiredPosition = randomGem->position;
-	if (tileLayer0[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+
+	int worldIndex = GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX);
+	if (tileLayer0[worldIndex] &&
+		tileLayer0[worldIndex]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
 	{
 		randomGem->SetIsInTile(true);
 	}
 	else
 	{
-		if (tileLayer1[GetIndexFromXY(randomGem->position.tileX, randomGem->position.tileY, STAGE_TOTAL_COUNTX)] != nullptr)
+		if (tileLayer1[worldIndex] &&
+			tileLayer1[worldIndex]->collisionType == TileCollisionType::TILE_COLLISION_BLOCK)
 		{
 			randomGem->SetIsInTile(true);
 		}

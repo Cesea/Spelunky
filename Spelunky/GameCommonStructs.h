@@ -129,7 +129,7 @@ enum BreakType
 	BREAK_Live,
 	BREAK_Crate,
 	BREAK_Bomb,
-
+	BREAK_BombCrate,
 };
 
 enum ObjectLayer

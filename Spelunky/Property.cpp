@@ -207,34 +207,48 @@
 void GemProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 {
 	sourceIndex = propertyInfo.sourceIndex;
-	value = _wtoi(propertyInfo.value0);
-	if (value == 800)
+
+	if (sourceIndex.x == 0)
 	{
-		type = GemType::GEM_Emerald;
+		type = GemType::GEM_Stone;
+		value = 0;
 	}
-	else if (value == 1200)
+	else if (sourceIndex.x == 1)
 	{
-		type = GemType::GEM_Saphire;
+		type = GemType::GEM_ThreeStone;
+		value = 0;
 	}
-	else if (value == 1600)
+	else
 	{
-		type = GemType::GEM_Ruby;
-	}
-	else if (value == 2000)
-	{
-		type = GemType::GEM_Diamond;
-	}
-	else if (value == 500)
-	{
-		type = GemType::GEM_Ingot;
-	}
-	else if (value == 1500)
-	{
-		type = GemType::GEM_ThreeIngot;
-	}
-	else if (value == 100)
-	{
-		type = GemType::GEM_Nugget;
+		value = _wtoi(propertyInfo.value0);
+		if (value == 800)
+		{
+			type = GemType::GEM_Emerald;
+		}
+		else if (value == 1200)
+		{
+			type = GemType::GEM_Saphire;
+		}
+		else if (value == 1600)
+		{
+			type = GemType::GEM_Ruby;
+		}
+		else if (value == 2000)
+		{
+			type = GemType::GEM_Diamond;
+		}
+		else if (value == 500)
+		{
+			type = GemType::GEM_Ingot;
+		}
+		else if (value == 1500)
+		{
+			type = GemType::GEM_ThreeIngot;
+		}
+		else if (value == 100)
+		{
+			type = GemType::GEM_Nugget;
+		}
 	}
 }
 
@@ -294,4 +308,21 @@ void CrateProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 void EatableProperty::Init(const MapTool::PropertyInfo & propertyInfo)
 {
 	sourceIndex = propertyInfo.sourceIndex;
+}
+
+void ObstacleProperty::Init(const MapTool::PropertyInfo & propertyInfo)
+{
+	sourceIndex = propertyInfo.sourceIndex;
+	if (wcscmp(propertyInfo.value0, L"arrow") == 0)
+	{
+		type = OBSTACLE_ArrowRock;
+	}
+	else if(wcscmp(propertyInfo.value0, L"pushing") == 0)
+	{
+		type = OBSTACLE_PushingRock;
+	}
+	else if(wcscmp(propertyInfo.value0, L"bombCrate") == 0)
+	{
+		type = OBSTACLE_BombCrate;
+	}
 }

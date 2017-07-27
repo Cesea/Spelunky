@@ -187,15 +187,6 @@
     <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\StronSnake">
       <UniqueIdentifier>{b648e967-162e-4eb8-b0db-2c2e320cd40b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Scorpion">
-      <UniqueIdentifier>{49a05d30-a4dc-4fc4-92c2-a63b6e3bcd72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Primitive">
-      <UniqueIdentifier>{0d2b49bd-74a8-4115-b538-288a2b70a4b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\AIEngine">
-      <UniqueIdentifier>{ba7068e7-e0d5-40e2-b872-af2182502124}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Scene\GamePlayScene\Objects\Enemy\Snake\States">
       <UniqueIdentifier>{02b4033c-6c1a-46c9-b441-5d9edcd290cb}</UniqueIdentifier>
     </Filter>
@@ -219,6 +210,21 @@
     </Filter>
     <Filter Include="Game\Scene\GamePlayScene\Objects\Item\Passive\Eatables">
       <UniqueIdentifier>{b0f8310f-8a17-4863-beeb-e3914b6dc195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Obstacles">
+      <UniqueIdentifier>{c3195280-a04a-4cb8-9cca-6feef2385cac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Obstacles\BombCrate">
+      <UniqueIdentifier>{d9cd3c71-6b93-4b7b-8ecf-4fbe838be7fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Obstacles\ArrowRock">
+      <UniqueIdentifier>{0ffa31c2-d9a4-414b-8a9e-d5bc256f6080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Obstacles\PushingRock">
+      <UniqueIdentifier>{f12f6b6e-8b78-4e4b-9ab7-0aa95377cf6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GamePlayScene\Objects\Player\States\Pushing">
+      <UniqueIdentifier>{6ae7d894-1732-4b31-b666-e6c86261e04a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -561,6 +567,21 @@
     <ClInclude Include="SoundManager.h">
       <Filter>GameFramework2D\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="ObstacleFactory.h">
+      <Filter>Game\Common\ObjectFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="BombCrate.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\BombCrate</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowRock.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\ArrowRock</Filter>
+    </ClInclude>
+    <ClInclude Include="PushingRock.h">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\PushingRock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gameNode.cpp">
@@ -859,6 +880,21 @@
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>GameFramework2D\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ObstacleFactory.cpp">
+      <Filter>Game\Common\ObjectFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles</Filter>
+    </ClCompile>
+    <ClCompile Include="BombCrate.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\BombCrate</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowRock.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\ArrowRock</Filter>
+    </ClCompile>
+    <ClCompile Include="PushingRock.cpp">
+      <Filter>Game\Scene\GamePlayScene\Objects\Obstacles\PushingRock</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

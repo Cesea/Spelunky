@@ -12,6 +12,7 @@
 
 #include "Crate.h"
 #include "Eatables.h"
+#include "Obstacle.h"
 
 struct RandomRoomGenerated
 {
@@ -105,6 +106,7 @@ private:
 	void BuildThrows();
 	void BuildEnemies();
 	void BuildCrates();
+	void BuildObstacles();
 	void CollectRoomPropertyFromFile(FileUtils::File &file, Room *room);
 
 
@@ -132,11 +134,16 @@ private:
 	Tunnel *_tunnels[2]{};
 
 	std::list<Bomb *> _bombs{};
+
 	std::list<Gem *> _gems{};
+	std::list<Gem *> _gemFowardRenderList{};
+
 	std::list<Throws *> _throws{};
 	std::list<Enemy *> _enemies{};
 	std::list<Crate *> _crates{};
 	std::list<Eatables *> _eatables{};
+
+	std::list<Obstacle *> _obstacles{};
 
 
 	std::map<std::wstring, D2DSprite *> _usingSprites;
