@@ -63,7 +63,7 @@ void PropertyFactory::RegisterBuilder(const std::wstring & key, PropertyBuilder 
 	}
 	else
 	{
-		Console::Log("Property Builder %s already exist", key);
+		//Console::Log("Property Builder %s already exist", key);
 	}
 }
 
@@ -76,6 +76,6 @@ void PropertyFactory::UnRegisterBuilder(const std::wstring & key)
 	}
 	else
 	{
-		Console::Log("Property Builder %s doesn'y exist", key);
+		//Console::Log("Property Builder %s doesn'y exist", key);
 	}
 }

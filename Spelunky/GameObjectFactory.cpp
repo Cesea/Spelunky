@@ -98,7 +98,7 @@ void GameObjectFactory::RegisterBuilder(const std::wstring & key, GameObjectBuil
 	}
 	else
 	{
-		Console::Log("Builder %s already exist", key);
+		//Console::Log("Builder %s already exist", key);
 	}
 }
 
@@ -111,6 +111,6 @@ void GameObjectFactory::UnRegisterBuilder(const std::wstring & key)
 	}
 	else
 	{
-		Console::Log("Builder %s doesn'y exist", key);
+		//Console::Log("Builder %s doesn'y exist", key);
 	}
 }

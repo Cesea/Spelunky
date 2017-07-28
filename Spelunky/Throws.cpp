@@ -111,17 +111,6 @@ void Throws::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos
 {
 	Vector2 drawPos = position.UnTilelize() - camPos;
 	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
-
-	const Vector2 itemUntiledPosition = position.UnTilelize();
-	Rect itemAbsRect =
-			RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	itemAbsRect += _collisionComp->GetOffset();
-
-	DrawBox(renderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 0.0, 0.0, 1.0f));
-
-	Vector2 pos = position.UnTilelize();
-
-	DrawBox(renderTarget, pos.x - camPos.x, pos.y - camPos.y, 5, 5, D2D1::ColorF(1.0f, 1.0, 0.0, 1.0f));
 }
 
 void Throws::Use(const ControlCommand &commands)

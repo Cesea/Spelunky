@@ -29,7 +29,7 @@ HRESULT Bat::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Bat, &Bat::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Bat::HandleObstaclePositionEvent>(this));
 	_collisionComp = new CollisionComponent;
-	_collisionComp->Init(RectMake(0, 0, 38, 38), Vector2(-19, -44));
+	_collisionComp->Init(RectMake(0, 0, 38, 46), Vector2(-19, -44));
 
 	BuildAnimationSprite(L"on_top", IntVector2(-40, -72));
 	BuildAnimationSprite(L"fly", IntVector2(-40, -72));

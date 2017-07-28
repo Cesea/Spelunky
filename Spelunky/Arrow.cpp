@@ -38,6 +38,8 @@ HRESULT Arrow::Init(BaseProperty * property)
 	_speed = Vector2(400, 300);
 	_maxVelocity = Vector2(1200, 900);
 
+	_throwed = true;
+
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Throws, &Throws::HandleObstaclePositionEvent>(this));
 
 	return S_OK;
@@ -93,14 +95,12 @@ void Arrow::Update(float deltaTime)
 		centerPos.AddToTileRelY(-16.0f);
 		_nearTiles = STAGEMANAGER->GetCurrentStage()->GetAdjacent9(IntVector2(centerPos.tileX, centerPos.tileY));
 
-		//Vector2 posUn = centerPos.UnTilelize();
-
 		bool collisionResult = _collisionComp->Update(this, deltaTime, &_nearTiles);
 
 		if (_throwed)
 		{
 			float velLength = _velocity.Distance();
-			if (velLength > 800.0f)
+			if (velLength > 700.0f)
 			{
 				EVENTMANAGER->QueueEvent(new DamageEvent(_id, 1, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
 
@@ -108,10 +108,6 @@ void Arrow::Update(float deltaTime)
 				{
 					SOUNDMANAGER->Play(L"arrow_hit_wall");
 				}
-			}
-			else
-			{
-				SOUNDMANAGER->Play(L"bounce");
 			}
 
 			if (_breakable && collisionResult)
@@ -147,6 +143,13 @@ void Arrow::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 	{
 		_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
 	}
+	//const Vector2 itemUntiledPosition = position.UnTilelize();
+	//Rect itemAbsRect =
+	//	RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
+
+	//itemAbsRect += _collisionComp->GetOffset();;
+
+	//DrawBox(gRenderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 1.0f, 0.0f));
 }
 
 void Arrow::HandlePlayerPositionEvent(const IEvent * event)

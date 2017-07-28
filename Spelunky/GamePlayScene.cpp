@@ -11,49 +11,49 @@ GamePlayScene::~GamePlayScene()
 
 HRESULT GamePlayScene::LoadContent()
 {
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\minetile.png", L"minetile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\woodtile.png", L"woodtile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\jungletile.png", L"jungletile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\templetile.png", L"templetile");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\bordertile.png", L"bordertile");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\minetile.png", L"minetile");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\woodtile.png", L"woodtile");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\jungletile.png", L"jungletile");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\templetile.png", L"templetile");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\bordertile.png", L"bordertile");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\char_orange.png", L"char_orange");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\minebg.png", L"minebg");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\char_orange.png", L"char_orange");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\minebg.png", L"minebg");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitdoors.png", L"exitdoors");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gems.png", L"gems");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\throws.png", L"throws");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitdoors.png", L"exitdoors");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\gems.png", L"gems");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\throws.png", L"throws");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\playerhud.png", L"playerhud");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\moneyhud.png", L"moneyhud");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\playerhud.png", L"playerhud");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\moneyhud.png", L"moneyhud");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitText.png", L"exitSprite");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\exitText.png", L"exitSprite");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\weaponanimation.png", L"weaponanimation");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\weaponanimation.png", L"weaponanimation");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\monsters.png", L"monsters");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\monsters.png", L"monsters");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\particles.png", L"particles");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\crates.png", L"crates");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\particles.png", L"particles");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\crates.png", L"crates");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\board.png", L"board");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\tunneltitle.png", L"tunneltitle");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\scrollroll.png", L"scrollroll");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\scrollpaper.png", L"scrollpaper");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\board.png", L"board");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\tunneltitle.png", L"tunneltitle");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\scrollroll.png", L"scrollroll");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\scrollpaper.png", L"scrollpaper");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\uiElement.png", L"uiElement");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\objectSprite.png", L"objectSprite");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\uiElement.png", L"uiElement");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\objectSprite.png", L"objectSprite");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\buttonSprite.png", L"buttonSprite");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\eatables.png", L"eatables");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\buttonSprite.png", L"buttonSprite");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\eatables.png", L"eatables");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookbg.png", L"bookbg");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bookgameover.png", L"bookgameover");
 
-	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\obstacles.png", L"obstacles");
+	//IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\obstacles.png", L"obstacles");
 
 #pragma region Animation For Player
 	int idleArray[1] = {0};
@@ -181,78 +181,78 @@ HRESULT GamePlayScene::LoadContent()
 
 #pragma endregion
 
-	SOUNDMANAGER->AddSound(L"gp_bgm0", L"resources\\sfx\\Music\\A01_A.ogg", true, true);
-	SOUNDMANAGER->AddSound(L"gp_bgm1", L"resources\\sfx\\Music\\A01_B.ogg", true, true);
-	SOUNDMANAGER->AddSound(L"gp_bgm2", L"resources\\sfx\\Music\\A01_C.ogg", true, true);
-	SOUNDMANAGER->AddSound(L"gp_bgm3", L"resources\\sfx\\Music\\A01_first.ogg", true, true);
+	//SOUNDMANAGER->AddSound(L"gp_bgm0", L"resources\\sfx\\Music\\A01_A.ogg", true, true);
+	//SOUNDMANAGER->AddSound(L"gp_bgm1", L"resources\\sfx\\Music\\A01_B.ogg", true, true);
+	//SOUNDMANAGER->AddSound(L"gp_bgm2", L"resources\\sfx\\Music\\A01_C.ogg", true, true);
+	//SOUNDMANAGER->AddSound(L"gp_bgm3", L"resources\\sfx\\Music\\A01_first.ogg", true, true);
 
-	SOUNDMANAGER->AddSound(L"bat_one_flap", L"resources\\sfx\\Sound\\batoneflap.wav", false, false);
-	SOUNDMANAGER->AddSound(L"bat_flap", L"resources\\sfx\\Sound\\batflap.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"bat_one_flap", L"resources\\sfx\\Sound\\batoneflap.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"bat_flap", L"resources\\sfx\\Sound\\batflap.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"bomb_explosion", L"resources\\sfx\\Sound\\kaboom.wav", false, false);
-	SOUNDMANAGER->AddSound(L"bomb_timer", L"resources\\sfx\\Sound\\bomb_timer.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"bomb_explosion", L"resources\\sfx\\Sound\\kaboom.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"bomb_timer", L"resources\\sfx\\Sound\\bomb_timer.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"into_door", L"resources\\sfx\\Sound\\intodoor.wav", false, false);
-	SOUNDMANAGER->AddSound(L"fade_in", L"resources\\sfx\\Sound\\fadein.wav", false, false);
-	SOUNDMANAGER->AddSound(L"fade_out", L"resources\\sfx\\Sound\\fadeout.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"into_door", L"resources\\sfx\\Sound\\intodoor.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"fade_in", L"resources\\sfx\\Sound\\fadein.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"fade_out", L"resources\\sfx\\Sound\\fadeout.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"gem0", L"resources\\sfx\\Sound\\gem1.wav", false, false);
-	SOUNDMANAGER->AddSound(L"gem1", L"resources\\sfx\\Sound\\gem2.wav", false, false);
-	SOUNDMANAGER->AddSound(L"gem2", L"resources\\sfx\\Sound\\gem3.wav", false, false);
-	SOUNDMANAGER->AddSound(L"gem3", L"resources\\sfx\\Sound\\gem4.wav", false, false);
-	SOUNDMANAGER->AddSound(L"gem4", L"resources\\sfx\\Sound\\gem5.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"gem0", L"resources\\sfx\\Sound\\gem1.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"gem1", L"resources\\sfx\\Sound\\gem2.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"gem2", L"resources\\sfx\\Sound\\gem3.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"gem3", L"resources\\sfx\\Sound\\gem4.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"gem4", L"resources\\sfx\\Sound\\gem5.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"jump", L"resources\\sfx\\Sound\\jump.wav", false, false);
-	SOUNDMANAGER->AddSound(L"land", L"resources\\sfx\\Sound\\land.wav", false, false);
-	SOUNDMANAGER->AddSound(L"grab", L"resources\\sfx\\Sound\\grab.wav", false, false);
-	SOUNDMANAGER->AddSound(L"on_ledge", L"resources\\sfx\\Sound\\on_ledge.wav", false, true);
+	//SOUNDMANAGER->AddSound(L"jump", L"resources\\sfx\\Sound\\jump.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"land", L"resources\\sfx\\Sound\\land.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"grab", L"resources\\sfx\\Sound\\grab.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"on_ledge", L"resources\\sfx\\Sound\\on_ledge.wav", false, true);
 
-	SOUNDMANAGER->AddSound(L"boulder_hit_0", L"resources\\sfx\\Sound\\boulderhit.wav", false, false);
-	SOUNDMANAGER->AddSound(L"boulder_hit_1", L"resources\\sfx\\Sound\\boulderhit2.wav", false, false);
-	SOUNDMANAGER->AddSound(L"boulder_hit_2", L"resources\\sfx\\Sound\\boulderhit3.wav", false, false);
-	SOUNDMANAGER->AddSound(L"boulder_hit_3", L"resources\\sfx\\Sound\\boulderhit4.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"boulder_hit_0", L"resources\\sfx\\Sound\\boulderhit.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"boulder_hit_1", L"resources\\sfx\\Sound\\boulderhit2.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"boulder_hit_2", L"resources\\sfx\\Sound\\boulderhit3.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"boulder_hit_3", L"resources\\sfx\\Sound\\boulderhit4.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"shatter", L"resources\\sfx\\Sound\\newshatter.wav", false, false);
-	SOUNDMANAGER->AddSound(L"bone_shatter", L"resources\\sfx\\Sound\\bone_shatter.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"shatter", L"resources\\sfx\\Sound\\newshatter.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"bone_shatter", L"resources\\sfx\\Sound\\bone_shatter.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"rubble0", L"resources\\sfx\\Sound\\rubble1.wav", false, false);
-	SOUNDMANAGER->AddSound(L"rubble1", L"resources\\sfx\\Sound\\rubble2.wav", false, false);
-	SOUNDMANAGER->AddSound(L"rubble2", L"resources\\sfx\\Sound\\rubble3.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble0", L"resources\\sfx\\Sound\\rubble1.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble1", L"resources\\sfx\\Sound\\rubble2.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble2", L"resources\\sfx\\Sound\\rubble3.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"rubble_bone0", L"resources\\sfx\\Sound\\rubble_bone1.wav", false, false);
-	SOUNDMANAGER->AddSound(L"rubble_bone1", L"resources\\sfx\\Sound\\rubble_bone2.wav", false, false);
-	SOUNDMANAGER->AddSound(L"rubble_bone2", L"resources\\sfx\\Sound\\rubble_bone3.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble_bone0", L"resources\\sfx\\Sound\\rubble_bone1.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble_bone1", L"resources\\sfx\\Sound\\rubble_bone2.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble_bone2", L"resources\\sfx\\Sound\\rubble_bone3.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"rubble_vase0", L"resources\\sfx\\Sound\\rubble_vase1.wav", false, false);
-	SOUNDMANAGER->AddSound(L"rubble_vase1", L"resources\\sfx\\Sound\\rubble_vase2.wav", false, false);
-	SOUNDMANAGER->AddSound(L"rubble_vase2", L"resources\\sfx\\Sound\\rubble_vase3.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble_vase0", L"resources\\sfx\\Sound\\rubble_vase1.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble_vase1", L"resources\\sfx\\Sound\\rubble_vase2.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"rubble_vase2", L"resources\\sfx\\Sound\\rubble_vase3.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"collect", L"resources\\sfx\\Sound\\collect.wav", false, false);
-	SOUNDMANAGER->AddSound(L"crate_open", L"resources\\sfx\\Sound\\crateopen.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"collect", L"resources\\sfx\\Sound\\collect.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"crate_open", L"resources\\sfx\\Sound\\crateopen.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"whip", L"resources\\sfx\\Sound\\whip.wav", false, false);
-	SOUNDMANAGER->AddSound(L"mattock", L"resources\\sfx\\Sound\\mattock.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"whip", L"resources\\sfx\\Sound\\whip.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"mattock", L"resources\\sfx\\Sound\\mattock.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"bounce", L"resources\\sfx\\Sound\\bounce.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"bounce", L"resources\\sfx\\Sound\\bounce.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"hit", L"resources\\sfx\\Sound\\hit.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"hit", L"resources\\sfx\\Sound\\hit.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"item_drop", L"resources\\sfx\\Sound\\item_drop.wav", false, false);
-	SOUNDMANAGER->AddSound(L"throw", L"resources\\sfx\\Sound\\throw_item.wav", false, false);
-	SOUNDMANAGER->AddSound(L"pick_up", L"resources\\sfx\\Sound\\pickup.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"item_drop", L"resources\\sfx\\Sound\\item_drop.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"throw", L"resources\\sfx\\Sound\\throw_item.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"pick_up", L"resources\\sfx\\Sound\\pickup.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"spike_hit", L"resources\\sfx\\Sound\\spike_hit.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"spike_hit", L"resources\\sfx\\Sound\\spike_hit.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"bat_flap", L"resources\\sfx\\Sound\\bat_flap.wav", false, false);
-	SOUNDMANAGER->AddSound(L"snake_bite", L"resources\\sfx\\Sound\\snakebite.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"bat_flap", L"resources\\sfx\\Sound\\bat_flap.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"snake_bite", L"resources\\sfx\\Sound\\snakebite.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"chime", L"resources\\sfx\\Sound\\chime.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"chime", L"resources\\sfx\\Sound\\chime.wav", false, false);
 
-	SOUNDMANAGER->AddSound(L"crush_block", L"resources\\sfx\\Sound\\crushblock.wav", false, false);
-	SOUNDMANAGER->AddSound(L"push_block", L"resources\\sfx\\Sound\\pushblock.wav", false, true);
+	//SOUNDMANAGER->AddSound(L"crush_block", L"resources\\sfx\\Sound\\crushblock.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"push_block", L"resources\\sfx\\Sound\\pushblock.wav", false, true);
 
-	SOUNDMANAGER->AddSound(L"arrow_shot", L"resources\\sfx\\Sound\\arrowshot.wav", false, false);
-	SOUNDMANAGER->AddSound(L"arrow_hit_wall", L"resources\\sfx\\Sound\\arrowhitwall.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"arrow_shot", L"resources\\sfx\\Sound\\arrowshot.wav", false, false);
+	//SOUNDMANAGER->AddSound(L"arrow_hit_wall", L"resources\\sfx\\Sound\\arrowhitwall.wav", false, false);
 
 
 	return S_OK;
@@ -413,6 +413,7 @@ void GamePlayScene::Update(void)
 			if (_layerRenderTimer.Tick(deltaTime))
 			{
 				_layerRenderTimer.Reset();
+				UIMANAGER->SetGemShowValue(0);
 				if (_enterTheStage)
 				{
 					_layerRenderOn = false;
@@ -449,11 +450,6 @@ void GamePlayScene::Update(void)
 				_t = _layerRenderTimer.GetCurrentSecond() / _layerRenderTimer.GetTargetSecond();
 			}
 		}
-		if (KEYMANAGER->IsOnceKeyDown(VK_ESCAPE))
-		{
-			EVENTMANAGER->DiscardAllEvents();
-			SCENEMANAGER->ChangeScene(L"MenuScene");
-		}
 	}
 	//플레이어 죽은 상태에서 업데이트
 	else if (_sceneState == PlaySceneState::PlayerDead)
@@ -462,6 +458,7 @@ void GamePlayScene::Update(void)
 		{
 			STAGEMANAGER->Reset();
 			EVENTCOLLECTOR->Reset();
+			SOUNDMANAGER->Play(L"mm_bgm");
 			SCENEMANAGER->ChangeScene(L"MenuScene");
 		}
 		else if (KEYMANAGER->IsOnceKeyDown('X'))

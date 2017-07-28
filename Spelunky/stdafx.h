@@ -69,8 +69,8 @@
 //=================================================
 
 #define WINNAME (LPTSTR)(TEXT("APIWindow"))
-#define WINSTARTX 200
-#define WINSTARTY 100
+#define WINSTARTX 0
+#define WINSTARTY 0
 
 #define WINSIZEX 1280
 #define WINSIZEY 720

@@ -320,7 +320,7 @@ void Particle::CalculateCollision()
 		case ParticleSoundType::PARTICLE_Bone :
 		{
 			SOUNDMANAGER->Play(L"rubble_bone" + std::to_wstring( abs(((int)_degrees % 3)) ) );
-			Console::Log("bone\n");
+			//Console::Log("bone\n");
 		}break;
 		case ParticleSoundType::PARTICLE_Boulder :
 		{

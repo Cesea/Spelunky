@@ -84,7 +84,7 @@ void Camera::Update(float deltaTime)
 			{
 				float t = _moveTimer.GetCurrentSecond() / _moveTimer.GetTargetSecond();
 				_position = InterpolateTilePosition(_startPosition, _targetPosition, t);
-				Console::Log("ii\n");
+				//Console::Log("ii\n");
 			}
 		}
 	}

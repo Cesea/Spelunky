@@ -35,6 +35,7 @@ HRESULT ArrowRock::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleObstaclePositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_ENEMY_POSITION, EventDelegate::FromFunction<ArrowRock, &ArrowRock::HandleEnemyPositionEvent>(this));
+	_dispatchTimer.Init(0.04);
 
 	return S_OK;
 }
@@ -72,7 +73,10 @@ void ArrowRock::Update(float deltaTime)
 		SOUNDMANAGER->Play(L"crush_block");
 	}
 
-	EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	if (_dispatchTimer.Tick(deltaTime))
+	{
+		EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	}
 }
 
 void ArrowRock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)

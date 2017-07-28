@@ -106,7 +106,7 @@ bool TimeManager::HasToAdvance()
 	{
 		_frameRate = _FPSFrameCount;
 		//#if defined _DEBUG
-		Console::Log("FPS : %d\n", (int)_frameRate);
+		//Console::Log("FPS : %d\n", (int)_frameRate);
 		//#endif
 		_FPSFrameCount = 0;
 		_FPSTimeElapsed = 0.0f;
@@ -119,7 +119,7 @@ unsigned long TimeManager::GetFrameRate(char * str) const
 {
 	if (str != NULL)
 	{
-		sprintf(str, "FPS : %d", _frameRate);
+		//sprintf(str, "FPS : %d", _frameRate);
 	}
 	return _frameRate;
 }

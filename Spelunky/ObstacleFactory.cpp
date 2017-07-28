@@ -59,7 +59,7 @@ void ObstacleFactory::RegisterBuilder(ObstacleType type, ObstacleBuilder * build
 	}
 	else
 	{
-		Console::Log("Obstacle Builder %d already exist", type);
+		//Console::Log("Obstacle Builder %d already exist", type);
 	}
 }
 
@@ -72,6 +72,6 @@ void ObstacleFactory::UnRegisterBuilder(ObstacleType type)
 	}
 	else
 	{
-		Console::Log("Obstacle Builder %d doesn'y exist", type);
+		//Console::Log("Obstacle Builder %d doesn'y exist", type);
 	}
 }

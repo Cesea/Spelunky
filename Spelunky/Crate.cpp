@@ -20,13 +20,13 @@ HRESULT Crate::Init(BaseProperty *property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PUT_DOWN, EventDelegate::FromFunction<EquipItem, &Crate::HandlePutDownEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<Crate, &Crate::HandleDamageEvent>(this));
 	_collisionComp = new CollisionComponent();
-	_collisionComp->Init(RectMake(0, 0, 40, 40), Vector2(-20, -20));
+	_collisionComp->Init(RectMake(0, 0, 40, 48), Vector2(-20, -48));
 
 	CrateProperty *convertedProperty = (CrateProperty *)(property);
 	*this = convertedProperty;
 
 	_sprite = new D2DFrameSprite;
-	_sprite->Init(IMAGEMANAGER->GetImage(L"crates"), 80, 80, IntVector2(-40, -40));
+	_sprite->Init(IMAGEMANAGER->GetImage(L"crates"), 80, 80, IntVector2(-40, -60));
 	_equiped = false;
 	return S_OK;
 }
@@ -69,11 +69,6 @@ void Crate::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)
 	Vector2 drawPos = position.UnTilelize() - camPos;
 	_sprite->FrameRender(renderTarget, drawPos.x, drawPos.y, _sourceIndex.x, _sourceIndex.y);
 
-	const Vector2 itemUntiledPosition = position.UnTilelize();
-	Rect itemAbsRect =
-		RectMake(itemUntiledPosition.x, itemUntiledPosition.y, _collisionComp->GetRect().width, _collisionComp->GetRect().height);
-	itemAbsRect += _collisionComp->GetOffset();
-	DrawBox(gRenderTarget, itemAbsRect.x - camPos.x, itemAbsRect.y - camPos.y, itemAbsRect.width, itemAbsRect.height, D2D1::ColorF(1.0f, 1.0f, 0.0f));
 }
 
 void Crate::Use(const ControlCommand &commands)
@@ -100,12 +95,15 @@ void Crate::HandlePlayerAttackEvent(const IEvent * event)
 	const TilePosition & playerPosition = convertedEvent->GetTilePosition();
 	Vector2 playerPositionUntiled = playerPosition.UnTilelize();
 
+	float xDiff = positionUntiled.x - playerPositionUntiled.x;
+	float yDiff = positionUntiled.y - playerPositionUntiled.y;
+
 	bool hitted = false;
 	if (seeingDirection == Direction::Left)
 	{
 		if (positionUntiled.x <= playerPositionUntiled.x + 10 &&
 			positionUntiled.x >= playerPositionUntiled.x - 88 &&
-			position.tileY == playerPosition.tileY)
+			fabs(yDiff) < 10)
 		{
 			hitted = true;
 		}
@@ -114,7 +112,7 @@ void Crate::HandlePlayerAttackEvent(const IEvent * event)
 	{
 		if (positionUntiled.x >= playerPositionUntiled.x - 10 &&
 			positionUntiled.x <= playerPositionUntiled.x + 88 &&
-			position.tileY == playerPosition.tileY)
+			fabs(yDiff) < 10)
 		{
 
 			hitted = true;

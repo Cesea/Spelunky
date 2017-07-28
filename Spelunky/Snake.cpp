@@ -29,10 +29,10 @@ HRESULT Snake::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<Snake, &Snake::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<Enemy, &Snake::HandleObstaclePositionEvent>(this));
 	_collisionComp = new CollisionComponent;
-	_collisionComp->Init(RectMake(0, 0, 44, 48), Vector2(-22, -44));
+	_collisionComp->Init(RectMake(0, 0, 44, 48), Vector2(-22, -48));
 
-	BuildAnimationSprite(L"walk", IntVector2(-40, -72));
-	BuildAnimationSprite(L"attack", IntVector2(-40, -72));
+	BuildAnimationSprite(L"walk", IntVector2(-40, -66));
+	BuildAnimationSprite(L"attack", IntVector2(-40, -66));
 
 	SetGraphics(L"walk");
 

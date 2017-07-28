@@ -155,7 +155,7 @@ private :
 	ReturnTile _nearTiles;
 	int _money{ 0 };
 
-	int _hp{ 2 };
+	int _hp{ 5 };
 	uint32 _bomb{ 4 };
 	uint32 _rope{ 4 };
 

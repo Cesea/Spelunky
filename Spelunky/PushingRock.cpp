@@ -18,7 +18,6 @@ HRESULT PushingRock::Init(BaseProperty * property)
 	_sprite = new D2DFrameSprite;
 	_sprite->Init(IMAGEMANAGER->GetImage(L"obstacles"), 64, 64, IntVector2(-32, -64));
 
-
 	_collisionComp = new CollisionComponent;
 	_collisionComp->Init(RectMake(0, 0, 64, 64), Vector2(-32, -64));
 
@@ -28,6 +27,8 @@ HRESULT PushingRock::Init(BaseProperty * property)
 	position.tileY = convertedProperty->position.y;
 	position.AddToTileRel(32, 64);
 	desiredPosition = position;
+
+	_dispatchTimer.Init(0.04);
 
 	EVENTMANAGER->RegisterDelegate(EVENT_PLAYER_POSITION, EventDelegate::FromFunction<PushingRock, &PushingRock::HandlePlayerPositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<PushingRock, &PushingRock::HandleObstaclePositionEvent>(this));
@@ -71,7 +72,10 @@ void PushingRock::Update(float deltaTime)
 		SOUNDMANAGER->Play(L"crush_block");
 	}
 
-	EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	if (_dispatchTimer.Tick(deltaTime))
+	{
+		EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	}
 }
 
 void PushingRock::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)

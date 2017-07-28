@@ -54,7 +54,7 @@ State<Player>* WalkState::Update(Player * object, float deltaTime)
 		{
 			object->_velocity.x = 0.0f;
 			newState = new IdleState;
-			Console::Log("Im Idle\n");
+			//Console::Log("Im Idle\n");
 		}
 	}
 	return newState;

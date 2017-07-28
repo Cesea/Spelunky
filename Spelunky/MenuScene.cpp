@@ -11,12 +11,13 @@ MenuScene::~MenuScene()
 
 HRESULT MenuScene::LoadContent()
 {
+	_loading = new Loading;
+
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\title.png", L"title");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlebat.png", L"titlebat");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlebatalpha.png", L"titlebatalpha");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlelayers.png", L"titlelayers");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\titlealpha.png", L"titlealpha");
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_doorback.png", L"mainmenu_doorback");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_arch.png", L"mainmenu_arch");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_statues.png", L"mainmenu_statues");
@@ -26,20 +27,19 @@ HRESULT MenuScene::LoadContent()
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_chainsign.png", L"mainmenu_chainsign");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_doorback.png", L"mainmenu_doorback");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_menuspear.png", L"mainmenu_menuspear");
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_doorandrocks.png", L"mainmenu_doorandrocks");
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\menu\\mainmenu_alpha.png", L"mainmenu_alpha");
-
-	int batArray[] = {0, 1, 2, 3, 4, 5};
-	KEYANIMANAGER->AddArrayFrameAnimation(L"titlebat", L"titlebat", 256, 256, batArray, 6, 15, true);
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\dustring.png", L"dustring");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\smokering.png", L"smokering");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\explosion.png", L"explosion");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\bomb.png", L"bomb");
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\particles.png", L"particles");
+
+
+	//_loading->LoadImageResources(L"resources\\gfx\\particles.png", L"particles");
+
+	int batArray[] = {0, 1, 2, 3, 4, 5};
+	KEYANIMANAGER->AddArrayFrameAnimation(L"titlebat", L"titlebat", 256, 256, batArray, 6, 15, true);
 
 	KEYANIMANAGER->AddDefPlayFrameAnimation(L"explosion", L"explosion", 128, 128, 20, false, false);
 	int normalBombArray[] = { 0, 1, 2 };
@@ -53,10 +53,137 @@ HRESULT MenuScene::LoadContent()
 	SOUNDMANAGER->AddSound(L"mm_door1", L"resources\\sfx\\Sound\\mm_door1.wav", false, false);
 	SOUNDMANAGER->AddSound(L"mm_door2", L"resources\\sfx\\Sound\\mm_door2.wav", false, false);
 	SOUNDMANAGER->AddSound(L"mm_door3", L"resources\\sfx\\Sound\\mm_door3.wav", false, false);
-
 	SOUNDMANAGER->AddSound(L"tikispike", L"resources\\sfx\\Sound\\tikispike.wav", false, false);
-
 	SOUNDMANAGER->AddSound(L"mm_bgm", L"resources\\sfx\\Music\\Menu.ogg", true, true);
+
+
+
+	_loading->LoadImageResources(L"resources\\gfx\\common\\minetile.png", L"minetile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\woodtile.png", L"woodtile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\jungletile.png", L"jungletile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\templetile.png", L"templetile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\bordertile.png", L"bordertile");
+	_loading->LoadImageResources(L"resources\\gfx\\maptool\\property.png", L"property");
+
+	_loading->LoadImageResources(L"resources\\gfx\\common\\minetile.png", L"minetile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\woodtile.png", L"woodtile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\jungletile.png", L"jungletile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\templetile.png", L"templetile");
+	_loading->LoadImageResources(L"resources\\gfx\\common\\bordertile.png", L"bordertile");
+
+	_loading->LoadImageResources(L"resources\\gfx\\char_orange.png", L"char_orange");
+	_loading->LoadImageResources(L"resources\\gfx\\minebg.png", L"minebg");
+
+	_loading->LoadImageResources(L"resources\\gfx\\exitdoors.png", L"exitdoors");
+	_loading->LoadImageResources(L"resources\\gfx\\gems.png", L"gems");
+	_loading->LoadImageResources(L"resources\\gfx\\throws.png", L"throws");
+
+	_loading->LoadImageResources(L"resources\\gfx\\playerhud.png", L"playerhud");
+	_loading->LoadImageResources(L"resources\\gfx\\moneyhud.png", L"moneyhud");
+
+	_loading->LoadImageResources(L"resources\\gfx\\exitText.png", L"exitSprite");
+
+	_loading->LoadImageResources(L"resources\\gfx\\weaponanimation.png", L"weaponanimation");
+
+	_loading->LoadImageResources(L"resources\\gfx\\monsters.png", L"monsters");
+
+	_loading->LoadImageResources(L"resources\\gfx\\particles.png", L"particles");
+	_loading->LoadImageResources(L"resources\\gfx\\crates.png", L"crates");
+
+	_loading->LoadImageResources(L"resources\\gfx\\board.png", L"board");
+	_loading->LoadImageResources(L"resources\\gfx\\tunneltitle.png", L"tunneltitle");
+	_loading->LoadImageResources(L"resources\\gfx\\scrollroll.png", L"scrollroll");
+	_loading->LoadImageResources(L"resources\\gfx\\scrollpaper.png", L"scrollpaper");
+
+	_loading->LoadImageResources(L"resources\\gfx\\uiElement.png", L"uiElement");
+	_loading->LoadImageResources(L"resources\\gfx\\objectSprite.png", L"objectSprite");
+
+	_loading->LoadImageResources(L"resources\\gfx\\bookbg.png", L"bookbg");
+	_loading->LoadImageResources(L"resources\\gfx\\bookgameover.png", L"bookgameover");
+
+	_loading->LoadImageResources(L"resources\\gfx\\buttonSprite.png", L"buttonSprite");
+	_loading->LoadImageResources(L"resources\\gfx\\eatables.png", L"eatables");
+
+	_loading->LoadImageResources(L"resources\\gfx\\bookbg.png", L"bookbg");
+	_loading->LoadImageResources(L"resources\\gfx\\bookgameover.png", L"bookgameover");
+
+	_loading->LoadImageResources(L"resources\\gfx\\obstacles.png", L"obstacles");
+
+
+
+	_loading->LoadSoundResources(L"gp_bgm0", L"resources\\sfx\\Music\\A01_A.ogg", true, true);
+
+	_loading->LoadSoundResources(L"gp_bgm1", L"resources\\sfx\\Music\\A01_B.ogg", true, true);
+	_loading->LoadSoundResources(L"gp_bgm2", L"resources\\sfx\\Music\\A01_C.ogg", true, true);
+	_loading->LoadSoundResources(L"gp_bgm3", L"resources\\sfx\\Music\\A01_first.ogg", true, true);
+
+	_loading->LoadSoundResources(L"bat_one_flap", L"resources\\sfx\\Sound\\batoneflap.wav", false, false);
+	_loading->LoadSoundResources(L"bat_flap", L"resources\\sfx\\Sound\\batflap.wav", false, false);
+
+	_loading->LoadSoundResources(L"bomb_explosion", L"resources\\sfx\\Sound\\kaboom.wav", false, false);
+	_loading->LoadSoundResources(L"bomb_timer", L"resources\\sfx\\Sound\\bomb_timer.wav", false, false);
+
+	_loading->LoadSoundResources(L"into_door", L"resources\\sfx\\Sound\\intodoor.wav", false, false);
+	_loading->LoadSoundResources(L"fade_in", L"resources\\sfx\\Sound\\fadein.wav", false, false);
+	_loading->LoadSoundResources(L"fade_out", L"resources\\sfx\\Sound\\fadeout.wav", false, false);
+
+	_loading->LoadSoundResources(L"gem0", L"resources\\sfx\\Sound\\gem1.wav", false, false);
+	_loading->LoadSoundResources(L"gem1", L"resources\\sfx\\Sound\\gem2.wav", false, false);
+	_loading->LoadSoundResources(L"gem2", L"resources\\sfx\\Sound\\gem3.wav", false, false);
+	_loading->LoadSoundResources(L"gem3", L"resources\\sfx\\Sound\\gem4.wav", false, false);
+	_loading->LoadSoundResources(L"gem4", L"resources\\sfx\\Sound\\gem5.wav", false, false);
+
+	_loading->LoadSoundResources(L"jump", L"resources\\sfx\\Sound\\jump.wav", false, false);
+	_loading->LoadSoundResources(L"land", L"resources\\sfx\\Sound\\land.wav", false, false);
+	_loading->LoadSoundResources(L"grab", L"resources\\sfx\\Sound\\grab.wav", false, false);
+	_loading->LoadSoundResources(L"on_ledge", L"resources\\sfx\\Sound\\on_ledge.wav", false, true);
+
+	_loading->LoadSoundResources(L"boulder_hit_0", L"resources\\sfx\\Sound\\boulderhit.wav", false, false);
+	_loading->LoadSoundResources(L"boulder_hit_1", L"resources\\sfx\\Sound\\boulderhit2.wav", false, false);
+	_loading->LoadSoundResources(L"boulder_hit_2", L"resources\\sfx\\Sound\\boulderhit3.wav", false, false);
+	_loading->LoadSoundResources(L"boulder_hit_3", L"resources\\sfx\\Sound\\boulderhit4.wav", false, false);
+
+	_loading->LoadSoundResources(L"shatter", L"resources\\sfx\\Sound\\newshatter.wav", false, false);
+	_loading->LoadSoundResources(L"bone_shatter", L"resources\\sfx\\Sound\\bone_shatter.wav", false, false);
+
+	_loading->LoadSoundResources(L"rubble0", L"resources\\sfx\\Sound\\rubble1.wav", false, false);
+	_loading->LoadSoundResources(L"rubble1", L"resources\\sfx\\Sound\\rubble2.wav", false, false);
+	_loading->LoadSoundResources(L"rubble2", L"resources\\sfx\\Sound\\rubble3.wav", false, false);
+
+	_loading->LoadSoundResources(L"rubble_bone0", L"resources\\sfx\\Sound\\rubble_bone1.wav", false, false);
+	_loading->LoadSoundResources(L"rubble_bone1", L"resources\\sfx\\Sound\\rubble_bone2.wav", false, false);
+	_loading->LoadSoundResources(L"rubble_bone2", L"resources\\sfx\\Sound\\rubble_bone3.wav", false, false);
+
+	_loading->LoadSoundResources(L"rubble_vase0", L"resources\\sfx\\Sound\\rubble_vase1.wav", false, false);
+	_loading->LoadSoundResources(L"rubble_vase1", L"resources\\sfx\\Sound\\rubble_vase2.wav", false, false);
+	_loading->LoadSoundResources(L"rubble_vase2", L"resources\\sfx\\Sound\\rubble_vase3.wav", false, false);
+
+	_loading->LoadSoundResources(L"collect", L"resources\\sfx\\Sound\\collect.wav", false, false);
+	_loading->LoadSoundResources(L"crate_open", L"resources\\sfx\\Sound\\crateopen.wav", false, false);
+
+	_loading->LoadSoundResources(L"whip", L"resources\\sfx\\Sound\\whip.wav", false, false);
+	_loading->LoadSoundResources(L"mattock", L"resources\\sfx\\Sound\\mattock.wav", false, false);
+
+	_loading->LoadSoundResources(L"bounce", L"resources\\sfx\\Sound\\bounce.wav", false, false);
+
+	_loading->LoadSoundResources(L"hit", L"resources\\sfx\\Sound\\hit.wav", false, false);
+
+	_loading->LoadSoundResources(L"item_drop", L"resources\\sfx\\Sound\\item_drop.wav", false, false);
+	_loading->LoadSoundResources(L"throw", L"resources\\sfx\\Sound\\throw_item.wav", false, false);
+	_loading->LoadSoundResources(L"pick_up", L"resources\\sfx\\Sound\\pickup.wav", false, false);
+
+	_loading->LoadSoundResources(L"spike_hit", L"resources\\sfx\\Sound\\spike_hit.wav", false, false);
+
+	_loading->LoadSoundResources(L"bat_flap", L"resources\\sfx\\Sound\\bat_flap.wav", false, false);
+	_loading->LoadSoundResources(L"snake_bite", L"resources\\sfx\\Sound\\snakebite.wav", false, false);
+
+	_loading->LoadSoundResources(L"chime", L"resources\\sfx\\Sound\\chime.wav", false, false);
+
+	_loading->LoadSoundResources(L"crush_block", L"resources\\sfx\\Sound\\crushblock.wav", false, false);
+	_loading->LoadSoundResources(L"push_block", L"resources\\sfx\\Sound\\pushblock.wav", false, true);
+
+	_loading->LoadSoundResources(L"arrow_shot", L"resources\\sfx\\Sound\\arrowshot.wav", false, false);
+	_loading->LoadSoundResources(L"arrow_hit_wall", L"resources\\sfx\\Sound\\arrowhitwall.wav", false, false);
 
 
 	return S_OK;
@@ -66,9 +193,6 @@ void MenuScene::ChangeCurrentSceneState(MenuSceneState state)
 {
 	switch (_currentState)
 	{
-	case CutScene :
-	{
-	}break;
 	case Title :
 	{
 		
@@ -76,9 +200,6 @@ void MenuScene::ChangeCurrentSceneState(MenuSceneState state)
 	case Menu :
 	{
 
-	}break;
-	case CharSelect :
-	{
 	}break;
 	}
 }
@@ -97,13 +218,16 @@ HRESULT MenuScene::Init(void)
 	{
 		_firstEntered = false;
 
+		_titleTransitionTimer.Init(3.0f);
+		_loadStartTimer.Init(2.0f);
+
 		HRESULT result = LoadContent();
 		Assert(SUCCEEDED(result));
 
 		std::wstring moduleLocation = Utils::GetWorkingDirectory();
 		std::vector<std::pair<std::wstring, bool>> files = Utils::GetFileList(moduleLocation);
 
-		_currentState = MenuSceneState::Menu;
+		_currentState = MenuSceneState::Title;
 		EFFECTMANAGER->Init();
 
 		_camera.Init();
@@ -214,6 +338,10 @@ HRESULT MenuScene::Init(void)
 
 		//SOUNDMANAGER->Play(L"menu_bgm");
 	}
+	else
+	{
+		SOUNDMANAGER->Play(L"mm_bgm");
+	}
 
 #pragma endregion
 	return S_OK;
@@ -236,10 +364,6 @@ void MenuScene::Update(void)
 
 	switch (_currentState)
 	{
-	case  CutScene :
-	{
-
-	}break;
 	case Title :
 	{
 		if (_batTimer.Tick(deltaTime))
@@ -256,6 +380,32 @@ void MenuScene::Update(void)
 		{
 			_titleObjects.bat[i].Update(deltaTime);
 		}
+
+		if (_loadStartTimer.Tick(deltaTime))
+		{
+			_loadingStart = true;
+		}
+		if (_loadingStart)
+		{
+			float percent = _loading->LoadNext();
+			_titleObjects.alpha.alpha = 1.0f - percent;
+			if (percent >= 1.0f)
+			{
+				_titleTransitionOn = true;
+			}
+		}
+
+		if (_titleTransitionOn)
+		{
+			if (_titleTransitionTimer.Tick(deltaTime))
+			{
+				_currentState = Menu;
+			}
+		}
+
+		//if (_loading->LoadNext())
+		//{
+		//}
 	}break;
 	case Menu:
 	{
@@ -329,10 +479,6 @@ void MenuScene::Update(void)
 
 		EFFECTMANAGER->Update(deltaTime);
 	}break;
-	case CharSelect :
-	{
-
-	}break;
 	}
 
 }
@@ -348,10 +494,6 @@ void MenuScene::Render()
 
 	switch (_currentState)
 	{
-	case  CutScene :
-	{
-
-	}break;
 	case Title :
 	{
 		_titleObjects.title.Render(gRenderTarget, camPos);
@@ -422,10 +564,6 @@ void MenuScene::Render()
 		}
 
 		_menuObjects.alpha.Render(gRenderTarget, camPos);
-	}break;
-	case CharSelect :
-	{
-
 	}break;
 	}
 
@@ -516,4 +654,66 @@ void MenuScene::HandleSceneChange()
 	{
 
 	}
+}
+
+void ImageLoadItem::Load()
+{
+}
+
+void SoundLoadItem::Load()
+{
+}
+
+void Loading::LoadImageResources(const std::wstring & fileName, const std::wstring & keyName)
+{
+	ImageLoadItem *newItem = new ImageLoadItem(fileName, keyName);
+	_imageLoadItems.push_back(newItem);
+	_totalSize++;
+}
+
+void Loading::LoadSoundResources(const std::wstring & fileName, const std::wstring & keyName, bool bgm, bool loop)
+{
+	SoundLoadItem *newItem = new SoundLoadItem(keyName, fileName, bgm, loop);
+	_soundLoadItems.push_back(newItem);
+	_totalSize++;
+}
+
+float Loading::LoadNext(void)
+{
+	float result = 0.0f;
+
+	if (!_loadSound)
+	{
+		if (_imageCurrent >= _imageLoadItems.size())
+		{
+			_loadSound = true;
+		}
+		else
+		{
+			ImageLoadItem* item = _imageLoadItems[_imageCurrent];
+			IMAGEMANAGER->LoadImageFromFile(item->GetResources().fileName, item->GetResources().keyName);
+			_imageCurrent++;
+		}
+
+	}
+	else
+	{
+		if (_soundCurrent >= _soundLoadItems.size())
+		{
+			result = true;
+		}
+		else
+		{
+			SoundLoadItem* item = _soundLoadItems[_soundCurrent];
+			SOUNDMANAGER->AddSound(item->GetResources().fileName, item->GetResources().keyName,
+				item->GetResources().isBackground, item->GetResources().loop);
+			_soundCurrent++;
+		}
+	}
+
+	result = ((float)(_imageCurrent + _soundCurrent) / (float)_totalSize);
+
+
+	return result;
+
 }

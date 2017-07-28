@@ -165,7 +165,7 @@ HRESULT Stage::InitFromRoomTypes(const std::wstring &firstKey, const RandomRoomG
 			}
 			else
 			{
-				Console::Log("Room %d, %d build failed\n", x, y);
+				//Console::Log("Room %d, %d build failed\n", x, y);
 			}
 		}
 	}
@@ -917,27 +917,27 @@ bool Stage::GetRandomFileNameFromRoomType(RoomType types, std::wstring &str)
 {
 	int randInt = (int)(RND->GetFloat() * 10);
 
-	//switch (types)
-	//{
-	//case RoomType::ROOM_BLOCK:
-	//{
-	//	str += L"_block_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//case RoomType::ROOM_AISLE :
-	//{
-	//	str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//case RoomType::ROOM_TOP_OPEN :
-	//{
-	//	str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//case RoomType::ROOM_BOTTOM_OPEN :
-	//{
-	//	str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
-	//}break;
-	//}
+	switch (types)
+	{
+	case RoomType::ROOM_BLOCK:
+	{
+		str += L"_block_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_AISLE :
+	{
+		str += L"_aisle_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_TOP_OPEN :
+	{
+		str += L"_topopen_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	case RoomType::ROOM_BOTTOM_OPEN :
+	{
+		str += L"_bottomopen_0" + std::to_wstring(randInt) + L".rt";
+	}break;
+	}
 
-	str = L"00.rt";
+	//str = L"00.rt";
 	return true;
 }
 
@@ -1405,16 +1405,41 @@ void Stage::BuildCrates()
 					IntVector2 worldPosition = CalculateTileWorldIndex(x, y, prop->position.x, prop->position.y);
 
 					CrateProperty *convertedProperty = (CrateProperty *)(prop);
-					convertedProperty->position.x = worldPosition.x;
-					convertedProperty->position.y = worldPosition.y;
-
-					Crate *newCrate = (Crate *)OBJECTMANAGER->CreateObject(L"crate", convertedProperty);
-
-					if (newCrate)
+					if (convertedProperty->sourceIndex.x == -2)
 					{
-						_crates.push_back(newCrate);
-					}
+						float randFloat = RND->GetFloat();
+						if (randFloat > 0.5)
+						{
+							convertedProperty->sourceIndex.x = 0;
+							convertedProperty->type = CRATE_GemSpawn;
+						}
+						else
+						{
+							convertedProperty->sourceIndex.x = 1;
+							convertedProperty->type = CRATE_ItemSpawn;
+						}
+						convertedProperty->position.x = worldPosition.x;
+						convertedProperty->position.y = worldPosition.y;
 
+						Crate *newCrate = (Crate *)OBJECTMANAGER->CreateObject(L"crate", convertedProperty);
+
+						if (newCrate)
+						{
+							_crates.push_back(newCrate);
+						}
+					}
+					else
+					{
+						convertedProperty->position.x = worldPosition.x;
+						convertedProperty->position.y = worldPosition.y;
+
+						Crate *newCrate = (Crate *)OBJECTMANAGER->CreateObject(L"crate", convertedProperty);
+
+						if (newCrate)
+						{
+							_crates.push_back(newCrate);
+						}
+					}
 				}
 			}
 		}
@@ -1662,7 +1687,7 @@ void Stage::HandleItemBreakEvent(const IEvent * event)
 			}
 		}
 
-		Console::Log("destroyed Item Id %d\n", object->GetId());
+		//Console::Log("destroyed Item Id %d\n", object->GetId());
 		OBJECTMANAGER->DestroyObject(convertedEvent->GetId());
 	}
 }
@@ -1743,11 +1768,11 @@ void Stage::HandleSpawnObjectEvent(const IEvent * event)
 	const TilePosition &eventPos = convertedEvent->GetTilePosition();
 	if (convertedEvent->GetKey() == L"gem")
 	{
-		BuildRandomGem(IntVector2(eventPos.tileX, eventPos.tileY));
+		BuildRandomGem(IntVector2(eventPos.tileX , eventPos.tileY - 1));
 	}
 	else if (convertedEvent->GetKey() == L"eatable")
 	{
-		BuildRandomEatable(IntVector2(eventPos.tileX, eventPos.tileY));
+		BuildRandomEatable(IntVector2(eventPos.tileX , eventPos.tileY - 1));
 	}
 }
 

@@ -61,7 +61,7 @@ void EnemyFactory::RegisterBuilder(EnemyType type, EnemyBuilder *builder)
 	}
 	else
 	{
-		Console::Log("Enemy Builder %d already exist", type);
+		//Console::Log("Enemy Builder %d already exist", type);
 	}
 }
 
@@ -74,6 +74,6 @@ void EnemyFactory::UnRegisterBuilder(EnemyType type)
 	}
 	else
 	{
-		Console::Log("Enemy Builder %d doesn'y exist", type);
+		//Console::Log("Enemy Builder %d doesn'y exist", type);
 	}
 }

@@ -36,6 +36,7 @@ HRESULT BombCrate::Init(BaseProperty * property)
 	EVENTMANAGER->RegisterDelegate(EVENT_OBSTACLE_POSITION, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleObstaclePositionEvent>(this));
 	EVENTMANAGER->RegisterDelegate(EVENT_DAMAGE, EventDelegate::FromFunction<BombCrate, &BombCrate::HandleDamageEvent>(this));
 
+	_dispatchTimer.Init(0.04);
 	return S_OK;
 }
 
@@ -87,8 +88,10 @@ void BombCrate::Update(float deltaTime)
 			SOUNDMANAGER->Play(L"bomb_explosion");
 		}
 	}
-	EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
-
+	if (_dispatchTimer.Tick(deltaTime))
+	{
+		EVENTMANAGER->QueueEvent(new ObstaclePositionEvent(_id, position, _collisionComp->GetRect(), _collisionComp->GetOffset()));
+	}
 }
 
 void BombCrate::Render(ID2D1HwndRenderTarget * renderTarget, const Vector2 & camPos)

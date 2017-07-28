@@ -13,7 +13,6 @@ MapToolScene::~MapToolScene()
 
 HRESULT MapToolScene::LoadContent()
 {
-
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\minetile.png", L"minetile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\woodtile.png", L"woodtile");
 	IMAGEMANAGER->LoadImageFromFile(L"resources\\gfx\\common\\jungletile.png", L"jungletile");
@@ -27,12 +26,14 @@ HRESULT MapToolScene::LoadContent()
 
 void MapToolScene::Release(void)
 {
+	ShowCursor(false);
 }
 
 HRESULT MapToolScene::Init(void)
 {
 	HRESULT result = LoadContent();
 	Assert(SUCCEEDED(result));
+	ShowCursor(true);
 	_timer.Init(1.0f);
 	_applySuccessFlagTimer.Init(1.0f);
 
@@ -52,6 +53,8 @@ HRESULT MapToolScene::Init(void)
 	_maskTextWidth = _dWrite.CalculateInputTextWidth(_maskText);
 
 	_savePropertyWidth = _dWrite.CalculateInputTextWidth(_saveProperty);
+
+	SOUNDMANAGER->Stop(L"mm_bgm");
 
 	return S_OK;
 }
@@ -1110,7 +1113,7 @@ int MapToolScene::OutSyncImageInfo()
 
 		if (!success)
 		{
-			Console::Log("error\n");
+			//Console::Log("error\n");
 		}
 		_stprintf(_typeBuffer, L"");
 		_stprintf(_sourceIndexBuffer, L"");

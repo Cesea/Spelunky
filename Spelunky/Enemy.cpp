@@ -103,22 +103,23 @@ void Enemy::HandlePlayerAttackEvent(const IEvent * event)
 	Vector2 playerPositionUntiled = playerTilePosition.UnTilelize();
 
 	float xDiff = positionUntiled.x - playerPositionUntiled.x;
+	float yDiff = positionUntiled.y - playerPositionUntiled.y;
 
 	bool hitted = false;
 	if (seeingDirection == Direction::Left)
 	{
-		if (positionUntiled.x <= playerPositionUntiled.x + 15 &&
-			positionUntiled.x >= playerPositionUntiled.x - 83 &&
-			position.tileY == playerTilePosition.tileY)
+		if ((positionUntiled.x <= playerPositionUntiled.x + 15 &&
+			positionUntiled.x >= playerPositionUntiled.x - 70) &&
+			(fabs(yDiff) < 8 ))
 		{
 			hitted = true;
 		}
 	}
 	else if (seeingDirection == Direction::Right)
 	{
-		if (positionUntiled.x >= playerPositionUntiled.x - 15 &&
-			positionUntiled.x <= playerPositionUntiled.x + 83 &&
-			position.tileY == playerTilePosition.tileY)
+		if ((positionUntiled.x >= playerPositionUntiled.x - 15 &&
+			positionUntiled.x <= playerPositionUntiled.x + 70) &&
+			fabs(yDiff) < 8)
 		{
 
 			hitted = true;

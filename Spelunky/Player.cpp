@@ -358,6 +358,11 @@ void Player::HandlePlayerDamagedEvent(const IEvent * event)
 			enemyPosDiff.y -= 300;
 			_velocity = enemyPosDiff;
 			_stateManager.ChangeState(new FaintState());
+
+			if (_hp <= 0)
+			{
+				_hp = 0;
+			}
 		}
 	}
 }

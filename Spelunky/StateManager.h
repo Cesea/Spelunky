@@ -62,6 +62,7 @@ public:
 	{
 		if (_currentState)
 		{
+			SAFE_DELETE(_prevState);
 			_currentState->OnExit(_pActor);
 			_prevState = _currentState;
 			_currentState = nullptr;

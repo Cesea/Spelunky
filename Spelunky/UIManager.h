@@ -20,6 +20,8 @@ public :
 	void SetPlayerLink(Player *player) { _pPlayer = player; }
 
 	void SetDrawExitText(bool b) { _drawExitText = b; }
+
+	void SetGemShowValue(int i) { _gemShowValue = i; }
 private :
 	void HandleOnTunnelEvent(const IEvent *event);
 	void HandleOnMiddleStageEvent(const IEvent *event);

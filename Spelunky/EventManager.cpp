@@ -26,7 +26,7 @@ bool EventManager::RegisterDelegate(const EventType type, const EventDelegate & 
 	{
 		if ((*iter) == delegate)
 		{
-			Console::Log("You tried to register same delegate function twice\n");
+			//Console::Log("You tried to register same delegate function twice\n");
 			result = false;
 			return result;
 		}

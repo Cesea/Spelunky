@@ -124,7 +124,7 @@ void Eatables::HandlePlayerAttackEvent(const IEvent * event)
 	}
 	if (hitted)
 	{
-		Console::Log("Gem hitted\n");
+		//Console::Log("Gem hitted\n");
 		_collisionComp->SetRepulse(true);
 		if (seeingDirection == Direction::Left)
 		{

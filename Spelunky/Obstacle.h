@@ -30,6 +30,8 @@ protected:
 	CollisionComponent *_collisionComp{};
 	IntVector2 _sourceIndex;
 	bool32 _onObject{ false };
+
+	Timer _dispatchTimer;
 };
 
 

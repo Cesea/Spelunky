@@ -50,7 +50,7 @@ void StageManager::Render(const Vector2 &offset)
 
 		int minX = camPos.tileX;
 		int maxX = camPos.tileX + 21;
-		int minY = camPos.tileY;
+		int minY = camPos.tileY - 1;
 		int maxY = camPos.tileY + 12;
 		if (minX < 0) { minX = 0; }
 		if (minY < 0) { minY = 0; }
@@ -178,7 +178,7 @@ RandomRoomGenerated StageManager::MakeRandomRoomTypes()
 		result.roomTypes[GetIndexFromXY(currentPath.x, currentPath.y, 4)] = type;
 		currentPath += delta;
 
-		Console::Log("%d, %d\n", currentPath.x, currentPath.y);
+		//Console::Log("%d, %d\n", currentPath.x, currentPath.y);
 
 		if (currentPath.y == 4)
 		{
@@ -230,7 +230,7 @@ void StageManager::BuildMiddleStage()
 	EVENTMANAGER->FireEvent(new OnMiddleStageEvent);
 	_pCamera->ResetForMiddleStage();
 
-	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
+	//Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }
 
 void StageManager::BuildNextStage()
@@ -267,7 +267,7 @@ void StageManager::BuildNextStage()
 	_pCamera->ResetForNormalStage();
 	_currentStage->PostInit();
 
-	Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
+	//Console::Log("%d\n", OBJECTMANAGER->GetObjectMapRef().size());
 }
 
 void StageManager::HandleStageTransitionEvent(const IEvent * event)
